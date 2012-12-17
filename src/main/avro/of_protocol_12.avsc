@@ -1,0 +1,135 @@
+{ 
+  "namespace" : "of12",
+  "types": [
+   {"name": "ofp_type",
+    "type": "enum",
+    "symbols" : ["OFPT_HELLO", 
+                 "OFPT_ERROR", 
+                 "OFPT_ECHO_REQUEST", 
+                 "OFPT_ECHO_REPLY", 
+                 "OFPT_EXPERIMENTER", 
+                 "OFPT_FEATURES_REQUEST", 
+                 "OFPT_FEATURES_REPLY", 
+                 "OFPT_GET_CONFIG_REQUEST", 
+                 "OFPT_GET_CONFIG_REPLY", 
+                 "OFPT_SET_CONFIG", 
+                 "OFPT_PACKET_IN", 
+                 "OFPT_FLOW_REMOVED", 
+                 "OFPT_PORT_STATUS", 
+                 "OFPT_PACKET_OUT", 
+                 "OFPT_FLOW_MOD", 
+                 "OFPT_GROUP_MOD", 
+                 "OFPT_PORT_MOD", 
+                 "OFPT_TABLE_MOD",
+                 "OFPT_MULTIPART_REQUEST", 
+                 "OFPT_MULTIPART_REPLY", 
+                 "OFPT_BARRIER_REQUEST", 
+                 "OFPT_BARRIER_REPLY", 
+                 "OFPT_QUEUE_GET_CONFIG_REQUEST", 
+                 "OFPT_QUEUE_GET_CONFIG_REPLY", 
+                 "OFPT_ROLE_REQUEST", 
+                 "OFPT_GET_ASYNC_REQUEST", 
+                 "OFPT_ROLE_REPLY", 
+                 "OFPT_GET_ASYNC_REPLY", 
+                 "OFPT_SET_ASYNC", 
+                 "OFPT_METER_MOD"]
+   },
+   
+   {"name": "ofp_capabilities",
+    "type": "enum",
+    "symbols": ["OFPC_FLOW_STATS",
+                "OFPC_TABLE_STATS",
+                "OFPC_PORT_STATS",
+                "OFPC_GROUP_STATS",
+                "OFPC_IP_REASM",
+                "OFPC_QUEUE_STATS",
+                "OFPC_PORT_BLOCKED"]
+   },
+   
+   {"name": "ofp_config_flags",
+    "type": "enum",
+    "symbols": ["OFPC_FRAG_NORMAL",
+                "OFPC_FRAG_DROP",
+                "OFPC_FRAG_REASM",
+                "OFPC_FRAG_MASK"]
+   },
+   
+    {"name": "ofp_flow_mod_flags",
+    "type": "enum",
+    "symbols": ["OFPFF_SEND_FLOW_REM",
+                "OFPFF_CHECK_OVERLAP",
+                "OFPFF_RESET_COUNTS"]
+    },
+   
+    {"name": "ofp_flow_mod_command",
+    "type": "enum",
+    "symbols": ["OFPFC_ADD",
+                "OFPFC_MODIFY",
+                "OFPFC_MODIFY_STRICT",
+				"OFPFC_DELETE",
+				"OFPFC_DELETE_STRICT",
+                "OFPC_FRAG_MASK"]
+   },
+   
+   {"name": "ofp_header",
+    "type": "record",
+    "fields": [ 
+      {"name": "version", "type": "bytes"},
+      {"name": "type", "type": "ofp_type"},
+      {"name": "length", "type": "bytes"},
+      {"name": "xid", "type": "bytes"}
+    ]
+   },
+   
+   {"name": "ofp_switch_features",
+    "type": "record",
+    "fields": [ 
+      {"name": "header", "type": "ofp_header"},
+      {"name": "datapath_id", "type": "bytes"},
+      {"name": "n_buffers", "type": "bytes"},
+      {"name": "n_tables", "type": "bytes"},
+      {"name": "pad", "type": "bytes"},
+      {"name": "capabilities", "type": "bytes"},
+      {"name": "reserved", "type": "bytes"}
+    ]
+   },
+   
+   {"name": "ofp_switch_config",
+    "type": "record",
+    "fields": [ 
+      {"name": "header", "type": "ofp_header"},
+      {"name": "flags", "type": "ofp_config_flags"},
+      {"name": "miss_send_len", "type": "bytes"}
+    ]
+   },
+   
+    {"name": "ofp_match",
+    "type": "record",
+    "fields": [ 
+      {"name": "type", "type": "bytes"},
+      {"name": "length", "type": "ofp_config_flags"},
+      {"name": "oxm_fields", "type": "bytes"}
+    ]
+   },
+   
+   {"name": "ofp_flow_mod",
+    "type": "record",
+    "fields": [ 
+      {"name": "header", "type": "ofp_header"},
+      {"name": "cookie", "type": "bytes"},
+	  {"name": "cookie_mask", "type": "bytes"},
+	  {"name": "table_id", "type": "bytes"},
+	  {"name": "command", "type": "ofp_flow_mod_command"},
+	  {"name": "idle_timeout", "type": "bytes"},
+	  {"name": "hard_timeout", "type": "bytes"},
+	  {"name": "priority", "type": "bytes"},
+	  {"name": "buffer_id", "type": "bytes"},
+	  {"name": "out_port", "type": "bytes"},
+	  {"name": "out_group", "type": "bytes"},
+	  {"name": "flags", "type": "ofp_flow_mod_flags"},
+	  {"name": "pad", "type": "bytes"},
+      {"name": "match", "type": "ofp_match"}
+    ]
+   }
+  ] 
+}
