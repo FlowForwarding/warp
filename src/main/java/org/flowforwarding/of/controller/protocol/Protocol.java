@@ -16,7 +16,7 @@ import org.apache.avro.io.EncoderFactory;
 
 public class Protocol {
 	
-	private final String schemaSrc = "src/main/avro/of_protocol.avsc";
+	private final String schemaSrc = "of_protocol_12.avpr";
 	
 	private Schema ofpHeaderSchema = null; 
 	private Schema ofpSwitchFeaturesSchema = null;
@@ -29,29 +29,26 @@ public class Protocol {
 	private Schema ofpFlowModCommandSchema = null;
 	private Schema ofpFlowModFlagsSchema = null;
 	private Schema ofpMatchTypeSchema = null;
+	
+	org.apache.avro.Protocol protocol = null;
 
-	private GenericEnumSymbol ofpTypes = null;
-	
-	
-	
 	public void init() {
 		 
-		Schema.Parser parser = new Schema.Parser();
 		try {
-			parser.parse(getClass().getResourceAsStream(this.schemaSrc));
+			protocol = org.apache.avro.Protocol.parse(getClass().getClassLoader().getResourceAsStream(schemaSrc));
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
-		ofpHeaderSchema = parser.getTypes().get("of12.ofp_header");
-		ofpSwitchFeaturesSchema = parser.getTypes().get("of12.ofp_switch_features");
-		ofpSwitchConfigSchema = parser.getTypes().get("of12.ofp_switch_config");
-		ofpMatchSchema = parser.getTypes().get("of12.ofp_match");
-		ofpFlowModSchema = parser.getTypes().get("of12.ofp_flow_mod");
-		ofpTypeSchema = parser.getTypes().get("of12.ofp_type");
-		ofpConfigFlagsSchema = parser.getTypes().get("of12.ofp_config_flags");
-		ofpMatchTypeSchema = parser.getTypes().get("of12.ofp_match_type");
+		ofpHeaderSchema =  protocol.getType("of12.ofp_header");
+		ofpSwitchFeaturesSchema = protocol.getType("of12.ofp_switch_features");
+		ofpSwitchConfigSchema = protocol.getType("of12.ofp_switch_config");
+		ofpMatchSchema = protocol.getType("of12.ofp_match");
+		ofpFlowModSchema = protocol.getType("of12.ofp_flow_mod");
+		ofpTypeSchema = protocol.getType("of12.ofp_type");
+		ofpConfigFlagsSchema = protocol.getType("of12.ofp_config_flags");
+		ofpMatchTypeSchema = protocol.getType("of12.ofp_match_type");
 		
 		
 		
@@ -68,15 +65,15 @@ public class Protocol {
 		ofpHeaderRecord.put("type", new EnumSymbol(ofpTypeSchema, "OFPT_HELLO"));
 		
 		ByteBuffer lenBuffer = ByteBuffer.allocate(2);
-		versionBuffer.put((byte)8);
-		versionBuffer.put((byte)0);
+		lenBuffer.put((byte)8);
+		lenBuffer.put((byte)0);
 		ofpHeaderRecord.put("length", lenBuffer);
 		
 		ByteBuffer xidBuffer = ByteBuffer.allocate(4);
-		versionBuffer.put((byte)0);
-		versionBuffer.put((byte)0);
-		versionBuffer.put((byte)0);
-		versionBuffer.put((byte)0);
+		xidBuffer.put((byte)0);
+		xidBuffer.put((byte)0);
+		xidBuffer.put((byte)0);
+		xidBuffer.put((byte)0);
 		ofpHeaderRecord.put("xid", xidBuffer);
 
         DatumWriter<GenericRecord> writer = new GenericDatumWriter<GenericRecord>(ofpHeaderSchema);
