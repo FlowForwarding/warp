@@ -1,5 +1,5 @@
-{ 
-  "namespace" : "of12",
+{ "namespace" : "of12",
+  "protocol": "ofp12",
   "types": [
    {"name": "ofp_type",
     "type": "enum",
