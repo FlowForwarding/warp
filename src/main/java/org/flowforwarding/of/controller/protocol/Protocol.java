@@ -60,20 +60,23 @@ public class Protocol {
 		
 		ByteBuffer versionBuffer = ByteBuffer.allocate(1);
 		versionBuffer.put((byte)3);
+		versionBuffer.position(0);
 		ofpHeaderRecord.put("version", versionBuffer);
 		
 		ofpHeaderRecord.put("type", new EnumSymbol(ofpTypeSchema, "OFPT_HELLO"));
 		
 		ByteBuffer lenBuffer = ByteBuffer.allocate(2);
-		lenBuffer.put((byte)8);
 		lenBuffer.put((byte)0);
+		lenBuffer.put((byte)8);
+		lenBuffer.position(0);
 		ofpHeaderRecord.put("length", lenBuffer);
 		
 		ByteBuffer xidBuffer = ByteBuffer.allocate(4);
 		xidBuffer.put((byte)0);
 		xidBuffer.put((byte)0);
 		xidBuffer.put((byte)0);
-		xidBuffer.put((byte)0);
+		xidBuffer.put((byte)1);
+		xidBuffer.position(0);
 		ofpHeaderRecord.put("xid", xidBuffer);
 
         DatumWriter<GenericRecord> writer = new GenericDatumWriter<GenericRecord>(ofpHeaderSchema);
@@ -97,60 +100,69 @@ public class Protocol {
 		
 		ByteBuffer versionBuffer = ByteBuffer.allocate(1);
 		versionBuffer.put((byte)3);
+		versionBuffer.position(0);
 		ofpHeaderRecord.put("version", versionBuffer);
 		
 		ofpHeaderRecord.put("type", new EnumSymbol(ofpTypeSchema, "OFPT_FEATURES_REQUEST"));
 		
 		ByteBuffer lenBuffer = ByteBuffer.allocate(2);
-		versionBuffer.put((byte)32);
-		versionBuffer.put((byte)0);
+		lenBuffer.put((byte)0);
+		lenBuffer.put((byte)32);
+		lenBuffer.position(0);
 		ofpHeaderRecord.put("length", lenBuffer);
 		
 		ByteBuffer xidBuffer = ByteBuffer.allocate(4);
-		versionBuffer.put((byte)0);
-		versionBuffer.put((byte)0);
-		versionBuffer.put((byte)0);
-		versionBuffer.put((byte)0);
+		xidBuffer.put((byte)0);
+		xidBuffer.put((byte)0);
+		xidBuffer.put((byte)0);
+		xidBuffer.put((byte)1);
+		xidBuffer.position(0);
 		ofpHeaderRecord.put("xid", xidBuffer);
 		
 		ofpSwitchFeaturesRecord.put("header",ofpHeaderRecord);
 		
 		ByteBuffer datapathBuffer = ByteBuffer.allocate(8);
-		versionBuffer.put((byte)0);
-		versionBuffer.put((byte)0);
-		versionBuffer.put((byte)0);
-		versionBuffer.put((byte)0);
-		versionBuffer.put((byte)0);
-		versionBuffer.put((byte)0);
-		versionBuffer.put((byte)0);
-		versionBuffer.put((byte)0);
+		datapathBuffer.put((byte)0);
+		datapathBuffer.put((byte)0);
+		datapathBuffer.put((byte)0);
+		datapathBuffer.put((byte)0);
+		datapathBuffer.put((byte)0);
+		datapathBuffer.put((byte)0);
+		datapathBuffer.put((byte)0);
+		datapathBuffer.put((byte)0);
+		datapathBuffer.position(0);
 		ofpSwitchFeaturesRecord.put("datapath_id", datapathBuffer);
 		
 		ByteBuffer nBuffersBuffer = ByteBuffer.allocate(4);
-		versionBuffer.put((byte)0);
-		versionBuffer.put((byte)0);
-		versionBuffer.put((byte)0);
-		versionBuffer.put((byte)0);
+		nBuffersBuffer.put((byte)0);
+		nBuffersBuffer.put((byte)0);
+		nBuffersBuffer.put((byte)0);
+		nBuffersBuffer.put((byte)0);
+		nBuffersBuffer.position(0);
 		ofpSwitchFeaturesRecord.put("n_buffers", nBuffersBuffer);
 		
 		ByteBuffer nTablesBuffer = ByteBuffer.allocate(1);
-		versionBuffer.put((byte)0);
+		nTablesBuffer.put((byte)0);
+		nTablesBuffer.position(0);
 		ofpSwitchFeaturesRecord.put("n_tables", nTablesBuffer);
 		
 		ByteBuffer nPadBuffer = ByteBuffer.allocate(3);
-		versionBuffer.put((byte)0);
-		versionBuffer.put((byte)0);
-		versionBuffer.put((byte)0);
+		nPadBuffer.put((byte)0);
+		nPadBuffer.put((byte)0);
+		nPadBuffer.put((byte)0);
+		nPadBuffer.position(0);
 		ofpSwitchFeaturesRecord.put("pad", nTablesBuffer);
 		
 		ByteBuffer nCapabBuffer = ByteBuffer.allocate(2);
 		nCapabBuffer.put((byte)0);
 		nCapabBuffer.put((byte)0);
+		nCapabBuffer.position(0);
 		ofpSwitchFeaturesRecord.put("capabilities", nCapabBuffer);
 		
 		ByteBuffer nReservedBuffer = ByteBuffer.allocate(2);
 		nReservedBuffer.put((byte)0);
 		nReservedBuffer.put((byte)0);
+		nReservedBuffer.position(0);
 		ofpSwitchFeaturesRecord.put("reserved", nReservedBuffer);
 
         DatumWriter<GenericRecord> writer = new GenericDatumWriter<GenericRecord>(ofpSwitchFeaturesSchema);
@@ -174,20 +186,23 @@ public class Protocol {
 		
 		ByteBuffer versionBuffer = ByteBuffer.allocate(1);
 		versionBuffer.put((byte)3);
+		versionBuffer.position(0);
 		ofpHeaderRecord.put("version", versionBuffer);
 		
-		ofpHeaderRecord.put("type", new EnumSymbol(ofpTypeSchema, "OFPT_GET_CONFIG_REQUEST"));
+		ofpHeaderRecord.put("type", new EnumSymbol(ofpTypeSchema, "OFPT_FEATURES_REQUEST"));
 		
 		ByteBuffer lenBuffer = ByteBuffer.allocate(2);
-		versionBuffer.put((byte)12);
-		versionBuffer.put((byte)0);
+		lenBuffer.put((byte)0);
+		lenBuffer.put((byte)32);
+		lenBuffer.position(0);
 		ofpHeaderRecord.put("length", lenBuffer);
 		
 		ByteBuffer xidBuffer = ByteBuffer.allocate(4);
-		versionBuffer.put((byte)0);
-		versionBuffer.put((byte)0);
-		versionBuffer.put((byte)0);
-		versionBuffer.put((byte)0);
+		xidBuffer.put((byte)0);
+		xidBuffer.put((byte)0);
+		xidBuffer.put((byte)0);
+		xidBuffer.put((byte)1);
+		xidBuffer.position(0);
 		ofpHeaderRecord.put("xid", xidBuffer);
 
         ofpSwitchConfigRecord.put("header", ofpHeaderRecord);
@@ -219,20 +234,23 @@ public class Protocol {
 		
 		ByteBuffer versionBuffer = ByteBuffer.allocate(1);
 		versionBuffer.put((byte)3);
+		versionBuffer.position(0);
 		ofpHeaderRecord.put("version", versionBuffer);
 		
-		ofpHeaderRecord.put("type", new EnumSymbol(ofpTypeSchema, "OFPT_FLOW_MOD"));
+		ofpHeaderRecord.put("type", new EnumSymbol(ofpTypeSchema, "OFPT_FEATURES_REQUEST"));
 		
 		ByteBuffer lenBuffer = ByteBuffer.allocate(2);
-		lenBuffer.put((byte)56);
 		lenBuffer.put((byte)0);
+		lenBuffer.put((byte)32);
+		lenBuffer.position(0);
 		ofpHeaderRecord.put("length", lenBuffer);
 		
 		ByteBuffer xidBuffer = ByteBuffer.allocate(4);
 		xidBuffer.put((byte)0);
 		xidBuffer.put((byte)0);
 		xidBuffer.put((byte)0);
-		xidBuffer.put((byte)0);
+		xidBuffer.put((byte)1);
+		xidBuffer.position(0);
 		ofpHeaderRecord.put("xid", xidBuffer);
 
 		ofpFlowModRecord.put("header", ofpHeaderRecord);
