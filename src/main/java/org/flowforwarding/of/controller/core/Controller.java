@@ -19,7 +19,14 @@ import org.jboss.netty.handler.timeout.IdleStateAwareChannelUpstreamHandler;
 
 public class Controller {
 	
-	private int count = 0;
+	private enum State {
+		STARTED,
+		CONNECTED,
+		HANDSHAKED,
+		READY
+	}
+	
+	private State state = STARTED;
 	Protocol protocol = new Protocol();
 
 	/**
@@ -57,17 +64,23 @@ public class Controller {
 		public void messageReceived( ChannelHandlerContext ctx, MessageEvent e) {
 
 			 transferredBytes.addAndGet(((ChannelBuffer) e.getMessage()).readableBytes());
-			 switch (count) {
-			 case 0:
+			 switch (state) {
+			 case STARTED:
 				 BigEndianHeapChannelBuffer x = new BigEndianHeapChannelBuffer(protocol.getHello(new ByteArrayOutputStream()).toByteArray());
 				 e.getChannel().write(x);
-				 BigEndianHeapChannelBuffer y = new BigEndianHeapChannelBuffer(protocol.getSwitchFeaturesRequest(new ByteArrayOutputStream()).toByteArray());
-				 e.getChannel().write(y);
-				 count ++;
+				 state = CONNECTED;
 				 break;
-			 case 1:
-				 count ++;
-				 break;				 
+			 case CONNECTED:
+         BigEndianHeapChannelBuffer x = new BigEndianHeapChannelBuffer(protocol.getSwitchFeaturesRequest(new ByteArrayOutputStream()).toByteArray());
+				 e.getChannel().write(x);
+				 state = HANDSHAKED;
+         break;			
+       case HANDSHAKED:
+         BigEndianHeapChannelBuffer x = new BigEndianHeapChannelBuffer(protocol.getSwitchConfigRequest(new ByteArrayOutputStream()).toByteArray());
+				 e.getChannel().write(x);
+				 state = READY;
+         break;			
+	 
 			 }
 			 
 

@@ -272,18 +272,19 @@
     "fields": [ 
       {"name": "header", "type": "ofp_header"},
       {"name": "cookie", "type": "bytes"},
-        {"name": "cookie_mask", "type": "bytes"},
-        {"name": "table_id", "type": "bytes"},
-        {"name": "command", "type": "ofp_flow_mod_command"},
-        {"name": "idle_timeout", "type": "bytes"},
-        {"name": "hard_timeout", "type": "bytes"},
-        {"name": "priority", "type": "bytes"},
-        {"name": "buffer_id", "type": "bytes"},
-        {"name": "out_port", "type": "bytes"},
-        {"name": "out_group", "type": "bytes"},
-        {"name": "flags", "type": "ofp_flow_mod_flags"},
-        {"name": "pad", "type": "bytes"},
-        {"name": "match", "type": "ofp_match"}
+      {"name": "cookie_mask", "type": "bytes"},
+      {"name": "table_id", "type": "bytes"},
+      {"name": "command", "type": "ofp_flow_mod_command"},
+      {"name": "idle_timeout", "type": "bytes"},
+      {"name": "hard_timeout", "type": "bytes"},
+      {"name": "priority", "type": "bytes"},
+      {"name": "buffer_id", "type": "bytes"},
+      {"name": "out_port", "type": "bytes"},
+      {"name": "out_group", "type": "bytes"},
+      {"name": "flags", "type": "ofp_flow_mod_flags"},
+      {"name": "pad", "type": "bytes"},
+      {"name": "match", "type": "ofp_match"},
+      {"name": "instructions", "type": ["null", "ofp_instructions"]
     ]
    }
   ] 
