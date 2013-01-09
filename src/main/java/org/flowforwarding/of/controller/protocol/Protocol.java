@@ -6,10 +6,12 @@ import java.nio.ByteBuffer;
 
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
+import org.apache.avro.generic.GenericDatumReader;
 import org.apache.avro.generic.GenericDatumWriter;
 import org.apache.avro.generic.GenericEnumSymbol;
 import org.apache.avro.generic.GenericData.EnumSymbol;
 import org.apache.avro.generic.GenericRecord;
+import org.apache.avro.io.DatumReader;
 import org.apache.avro.io.DatumWriter;
 import org.apache.avro.io.Encoder;
 import org.apache.avro.io.EncoderFactory;
@@ -58,30 +60,24 @@ public class Protocol {
 		
 		GenericRecord ofpHeaderRecord = new GenericData.Record(ofpHeaderSchema);
 		
-		ByteBuffer versionBuffer = ByteBuffer.allocate(1);
-		versionBuffer.put((byte)3);
-		versionBuffer.position(0);
-		ofpHeaderRecord.put("version", versionBuffer);
+		byte[] ver = {3};		
+		GenericData.Fixed version = new GenericData.Fixed(ofpHeaderSchema, ver); 
+		ofpHeaderRecord.put("version", version);
 		
-		ofpHeaderRecord.put("type", new EnumSymbol(ofpTypeSchema, "OFPT_HELLO"));
+	   ofpHeaderRecord.put("type", new EnumSymbol(ofpTypeSchema, "OFPT_HELLO"));
 		
-		ByteBuffer lenBuffer = ByteBuffer.allocate(2);
-		lenBuffer.put((byte)0);
-		lenBuffer.put((byte)8);
-		lenBuffer.position(0);
-		ofpHeaderRecord.put("length", lenBuffer);
+	   byte[] len = {0,8};
+	   GenericData.Fixed length = new GenericData.Fixed(ofpHeaderSchema, len);
+		ofpHeaderRecord.put("length", length);
 		
-		ByteBuffer xidBuffer = ByteBuffer.allocate(4);
-		xidBuffer.put((byte)0);
-		xidBuffer.put((byte)0);
-		xidBuffer.put((byte)0);
-		xidBuffer.put((byte)1);
-		xidBuffer.position(0);
-		ofpHeaderRecord.put("xid", xidBuffer);
-
-        DatumWriter<GenericRecord> writer = new GenericDatumWriter<GenericRecord>(ofpHeaderSchema);
+	   byte[] xd = {0,0,0,1};
+	   GenericData.Fixed xid = new GenericData.Fixed(ofpHeaderSchema, xd);
+	   ofpHeaderRecord.put("xid", xid);
+	   
+		
+      DatumWriter<GenericRecord> writer = new GenericDatumWriter<GenericRecord>(ofpHeaderSchema);
 	    
-	    Encoder encoder = EncoderFactory.get().binaryNonEncoder(out, null);
+	   Encoder encoder = EncoderFactory.get().binaryNonEncoder(out, null);
 	    
 		try {
 			writer.write(ofpHeaderRecord, encoder);
@@ -97,77 +93,51 @@ public class Protocol {
 		
 		GenericRecord ofpHeaderRecord = new GenericData.Record(ofpHeaderSchema);
 		GenericRecord ofpSwitchFeaturesRecord = new GenericData.Record(ofpSwitchFeaturesSchema);
-		
-		ByteBuffer versionBuffer = ByteBuffer.allocate(1);
-		versionBuffer.put((byte)3);
-		versionBuffer.position(0);
-		ofpHeaderRecord.put("version", versionBuffer);
-		
-		ofpHeaderRecord.put("type", new EnumSymbol(ofpTypeSchema, "OFPT_FEATURES_REQUEST"));
-		
-		ByteBuffer lenBuffer = ByteBuffer.allocate(2);
-		lenBuffer.put((byte)0);
-		lenBuffer.put((byte)32);
-		lenBuffer.position(0);
-		ofpHeaderRecord.put("length", lenBuffer);
-		
-		ByteBuffer xidBuffer = ByteBuffer.allocate(4);
-		xidBuffer.put((byte)0);
-		xidBuffer.put((byte)0);
-		xidBuffer.put((byte)0);
-		xidBuffer.put((byte)1);
-		xidBuffer.position(0);
-		ofpHeaderRecord.put("xid", xidBuffer);
-		
+
+	   byte[] ver = {3};    
+	   GenericData.Fixed version = new GenericData.Fixed(ofpHeaderSchema, ver); 
+	   ofpHeaderRecord.put("version", version);
+	      
+	   ofpHeaderRecord.put("type", new EnumSymbol(ofpTypeSchema, "OFPT_FEATURES_REQUEST"));
+	      
+	   byte[] len = {0,32};
+	   GenericData.Fixed length = new GenericData.Fixed(ofpHeaderSchema, len);
+	   ofpHeaderRecord.put("length", length);
+	      
+	   byte[] xd = {0,0,0,1};
+	   GenericData.Fixed xid = new GenericData.Fixed(ofpHeaderSchema, xd);
+	   ofpHeaderRecord.put("xid", xid);
+	
 		ofpSwitchFeaturesRecord.put("header",ofpHeaderRecord);
 		
-		ByteBuffer datapathBuffer = ByteBuffer.allocate(8);
-		datapathBuffer.put((byte)0);
-		datapathBuffer.put((byte)0);
-		datapathBuffer.put((byte)0);
-		datapathBuffer.put((byte)0);
-		datapathBuffer.put((byte)0);
-		datapathBuffer.put((byte)0);
-		datapathBuffer.put((byte)0);
-		datapathBuffer.put((byte)0);
-		datapathBuffer.position(0);
-		ofpSwitchFeaturesRecord.put("datapath_id", datapathBuffer);
+	   
+		byte[] dpid = {0,0,0,0,0,0,0,0};
+	   GenericData.Fixed datapath_id = new GenericData.Fixed(ofpSwitchFeaturesSchema, dpid);
+		ofpSwitchFeaturesRecord.put("datapath_id", datapath_id);
 		
-		ByteBuffer nBuffersBuffer = ByteBuffer.allocate(4);
-		nBuffersBuffer.put((byte)0);
-		nBuffersBuffer.put((byte)0);
-		nBuffersBuffer.put((byte)0);
-		nBuffersBuffer.put((byte)0);
-		nBuffersBuffer.position(0);
-		ofpSwitchFeaturesRecord.put("n_buffers", nBuffersBuffer);
+	   byte[] nbuf = {0,0,0,0};
+	   GenericData.Fixed n_buffers = new GenericData.Fixed(ofpSwitchFeaturesSchema, nbuf);
+	   ofpSwitchFeaturesRecord.put("n_buffers", n_buffers);
 		
-		ByteBuffer nTablesBuffer = ByteBuffer.allocate(1);
-		nTablesBuffer.put((byte)0);
-		nTablesBuffer.position(0);
-		ofpSwitchFeaturesRecord.put("n_tables", nTablesBuffer);
-		
-		ByteBuffer nPadBuffer = ByteBuffer.allocate(3);
-		nPadBuffer.put((byte)0);
-		nPadBuffer.put((byte)0);
-		nPadBuffer.put((byte)0);
-		nPadBuffer.position(0);
-		ofpSwitchFeaturesRecord.put("pad", nTablesBuffer);
-		
-		ByteBuffer nCapabBuffer = ByteBuffer.allocate(2);
-		nCapabBuffer.put((byte)0);
-		nCapabBuffer.put((byte)0);
-		nCapabBuffer.position(0);
-		ofpSwitchFeaturesRecord.put("capabilities", nCapabBuffer);
-		
-		ByteBuffer nReservedBuffer = ByteBuffer.allocate(2);
-		nReservedBuffer.put((byte)0);
-		nReservedBuffer.put((byte)0);
-		nReservedBuffer.position(0);
-		ofpSwitchFeaturesRecord.put("reserved", nReservedBuffer);
+      byte[] ntab = {0};
+	   GenericData.Fixed n_tables = new GenericData.Fixed(ofpSwitchFeaturesSchema, ntab);
+	   ofpSwitchFeaturesRecord.put("n_tables", n_tables);
+	   
+      byte[] p = {0,0,0};
+      GenericData.Fixed pad = new GenericData.Fixed(ofpSwitchFeaturesSchema, p);
+      ofpSwitchFeaturesRecord.put("pad", pad);
 
-        DatumWriter<GenericRecord> writer = new GenericDatumWriter<GenericRecord>(ofpSwitchFeaturesSchema);
+      byte[] cap = {0,0,0,0};
+      GenericData.Fixed capabilities = new GenericData.Fixed(ofpSwitchFeaturesSchema, cap);
+      ofpSwitchFeaturesRecord.put("capabilities", capabilities);
+      
+      byte[] res = {0,0,0,0};
+      GenericData.Fixed reserved = new GenericData.Fixed(ofpSwitchFeaturesSchema, res);
+      ofpSwitchFeaturesRecord.put("reserved", reserved);
+
+      DatumWriter<GenericRecord> writer = new GenericDatumWriter<GenericRecord>(ofpSwitchFeaturesSchema);
 	    
-	    Encoder encoder = EncoderFactory.get().binaryNonEncoder(out, null);
+	   Encoder encoder = EncoderFactory.get().binaryNonEncoder(out, null);
 	    
 		try {
 			writer.write(ofpSwitchFeaturesRecord, encoder);
@@ -184,37 +154,31 @@ public class Protocol {
 		GenericRecord ofpHeaderRecord = new GenericData.Record(ofpHeaderSchema);
 		GenericRecord ofpSwitchConfigRecord = new GenericData.Record(ofpSwitchConfigSchema);
 		
-		ByteBuffer versionBuffer = ByteBuffer.allocate(1);
-		versionBuffer.put((byte)3);
-		versionBuffer.position(0);
-		ofpHeaderRecord.put("version", versionBuffer);
-		
-		ofpHeaderRecord.put("type", new EnumSymbol(ofpTypeSchema, "OFPT_FEATURES_REQUEST"));
-		
-		ByteBuffer lenBuffer = ByteBuffer.allocate(2);
-		lenBuffer.put((byte)0);
-		lenBuffer.put((byte)32);
-		lenBuffer.position(0);
-		ofpHeaderRecord.put("length", lenBuffer);
-		
-		ByteBuffer xidBuffer = ByteBuffer.allocate(4);
-		xidBuffer.put((byte)0);
-		xidBuffer.put((byte)0);
-		xidBuffer.put((byte)0);
-		xidBuffer.put((byte)1);
-		xidBuffer.position(0);
-		ofpHeaderRecord.put("xid", xidBuffer);
+		byte[] ver = {3};    
+		GenericData.Fixed version = new GenericData.Fixed(ofpHeaderSchema, ver); 
+	   ofpHeaderRecord.put("version", version);
+	         
+	   ofpHeaderRecord.put("type", new EnumSymbol(ofpTypeSchema, "OFPT_GET_CONFIG_REQUEST"));
+	         
+	   byte[] len = {0,12};
+	   GenericData.Fixed length = new GenericData.Fixed(ofpHeaderSchema, len);
+	   ofpHeaderRecord.put("length", length);
+	         
+	   byte[] xd = {0,0,0,1};
+	   GenericData.Fixed xid = new GenericData.Fixed(ofpHeaderSchema, xd);
+	   ofpHeaderRecord.put("xid", xid);
+      
+	   ofpSwitchConfigRecord.put("header", ofpHeaderRecord);
+      
+      
+      ofpSwitchConfigRecord.put("flags", new EnumSymbol(ofpConfigFlagsSchema, "OFPC_FRAG_NORMAL"));
 
-        ofpSwitchConfigRecord.put("header", ofpHeaderRecord);
-        ofpSwitchConfigRecord.put("flags", new EnumSymbol(ofpConfigFlagsSchema, "OFPC_FRAG_NORMAL"));
-        
-        ByteBuffer missSendLenBuffer = ByteBuffer.allocate(2);
-        missSendLenBuffer.put((byte)0);
-        missSendLenBuffer.put((byte)0);
-        ofpSwitchConfigRecord.put("miss_send_len", missSendLenBuffer);
+      byte[] msl = {0,0};
+      GenericData.Fixed miss_send_len = new GenericData.Fixed(ofpSwitchFeaturesSchema, msl);
+      ofpSwitchConfigRecord.put("miss_send_len", miss_send_len);
 	    
-        DatumWriter<GenericRecord> writer = new GenericDatumWriter<GenericRecord>(ofpSwitchConfigSchema);
-	    Encoder encoder = EncoderFactory.get().binaryNonEncoder(out, null);
+      DatumWriter<GenericRecord> writer = new GenericDatumWriter<GenericRecord>(ofpSwitchConfigSchema);
+	   Encoder encoder = EncoderFactory.get().binaryNonEncoder(out, null);
 	    
 		try {
 			writer.write(ofpSwitchConfigRecord, encoder);

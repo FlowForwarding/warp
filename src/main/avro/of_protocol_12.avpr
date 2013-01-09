@@ -112,13 +112,19 @@
                 "OFPIT_EXPERIMENTER"]
    },
 
+   {"name": "uint_8", "type": "fixed", "size": 1},
+   {"name": "uint_16", "type": "fixed", "size": 2},
+   {"name": "uint_32", "type": "fixed", "size": 4},
+   {"name": "uint_64", "type": "fixed", "size": 8},
+   {"name": "pad_3", "type": "fixed", "size": 3},
+   
    {"name": "ofp_header",
     "type": "record",
     "fields": [ 
-      {"name": "version", "type": "bytes"},
+      {"name": "version", "type": "uint_8"},
       {"name": "type", "type": "ofp_type"},
-      {"name": "length", "type": "bytes"},
-      {"name": "xid", "type": "bytes"}
+      {"name": "length", "type": "uint_16"},
+      {"name": "xid", "type": "uint_32"}
     ]
    },
    
@@ -126,12 +132,12 @@
     "type": "record",
     "fields": [ 
       {"name": "header", "type": "ofp_header"},
-      {"name": "datapath_id", "type": "bytes"},
-      {"name": "n_buffers", "type": "bytes"},
-      {"name": "n_tables", "type": "bytes"},
-      {"name": "pad", "type": "bytes"},
-      {"name": "capabilities", "type": "bytes"},
-      {"name": "reserved", "type": "bytes"}
+      {"name": "datapath_id", "type": "uint_64"},
+      {"name": "n_buffers", "type": "uint_32"},
+      {"name": "n_tables", "type": "uint_8"},
+      {"name": "pad", "type": "pad_3"},
+      {"name": "capabilities", "type": "uint_32"},
+      {"name": "reserved", "type": "uint_32"}
     ]
    },
    
@@ -140,7 +146,7 @@
     "fields": [ 
       {"name": "header", "type": "ofp_header"},
       {"name": "flags", "type": "ofp_config_flags"},
-      {"name": "miss_send_len", "type": "bytes"}
+      {"name": "miss_send_len", "type": "uint_16"}
     ]
    },
    
@@ -150,15 +156,6 @@
       {"name": "type", "type": "bytes"},
       {"name": "length", "type": "ofp_config_flags"},
       {"name": "oxm_fields", "type": "bytes"}
-    ]
-   },
-   
-   {"name": "ofp_action_header",
-    "type": "record",
-    "fields": [
-      {"name": "type", "type": "ofp_action_type"},
-      {"name": "len", "type": "bytes"},
-      {"name": "pad", "type": "bytes"}
     ]
    },
    
@@ -284,7 +281,7 @@
       {"name": "flags", "type": "ofp_flow_mod_flags"},
       {"name": "pad", "type": "bytes"},
       {"name": "match", "type": "ofp_match"},
-      {"name": "instructions", "type": ["null", "ofp_instructions"]
+      {"name": "instructions", "type": "null"}
     ]
    }
   ] 

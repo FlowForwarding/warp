@@ -19,24 +19,22 @@ import org.jboss.netty.handler.timeout.IdleStateAwareChannelUpstreamHandler;
 
 public class Controller {
 	
-	private enum State {
-		STARTED,
-		CONNECTED,
-		HANDSHAKED,
-		READY
-	}
+   private enum State {
+      STARTED,
+      CONNECTED,
+      HANDSHAKED,
+      READY
+   }
 	
-	private State state = STARTED;
-	Protocol protocol = new Protocol();
+   private State state = State.STARTED;
+   Protocol protocol = new Protocol();
 
-	/**
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		
-		new Controller().run();
-
-	}
+   /**
+    * @param args
+    */
+   public static void main(String[] args) {
+      new Controller().run();
+   }
 	
 	public void run () {
 		
@@ -61,26 +59,26 @@ public class Controller {
 
 		
 		 @Override
-		public void messageReceived( ChannelHandlerContext ctx, MessageEvent e) {
-
-			 transferredBytes.addAndGet(((ChannelBuffer) e.getMessage()).readableBytes());
+		 public void messageReceived( ChannelHandlerContext ctx, MessageEvent e) {
+		    transferredBytes.addAndGet(((ChannelBuffer) e.getMessage()).readableBytes());
+		    
 			 switch (state) {
 			 case STARTED:
-				 BigEndianHeapChannelBuffer x = new BigEndianHeapChannelBuffer(protocol.getHello(new ByteArrayOutputStream()).toByteArray());
+			    BigEndianHeapChannelBuffer x = new BigEndianHeapChannelBuffer(protocol.getHello(new ByteArrayOutputStream()).toByteArray());
 				 e.getChannel().write(x);
-				 state = CONNECTED;
+				 x.clear();
+				 state = State.CONNECTED;
+				 BigEndianHeapChannelBuffer y = new BigEndianHeapChannelBuffer(protocol.getSwitchFeaturesRequest(new ByteArrayOutputStream()).toByteArray());
+				 e.getChannel().write(y);
+				 state = State.HANDSHAKED;
 				 break;
-			 case CONNECTED:
-         BigEndianHeapChannelBuffer x = new BigEndianHeapChannelBuffer(protocol.getSwitchFeaturesRequest(new ByteArrayOutputStream()).toByteArray());
-				 e.getChannel().write(x);
-				 state = HANDSHAKED;
-         break;			
-       case HANDSHAKED:
-         BigEndianHeapChannelBuffer x = new BigEndianHeapChannelBuffer(protocol.getSwitchConfigRequest(new ByteArrayOutputStream()).toByteArray());
-				 e.getChannel().write(x);
-				 state = READY;
-         break;			
-	 
+			 case HANDSHAKED:
+			    BigEndianHeapChannelBuffer z = new BigEndianHeapChannelBuffer(protocol.getSwitchConfigRequest(new ByteArrayOutputStream()).toByteArray());
+			    e.getChannel().write(z);
+			    state = State.READY;
+			    break;
+			 default:
+			    break;			
 			 }
 			 
 
