@@ -54,14 +54,14 @@
                 "OFPC_FRAG_MASK"]
    },
    
-    {"name": "ofp_flow_mod_flags",
+   {"name": "ofp_flow_mod_flags",
     "type": "enum",
     "symbols": ["OFPFF_SEND_FLOW_REM",
                 "OFPFF_CHECK_OVERLAP",
                 "OFPFF_RESET_COUNTS"]
-    },
+   },
    
-    {"name": "ofp_flow_mod_command",
+   {"name": "ofp_flow_mod_command",
     "type": "enum",
     "symbols": ["OFPFC_ADD",
                 "OFPFC_MODIFY",
@@ -116,6 +116,8 @@
    {"name": "uint_16", "type": "fixed", "size": 2},
    {"name": "uint_32", "type": "fixed", "size": 4},
    {"name": "uint_64", "type": "fixed", "size": 8},
+   {"name": "pad_6", "type": "fixed", "size": 6},
+   {"name": "pad_4", "type": "fixed", "size": 4},
    {"name": "pad_3", "type": "fixed", "size": 3},
    {"name": "pad_2", "type": "fixed", "size": 2},
    
@@ -176,9 +178,11 @@
       {"name": "len", "type": "bytes"},
       {"name": "port", "type": "bytes"},
       {"name": "max_len", "type": "bytes"},
-      {"name": "pad", "type": "bytes"}
+      {"name": "pad", "type": "pad_6"}
     ]
    },
+   
+   {"name": "ofp_actions_set", "type": "array", "items": "ofp_action_output"}
    
    {"name": "ofp_instruction_goto_table_header",
     "type": "record",
@@ -243,7 +247,8 @@
     "fields": [
       {"name": "header", "type": "ofp_instruction_apply_actions_header"},
       {"name": "table_id", "type": "bytes"},
-      {"name": "pad", "type": "bytes"}
+      {"name": "pad", "type": "pad_4"},
+      {"name": "actions", "type": "ofp_actions_set"}
     ]
    },
    
@@ -265,7 +270,20 @@
     ]
    },
    
-   {"name": "ofp_flow_mod",
+   {"name": "ofp_instructions_set", 
+    "type": "array",
+    "items": "ofp_instruction_apply_actions"}
+   
+   {"name": "ofp_match",
+    "type": "record",
+    "fields": [
+      {"name": "type", "type": "uint16_t"},
+      {"name": "length", "type": "uint16_t"},
+      {"name": "oxm_fields", "type": "bytes"}
+    ]
+   },
+   
+   {"name": "ofp_flow_mod_base",
     "type": "record",
     "fields": [ 
       {"name": "header", "type": "ofp_header"},
@@ -281,8 +299,15 @@
       {"name": "out_group", "type": "uint_32"},
       {"name": "flags", "type": "ofp_flow_mod_flags"},
       {"name": "pad", "type": "bytes"},
-      {"name": "match", "type": "ofp_match"},
-      {"name": "instructions", "type": "null"}
+      {"name": "match", "type": "ofp_match"}
+    ]
+   },
+   
+   {"name": "ofp_flow_mod",
+    "type": "record",
+    "fields": [
+      {"name": "flow_mod", "type": "ofp_flow_mod_base"},
+      {"name": "instructions", "type": "ofp_instructions_set"}
     ]
    }
   ] 
