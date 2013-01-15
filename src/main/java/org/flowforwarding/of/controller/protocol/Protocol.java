@@ -25,6 +25,7 @@ public class Protocol {
 	private Schema ofpSwitchConfigSchema = null; 
 	private Schema ofpMatchSchema = null;
 	private Schema ofpFlowModSchema = null;
+	private Schema ofpFlowModBaseSchema = null;
 	
 	private Schema ofpTypeSchema = null;
 	private Schema ofpConfigFlagsSchema = null;	
@@ -48,6 +49,7 @@ public class Protocol {
 		ofpSwitchConfigSchema = protocol.getType("of12.ofp_switch_config");
 		ofpMatchSchema = protocol.getType("of12.ofp_match");
 		ofpFlowModSchema = protocol.getType("of12.ofp_flow_mod");
+		ofpFlowModBaseSchema = protocol.getType("of12.ofp_flow_mod_base");
 		ofpTypeSchema = protocol.getType("of12.ofp_type");
 		ofpConfigFlagsSchema = protocol.getType("of12.ofp_config_flags");
 		ofpMatchTypeSchema = protocol.getType("of12.ofp_match_type");
@@ -174,7 +176,7 @@ public class Protocol {
       ofpSwitchConfigRecord.put("flags", new EnumSymbol(ofpConfigFlagsSchema, "OFPC_FRAG_NORMAL"));
 
       byte[] msl = {0,0};
-      GenericData.Fixed miss_send_len = new GenericData.Fixed(ofpSwitchFeaturesSchema, msl);
+      GenericData.Fixed miss_send_len = new GenericData.Fixed(ofpSwitchConfigSchema, msl);
       ofpSwitchConfigRecord.put("miss_send_len", miss_send_len);
 	    
       DatumWriter<GenericRecord> writer = new GenericDatumWriter<GenericRecord>(ofpSwitchConfigSchema);
@@ -194,103 +196,70 @@ public class Protocol {
 		
 		GenericRecord ofpHeaderRecord = new GenericData.Record(ofpHeaderSchema);
 		GenericRecord ofpFlowModRecord = new GenericData.Record(ofpFlowModSchema);
+		GenericRecord ofpFlowModBaseRecord = new GenericData.Record(ofpFlowModBaseSchema);
 		GenericRecord ofpMatchRecord = new GenericData.Record(ofpMatchSchema);
 		
-		ByteBuffer versionBuffer = ByteBuffer.allocate(1);
-		versionBuffer.put((byte)3);
-		versionBuffer.position(0);
-		ofpHeaderRecord.put("version", versionBuffer);
-		
-		ofpHeaderRecord.put("type", new EnumSymbol(ofpTypeSchema, "OFPT_FEATURES_REQUEST"));
-		
-		ByteBuffer lenBuffer = ByteBuffer.allocate(2);
-		lenBuffer.put((byte)0);
-		lenBuffer.put((byte)32);
-		lenBuffer.position(0);
-		ofpHeaderRecord.put("length", lenBuffer);
-		
-		ByteBuffer xidBuffer = ByteBuffer.allocate(4);
-		xidBuffer.put((byte)0);
-		xidBuffer.put((byte)0);
-		xidBuffer.put((byte)0);
-		xidBuffer.put((byte)1);
-		xidBuffer.position(0);
-		ofpHeaderRecord.put("xid", xidBuffer);
-
+      byte[] ver = {3};    
+      GenericData.Fixed version = new GenericData.Fixed(ofpHeaderSchema, ver); 
+      ofpHeaderRecord.put("version", version);
+            
+      ofpHeaderRecord.put("type", new EnumSymbol(ofpTypeSchema, "OFPT_GET_CONFIG_REQUEST"));
+            
+      byte[] len = {0,12};
+      GenericData.Fixed length = new GenericData.Fixed(ofpHeaderSchema, len);
+      ofpHeaderRecord.put("length", length);
+            
+      byte[] xd = {0,0,0,1};
+      GenericData.Fixed xid = new GenericData.Fixed(ofpHeaderSchema, xd);
+      ofpHeaderRecord.put("xid", xid);
+      
 		ofpFlowModRecord.put("header", ofpHeaderRecord);
-        
-        ByteBuffer cookieBuffer = ByteBuffer.allocate(8);
-        cookieBuffer.put((byte)0);
-        cookieBuffer.put((byte)0);
-        cookieBuffer.put((byte)0);
-        cookieBuffer.put((byte)0);
-        cookieBuffer.put((byte)0);
-        cookieBuffer.put((byte)0);
-        cookieBuffer.put((byte)0);
-        cookieBuffer.put((byte)0);
-        ofpFlowModRecord.put("cookie", cookieBuffer);
-        
-        ByteBuffer cookieMaskBuffer = ByteBuffer.allocate(8);
-        cookieMaskBuffer.put((byte)0);
-        cookieMaskBuffer.put((byte)0);
-        cookieMaskBuffer.put((byte)0);
-        cookieMaskBuffer.put((byte)0);
-        cookieMaskBuffer.put((byte)0);
-        cookieMaskBuffer.put((byte)0);
-        cookieMaskBuffer.put((byte)0);
-        cookieMaskBuffer.put((byte)0);
-        ofpFlowModRecord.put("cookie_mask", cookieMaskBuffer);
-        
-        ByteBuffer tableIdBuffer = ByteBuffer.allocate(1);
-        tableIdBuffer.put((byte)0);
-        ofpFlowModRecord.put("table_id", tableIdBuffer);
-        
-        ofpFlowModRecord.put("command", new EnumSymbol(ofpFlowModCommandSchema, "OFPFC_MODIFY"));
-        
-        ByteBuffer idleTimeoutBuffer = ByteBuffer.allocate(2);
-        idleTimeoutBuffer.put((byte)0);
-        idleTimeoutBuffer.put((byte)0);
-        ofpFlowModRecord.put("idle_timeout", idleTimeoutBuffer);
+		
+      byte[] ck = {0,0,0,0,0,0,0,0};
+      GenericData.Fixed cookie = new GenericData.Fixed(ofpFlowModBaseSchema, ck);
+      ofpFlowModBaseRecord.put("cookie", cookie);
+		
+      byte[] cm = {0,0,0,0,0,0,0,0};
+      GenericData.Fixed cookie_mask = new GenericData.Fixed(ofpFlowModBaseSchema, cm);
+      ofpFlowModRecord.put("cookie_mask", cookie_mask);
+      
+      byte[] tid = {0};
+      GenericData.Fixed table_id = new GenericData.Fixed(ofpFlowModBaseSchema, tid);
+      ofpFlowModRecord.put("table_id", table_id);
+      
+      ofpFlowModRecord.put("command", new EnumSymbol(ofpFlowModCommandSchema, "OFPFC_MODIFY"));
+      
+      byte[] itb = {0,0};
+      GenericData.Fixed idle_timeout = new GenericData.Fixed(ofpFlowModBaseSchema, itb);
+      ofpFlowModRecord.put("idle_timeout", idle_timeout);
+      
+      byte[] htb = {0,0};
+      GenericData.Fixed hard_timeout = new GenericData.Fixed(ofpFlowModBaseSchema, htb);
+      ofpFlowModRecord.put("hard_timeout", hard_timeout);
+      
+      byte[] prior = {0,0};
+      GenericData.Fixed priority = new GenericData.Fixed(ofpFlowModBaseSchema, prior);
+      ofpFlowModRecord.put("priority", priority);
+      
+      byte[] bid = {0,0,0,0};
+      GenericData.Fixed buffer_id = new GenericData.Fixed(ofpFlowModBaseSchema, bid);
+      ofpFlowModRecord.put("buffer_id", buffer_id);
+      
+      byte[] op = {0,0,0,0};
+      GenericData.Fixed out_port = new GenericData.Fixed(ofpFlowModBaseSchema, op);
+      ofpFlowModRecord.put("out_port", out_port);        
+      
+      byte[] og = {0,0,0,0};
+      GenericData.Fixed out_group = new GenericData.Fixed(ofpFlowModBaseSchema, og);
+      ofpFlowModRecord.put("out_group", out_group);
+              
+      ofpFlowModRecord.put("flags", new EnumSymbol(ofpFlowModFlagsSchema, "OFPFF_SEND_FLOW_REM"));
 
-        ByteBuffer hardTimeoutBuffer = ByteBuffer.allocate(2);
-        hardTimeoutBuffer.put((byte)0);
-        hardTimeoutBuffer.put((byte)0);
-        ofpFlowModRecord.put("hard_timeout", hardTimeoutBuffer);
-        
-        ByteBuffer priorityBuffer = ByteBuffer.allocate(2);
-        priorityBuffer.put((byte)0);
-        priorityBuffer.put((byte)0);
-        ofpFlowModRecord.put("priority", priorityBuffer);
-        
-        ByteBuffer bufferIdBuffer = ByteBuffer.allocate(4);
-        bufferIdBuffer.put((byte)0);
-        bufferIdBuffer.put((byte)0);
-        bufferIdBuffer.put((byte)0);
-        bufferIdBuffer.put((byte)0);
-        ofpFlowModRecord.put("buffer_id", bufferIdBuffer);
-        
-        ByteBuffer outPortBuffer = ByteBuffer.allocate(4);
-        outPortBuffer.put((byte)0);
-        outPortBuffer.put((byte)0);
-        outPortBuffer.put((byte)0);
-        outPortBuffer.put((byte)0);
-        ofpFlowModRecord.put("out_port", outPortBuffer);
-        
-        ByteBuffer outGroupBuffer = ByteBuffer.allocate(4);
-        outGroupBuffer.put((byte)0);
-        outGroupBuffer.put((byte)0);
-        outGroupBuffer.put((byte)0);
-        outGroupBuffer.put((byte)0);
-        ofpFlowModRecord.put("out_group", outGroupBuffer);
-        
-        ofpFlowModRecord.put("flags", new EnumSymbol(ofpFlowModFlagsSchema, "OFPFF_SEND_FLOW_REM"));
-        
-        ByteBuffer padBuffer = ByteBuffer.allocate(2);
-        padBuffer.put((byte)0);
-        padBuffer.put((byte)0);
-        ofpFlowModRecord.put("pad", padBuffer);
-        
-        ofpMatchRecord.put("type", new EnumSymbol(ofpMatchTypeSchema, "OFPMT_OXM"));
+      byte[] p = {0,0};
+      GenericData.Fixed pad = new GenericData.Fixed(ofpFlowModBaseSchema, p);
+      ofpFlowModRecord.put("pad", pad);
+
+      ofpMatchRecord.put("type", new EnumSymbol(ofpMatchTypeSchema, "OFPMT_OXM"));
         
         ByteBuffer matchLenBuffer = ByteBuffer.allocate(2);
         matchLenBuffer.put((byte)4);

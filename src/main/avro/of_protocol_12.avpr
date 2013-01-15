@@ -282,7 +282,7 @@
       {"name": "buffer_id", "type": "uint_32"},
       {"name": "out_port", "type": "uint_32"},
       {"name": "out_group", "type": "uint_32"},
-      {"name": "flags", "type": "ofp_flow_mod_flags"},
+      {"name": "flags", "type": "uint_16"},
       {"name": "pad", "type": "bytes"},
       {"name": "match", "type": "ofp_match"}
     ]
