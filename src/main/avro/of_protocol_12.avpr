@@ -153,15 +153,6 @@
     ]
    },
    
-   {"name": "ofp_match",
-    "type": "record",
-    "fields": [ 
-      {"name": "type", "type": "bytes"},
-      {"name": "length", "type": "ofp_config_flags"},
-      {"name": "oxm_fields", "type": "bytes"}
-    ]
-   },
-   
    {"name": "ofp_action_header",
     "type": "record",
     "fields": [
@@ -181,8 +172,6 @@
       {"name": "pad", "type": "pad_6"}
     ]
    },
-   
-   {"name": "ofp_actions_set", "type": "array", "items": "ofp_action_output"}
    
    {"name": "ofp_instruction_goto_table_header",
     "type": "record",
@@ -248,7 +237,7 @@
       {"name": "header", "type": "ofp_instruction_apply_actions_header"},
       {"name": "table_id", "type": "bytes"},
       {"name": "pad", "type": "pad_4"},
-      {"name": "actions", "type": "ofp_actions_set"}
+      {"name": "actions", "type": {"type": "array", "items": "ofp_action_output"}}
     ]
    },
    
@@ -270,15 +259,11 @@
     ]
    },
    
-   {"name": "ofp_instructions_set", 
-    "type": "array",
-    "items": "ofp_instruction_apply_actions"}
-   
    {"name": "ofp_match",
     "type": "record",
     "fields": [
-      {"name": "type", "type": "uint16_t"},
-      {"name": "length", "type": "uint16_t"},
+      {"name": "type", "type": "uint_16"},
+      {"name": "length", "type": "uint_16"},
       {"name": "oxm_fields", "type": "bytes"}
     ]
    },
@@ -307,7 +292,7 @@
     "type": "record",
     "fields": [
       {"name": "flow_mod", "type": "ofp_flow_mod_base"},
-      {"name": "instructions", "type": "ofp_instructions_set"}
+      {"name": "instructions", "type": {"type": "array", "items": "ofp_instruction_apply_actions"}}
     ]
    }
   ] 
