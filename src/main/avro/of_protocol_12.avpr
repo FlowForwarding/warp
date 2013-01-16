@@ -72,15 +72,12 @@
    },
    
    
-   
    {"name": "ofp_flow_mod_flags_enum",
     "type": "enum",
     "symbols": ["OFPFF_SEND_FLOW_REM",
                 "OFPFF_CHECK_OVERLAP",
                 "OFPFF_RESET_COUNTS"]
    },
-   
-   
    {"name": "ofp_flow_mod_flags",
     "type": "record",
     "fields": [
@@ -88,6 +85,21 @@
       {"name": "flag", "type": "ofp_flow_mod_flags_enum"}
     ]
    },
+   
+   
+   {"name": "ofp_match_type_enum",
+    "type": "enum",
+    "symbols": ["OFPMT_STANDARD",
+                "OFPMT_OXM"]
+   },
+   {"name": "ofp_match_type",
+    "type": "record",
+    "fields": [
+      {"name": "pad", "type": "uint_8"},
+      {"name": "type", "type": "ofp_match_type_enum"}
+    ]
+   },
+  
    
    {"name": "ofp_flow_mod_command",
     "type": "enum",
@@ -278,12 +290,26 @@
     ]
    },
    
+   {"name": "ofp_instruction",
+    "type": "record",
+    "fields": [
+      {"name": "instruction", "type": ["ofp_instruction_goto_table", "ofp_instruction_write_metadata", "ofp_instruction_write_actions", "ofp_instruction_apply_actions", "ofp_instruction_clear_actions"]}
+    ]
+   },  
+   
+   {"name": "ofp_instruction_set",
+    "type": "record",
+    "fields": [ 
+      {"name": "instruction_set", "type": {"type": "array", "items": "ofp_instruction"}}
+    ]
+   },
+   
    {"name": "ofp_match",
     "type": "record",
     "fields": [
       {"name": "type", "type": "uint_16"},
       {"name": "length", "type": "uint_16"},
-      {"name": "oxm_fields", "type": "bytes"}
+      {"name": "oxm_fields", "type": "uint_32"}
     ]
    },
    
@@ -301,7 +327,7 @@
       {"name": "buffer_id", "type": "uint_32"},
       {"name": "out_port", "type": "uint_32"},
       {"name": "out_group", "type": "uint_32"},
-      {"name": "flags", "type": "uint_16"},
+      {"name": "flags", "type": "ofp_flow_mod_flags"},
       {"name": "pad", "type": "bytes"},
       {"name": "match", "type": "ofp_match"}
     ]
@@ -311,7 +337,7 @@
     "type": "record",
     "fields": [
       {"name": "flow_mod", "type": "ofp_flow_mod_base"},
-      {"name": "instructions", "type": {"type": "array", "items": "ofp_instruction_apply_actions"}}
+      {"name": "instructions", "type": "ofp_instruction_set"}
     ]
    }
   ] 

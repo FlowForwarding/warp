@@ -205,6 +205,7 @@ public class Protocol {
 		GenericRecord ofpFlowModBaseRecord = new GenericData.Record(ofpFlowModBaseSchema);
 		GenericRecord ofpMatchRecord = new GenericData.Record(ofpMatchSchema);
 		GenericRecord ofpFlowModFlagsRecord = new GenericData.Record(ofpFlowModFlagsSchema);
+		GenericRecord ofpMatchTypeRecord = new GenericData.Record(ofpMatchTypeSchema);
 		
       byte[] ver = {3};    
       GenericData.Fixed version = new GenericData.Fixed(ofpHeaderSchema, ver); 
@@ -271,28 +272,31 @@ public class Protocol {
       GenericData.Fixed pad = new GenericData.Fixed(ofpFlowModBaseSchema, p);
       ofpFlowModBaseRecord.put("pad", pad);
 
-      ofpMatchRecord.put("type", new EnumSymbol(ofpMatchTypeSchema, "OFPMT_OXM"));
+      
+      byte[] mtpad = {0};
+      GenericData.Fixed match_type_pad = new GenericData.Fixed(ofpFlowModFlagsSchema, mtpad);
+      ofpMatchTypeRecord.put("pad", match_type_pad);
+      ofpMatchTypeRecord.put("type", new EnumSymbol(ofpMatchTypeSchema, "OFPMT_OXM"));
+      ofpMatchRecord.put("type", ofpMatchTypeRecord);
         
-      ByteBuffer matchLenBuffer = ByteBuffer.allocate(2);
-      matchLenBuffer.put((byte)4);
-      matchLenBuffer.put((byte)0);
-      ofpMatchRecord.put("length", matchLenBuffer);
+      byte[] ml = {0,4};
+      GenericData.Fixed match_length = new GenericData.Fixed(ofpMatchTypeSchema, ml);
+      ofpMatchRecord.put("length", match_length);
         
-      ByteBuffer oxmBuffer = ByteBuffer.allocate(4);
-      oxmBuffer.put((byte)0);
-      oxmBuffer.put((byte)0);
-      oxmBuffer.put((byte)0);
-      oxmBuffer.put((byte)0);
-      ofpMatchRecord.put("oxm_fields", oxmBuffer);
+      byte[] oxm = {0,0,0,0};
+      GenericData.Fixed oxm_fields = new GenericData.Fixed(ofpMatchTypeSchema, oxm);
+      ofpMatchRecord.put("oxm_fields", oxm_fields);
         
       ofpFlowModBaseRecord.put("match", ofpMatchRecord);
+      
+      ofpFlowModRecord.put("flow_mod", ofpFlowModBaseRecord);
 	    
       DatumWriter<GenericRecord> writer = new GenericDatumWriter<GenericRecord>(ofpFlowModSchema);
 	   Encoder encoder = EncoderFactory.get().binaryNonEncoder(out, null);
 	    
 		try {
 			writer.write(ofpFlowModRecord, encoder);
-		    encoder.flush();
+		   encoder.flush();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
