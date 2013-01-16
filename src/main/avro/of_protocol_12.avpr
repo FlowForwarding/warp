@@ -1,6 +1,15 @@
 { "namespace" : "of12",
   "protocol": "ofp12",
   "types": [
+   {"name": "uint_8", "type": "fixed", "size": 1},
+   {"name": "uint_16", "type": "fixed", "size": 2},
+   {"name": "uint_32", "type": "fixed", "size": 4},
+   {"name": "uint_64", "type": "fixed", "size": 8},
+   {"name": "pad_6", "type": "fixed", "size": 6},
+   {"name": "pad_4", "type": "fixed", "size": 4},
+   {"name": "pad_3", "type": "fixed", "size": 3},
+   {"name": "pad_2", "type": "fixed", "size": 2},
+  
    {"name": "ofp_type",
     "type": "enum",
     "symbols" : ["OFPT_HELLO", 
@@ -46,7 +55,7 @@
                 "OFPC_PORT_BLOCKED"]
    },
    
-   {"name": "ofp_config_flags",
+   {"name": "ofp_config_flags_enum",
     "type": "enum",
     "symbols": ["OFPC_FRAG_NORMAL",
                 "OFPC_FRAG_DROP",
@@ -54,11 +63,30 @@
                 "OFPC_FRAG_MASK"]
    },
    
-   {"name": "ofp_flow_mod_flags",
+   {"name": "ofp_config_flags",
+    "type": "record",
+    "fields": [
+      {"name": "pad", "type": "uint_8"},
+      {"name": "flag", "type": "ofp_config_flags_enum"}
+    ]
+   },
+   
+   
+   
+   {"name": "ofp_flow_mod_flags_enum",
     "type": "enum",
     "symbols": ["OFPFF_SEND_FLOW_REM",
                 "OFPFF_CHECK_OVERLAP",
                 "OFPFF_RESET_COUNTS"]
+   },
+   
+   
+   {"name": "ofp_flow_mod_flags",
+    "type": "record",
+    "fields": [
+      {"name": "pad", "type": "uint_8"},
+      {"name": "flag", "type": "ofp_flow_mod_flags_enum"}
+    ]
    },
    
    {"name": "ofp_flow_mod_command",
@@ -112,15 +140,6 @@
                 "OFPIT_EXPERIMENTER"]
    },
 
-   {"name": "uint_8", "type": "fixed", "size": 1},
-   {"name": "uint_16", "type": "fixed", "size": 2},
-   {"name": "uint_32", "type": "fixed", "size": 4},
-   {"name": "uint_64", "type": "fixed", "size": 8},
-   {"name": "pad_6", "type": "fixed", "size": 6},
-   {"name": "pad_4", "type": "fixed", "size": 4},
-   {"name": "pad_3", "type": "fixed", "size": 3},
-   {"name": "pad_2", "type": "fixed", "size": 2},
-   
    {"name": "ofp_header",
     "type": "record",
     "fields": [ 
