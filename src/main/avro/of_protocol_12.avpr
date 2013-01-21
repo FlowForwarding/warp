@@ -249,7 +249,7 @@
     "fields": [
       {"name": "header", "type": "ofp_instruction_goto_table_header"},
       {"name": "table_id", "type": "bytes"},
-      {"name": "pad", "type": "bytes"}
+      {"name": "pad", "type": "pad_3"}
     ]
    },
    
@@ -258,7 +258,7 @@
     "fields": [
       {"name": "header", "type": "ofp_instruction_write_metadata_header"},
       {"name": "table_id", "type": "bytes"},
-      {"name": "pad", "type": "bytes"}
+      {"name": "pad", "type": "pad_4"}
     ]
    },
 
@@ -277,7 +277,7 @@
     "fields": [
       {"name": "header", "type": "ofp_instruction_write_actions_header"},
       {"name": "table_id", "type": "bytes"},
-      {"name": "pad", "type": "bytes"}
+      {"name": "pad", "type": "pad_4"}
     ]
    },
    
@@ -286,7 +286,7 @@
     "fields": [
       {"name": "header", "type": "ofp_instruction_clear_actions_header"},
       {"name": "table_id", "type": "bytes"},
-      {"name": "pad", "type": "bytes"}
+      {"name": "pad", "type": "pad_4"}
     ]
    },
    
