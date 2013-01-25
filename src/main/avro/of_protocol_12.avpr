@@ -107,8 +107,7 @@
                 "OFPFC_MODIFY",
                 "OFPFC_MODIFY_STRICT",
                 "OFPFC_DELETE",
-                "OFPFC_DELETE_STRICT",
-                "OFPC_FRAG_MASK"]
+                "OFPFC_DELETE_STRICT"]
    },
    
    {"name": "ofp_instruction_type",
@@ -188,18 +187,18 @@
     "type": "record",
     "fields": [
       {"name": "type", "type": "ofp_action_type"},
-      {"name": "len", "type": "bytes"},
-      {"name": "pad", "type": "bytes"}
+      {"name": "len", "type": "uint_16"},
+      {"name": "pad", "type": "pad_4"}
     ]
    },
    
    {"name": "ofp_action_output",
     "type": "record",
     "fields": [
-      {"name": "type", "type": "ofp_action_type", "default": "OFPAT_OUTPUT"},
-      {"name": "len", "type": "bytes"},
-      {"name": "port", "type": "bytes"},
-      {"name": "max_len", "type": "bytes"},
+      {"name": "type", "type": "ofp_action_type"},
+      {"name": "len", "type": "uint_16"},
+      {"name": "port", "type": "uint_32"},
+      {"name": "max_len", "type": "uint_16"},
       {"name": "pad", "type": "pad_6"}
     ]
    },
