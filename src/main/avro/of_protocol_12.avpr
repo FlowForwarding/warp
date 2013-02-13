@@ -55,51 +55,30 @@
                 "OFPC_PORT_BLOCKED"]
    },
    
-   {"name": "ofp_config_flags_enum",
-    "type": "enum",
-    "symbols": ["OFPC_FRAG_NORMAL",
-                "OFPC_FRAG_DROP",
-                "OFPC_FRAG_REASM",
-                "OFPC_FRAG_MASK"]
-   },
-   
    {"name": "ofp_config_flags",
-    "type": "record",
-    "fields": [
-      {"name": "pad", "type": "uint_8"},
-      {"name": "flag", "type": "ofp_config_flags_enum"}
-    ]
-   },
-   
-   
-   {"name": "ofp_flow_mod_flags_enum",
     "type": "enum",
-    "symbols": ["OFPFF_SEND_FLOW_REM",
-                "OFPFF_CHECK_OVERLAP",
-                "OFPFF_RESET_COUNTS"]
+    "elements": "uint_16",
+    "list": [{"name": "OFPC_FRAG_NORMAL", "default": [0,0]},
+             {"name": "OFPC_FRAG_DROP", "default": [0,1]},
+             {"name": "OFPC_FRAG_REASM", "default": [0,2]},
+             {"name": "OFPC_FRAG_MASK", "default": [0,3]}]
    },
+
    {"name": "ofp_flow_mod_flags",
-    "type": "record",
-    "fields": [
-      {"name": "pad", "type": "uint_8"},
-      {"name": "flag", "type": "ofp_flow_mod_flags_enum"}
-    ]
-   },
-   
-   
-   {"name": "ofp_match_type_enum",
     "type": "enum",
-    "symbols": ["OFPMT_STANDARD",
-                "OFPMT_OXM"]
+    "elements": "uint_16",
+    "list": [{"name": "OFPFF_SEND_FLOW_REM", "default": [0,0]},
+             {"name": "OFPFF_CHECK_OVERLAP", "default": [0,1]},
+             {"name": "OFPFF_RESET_COUNTS", "default": [0,2]}]
    },
+
+   
    {"name": "ofp_match_type",
-    "type": "record",
-    "fields": [
-      {"name": "pad", "type": "uint_8"},
-      {"name": "type", "type": "ofp_match_type_enum"}
-    ]
+    "type": "enum",
+    "elements": "uint_16",
+    "list": [{"name": "OFPMT_STANDARD", "default": [0,0]},
+                {"name": "OFPMT_OXM", "default": [0,1]}]
    },
-  
    
    {"name": "ofp_flow_mod_command",
     "type": "enum",
@@ -112,49 +91,39 @@
    
    {"name": "ofp_instruction_type",
     "type": "enum",
-    "symbols": ["OFPIT_GOTO_TABLE",
-                "OFPIT_WRITE_METADATA",
-                "OFPIT_WRITE_ACTIONS",
-                "OFPIT_APPLY_ACTIONS",
-                "OFPIT_CLEAR_ACTIONS",
-                "OFPIT_EXPERIMENTER"]
+    "elements": "uint_16",
+    "list": [{"name": "OFPIT_GOTO_TABLE", "default": [0,1]},
+                {"name": "OFPIT_WRITE_METADATA", "default": [0,2]},
+                {"name": "OFPIT_WRITE_ACTIONS", "default": [0,3]},
+                {"name": "OFPIT_APPLY_ACTIONS", "default": [0,4]},
+                {"name": "OFPIT_CLEAR_ACTIONS", "default": [0,5]},
+                {"name": "OFPIT_EXPERIMENTER", "default": [255,255]}]
    },
    
    {"name": "ofp_action_type",
     "type": "enum",
-    "symbols": ["OFPAT_OUTPUT",
-                "OFPAT_TAP_01",
-                "OFPAT_TAP_02",
-                "OFPAT_TAP_03",
-                "OFPAT_TAP_04",
-                "OFPAT_TAP_05",
-                "OFPAT_TAP_06",
-                "OFPAT_TAP_07",
-                "OFPAT_TAP_08",
-                "OFPAT_TAP_09",
-                "OFPAT_TAP_10",
-                "OFPAT_COPY_TTL_OUT",
-                "OFPAT_COPY_TTL_IN",
-                "OFPAT_TAP_13",
-                "OFPAT_TAP_14",
-                "OFPAT_SET_MPLS_TTL",
-                "OFPAT_DEC_MPLS_TTL",
-                "OFPAT_PUSH_VLAN",
-                "OFPAT_POP_VLAN",
-                "OFPAT_PUSH_MPLS",
-                "OFPAT_POP_MPLS",
-                "OFPAT_SET_QUEUE",
-                "OFPAT_GROUP",
-                "OFPAT_SET_NW_TTL",                
-                "OFPAT_DEC_NW_TTL",                
-                "OFPAT_SET_FIELD",                                
-                "OFPIT_EXPERIMENTER"]
+    "elements": "uint_16",
+    "list": [{"name": "OFPAT_OUTPUT", "default": [0,0]},
+             {"name": "OFPAT_COPY_TTL_OUT", "default": [0,11]},
+             {"name": "OFPAT_COPY_TTL_IN", "default": [0,12]},
+             {"name": "OFPAT_SET_MPLS_TTL", "default": [0,15]},
+             {"name": "OFPAT_DEC_MPLS_TTL", "default": [0,16]},
+             {"name": "OFPAT_PUSH_VLAN", "default": [0,17]},
+             {"name": "OFPAT_POP_VLAN", "default": [0,18]},
+             {"name": "OFPAT_PUSH_MPLS", "default": [0,19]},
+             {"name": "OFPAT_POP_MPLS", "default": [0,20]},
+             {"name": "OFPAT_SET_QUEUE", "default": [0,21]},
+             {"name": "OFPAT_GROUP", "default": [0,22]},
+             {"name": "OFPAT_SET_NW_TTL", "default": [0,23]},
+             {"name": "OFPAT_DEC_NW_TTL", "default": [0,24]},
+             {"name": "OFPAT_SET_FIELD", "default": [0,25]},
+             {"name": "OFPIT_EXPERIMENTER", "default": [255,255]}]
    },
 
    {"name": "ofp_header",
     "type": "record",
     "fields": [ 
-      {"name": "version", "type": "uint_8"},
+      {"name": "version", "type": "uint_8", "default": [3]},
       {"name": "type", "type": "ofp_type"},
       {"name": "length", "type": "uint_16"},
       {"name": "xid", "type": "uint_32"}
