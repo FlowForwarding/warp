@@ -326,23 +326,7 @@
      {"name": "OFPXMT_OFB_MPLS_TC", "default": 35}
     ]
    },
-   
-
- = 23, /* ARP target IPv4 address. */
- = 24, /* ARP source hardware address. */
- = 25, /* ARP target hardware address. */
- = 26, /* IPv6 source address. */
- = 27, /* IPv6 destination address. */
- = 28, /* IPv6 Flow Label */
- = 29, /* ICMPv6 type. */
- = 30, /* ICMPv6 code. */
- = 31, /* Target address for ND. */
- = 32, /* Source link-layer for ND. */
- = 33, /* Target link-layer for ND. */
- = 34, /* MPLS label. */
- = 35, /* MPLS TC. */
   
-   
    {"name": "ofp_match",
     "type": "record",
     "fields": [
