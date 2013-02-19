@@ -9,39 +9,43 @@
    {"name": "pad_4", "type": "fixed", "size": 4},
    {"name": "pad_3", "type": "fixed", "size": 3},
    {"name": "pad_2", "type": "fixed", "size": 2},
+   {"name": "pad_1", "type": "fixed", "size": 1},
   
    {"name": "ofp_type",
     "type": "enum",
-    "symbols" : ["OFPT_HELLO", 
-                 "OFPT_ERROR", 
-                 "OFPT_ECHO_REQUEST", 
-                 "OFPT_ECHO_REPLY", 
-                 "OFPT_EXPERIMENTER", 
-                 "OFPT_FEATURES_REQUEST", 
-                 "OFPT_FEATURES_REPLY", 
-                 "OFPT_GET_CONFIG_REQUEST", 
-                 "OFPT_GET_CONFIG_REPLY", 
-                 "OFPT_SET_CONFIG", 
-                 "OFPT_PACKET_IN", 
-                 "OFPT_FLOW_REMOVED", 
-                 "OFPT_PORT_STATUS", 
-                 "OFPT_PACKET_OUT", 
-                 "OFPT_FLOW_MOD", 
-                 "OFPT_GROUP_MOD", 
-                 "OFPT_PORT_MOD", 
-                 "OFPT_TABLE_MOD",
-                 "OFPT_MULTIPART_REQUEST", 
-                 "OFPT_MULTIPART_REPLY", 
-                 "OFPT_BARRIER_REQUEST", 
-                 "OFPT_BARRIER_REPLY", 
-                 "OFPT_QUEUE_GET_CONFIG_REQUEST", 
-                 "OFPT_QUEUE_GET_CONFIG_REPLY", 
-                 "OFPT_ROLE_REQUEST", 
-                 "OFPT_GET_ASYNC_REQUEST", 
-                 "OFPT_ROLE_REPLY", 
-                 "OFPT_GET_ASYNC_REPLY", 
-                 "OFPT_SET_ASYNC", 
-                 "OFPT_METER_MOD"]
+    "items": "uint_8",
+    "list": [
+     {"name": "OFPT_HELLO", "value": 1},
+     {"name": "OFPT_ERROR",  "value": 2},
+     {"name": "OFPT_ECHO_REQUEST", "value": 3},
+     {"name": "OFPT_ECHO_REPLY", "value": 4},
+     {"name": "OFPT_EXPERIMENTER", "value": 5},
+     {"name": "OFPT_FEATURES_REQUEST", "value": 6},
+     {"name": "OFPT_FEATURES_REPLY", "value": 7},
+     {"name": "OFPT_GET_CONFIG_REQUEST", "value": 8},
+     {"name": "OFPT_GET_CONFIG_REPLY", "value": 9},
+     {"name": "OFPT_SET_CONFIG", "value": 10},
+     {"name": "OFPT_PACKET_IN", "value": 11},
+     {"name": "OFPT_FLOW_REMOVED", "value": 12},
+     {"name": "OFPT_PORT_STATUS", "value": 13},
+     {"name": "OFPT_PACKET_OUT", "value": 14},
+     {"name": "OFPT_FLOW_MOD", "value": 15},
+     {"name": "OFPT_GROUP_MOD", "value": 16},
+     {"name": "OFPT_PORT_MOD", "value": 17},
+     {"name": "OFPT_TABLE_MOD", "value": 18},
+     {"name": "OFPT_MULTIPART_REQUEST", "value": 19},
+     {"name": "OFPT_MULTIPART_REPLY", "value": 20},
+     {"name": "OFPT_BARRIER_REQUEST", "value": 21},
+     {"name": "OFPT_BARRIER_REPLY", "value": 22},
+     {"name": "OFPT_QUEUE_GET_CONFIG_REQUEST", "value": 23},
+     {"name": "OFPT_QUEUE_GET_CONFIG_REPLY", "value": 24},
+     {"name": "OFPT_ROLE_REQUEST", "value": 25},
+     {"name": "OFPT_GET_ASYNC_REQUEST", "value": 26},
+     {"name": "OFPT_ROLE_REPLY", "value": 27},
+     {"name": "OFPT_GET_ASYNC_REPLY", "value": 28},
+     {"name": "OFPT_SET_ASYNC", "value": 29},
+     {"name": "OFPT_METER_MOD", "value": 30}      
+    ]
    },
    
    {"name": "ofp_capabilities",
@@ -129,6 +133,16 @@
       {"name": "xid", "type": "uint_32"}
     ]
    },
+
+   {"name": "ofp_header",
+    "type": "record",
+    "fields": [ 
+      {"name": "version", "type": "uint_8", "default": [3]},
+      {"name": "type", "type": "ofp_type", ""},
+      {"name": "length", "type": "uint_16"},
+      {"name": "xid", "type": "uint_32"}
+    ]
+   },
    
    {"name": "ofp_switch_features",
     "type": "record",
@@ -160,7 +174,7 @@
       {"name": "pad", "type": "pad_4"}
     ]
    },
-   
+
    {"name": "ofp_action_output",
     "type": "record",
     "fields": [
@@ -280,8 +294,7 @@
       {"name": "OFPXMC_NXM_0", "set_bits": []},
       {"name": "OFPXMC_NXM_1", "set_bits": [0]},
       {"name": "OFPXMC_OPENFLOW_BASIC", "set_bits": [15]},
-      {"name": "OFPXMC_EXPERIMENTER", "set_bits
-": [-1]}
+      {"name": "OFPXMC_EXPERIMENTER", "set_bits": [-1]}
      ]
    },
    
@@ -339,8 +352,8 @@
    
    {"name": "oxm_length",
     "type": "enum",
-     "items": "bitmap",
-     "list": [
+    "items": "bitmap",
+    "list": [
       {"name": "OXM_LENGTH_IN_PORT", "value": 4},
       {"name": "OXM_LENGTH_ETH_DST", "value": 2},
       {"name": "OXM_LENGTH_ETH_SRC", "value": 2},
@@ -410,6 +423,65 @@
       {"name": "flow_mod", "type": "ofp_flow_mod_base"},
       {"name": "instructions", "type": "ofp_instruction_set"}
     ]
-   }
+   },
+   
+   
+   {"name": "ofp_group_mod_command",
+    "type": "enum",
+    "items": "uint_16",
+    "list": [
+      {"name": "OFPGC_ADD", "value": 0},
+      {"name": "OFPGC_MODIFY", "value": 1},
+      {"name": "OFPGC_DELETE", "value": 2}
+    ]
+   },
+
+   {"name": "ofp_group_type",
+    "type": "enum",
+    "items": "uint_8",
+    "list": [
+      {"name": "OFPGT_ALL", "value": 0},
+      {"name": "OFPGT_SELECT", "value": 1},
+      {"name": "OFPGT_INDIRECT", "value": 2},
+      {"name": "OFPGT_FF", "value": 3}
+    ]
+   },
+
+   {"name": "ofp_group_mod",
+    "type": "record",
+    "fields": [
+      {"name": "header", "type": "ofp_header"},
+      {"name": "command", "type": "ofp_group_mod_command"},
+      {"name": "type", "type": "ofp_group_type"},
+      {"name": "pad", "type": "pad_1"}
+    ]
+   },
+
+   {"name": "ofp_bucket",
+    "type": "record",
+    "fields": [
+      {"name": "len", "type": "uint_16"},
+      {"name": "weight", "type": "uint_16"},
+      {"name": "watch_port", "type": "uint_32"},
+      {"name": "pad", "type": "pad_4"},
+      {"name": "", "type": ""}
+    ]
+   },
+
+   {"name": "ofp_port_mod",
+    "type": "record",
+    "fields": [
+      {"name": "header", "type":"ofp_header"},
+      {}
+    ]
+   },
+
+   {"name": "ofp_port_mod",
+    "type": "record",
+    "fields": [
+      {"name": "header", "type":"ofp_header"},
+    ]
+   },
+  
   ] 
 }
