@@ -48,16 +48,21 @@
     ]
    },
    
+
+
    {"name": "ofp_capabilities",
     "type": "enum",
-    "symbols": ["OFPC_FLOW_STATS",
-                "OFPC_TABLE_STATS",
-                "OFPC_PORT_STATS",
-                "OFPC_GROUP_STATS",
-                "OFPC_IP_REASM",
-                "OFPC_QUEUE_STATS",
-                "OFPC_PORT_BLOCKED"]
-   },
+    "items": "bitmap_32",
+    "list": [
+      {"name": "OFPC_FLOW_STATS", "default": {"shift": [1, 0]}},
+      {"name": "OFPC_TABLE_STATS", "default": {"shift": [1, 1]}},
+      {"name": "OFPC_PORT_STATS", "default": {"shift": [1, 2]}},
+      {"name": "OFPC_GROUP_STATS", "default": {"shift": [1, 3]}},
+      {"name": "OFPC_IP_REASM", "default": {"shift": [1, 5]}},
+      {"name": "OFPC_QUEUE_STATS", "default": {"shift": [1, 6]}},
+      {"name": "OFPC_PORT_BLOCKED", "default": {"shift": [1, 8]}}
+    ]
+   }
    
    {"name": "ofp_config_flags",
     "type": "enum",
@@ -146,8 +151,23 @@
 
    {"name": "ofp_port_config",
     "type": "enum",
-    "items": "uint_32",
-    "list": [{"name": "OFPAT_OUTPUT", "default": [0,0]},
+    "items": "bitmap_32",
+    "list": [
+      {"name": "OFPPC_PORT_DOWN", "default": {"shift": [1, 0]}},
+      {"name": "OFPPC_NO_RECV", "default": {"shift": [1, 2]}},
+      {"name": "OFPPC_NO_FWD", "default": {"shift": [1, 5]}},
+      {"name": "OFPPC_NO_PACKET_IN", "default": {"shift": [1, 6]}}
+    ]
+   },
+
+   {"name": "ofp_port_state",
+    "type": "enum",
+    "items": "bitmap_32",
+    "list": [
+      {"name": "OFPPS_LINK_DOWN", "default": {"shift": [1, 0]}},
+      {"name": "OFPPS_BLOCKED", "default": {"shift": [1, 1]}},
+      {"name": "OFPPS_LICE", "default": {"shift": [1, 2]}}
+    ]
    },
 
    {"name": "ofp_port",
