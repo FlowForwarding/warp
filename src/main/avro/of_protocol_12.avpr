@@ -15,36 +15,36 @@
     "type": "enum",
     "items": "uint_8",
     "list": [
-     {"name": "OFPT_HELLO", "default": 1},
-     {"name": "OFPT_ERROR",  "default": 2},
-     {"name": "OFPT_ECHO_REQUEST", "default": 3},
-     {"name": "OFPT_ECHO_REPLY", "default": 4},
-     {"name": "OFPT_EXPERIMENTER", "default": 5},
-     {"name": "OFPT_FEATURES_REQUEST", "default": 6},
-     {"name": "OFPT_FEATURES_REPLY", "default": 7},
-     {"name": "OFPT_GET_CONFIG_REQUEST", "default": 8},
-     {"name": "OFPT_GET_CONFIG_REPLY", "default": 9},
-     {"name": "OFPT_SET_CONFIG", "default": 10},
-     {"name": "OFPT_PACKET_IN", "default": 11},
-     {"name": "OFPT_FLOW_REMOVED", "default": 12},
-     {"name": "OFPT_PORT_STATUS", "default": 13},
-     {"name": "OFPT_PACKET_OUT", "default": 14},
-     {"name": "OFPT_FLOW_MOD", "default": 15},
-     {"name": "OFPT_GROUP_MOD", "default": 16},
-     {"name": "OFPT_PORT_MOD", "default": 17},
-     {"name": "OFPT_TABLE_MOD", "default": 18},
-     {"name": "OFPT_MULTIPART_REQUEST", "default": 19},
-     {"name": "OFPT_MULTIPART_REPLY", "default": 20},
-     {"name": "OFPT_BARRIER_REQUEST", "default": 21},
-     {"name": "OFPT_BARRIER_REPLY", "default": 22},
-     {"name": "OFPT_QUEUE_GET_CONFIG_REQUEST", "default": 23},
-     {"name": "OFPT_QUEUE_GET_CONFIG_REPLY", "default": 24},
-     {"name": "OFPT_ROLE_REQUEST", "default": 25},
-     {"name": "OFPT_GET_ASYNC_REQUEST", "default": 26},
-     {"name": "OFPT_ROLE_REPLY", "default": 27},
-     {"name": "OFPT_GET_ASYNC_REPLY", "default": 28},
-     {"name": "OFPT_SET_ASYNC", "default": 29},
-     {"name": "OFPT_METER_MOD", "default": 30}      
+     {"name": "OFPT_HELLO", "value": 1},
+     {"name": "OFPT_ERROR",  "value": 2},
+     {"name": "OFPT_ECHO_REQUEST", "value": 3},
+     {"name": "OFPT_ECHO_REPLY", "value": 4},
+     {"name": "OFPT_EXPERIMENTER", "value": 5},
+     {"name": "OFPT_FEATURES_REQUEST", "value": 6},
+     {"name": "OFPT_FEATURES_REPLY", "value": 7},
+     {"name": "OFPT_GET_CONFIG_REQUEST", "value": 8},
+     {"name": "OFPT_GET_CONFIG_REPLY", "value": 9},
+     {"name": "OFPT_SET_CONFIG", "value": 10},
+     {"name": "OFPT_PACKET_IN", "value": 11},
+     {"name": "OFPT_FLOW_REMOVED", "value": 12},
+     {"name": "OFPT_PORT_STATUS", "value": 13},
+     {"name": "OFPT_PACKET_OUT", "value": 14},
+     {"name": "OFPT_FLOW_MOD", "value": 15},
+     {"name": "OFPT_GROUP_MOD", "value": 16},
+     {"name": "OFPT_PORT_MOD", "value": 17},
+     {"name": "OFPT_TABLE_MOD", "value": 18},
+     {"name": "OFPT_MULTIPART_REQUEST", "value": 19},
+     {"name": "OFPT_MULTIPART_REPLY", "value": 20},
+     {"name": "OFPT_BARRIER_REQUEST", "value": 21},
+     {"name": "OFPT_BARRIER_REPLY", "value": 22},
+     {"name": "OFPT_QUEUE_GET_CONFIG_REQUEST", "value": 23},
+     {"name": "OFPT_QUEUE_GET_CONFIG_REPLY", "value": 24},
+     {"name": "OFPT_ROLE_REQUEST", "value": 25},
+     {"name": "OFPT_GET_ASYNC_REQUEST", "value": 26},
+     {"name": "OFPT_ROLE_REPLY", "value": 27},
+     {"name": "OFPT_GET_ASYNC_REPLY", "value": 28},
+     {"name": "OFPT_SET_ASYNC", "value": 29},
+     {"name": "OFPT_METER_MOD", "value": 30}      
     ]
    },
    
@@ -170,22 +170,163 @@
     ]
    },
 
+   {"name": "ofp_port_no",
+    "type": "enum",
+    "items": "uint_32",
+    "list": [
+      {"name": "OFPP_MAX", "default": [255,255,255,0]},
+      {"name": "OFPP_IN_PORT", "default": [255,255,255,248]},
+      {"name": "OFPP_TABLE", "default": [255,255,255,249]},
+      {"name": "OFPP_NORMAL", "default": [255,255,255,250]},
+      {"name": "OFPP_FLOOD", "default": [255,255,255,251]},
+      {"name": "OFPP_ALL", "default": [255,255,255,252]},
+      {"name": "OFPP_CONTROLLER", "default": [255,255,255,253]},
+      {"name": "OFPP_LOCAL", "default": [255,255,255,254]},
+      {"name": "OFPP_ANY", "default": [255,255,255,255]}
+    ]
+   },
+
+   {"name": "ofp_port_features",
+    "type": "enum",
+    "items": "uint_32",
+    "list": [
+      {"name": "OFPPF_10MB_HD", "default": {"shift": [1, 0]}},
+      {"name": "OFPPF_10MB_FD", "default": {"shift": [1, 1]}},
+      {"name": "OFPPF_100MB_HD", "default": {"shift": [1, 2]}},
+      {"name": "OFPPF_100MB_FD", "default": {"shift": [1, 3]}},
+      {"name": "OFPPF_1GB_HD", "default": {"shift": [1, 4]}},
+      {"name": "OFPPF_1GB_FD", "default": {"shift": [1, 5]}},
+      {"name": "OFPPF_10GB_FD", "default": {"shift": [1, 6]}},
+      {"name": "OFPPF_40GB_FD", "default": {"shift": [1, 7]}},
+      {"name": "OFPPF_100GB_FD", "default": {"shift": [1, 8]}},
+      {"name": "OFPPF_1TB_FD", "default": {"shift": [1, 9]}},
+      {"name": "OFPPF_OTHER", "default": {"shift": [1, 10]}},
+      {"name": "OFPPF_COPPER", "default": {"shift": [1, 11]}},
+      {"name": "OFPPF_FIBER", "default": {"shift": [1, 12]}},
+      {"name": "OFPPF_AUTONEG", "default": {"shift": [1, 13]}},
+      {"name": "OFPPF_PAUSE", "default": {"shift": [1, 14]}},
+      {"name": "OFPPF_PAUSE_ASYM", "default": {"shift": [1, 15]}}
+    ]
+   },   
+
    {"name": "ofp_port",
     "type": "record",
     "fields": [ 
-      {"name": "port_no", "type": "uint_32"},
+      {"name": "port_no", "type": "ofp_port_no"},
       {"name": "pad", "type": "pad_4"},
       {"name": "hw_addr", "type": {"type": "array", "items": "uint_8"}},
       {"name": "pad", "type": "pad_2"},
       {"name": "name", "type": {"type": "array", "items": "uint_8"}},
+      {"name": "config", "type": "ofp_port_config"},
+      {"name": "state", "type": "ofp_port_state"},
+      {"name": "curr", "type": "uint_32"},
+      {"name": "advertized", "type": "uint_32"},
+      {"name": "supported", "type": "uint_32"},
+      {"name": "peer", "type": "uint_32"},
+      {"name": "curr_speed", "type": "uint_32"},
+      {"name": "max_speed", "type": "uint_32"}
+    ]
+   },
 
-      {"name": "n_tables", "type": "uint_8"},
-      {"name": "pad", "type": "pad_3"},
-      {"name": "capabilities", "type": "uint_32"},
-      {"name": "reserved", "type": "uint_32"}
+   {"name": "ofp_queue_properties",
+    "type": "enum",
+    "items": "uint_16",
+    "list": [
+      {"name": "OFPQT_MIN_RATE", "default": [0,1]},
+      {"name": "OFPQT_MAX_RATE", "default": [0,2]},
+      {"name": "OFPQT_EXPERIMENTER", "default": [255,255]}
+    ]
+   },
+
+   {"name": "ofp_queue_prop_header",
+    "type": "record",
+    "fields": [
+      {"name": "property", "type": "ofp_queue_properties"},
+      {"name": "len", "type": "uint_16"},
+      {"name": "pad", "type": "pad_4"}
     ]
    },
    
+   {"name": "ofp_queue_prop_header_min_rate",
+    "type": "record",
+    "fields": [
+      {"name": "property", "type": "ofp_queue_properties", "default": "OFPQT_MIN_RATE"},
+      {"name": "len", "type": "uint_16"},
+      {"name": "pad", "type": "pad_4"}
+    ]
+   },
+
+   {"name": "ofp_queue_prop_header_max_rate",
+    "type": "record",
+    "fields": [
+      {"name": "property", "type": "ofp_queue_properties", "default": "OFPQT_MAX_RATE"},
+      {"name": "len", "type": "uint_16"},
+      {"name": "pad", "type": "pad_4"}
+    ]
+   },
+
+   {"name": "ofp_queue_prop_header_experimenter",
+    "type": "record",
+    "fields": [
+      {"name": "property", "type": "ofp_queue_properties", "default": "OFPQT_EXPERIMENTER"},
+      {"name": "len", "type": "uint_16"},
+      {"name": "pad", "type": "pad_4"}
+    ]
+   },
+
+   {"name": "ofp_queue_prop_min_rate",
+    "type": "record",
+    "fields": [
+      {"name": "prop_header", "type": "ofp_queue_prop_header", "default": "ofp_queue_prop_header_min_rate"},
+      {"name": "rate", "type": "uint_16"},
+      {"name": "pad", "type": "pad_6"}
+    ]
+   },
+
+   {"name": "ofp_queue_prop_max_rate",
+    "type": "record",
+    "fields": [
+      {"name": "prop_header", "type": "ofp_queue_prop_header", "default": "ofp_queue_prop_header_max_rate"},
+      {"name": "rate", "type": "uint_16"},
+      {"name": "pad", "type": "pad_6"}
+    ]
+   },
+
+   {"name": "ofp_queue_prop_experimenter",
+    "type": "record",
+    "fields": [
+      {"name": "prop_header", "type": "ofp_queue_prop_header", "default": "ofp_queue_prop_header_experimenter"},
+      {"name": "experimenter", "type": "uint_32"},
+      {"name": "pad", "type": "pad_4"},
+      {"name": }
+    ]
+   },
+
+   {"name": "ofp_queue_prop",
+    "type": "record",
+    "fields": [
+      {"name": "prop", "type": ["ofp_queue_prop_min_rate", "ofp_queue_prop_max_rate", "ofp_queue_prop_experimenter"]}
+    ]
+   },  
+   
+   {"name": "ofp_queue_prop_array",
+    "type": "record",
+    "fields": [ 
+      {"name": "instruction_set", "type": {"type": "array", "items": "ofp_instruction"}}
+    ]
+   },
+
+   {"name": "ofp_packet_queue",
+    "type": "record",
+    "fields": [
+      {"name": "queue_id", "type": "uint_32"},
+      {"name": "port", "type": "uint_32"},
+      {"name": "length", "type": "uint_16"},
+      {"name": "pad", "type": "pad_6"},
+      {"name": "properties", "type": "ofp_queue_prop_array"}
+    ]
+   },   
+
    {"name": "ofp_switch_features",
     "type": "record",
     "fields": [ 
@@ -344,42 +485,42 @@
     "type": "enum",
     "items": "bitmap",
     "list": [
-     {"name": "OFPXMT_OFB_IN_PORT", "default": 0},
-     {"name": "OFPXMT_OFB_IN_PHY_PORT", "default": 1},
-     {"name": "OFPXMT_OFB_METADATA", "default": 2},
-     {"name": "OFPXMT_OFB_ETH_DST", "default": 3},
-     {"name": "OFPXMT_OFB_ETH_SRC", "default": 4},
-     {"name": "OFPXMT_OFB_ETH_TYPE", "default": 5},
-     {"name": "OFPXMT_OFB_VLAN_VID", "default": 6},
-     {"name": "OFPXMT_OFB_VLAN_PCP", "default": 7},
-     {"name": "OFPXMT_OFB_IP_DSCP", "default": 8},
-     {"name": "OFPXMT_OFB_IP_ECN", "default": 9},
-     {"name": "OFPXMT_OFB_IP_PROTO", "default": 10},
-     {"name": "OFPXMT_OFB_IPV4_SRC", "default": 11},
-     {"name": "OFPXMT_OFB_IPV4_DST", "default": 12},
-     {"name": "OFPXMT_OFB_TCP_SRC", "default": 13},
-     {"name": "OFPXMT_OFB_TCP_DST", "default": 14},
-     {"name": "OFPXMT_OFB_UDP_SRC", "default": 15},
-     {"name": "OFPXMT_OFB_UDP_DST", "default": 16},
-     {"name": "OFPXMT_OFB_SCTP_SRC", "default": 17},
-     {"name": "OFPXMT_OFB_SCTP_DST", "default": 18},
-     {"name": "OFPXMT_OFB_ICMPV4_TYPE", "default": 19},
-     {"name": "OFPXMT_OFB_ICMPV4_CODE", "default": 20},
-     {"name": "OFPXMT_OFB_ARP_OP", "default": 21},
-     {"name": "OFPXMT_OFB_ARP_SPA", "default": 22},
-     {"name": "OFPXMT_OFB_ARP_TPA", "default": 23},
-     {"name": "OFPXMT_OFB_ARP_SHA", "default": 24},
-     {"name": "OFPXMT_OFB_ARP_THA", "default": 25},
-     {"name": "OFPXMT_OFB_IPV6_SRC", "default": 26},
-     {"name": "OFPXMT_OFB_IPV6_DST", "default": 27},
-     {"name": "OFPXMT_OFB_IPV6_FLABEL", "default": 28},
-     {"name": "OFPXMT_OFB_ICMPV6_TYPE", "default": 29},
-     {"name": "OFPXMT_OFB_ICMPV6_CODE", "default": 30},
-     {"name": "OFPXMT_OFB_IPV6_ND_TARGET", "default": 31},
-     {"name": "OFPXMT_OFB_IPV6_ND_SLL", "default": 32},
-     {"name": "OFPXMT_OFB_IPV6_ND_TLL", "default": 33},
-     {"name": "OFPXMT_OFB_MPLS_LABEL", "default": 34},
-     {"name": "OFPXMT_OFB_MPLS_TC", "default": 35}
+     {"name": "OFPXMT_OFB_IN_PORT", "value": 0},
+     {"name": "OFPXMT_OFB_IN_PHY_PORT", "value": 1},
+     {"name": "OFPXMT_OFB_METADATA", "value": 2},
+     {"name": "OFPXMT_OFB_ETH_DST", "value": 3},
+     {"name": "OFPXMT_OFB_ETH_SRC", "value": 4},
+     {"name": "OFPXMT_OFB_ETH_TYPE", "value": 5},
+     {"name": "OFPXMT_OFB_VLAN_VID", "value": 6},
+     {"name": "OFPXMT_OFB_VLAN_PCP", "value": 7},
+     {"name": "OFPXMT_OFB_IP_DSCP", "value": 8},
+     {"name": "OFPXMT_OFB_IP_ECN", "value": 9},
+     {"name": "OFPXMT_OFB_IP_PROTO", "value": 10},
+     {"name": "OFPXMT_OFB_IPV4_SRC", "value": 11},
+     {"name": "OFPXMT_OFB_IPV4_DST", "value": 12},
+     {"name": "OFPXMT_OFB_TCP_SRC", "value": 13},
+     {"name": "OFPXMT_OFB_TCP_DST", "value": 14},
+     {"name": "OFPXMT_OFB_UDP_SRC", "value": 15},
+     {"name": "OFPXMT_OFB_UDP_DST", "value": 16},
+     {"name": "OFPXMT_OFB_SCTP_SRC", "value": 17},
+     {"name": "OFPXMT_OFB_SCTP_DST", "value": 18},
+     {"name": "OFPXMT_OFB_ICMPV4_TYPE", "value": 19},
+     {"name": "OFPXMT_OFB_ICMPV4_CODE", "value": 20},
+     {"name": "OFPXMT_OFB_ARP_OP", "value": 21},
+     {"name": "OFPXMT_OFB_ARP_SPA", "value": 22},
+     {"name": "OFPXMT_OFB_ARP_TPA", "value": 23},
+     {"name": "OFPXMT_OFB_ARP_SHA", "value": 24},
+     {"name": "OFPXMT_OFB_ARP_THA", "value": 25},
+     {"name": "OFPXMT_OFB_IPV6_SRC", "value": 26},
+     {"name": "OFPXMT_OFB_IPV6_DST", "value": 27},
+     {"name": "OFPXMT_OFB_IPV6_FLABEL", "value": 28},
+     {"name": "OFPXMT_OFB_ICMPV6_TYPE", "value": 29},
+     {"name": "OFPXMT_OFB_ICMPV6_CODE", "value": 30},
+     {"name": "OFPXMT_OFB_IPV6_ND_TARGET", "value": 31},
+     {"name": "OFPXMT_OFB_IPV6_ND_SLL", "value": 32},
+     {"name": "OFPXMT_OFB_IPV6_ND_TLL", "value": 33},
+     {"name": "OFPXMT_OFB_MPLS_LABEL", "value": 34},
+     {"name": "OFPXMT_OFB_MPLS_TC", "value": 35}
     ]
    },
 
@@ -396,11 +537,11 @@
     "type": "enum",
     "items": "bitmap",
     "list": [
-      {"name": "OXM_LENGTH_IN_PORT", "default": 4},
-      {"name": "OXM_LENGTH_ETH_DST", "default": 2},
-      {"name": "OXM_LENGTH_ETH_SRC", "default": 2},
-      {"name": "OFPXMT_OFB_IPV4_SRC", "default": 4},
-      {"name": "OFPXMT_OFB_IPV4_DST", "default": 4},
+      {"name": "OXM_LENGTH_IN_PORT", "value": 4},
+      {"name": "OXM_LENGTH_ETH_DST", "value": 2},
+      {"name": "OXM_LENGTH_ETH_SRC", "value": 2},
+      {"name": "OFPXMT_OFB_IPV4_SRC", "value": 4},
+      {"name": "OFPXMT_OFB_IPV4_DST", "value": 4},
      ]
    }
 
@@ -477,9 +618,9 @@
     "type": "enum",
     "items": "uint_16",
     "list": [
-      {"name": "OFPGC_ADD", "default": 0},
-      {"name": "OFPGC_MODIFY", "default": 1},
-      {"name": "OFPGC_DELETE", "default": 2}
+      {"name": "OFPGC_ADD", "value": 0},
+      {"name": "OFPGC_MODIFY", "value": 1},
+      {"name": "OFPGC_DELETE", "value": 2}
     ]
    },
 
@@ -487,10 +628,10 @@
     "type": "enum",
     "items": "uint_8",
     "list": [
-      {"name": "OFPGT_ALL", "default": 0},
-      {"name": "OFPGT_SELECT", "default": 1},
-      {"name": "OFPGT_INDIRECT", "default": 2},
-      {"name": "OFPGT_FF", "default": 3}
+      {"name": "OFPGT_ALL", "value": 0},
+      {"name": "OFPGT_SELECT", "value": 1},
+      {"name": "OFPGT_INDIRECT", "value": 2},
+      {"name": "OFPGT_FF", "value": 3}
     ]
    },
 
