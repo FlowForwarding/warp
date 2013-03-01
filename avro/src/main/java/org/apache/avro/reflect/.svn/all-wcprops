@@ -1,0 +1,47 @@
+K 25
+svn:wc:ra_dav:version-url
+V 91
+/repos/asf/!svn/ver/1384163/avro/trunk/lang/java/avro/src/main/java/org/apache/avro/reflect
+END
+ReflectDatumReader.java
+K 25
+svn:wc:ra_dav:version-url
+V 115
+/repos/asf/!svn/ver/1383160/avro/trunk/lang/java/avro/src/main/java/org/apache/avro/reflect/ReflectDatumReader.java
+END
+Union.java
+K 25
+svn:wc:ra_dav:version-url
+V 102
+/repos/asf/!svn/ver/1049734/avro/trunk/lang/java/avro/src/main/java/org/apache/avro/reflect/Union.java
+END
+Stringable.java
+K 25
+svn:wc:ra_dav:version-url
+V 107
+/repos/asf/!svn/ver/1049734/avro/trunk/lang/java/avro/src/main/java/org/apache/avro/reflect/Stringable.java
+END
+ReflectDatumWriter.java
+K 25
+svn:wc:ra_dav:version-url
+V 115
+/repos/asf/!svn/ver/1213860/avro/trunk/lang/java/avro/src/main/java/org/apache/avro/reflect/ReflectDatumWriter.java
+END
+Nullable.java
+K 25
+svn:wc:ra_dav:version-url
+V 105
+/repos/asf/!svn/ver/1049734/avro/trunk/lang/java/avro/src/main/java/org/apache/avro/reflect/Nullable.java
+END
+ReflectData.java
+K 25
+svn:wc:ra_dav:version-url
+V 108
+/repos/asf/!svn/ver/1384163/avro/trunk/lang/java/avro/src/main/java/org/apache/avro/reflect/ReflectData.java
+END
+package.html
+K 25
+svn:wc:ra_dav:version-url
+V 104
+/repos/asf/!svn/ver/1360859/avro/trunk/lang/java/avro/src/main/java/org/apache/avro/reflect/package.html
+END

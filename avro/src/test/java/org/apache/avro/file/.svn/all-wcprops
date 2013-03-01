@@ -1,0 +1,23 @@
+K 25
+svn:wc:ra_dav:version-url
+V 88
+/repos/asf/!svn/ver/1435347/avro/trunk/lang/java/avro/src/test/java/org/apache/avro/file
+END
+TestLengthLimitedInputStream.java
+K 25
+svn:wc:ra_dav:version-url
+V 122
+/repos/asf/!svn/ver/1049734/avro/trunk/lang/java/avro/src/test/java/org/apache/avro/file/TestLengthLimitedInputStream.java
+END
+TestCustomCodec.java
+K 25
+svn:wc:ra_dav:version-url
+V 109
+/repos/asf/!svn/ver/1435347/avro/trunk/lang/java/avro/src/test/java/org/apache/avro/file/TestCustomCodec.java
+END
+TestSeekableByteArrayInput.java
+K 25
+svn:wc:ra_dav:version-url
+V 120
+/repos/asf/!svn/ver/1173410/avro/trunk/lang/java/avro/src/test/java/org/apache/avro/file/TestSeekableByteArrayInput.java
+END

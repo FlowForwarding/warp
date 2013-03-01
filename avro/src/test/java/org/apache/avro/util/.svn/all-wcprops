@@ -1,0 +1,23 @@
+K 25
+svn:wc:ra_dav:version-url
+V 88
+/repos/asf/!svn/ver/1298117/avro/trunk/lang/java/avro/src/test/java/org/apache/avro/util
+END
+CaseFinder.java
+K 25
+svn:wc:ra_dav:version-url
+V 104
+/repos/asf/!svn/ver/1298117/avro/trunk/lang/java/avro/src/test/java/org/apache/avro/util/CaseFinder.java
+END
+TestCaseFinder.java
+K 25
+svn:wc:ra_dav:version-url
+V 108
+/repos/asf/!svn/ver/1298117/avro/trunk/lang/java/avro/src/test/java/org/apache/avro/util/TestCaseFinder.java
+END
+TestUtf8.java
+K 25
+svn:wc:ra_dav:version-url
+V 102
+/repos/asf/!svn/ver/1296486/avro/trunk/lang/java/avro/src/test/java/org/apache/avro/util/TestUtf8.java
+END

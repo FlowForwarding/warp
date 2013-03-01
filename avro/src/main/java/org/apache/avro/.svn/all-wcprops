@@ -1,0 +1,65 @@
+K 25
+svn:wc:ra_dav:version-url
+V 83
+/repos/asf/!svn/ver/1438219/avro/trunk/lang/java/avro/src/main/java/org/apache/avro
+END
+Schema.java
+K 25
+svn:wc:ra_dav:version-url
+V 95
+/repos/asf/!svn/ver/1404687/avro/trunk/lang/java/avro/src/main/java/org/apache/avro/Schema.java
+END
+Protocol.java
+K 25
+svn:wc:ra_dav:version-url
+V 97
+/repos/asf/!svn/ver/1404687/avro/trunk/lang/java/avro/src/main/java/org/apache/avro/Protocol.java
+END
+AvroRemoteException.java
+K 25
+svn:wc:ra_dav:version-url
+V 108
+/repos/asf/!svn/ver/1162253/avro/trunk/lang/java/avro/src/main/java/org/apache/avro/AvroRemoteException.java
+END
+JsonProperties.java
+K 25
+svn:wc:ra_dav:version-url
+V 103
+/repos/asf/!svn/ver/1404687/avro/trunk/lang/java/avro/src/main/java/org/apache/avro/JsonProperties.java
+END
+SchemaNormalization.java
+K 25
+svn:wc:ra_dav:version-url
+V 108
+/repos/asf/!svn/ver/1325207/avro/trunk/lang/java/avro/src/main/java/org/apache/avro/SchemaNormalization.java
+END
+AvroTypeException.java
+K 25
+svn:wc:ra_dav:version-url
+V 106
+/repos/asf/!svn/ver/1049734/avro/trunk/lang/java/avro/src/main/java/org/apache/avro/AvroTypeException.java
+END
+SchemaParseException.java
+K 25
+svn:wc:ra_dav:version-url
+V 109
+/repos/asf/!svn/ver/1049734/avro/trunk/lang/java/avro/src/main/java/org/apache/avro/SchemaParseException.java
+END
+AvroRuntimeException.java
+K 25
+svn:wc:ra_dav:version-url
+V 109
+/repos/asf/!svn/ver/1049734/avro/trunk/lang/java/avro/src/main/java/org/apache/avro/AvroRuntimeException.java
+END
+UnresolvedUnionException.java
+K 25
+svn:wc:ra_dav:version-url
+V 113
+/repos/asf/!svn/ver/1056499/avro/trunk/lang/java/avro/src/main/java/org/apache/avro/UnresolvedUnionException.java
+END
+package.html
+K 25
+svn:wc:ra_dav:version-url
+V 96
+/repos/asf/!svn/ver/1074751/avro/trunk/lang/java/avro/src/main/java/org/apache/avro/package.html
+END

@@ -1,0 +1,71 @@
+K 25
+svn:wc:ra_dav:version-url
+V 91
+/repos/asf/!svn/ver/1412334/avro/trunk/lang/java/avro/src/main/java/org/apache/avro/generic
+END
+GenericContainer.java
+K 25
+svn:wc:ra_dav:version-url
+V 113
+/repos/asf/!svn/ver/1049734/avro/trunk/lang/java/avro/src/main/java/org/apache/avro/generic/GenericContainer.java
+END
+IndexedRecord.java
+K 25
+svn:wc:ra_dav:version-url
+V 110
+/repos/asf/!svn/ver/1049734/avro/trunk/lang/java/avro/src/main/java/org/apache/avro/generic/IndexedRecord.java
+END
+GenericRecordBuilder.java
+K 25
+svn:wc:ra_dav:version-url
+V 117
+/repos/asf/!svn/ver/1242190/avro/trunk/lang/java/avro/src/main/java/org/apache/avro/generic/GenericRecordBuilder.java
+END
+GenericDatumWriter.java
+K 25
+svn:wc:ra_dav:version-url
+V 115
+/repos/asf/!svn/ver/1407419/avro/trunk/lang/java/avro/src/main/java/org/apache/avro/generic/GenericDatumWriter.java
+END
+GenericData.java
+K 25
+svn:wc:ra_dav:version-url
+V 108
+/repos/asf/!svn/ver/1412334/avro/trunk/lang/java/avro/src/main/java/org/apache/avro/generic/GenericData.java
+END
+GenericEnumSymbol.java
+K 25
+svn:wc:ra_dav:version-url
+V 114
+/repos/asf/!svn/ver/1074319/avro/trunk/lang/java/avro/src/main/java/org/apache/avro/generic/GenericEnumSymbol.java
+END
+GenericDatumReader.java
+K 25
+svn:wc:ra_dav:version-url
+V 115
+/repos/asf/!svn/ver/1383160/avro/trunk/lang/java/avro/src/main/java/org/apache/avro/generic/GenericDatumReader.java
+END
+GenericArray.java
+K 25
+svn:wc:ra_dav:version-url
+V 109
+/repos/asf/!svn/ver/1049734/avro/trunk/lang/java/avro/src/main/java/org/apache/avro/generic/GenericArray.java
+END
+GenericRecord.java
+K 25
+svn:wc:ra_dav:version-url
+V 110
+/repos/asf/!svn/ver/1049734/avro/trunk/lang/java/avro/src/main/java/org/apache/avro/generic/GenericRecord.java
+END
+GenericFixed.java
+K 25
+svn:wc:ra_dav:version-url
+V 109
+/repos/asf/!svn/ver/1074319/avro/trunk/lang/java/avro/src/main/java/org/apache/avro/generic/GenericFixed.java
+END
+package.html
+K 25
+svn:wc:ra_dav:version-url
+V 104
+/repos/asf/!svn/ver/1049734/avro/trunk/lang/java/avro/src/main/java/org/apache/avro/generic/package.html
+END

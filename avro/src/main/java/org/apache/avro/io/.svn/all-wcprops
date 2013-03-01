@@ -1,0 +1,131 @@
+K 25
+svn:wc:ra_dav:version-url
+V 86
+/repos/asf/!svn/ver/1438219/avro/trunk/lang/java/avro/src/main/java/org/apache/avro/io
+END
+JsonDecoder.java
+K 25
+svn:wc:ra_dav:version-url
+V 103
+/repos/asf/!svn/ver/1347779/avro/trunk/lang/java/avro/src/main/java/org/apache/avro/io/JsonDecoder.java
+END
+ParsingEncoder.java
+K 25
+svn:wc:ra_dav:version-url
+V 106
+/repos/asf/!svn/ver/1337322/avro/trunk/lang/java/avro/src/main/java/org/apache/avro/io/ParsingEncoder.java
+END
+DirectBinaryDecoder.java
+K 25
+svn:wc:ra_dav:version-url
+V 111
+/repos/asf/!svn/ver/1074751/avro/trunk/lang/java/avro/src/main/java/org/apache/avro/io/DirectBinaryDecoder.java
+END
+Decoder.java
+K 25
+svn:wc:ra_dav:version-url
+V 99
+/repos/asf/!svn/ver/1182146/avro/trunk/lang/java/avro/src/main/java/org/apache/avro/io/Decoder.java
+END
+EncoderFactory.java
+K 25
+svn:wc:ra_dav:version-url
+V 106
+/repos/asf/!svn/ver/1075938/avro/trunk/lang/java/avro/src/main/java/org/apache/avro/io/EncoderFactory.java
+END
+DatumWriter.java
+K 25
+svn:wc:ra_dav:version-url
+V 103
+/repos/asf/!svn/ver/1049734/avro/trunk/lang/java/avro/src/main/java/org/apache/avro/io/DatumWriter.java
+END
+ValidatingDecoder.java
+K 25
+svn:wc:ra_dav:version-url
+V 109
+/repos/asf/!svn/ver/1182146/avro/trunk/lang/java/avro/src/main/java/org/apache/avro/io/ValidatingDecoder.java
+END
+JsonEncoder.java
+K 25
+svn:wc:ra_dav:version-url
+V 103
+/repos/asf/!svn/ver/1179361/avro/trunk/lang/java/avro/src/main/java/org/apache/avro/io/JsonEncoder.java
+END
+BinaryDecoder.java
+K 25
+svn:wc:ra_dav:version-url
+V 105
+/repos/asf/!svn/ver/1414980/avro/trunk/lang/java/avro/src/main/java/org/apache/avro/io/BinaryDecoder.java
+END
+BinaryData.java
+K 25
+svn:wc:ra_dav:version-url
+V 102
+/repos/asf/!svn/ver/1414980/avro/trunk/lang/java/avro/src/main/java/org/apache/avro/io/BinaryData.java
+END
+package.html
+K 25
+svn:wc:ra_dav:version-url
+V 99
+/repos/asf/!svn/ver/1075938/avro/trunk/lang/java/avro/src/main/java/org/apache/avro/io/package.html
+END
+Encoder.java
+K 25
+svn:wc:ra_dav:version-url
+V 99
+/repos/asf/!svn/ver/1339825/avro/trunk/lang/java/avro/src/main/java/org/apache/avro/io/Encoder.java
+END
+DirectBinaryEncoder.java
+K 25
+svn:wc:ra_dav:version-url
+V 111
+/repos/asf/!svn/ver/1074364/avro/trunk/lang/java/avro/src/main/java/org/apache/avro/io/DirectBinaryEncoder.java
+END
+ValidatingEncoder.java
+K 25
+svn:wc:ra_dav:version-url
+V 109
+/repos/asf/!svn/ver/1075938/avro/trunk/lang/java/avro/src/main/java/org/apache/avro/io/ValidatingEncoder.java
+END
+BinaryEncoder.java
+K 25
+svn:wc:ra_dav:version-url
+V 105
+/repos/asf/!svn/ver/1339825/avro/trunk/lang/java/avro/src/main/java/org/apache/avro/io/BinaryEncoder.java
+END
+BufferedBinaryEncoder.java
+K 25
+svn:wc:ra_dav:version-url
+V 113
+/repos/asf/!svn/ver/1438219/avro/trunk/lang/java/avro/src/main/java/org/apache/avro/io/BufferedBinaryEncoder.java
+END
+ParsingDecoder.java
+K 25
+svn:wc:ra_dav:version-url
+V 106
+/repos/asf/!svn/ver/1074751/avro/trunk/lang/java/avro/src/main/java/org/apache/avro/io/ParsingDecoder.java
+END
+DecoderFactory.java
+K 25
+svn:wc:ra_dav:version-url
+V 106
+/repos/asf/!svn/ver/1075938/avro/trunk/lang/java/avro/src/main/java/org/apache/avro/io/DecoderFactory.java
+END
+DatumReader.java
+K 25
+svn:wc:ra_dav:version-url
+V 103
+/repos/asf/!svn/ver/1049734/avro/trunk/lang/java/avro/src/main/java/org/apache/avro/io/DatumReader.java
+END
+BlockingBinaryEncoder.java
+K 25
+svn:wc:ra_dav:version-url
+V 113
+/repos/asf/!svn/ver/1074751/avro/trunk/lang/java/avro/src/main/java/org/apache/avro/io/BlockingBinaryEncoder.java
+END
+ResolvingDecoder.java
+K 25
+svn:wc:ra_dav:version-url
+V 108
+/repos/asf/!svn/ver/1074751/avro/trunk/lang/java/avro/src/main/java/org/apache/avro/io/ResolvingDecoder.java
+END

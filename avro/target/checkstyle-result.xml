@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<checkstyle version="5.4">
+<file name="/home/dmitry/workspace/svn/avro-trunk/lang/java/avro/src/main/java/org/apache/avro/data/Json.java">
+</file>
+<file name="/home/dmitry/workspace/svn/avro-trunk/lang/java/avro/src/main/java/org/apache/avro/data/ErrorBuilder.java">
+</file>
+<file name="/home/dmitry/workspace/svn/avro-trunk/lang/java/avro/src/main/java/org/apache/avro/data/RecordBuilder.java">
+</file>
+<file name="/home/dmitry/workspace/svn/avro-trunk/lang/java/avro/src/main/java/org/apache/avro/data/RecordBuilderBase.java">
+</file>
+<file name="/home/dmitry/workspace/svn/avro-trunk/lang/java/avro/src/main/java/org/apache/avro/reflect/ReflectDatumReader.java">
+</file>
+<file name="/home/dmitry/workspace/svn/avro-trunk/lang/java/avro/src/main/java/org/apache/avro/reflect/ReflectDatumWriter.java">
+</file>
+<file name="/home/dmitry/workspace/svn/avro-trunk/lang/java/avro/src/main/java/org/apache/avro/reflect/Nullable.java">
+</file>
+<file name="/home/dmitry/workspace/svn/avro-trunk/lang/java/avro/src/main/java/org/apache/avro/reflect/Stringable.java">
+</file>
+<file name="/home/dmitry/workspace/svn/avro-trunk/lang/java/avro/src/main/java/org/apache/avro/reflect/ReflectData.java">
+</file>
+<file name="/home/dmitry/workspace/svn/avro-trunk/lang/java/avro/src/main/java/org/apache/avro/reflect/Union.java">
+</file>
+<file name="/home/dmitry/workspace/svn/avro-trunk/lang/java/avro/src/main/java/org/apache/avro/AvroRuntimeException.java">
+</file>
+<file name="/home/dmitry/workspace/svn/avro-trunk/lang/java/avro/src/main/java/org/apache/avro/SchemaNormalization.java">
+</file>
+<file name="/home/dmitry/workspace/svn/avro-trunk/lang/java/avro/src/main/java/org/apache/avro/util/ByteBufferInputStream.java">
+</file>
+<file name="/home/dmitry/workspace/svn/avro-trunk/lang/java/avro/src/main/java/org/apache/avro/util/ByteBufferOutputStream.java">
+</file>
+<file name="/home/dmitry/workspace/svn/avro-trunk/lang/java/avro/src/main/java/org/apache/avro/util/Utf8.java">
+</file>
+<file name="/home/dmitry/workspace/svn/avro-trunk/lang/java/avro/src/main/java/org/apache/avro/util/WeakIdentityHashMap.java">
+</file>
+<file name="/home/dmitry/workspace/svn/avro-trunk/lang/java/avro/src/main/java/org/apache/avro/SchemaParseException.java">
+</file>
+<file name="/home/dmitry/workspace/svn/avro-trunk/lang/java/avro/src/main/java/org/apache/avro/specific/SpecificData.java">
+</file>
+<file name="/home/dmitry/workspace/svn/avro-trunk/lang/java/avro/src/main/java/org/apache/avro/specific/SpecificErrorBuilderBase.java">
+</file>
+<file name="/home/dmitry/workspace/svn/avro-trunk/lang/java/avro/src/main/java/org/apache/avro/specific/FixedSize.java">
+</file>
+<file name="/home/dmitry/workspace/svn/avro-trunk/lang/java/avro/src/main/java/org/apache/avro/specific/SpecificFixed.java">
+</file>
+<file name="/home/dmitry/workspace/svn/avro-trunk/lang/java/avro/src/main/java/org/apache/avro/specific/AvroGenerated.java">
+</file>
+<file name="/home/dmitry/workspace/svn/avro-trunk/lang/java/avro/src/main/java/org/apache/avro/specific/SpecificRecordBuilderBase.java">
+</file>
+<file name="/home/dmitry/workspace/svn/avro-trunk/lang/java/avro/src/main/java/org/apache/avro/specific/SpecificDatumReader.java">
+</file>
+<file name="/home/dmitry/workspace/svn/avro-trunk/lang/java/avro/src/main/java/org/apache/avro/specific/SpecificExceptionBase.java">
+</file>
+<file name="/home/dmitry/workspace/svn/avro-trunk/lang/java/avro/src/main/java/org/apache/avro/specific/SpecificDatumWriter.java">
+</file>
+<file name="/home/dmitry/workspace/svn/avro-trunk/lang/java/avro/src/main/java/org/apache/avro/specific/SpecificRecordBase.java">
+</file>
+<file name="/home/dmitry/workspace/svn/avro-trunk/lang/java/avro/src/main/java/org/apache/avro/specific/SpecificRecord.java">
+</file>
+<file name="/home/dmitry/workspace/svn/avro-trunk/lang/java/avro/src/main/java/org/apache/avro/UnresolvedUnionException.java">
+</file>
+<file name="/home/dmitry/workspace/svn/avro-trunk/lang/java/avro/src/main/java/org/apache/avro/Protocol.java">
+</file>
+<file name="/home/dmitry/workspace/svn/avro-trunk/lang/java/avro/src/main/java/org/apache/avro/AvroRemoteException.java">
+</file>
+<file name="/home/dmitry/workspace/svn/avro-trunk/lang/java/avro/src/main/java/org/apache/avro/file/DataFileStream.java">
+</file>
+<file name="/home/dmitry/workspace/svn/avro-trunk/lang/java/avro/src/main/java/org/apache/avro/file/SeekableInput.java">
+</file>
+<file name="/home/dmitry/workspace/svn/avro-trunk/lang/java/avro/src/main/java/org/apache/avro/file/NullCodec.java">
+</file>
+<file name="/home/dmitry/workspace/svn/avro-trunk/lang/java/avro/src/main/java/org/apache/avro/file/LengthLimitedInputStream.java">
+</file>
+<file name="/home/dmitry/workspace/svn/avro-trunk/lang/java/avro/src/main/java/org/apache/avro/file/DeflateCodec.java">
+</file>
+<file name="/home/dmitry/workspace/svn/avro-trunk/lang/java/avro/src/main/java/org/apache/avro/file/DataFileWriter.java">
+</file>
+<file name="/home/dmitry/workspace/svn/avro-trunk/lang/java/avro/src/main/java/org/apache/avro/file/CodecFactory.java">
+</file>
+<file name="/home/dmitry/workspace/svn/avro-trunk/lang/java/avro/src/main/java/org/apache/avro/file/SnappyCodec.java">
+</file>
+<file name="/home/dmitry/workspace/svn/avro-trunk/lang/java/avro/src/main/java/org/apache/avro/file/FileReader.java">
+</file>
+<file name="/home/dmitry/workspace/svn/avro-trunk/lang/java/avro/src/main/java/org/apache/avro/file/DataFileReader.java">
+</file>
+<file name="/home/dmitry/workspace/svn/avro-trunk/lang/java/avro/src/main/java/org/apache/avro/file/Codec.java">
+</file>
+<file name="/home/dmitry/workspace/svn/avro-trunk/lang/java/avro/src/main/java/org/apache/avro/file/SeekableFileInput.java">
+</file>
+<file name="/home/dmitry/workspace/svn/avro-trunk/lang/java/avro/src/main/java/org/apache/avro/file/SeekableByteArrayInput.java">
+</file>
+<file name="/home/dmitry/workspace/svn/avro-trunk/lang/java/avro/src/main/java/org/apache/avro/file/DataFileReader12.java">
+</file>
+<file name="/home/dmitry/workspace/svn/avro-trunk/lang/java/avro/src/main/java/org/apache/avro/file/DataFileConstants.java">
+</file>
+<file name="/home/dmitry/workspace/svn/avro-trunk/lang/java/avro/src/main/java/org/apache/avro/JsonProperties.java">
+</file>
+<file name="/home/dmitry/workspace/svn/avro-trunk/lang/java/avro/src/main/java/org/apache/avro/Schema.java">
+</file>
+<file name="/home/dmitry/workspace/svn/avro-trunk/lang/java/avro/src/main/java/org/apache/avro/io/ValidatingDecoder.java">
+</file>
+<file name="/home/dmitry/workspace/svn/avro-trunk/lang/java/avro/src/main/java/org/apache/avro/io/JsonEncoder.java">
+</file>
+<file name="/home/dmitry/workspace/svn/avro-trunk/lang/java/avro/src/main/java/org/apache/avro/io/parsing/Symbol.java">
+</file>
+<file name="/home/dmitry/workspace/svn/avro-trunk/lang/java/avro/src/main/java/org/apache/avro/io/parsing/Parser.java">
+</file>
+<file name="/home/dmitry/workspace/svn/avro-trunk/lang/java/avro/src/main/java/org/apache/avro/io/parsing/ResolvingGrammarGenerator.java">
+</file>
+<file name="/home/dmitry/workspace/svn/avro-trunk/lang/java/avro/src/main/java/org/apache/avro/io/parsing/SkipParser.java">
+</file>
+<file name="/home/dmitry/workspace/svn/avro-trunk/lang/java/avro/src/main/java/org/apache/avro/io/parsing/ValidatingGrammarGenerator.java">
+</file>
+<file name="/home/dmitry/workspace/svn/avro-trunk/lang/java/avro/src/main/java/org/apache/avro/io/parsing/JsonGrammarGenerator.java">
+</file>
+<file name="/home/dmitry/workspace/svn/avro-trunk/lang/java/avro/src/main/java/org/apache/avro/io/ResolvingDecoder.java">
+</file>
+<file name="/home/dmitry/workspace/svn/avro-trunk/lang/java/avro/src/main/java/org/apache/avro/io/BinaryData.java">
+</file>
+<file name="/home/dmitry/workspace/svn/avro-trunk/lang/java/avro/src/main/java/org/apache/avro/io/BufferedBinaryNonEncoder.java">
+</file>
+<file name="/home/dmitry/workspace/svn/avro-trunk/lang/java/avro/src/main/java/org/apache/avro/io/BinaryEncoder.java">
+</file>
+<file name="/home/dmitry/workspace/svn/avro-trunk/lang/java/avro/src/main/java/org/apache/avro/io/DatumReader.java">
+</file>
+<file name="/home/dmitry/workspace/svn/avro-trunk/lang/java/avro/src/main/java/org/apache/avro/io/DatumWriter.java">
+</file>
+<file name="/home/dmitry/workspace/svn/avro-trunk/lang/java/avro/src/main/java/org/apache/avro/io/DirectBinaryDecoder.java">
+</file>
+<file name="/home/dmitry/workspace/svn/avro-trunk/lang/java/avro/src/main/java/org/apache/avro/io/ValidatingEncoder.java">
+</file>
+<file name="/home/dmitry/workspace/svn/avro-trunk/lang/java/avro/src/main/java/org/apache/avro/io/ParsingDecoder.java">
+</file>
+<file name="/home/dmitry/workspace/svn/avro-trunk/lang/java/avro/src/main/java/org/apache/avro/io/Encoder.java">
+</file>
+<file name="/home/dmitry/workspace/svn/avro-trunk/lang/java/avro/src/main/java/org/apache/avro/io/JsonDecoder.java">
+</file>
+<file name="/home/dmitry/workspace/svn/avro-trunk/lang/java/avro/src/main/java/org/apache/avro/io/ParsingEncoder.java">
+</file>
+<file name="/home/dmitry/workspace/svn/avro-trunk/lang/java/avro/src/main/java/org/apache/avro/io/EncoderFactory.java">
+</file>
+<file name="/home/dmitry/workspace/svn/avro-trunk/lang/java/avro/src/main/java/org/apache/avro/io/BinaryDecoder.java">
+</file>
+<file name="/home/dmitry/workspace/svn/avro-trunk/lang/java/avro/src/main/java/org/apache/avro/io/DecoderFactory.java">
+</file>
+<file name="/home/dmitry/workspace/svn/avro-trunk/lang/java/avro/src/main/java/org/apache/avro/io/BufferedBinaryEncoder.java">
+</file>
+<file name="/home/dmitry/workspace/svn/avro-trunk/lang/java/avro/src/main/java/org/apache/avro/io/BlockingBinaryEncoder.java">
+</file>
+<file name="/home/dmitry/workspace/svn/avro-trunk/lang/java/avro/src/main/java/org/apache/avro/io/Decoder.java">
+</file>
+<file name="/home/dmitry/workspace/svn/avro-trunk/lang/java/avro/src/main/java/org/apache/avro/io/DirectBinaryEncoder.java">
+</file>
+<file name="/home/dmitry/workspace/svn/avro-trunk/lang/java/avro/src/main/java/org/apache/avro/generic/GenericDatumReader.java">
+</file>
+<file name="/home/dmitry/workspace/svn/avro-trunk/lang/java/avro/src/main/java/org/apache/avro/generic/GenericFixed.java">
+</file>
+<file name="/home/dmitry/workspace/svn/avro-trunk/lang/java/avro/src/main/java/org/apache/avro/generic/GenericData.java">
+</file>
+<file name="/home/dmitry/workspace/svn/avro-trunk/lang/java/avro/src/main/java/org/apache/avro/generic/GenericRecord.java">
+</file>
+<file name="/home/dmitry/workspace/svn/avro-trunk/lang/java/avro/src/main/java/org/apache/avro/generic/GenericArray.java">
+</file>
+<file name="/home/dmitry/workspace/svn/avro-trunk/lang/java/avro/src/main/java/org/apache/avro/generic/GenericEnumSymbol.java">
+</file>
+<file name="/home/dmitry/workspace/svn/avro-trunk/lang/java/avro/src/main/java/org/apache/avro/generic/GenericContainer.java">
+</file>
+<file name="/home/dmitry/workspace/svn/avro-trunk/lang/java/avro/src/main/java/org/apache/avro/generic/GenericDatumWriter.java">
+</file>
+<file name="/home/dmitry/workspace/svn/avro-trunk/lang/java/avro/src/main/java/org/apache/avro/generic/GenericRecordBuilder.java">
+</file>
+<file name="/home/dmitry/workspace/svn/avro-trunk/lang/java/avro/src/main/java/org/apache/avro/generic/IndexedRecord.java">
+</file>
+<file name="/home/dmitry/workspace/svn/avro-trunk/lang/java/avro/src/main/java/org/apache/avro/AvroTypeException.java">
+</file>
+</checkstyle>

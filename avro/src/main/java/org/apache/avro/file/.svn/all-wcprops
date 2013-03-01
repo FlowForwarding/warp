@@ -1,0 +1,101 @@
+K 25
+svn:wc:ra_dav:version-url
+V 88
+/repos/asf/!svn/ver/1435347/avro/trunk/lang/java/avro/src/main/java/org/apache/avro/file
+END
+DataFileReader12.java
+K 25
+svn:wc:ra_dav:version-url
+V 110
+/repos/asf/!svn/ver/1074751/avro/trunk/lang/java/avro/src/main/java/org/apache/avro/file/DataFileReader12.java
+END
+FileReader.java
+K 25
+svn:wc:ra_dav:version-url
+V 104
+/repos/asf/!svn/ver/1049734/avro/trunk/lang/java/avro/src/main/java/org/apache/avro/file/FileReader.java
+END
+DeflateCodec.java
+K 25
+svn:wc:ra_dav:version-url
+V 106
+/repos/asf/!svn/ver/1435347/avro/trunk/lang/java/avro/src/main/java/org/apache/avro/file/DeflateCodec.java
+END
+CodecFactory.java
+K 25
+svn:wc:ra_dav:version-url
+V 106
+/repos/asf/!svn/ver/1241678/avro/trunk/lang/java/avro/src/main/java/org/apache/avro/file/CodecFactory.java
+END
+DataFileWriter.java
+K 25
+svn:wc:ra_dav:version-url
+V 108
+/repos/asf/!svn/ver/1339841/avro/trunk/lang/java/avro/src/main/java/org/apache/avro/file/DataFileWriter.java
+END
+DataFileConstants.java
+K 25
+svn:wc:ra_dav:version-url
+V 111
+/repos/asf/!svn/ver/1089550/avro/trunk/lang/java/avro/src/main/java/org/apache/avro/file/DataFileConstants.java
+END
+SnappyCodec.java
+K 25
+svn:wc:ra_dav:version-url
+V 105
+/repos/asf/!svn/ver/1435347/avro/trunk/lang/java/avro/src/main/java/org/apache/avro/file/SnappyCodec.java
+END
+NullCodec.java
+K 25
+svn:wc:ra_dav:version-url
+V 103
+/repos/asf/!svn/ver/1435347/avro/trunk/lang/java/avro/src/main/java/org/apache/avro/file/NullCodec.java
+END
+Codec.java
+K 25
+svn:wc:ra_dav:version-url
+V 99
+/repos/asf/!svn/ver/1435347/avro/trunk/lang/java/avro/src/main/java/org/apache/avro/file/Codec.java
+END
+package.html
+K 25
+svn:wc:ra_dav:version-url
+V 101
+/repos/asf/!svn/ver/1049734/avro/trunk/lang/java/avro/src/main/java/org/apache/avro/file/package.html
+END
+SeekableByteArrayInput.java
+K 25
+svn:wc:ra_dav:version-url
+V 116
+/repos/asf/!svn/ver/1173410/avro/trunk/lang/java/avro/src/main/java/org/apache/avro/file/SeekableByteArrayInput.java
+END
+LengthLimitedInputStream.java
+K 25
+svn:wc:ra_dav:version-url
+V 118
+/repos/asf/!svn/ver/1049734/avro/trunk/lang/java/avro/src/main/java/org/apache/avro/file/LengthLimitedInputStream.java
+END
+DataFileStream.java
+K 25
+svn:wc:ra_dav:version-url
+V 108
+/repos/asf/!svn/ver/1141677/avro/trunk/lang/java/avro/src/main/java/org/apache/avro/file/DataFileStream.java
+END
+SeekableInput.java
+K 25
+svn:wc:ra_dav:version-url
+V 107
+/repos/asf/!svn/ver/1079055/avro/trunk/lang/java/avro/src/main/java/org/apache/avro/file/SeekableInput.java
+END
+SeekableFileInput.java
+K 25
+svn:wc:ra_dav:version-url
+V 111
+/repos/asf/!svn/ver/1049734/avro/trunk/lang/java/avro/src/main/java/org/apache/avro/file/SeekableFileInput.java
+END
+DataFileReader.java
+K 25
+svn:wc:ra_dav:version-url
+V 108
+/repos/asf/!svn/ver/1236284/avro/trunk/lang/java/avro/src/main/java/org/apache/avro/file/DataFileReader.java
+END

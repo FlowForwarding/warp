@@ -1,0 +1,47 @@
+K 25
+svn:wc:ra_dav:version-url
+V 94
+/repos/asf/!svn/ver/1414978/avro/trunk/lang/java/avro/src/main/java/org/apache/avro/io/parsing
+END
+ValidatingGrammarGenerator.java
+K 25
+svn:wc:ra_dav:version-url
+V 126
+/repos/asf/!svn/ver/1074319/avro/trunk/lang/java/avro/src/main/java/org/apache/avro/io/parsing/ValidatingGrammarGenerator.java
+END
+SkipParser.java
+K 25
+svn:wc:ra_dav:version-url
+V 110
+/repos/asf/!svn/ver/1049734/avro/trunk/lang/java/avro/src/main/java/org/apache/avro/io/parsing/SkipParser.java
+END
+Symbol.java
+K 25
+svn:wc:ra_dav:version-url
+V 106
+/repos/asf/!svn/ver/1178066/avro/trunk/lang/java/avro/src/main/java/org/apache/avro/io/parsing/Symbol.java
+END
+ResolvingGrammarGenerator.java
+K 25
+svn:wc:ra_dav:version-url
+V 125
+/repos/asf/!svn/ver/1389592/avro/trunk/lang/java/avro/src/main/java/org/apache/avro/io/parsing/ResolvingGrammarGenerator.java
+END
+JsonGrammarGenerator.java
+K 25
+svn:wc:ra_dav:version-url
+V 120
+/repos/asf/!svn/ver/1178066/avro/trunk/lang/java/avro/src/main/java/org/apache/avro/io/parsing/JsonGrammarGenerator.java
+END
+Parser.java
+K 25
+svn:wc:ra_dav:version-url
+V 106
+/repos/asf/!svn/ver/1049734/avro/trunk/lang/java/avro/src/main/java/org/apache/avro/io/parsing/Parser.java
+END
+package.html
+K 25
+svn:wc:ra_dav:version-url
+V 107
+/repos/asf/!svn/ver/1049734/avro/trunk/lang/java/avro/src/main/java/org/apache/avro/io/parsing/package.html
+END
