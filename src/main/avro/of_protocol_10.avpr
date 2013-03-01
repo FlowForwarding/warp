@@ -243,57 +243,24 @@
     },
 
     {"name": "ofp_port",
-     "type": "record",
-     "fields": [ 
-      {"name": "port_no", "type": "uint_32"},
-      {"name": "pad", "type": "pad_4"},
-      {"name": "hw_addr", "type": {"type": "array", "items": "uint_8"}},
-      {"name": "pad", "type": "pad_2"},
-      {"name": "name", "type": {"type": "array", "items": "uint_8"}},
-
-      {"name": "n_tables", "type": "uint_8"},
-      {"name": "pad", "type": "pad_3"},
-      {"name": "capabilities", "type": "uint_32"},
-      {"name": "reserved", "type": "uint_32"}
-    ]
-   },
-
-
-    {"name": "ofp_ports",
      "type": "enum",
      "items": "uint_16",
      "list": [
-      {"name": "OFPP_MAX", "default": [0xff, 0xf8]},     
-      {"name": "OFPP_IN_PORT", [0xff, 0xf9]},
-      {"name": "OFPP_TABLE", [0xff, 0xf8]},
-      {"name": "OFPP_NORMAL",
-      {"name": "OFPP_FLOOD",
-      {"name": "OFPP_ALL",
-      {"name": "OFPP_CONTROLLER",
-      {"name": "OFPP_LOCAL",
-      {"name": "OFPP_NONE"
-      ]
-  },
-  
-  {"name": "ofp_known_ports",
-     "type": "record",
-     "fields": [
-        {"name": "pad", "type": "uint_8"},
-        {"name": "features", "type": "ofp_port_features_enum"}  
-      ]
+      {"name": "OFPP_MAX", "default": [0xff, 0x00]},     
+      {"name": "OFPP_IN_PORT", [0xff, 0xf8]},
+      {"name": "OFPP_TABLE", [0xff, 0xf9]},
+      {"name": "OFPP_NORMAL", [0xff, 0xfa]},
+      {"name": "OFPP_FLOOD", [0xff, 0xfb]},
+      {"name": "OFPP_ALL", [0xff, 0xfc]},
+      {"name": "OFPP_CONTROLLER", [0xff, 0xfd]},
+      {"name": "OFPP_LOCAL", [0xff, 0xfe]},
+      {"name": "OFPP_NONE", [0xff, 0xff]}]
     },
-    
-    {"name": "ofp_ports",
-       "type": "record",
-       "fields": [
-          {"name": "ports", "type": ["uint_16", "ofp_known_ports"] }
-        ]
-    },  
         
     {"name": "ofp_phy_port",
      "type": "record",
      "fields": [
-          {"name": "port_no", "type": "ofp_ports"},
+          {"name": "port_no", "type": "uint_16"},
           {"name": "hw_addr", "type": "ofp_eth_alen"},
           {"name": "port_name", "type": "ofp_max_port_name"},
           {"name": "config", "type": "ofp_port_config"},
@@ -311,48 +278,59 @@
         {"name":"queue_id", "type": "uint_32"},
         {"name":"len", "type": "uint_16"},
         {"name":"pad", "type": "pad_2"},
-        {"name":"properties", "type": "ofp_queue_prop_header"}    
-      ]
-     },
+        {"name":"properties", "type": {"type:"array",
+                                       "items": "ofp_queue_prop_header"}}]
+    },
    
     {"name": "ofp_queue_prop_header",
      "type": "record",
      "fields": [
-        {"name":"property", "uint_16"},
+        {"name":"property", "ofp_queue_properties"},
         {"name":"len", "type": "uint_16"},
         {"name":"pad", "type": "pad_4"},
        ]
     },
     
-      {"name": "ofp_queue_prop_min_rate",
+    {"name": "ofp_queue_properties",
+     "type": "enum",
+     "items": "uint_16",
+     "list": [
+        {"name" : "OFPQT_NONE", "default": [0,0,]},
+        {"name" : "OFPQT_MIN_RATE"}]
+    },
+    
+    {"name": "ofp_queue_prop_min_rate",
      "type": "record",
      "fields": [
         {"name":"prop_header", "ofp_queue_prop_header"},
         {"name":"rate", "type": "uint_16"},
-        {"name":"pad", "type": "pad_6"},
-      ]
-    }
+        {"name":"pad", "type": "pad_6"}]
+    },
 
-  {"name": "ofp_flow_wildcards_enum",
-   "type": "enum_bitmap",
-   "symbols": [
-      "OFPFW_IN_PORT",
-      "OFPFW_DL_VLAN",
-      "OFPFW_DL_SRC",
-      "OFPFW_DL_DST",
-      "OFPFW_DL_TYPE",
-      "OFPFW_NW_PROTO",
-      "OFPFW_TP_SRC",
-      "OFPFW_TP_DST",
-      "OFPFW_NW_SRC_SHIFT",
-      "OFPFW_NW_SRC_BITS",
-      "OFPFW_NW_SRC_MASK",
-      "OFPFW_NW_SRC_ALL",
-      "OFPFW_DL_VLAN_PCP",
-      "OFPFW_NW_TOS",
-      "OFPFW_ALL"
-    ]
-   },
+  {"name": "ofp_flow_wildcards",
+   "type": "enum",
+   "items": "uint_32",
+   "list": [
+        {"name":"OFPFW_IN_PORT",  "default": {"shift": [1, 0]}},
+        {"name":"OFPFW_DL_VLAN", "default": {"shift": [1, 0]}},
+        {"name":"OFPFW_DL_SRC", "default": {"shift": [1, 0]}},
+        {"name":"OFPFW_DL_DST", "default": {"shift": [1, 0]}},
+        {"name":"OFPFW_DL_TYPE", "default": {"shift": [1, 0]}},
+        {"name":"OFPFW_NW_PROTO", "default": {"shift": [1, 0]}},
+        {"name":"OFPFW_TP_SRC", "default": {"shift": [1, 0]}},
+        {"name":"OFPFW_TP_DST", "default": {"shift": [1, 0]}},
+        {"name":"OFPFW_NW_SRC_SHIFT", "default": [0,0,0,8]},
+        {"name":"OFPFW_NW_SRC_BITS", "default": [0,0,0,6]},
+        {"name":OFPFW_NW_SRC_MASK"},
+        {"name":"OFPFW_NW_SRC_ALL"},
+        {"name":"OFPFW_NW_DST_SHIFT", "default": [0,0,0,14]},
+        {"name":"OFPFW_NW_DST_BITS", "default": [0,0,0,6]},
+        {"name":OFPFW_NW_DST_MASK"},
+        {"name":"OFPFW_NW_DST_ALL"},        
+        {"name":"OFPFW_DL_VLAN_PCP", "default": {"shift": [1, 20]}},
+        {"name":"OFPFW_NW_TOS", "default": {"shift": [1, 21]}},
+        {"name":"OFPFW_ALL"}]
+    },
    
   {"name": "ofp_flow_wildcards",
    "type": "record",
@@ -457,7 +435,6 @@ struct ofp_queue_get_config_reply {
       {"name": "queues", "type": "ofp_packet_queue"},
       ]
   }
-  ]
 }
 
      {"name": "ofp_eth_alen", "type": "fixed", "size":6},
