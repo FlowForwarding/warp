@@ -677,6 +677,159 @@
       {"name": "header", "type":"ofp_header"},
     ]
    },
+
+   {"name": "ofp_stats_types",
+    "type": "enum",
+    "items": "uint_16",
+    "list": [ 
+      {"name": "OFPST_DESC", "default": [0,0]},
+      {"name": "OFPST_FLOW", "default": [0,1]},
+      {"name": "OFPST_AGGREGATE", "default": [0,2]},
+      {"name": "OFPST_TABLE", "default": [0,3]},
+      {"name": "OFPST_PORT", "default": [0,4]},
+      {"name": "OFPST_QUEUE", "default": [0,5]},
+      {"name": "OFPST_GROUP", "default": [0,6]},
+      {"name": "OFPST_GROUP_DESC", "default": [0,7]},
+      {"name": "OFPST_GROUP_FEATURES", "default": [0,8]},
+      {"name": "OFPST_EXPERIMENTER", "default": [255,255]}
+    ]
+   },
+
+   {"name": "ofp_stats_flags_request",
+    "type": "enum",
+    "items": "uint_16",
+    "list": [ 
+      {"name": "DUMMY", "default": [0,0]}
+    ]
+   },
+
+   {"name": "ofp_stats_flags_reply",
+    "type": "enum",
+    "items": "uint_16",
+    "list": [ 
+      {"name": "DUMMY", "default": [0,0]}
+    ]
+   },     
+
+   {"name": "ofp_stats_request",
+    "type": "record",
+    "fields": [
+      {"name": "header", "type": "ofp_header"},
+      {"name": "type", "type": "ofp_stats_types"},
+      {"name": "flags", "type": "ofp_stats_flags_request"},
+      {"name": "pad", "type": "pad_4"},
+      {"name": "body", "type": {"type": "array", "items": "uint_8"}}
+    ]
+   },
+
+   {"name": "ofp_stats_reply",
+    "type": "record",
+    "fields": [
+      {"name": "header", "type": "ofp_header"},
+      {"name": "type", "type": "ofp_stats_types"},
+      {"name": "flags", "type": "ofp_stats_flags_reply"},
+      {"name": "pad", "type": "pad_4"},
+      {"name": "body", "type": {"type": "array", "items": "uint_8"}}
+    ]
+   },
+
+   {"name": "ofp_desc_stats", 
+    "type": "record",
+    "fields": [
+      {"name": "mfr_desc", "type": "string"},
+      {"name": "hw_desc", "type": "string"},
+      {"name": "sw_desc", "type": "string"},
+      {"name": "serial_num", "type": "string"},
+      {"name": "dp_desc", "type": "string"}
+    ]
+   },
+
+   {"name": "ofp_flow_stats_request",
+    "type": "record",
+    "fields": [
+      {"name": "table_id", "type": "uint_8"},
+      {"name": "pad", "type": "pad_3"},
+      {"name": "out_port", "type": "uint_32"},
+      {"name": "out_group", "type": "uint_32"},
+      {"name": "pad2", "type": "pad_4"},
+      {"name": "cookie", "type": "uint_64"},
+      {"name": "cookie_mask", "type": "uint_64"},
+      {"name": "match", "type": "ofp_match"}
+    ]
+   },
+
+   {"name": "ofp_flow_stats",
+    "type": "record",
+    "fields": [
+      {"name": "length", "type": "uint_16"},
+      {"name": "table_id", "type": "uint_8"},
+      {"name": "pad", "type": "pad_1"},      
+      {"name": "duration_sec", "type": "uint_32"},
+      {"name": "duration_nsec", "type": "uint_32"},
+      {"name": "priority", "type": "uint_16"},
+      {"name": "idle_timeout", "type": "uint_16"},
+      {"name": "hard_timeout", "type": "uint_16"},
+      {"name": "pad2", "type": "pad_6"},      
+      {"name": "cookie", "type": "uint_64"},
+      {"name": "packet_count", "type": "uint_64"},
+      {"name": "match", "type": "ofp_match"},
+      {"name": "instruction_set", "type": {"type": "array", "items": "ofp_instruction"}}
+    ]    
+   },
   
+  {"name": "ofp_aggregate_stats_request",
+   "type": "record",
+   "fields": [
+     {"name": "table_id", "type": "uint_8"},
+     {"name": "pad", "type": "pad_3"},
+     {"name": "out_port", "type": "uint_32"},
+     {"name": "out_group", "type": "uint_32"},
+     {"name": "pad2", "type": "pad_4"},
+     {"name": "cookie", "type": "uint_64"},
+     {"name": "cookie_mask", "type": "uint_64"},
+     {"name": "match", "type": "ofp_match"}
+   ]
+  },   
+  
+  {"name": "ofp_aggregate_stats_request",
+   "type": "record",
+   "fields": [
+     {"name": "packet_count", "type": "uint_64"},
+     {"name": "byte_count", "type": "uint_64"},
+     {"name": "flow_count", "type": "uint_32"},
+     {"name": "pad", "type": "pad_4"}
+   ]
+  },
+
+  {"name": "ofp_packet_out",
+   "type": "record",
+   "fields": [
+     {"name": "header", "type": "ofp_header"},
+     {"name": "buffer_id", "type": "uint_32"},
+     {"name": "in_port", "type": "uint_32"},
+     {"name": "actions_len", "type": "uint_16"},
+     {"name": "pad", "type": "pad_6"},  
+   ]
+  },
   ] 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
