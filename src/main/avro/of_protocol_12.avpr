@@ -1,4 +1,4 @@
-{ "namespace" : "of12", 
+{ "namespace" : "of12",
   "protocol": "ofp12",
   "types": [
    {"name": "uint_8", "type": "fixed", "size": 1},
@@ -811,7 +811,222 @@
      {"name": "pad", "type": "pad_6"},  
    ]
   },
-  ] 
+
+   {"name": "ofp_error_type",
+    "type": "enum",
+    "items": "uint_16",
+    "lsit": [
+      {"name": "OFPET_HELLO_FAILED", "default": [0,0]},
+      {"name": "OFPET_BAD_REQUEST", "default": [0,1]},
+      {"name": "OFPET_BAD_ACTION", "default": [0,2]},
+      {"name": "OFPET_BAD_INSTRUCTION", "default": [0,3]},
+      {"name": "OFPET_BAD_MATCH", "default": [0,4]},
+      {"name": "OFPET_FLOW_MOD_FAILED", "default": [0,5]},
+      {"name": "OFPET_GROUP_MOD_FAILED", "default": [0,6]},
+      {"name": "OFPET_PORT_MOD_FAILED", "default": [0,7]},
+      {"name": "OFPET_TABLE_MOD_FAILED", "default": [0,8]},
+      {"name": "OFPET_QUEUE_OP_FAILED", "default": [0,9]},
+      {"name": "OFPET_SWITCH_CONFIG_FAILED", "default": [0,10]},
+      {"name": "OFPET_ROLE_REQUEST_FAILED", "default": [0,11]},
+      {"name": "OFPET_EXPERIMENTER", "default": [255,255]},
+    ]
+   },
+
+   {"name": "ofp_hello_failed_code",
+    "type": "enum",
+    "items": "uint_16",
+    "lsit": [
+      {"name": "OFPHFC_INCOMPATIBLE", "default": [0,0]},
+      {"name": "OFPHFC_EPERM", "default": [0,1]},
+    ]
+   },  
+
+   {"name": "ofp_bad_request_code",
+    "type": "enum",
+    "items": "uint_16",
+    "lsit": [
+      {"name": "OFPBRC_BAD_VERSION", "default": [0,0]},
+      {"name": "OFPBRC_BAD_TYPE", "default": [0,1]},
+      {"name": "OFPBRC_BAD_STAT", "default": [0,2]},
+      {"name": "OFPBRC_BAD_EXPERIMENTER", "default": [0,3]},
+      {"name": "OFPBRC_BAD_EXP_TYPE", "default": [0,4]},
+      {"name": "OFPBRC_EPERM", "default": [0,5]},
+      {"name": "OFPBRC_BAD_LEN", "default": [0,6]},
+      {"name": "OFPBRC_BUFFER_EMPTY", "default": [0,7]},
+      {"name": "OFPBRC_BUFFER_UNKNOWN", "default": [0,8]},
+      {"name": "OFPBRC_BAD_TABLE_ID", "default": [0,9]},
+      {"name": "OFPBRC_IS_SLAVE", "default": [0,10]},
+      {"name": "OFPBRC_BAD_PORT", "default": [0,11]},
+      {"name": "OFPBRC_BAD_PACKET", "default": [0,12]}
+    ]
+   },
+
+   {"name": "ofp_action_code",
+    "type": "enum",
+    "items": "uint_16",
+    "lsit": [
+      {"name": "OFPBAC_BAD_TYPE", "default": [0,0]},
+      {"name": "OFPBAC_BAD_LEN", "default": [0,1]},
+      {"name": "OFPBAC_BAD_EXPERIMENTER", "default": [0,2]},
+      {"name": "OFPBAC_BAD_EXP_TYPE", "default": [0,3]},
+      {"name": "OFPBAC_BAD_OUT_PORT", "default": [0,4]},
+      {"name": "OFPBAC_BAD_ARGUMENT", "default": [0,5]},
+      {"name": "OFPBAC_EPERM", "default": [0,6]},
+      {"name": "OFPBAC_TOO_MANY", "default": [0,7]},
+      {"name": "OFPBAC_BAD_QUEUE", "default": [0,8]},
+      {"name": "OFPBAC_BAD_OUT_GROUP", "default": [0,9]},
+      {"name": "OFPBAC_MATCH_INCONSISTENT", "default": [0,10]},
+      {"name": "OFPBAC_UNSUPPORTED_ORDER", "default": [0,11]},
+      {"name": "OFPBAC_BAD_TAG", "default": [0,12]},
+      {"name": "OFPBAC_BAD_SET_TYPE", "default": [0,13]},
+      {"name": "OFPBAC_BAD_SET_LEN", "default": [0,14]},
+      {"name": "OFPBAC_BAD_SET_ARGUMENT", "default": [0,15]}
+    ]
+   },
+
+   {"name": "ofp_bad_instruction_code",
+    "type": "enum",
+    "items": "uint_16",
+    "lsit": [
+      {"name": "OFPBIC_UNKNOWN_INST", "default": [0,0]},
+      {"name": "OFPBIC_UNSUP_INST", "default": [0,1]},
+      {"name": "OFPBIC_BAD_TABLE_ID", "default": [0,2]},
+      {"name": "OFPBIC_UNSUP_METADATA", "default": [0,3]},
+      {"name": "OFPBIC_UNSUP_METADATA_MASK", "default": [0,4]},
+      {"name": "OFPBIC_BAD_EXPERIMENTER", "default": [0,5]},
+      {"name": "OFPBIC_BAD_EXP_TYPE", "default": [0,6]},
+      {"name": "OFPBIC_BAD_LEN", "default": [0,7]},
+      {"name": "OFPBIC_EPERM", "default": [0,8]}
+    ]
+   },
+
+   {"name": "ofp_bad_match_code",
+    "type": "enum",
+    "items": "uint_16",
+    "lsit": [
+      {"name": "OFPBMC_BAD_TYPE", "default": [0,0]},
+      {"name": "OFPBMC_BAD_LEN", "default": [0,1]},
+      {"name": "OFPBMC_BAD_TAG", "default": [0,2]},
+      {"name": "OFPBMC_BAD_DL_ADR_MASK", "default": [0,3]},
+      {"name": "OFPBMC_BAD_NW_ADR_MASK", "default": [0,4]},
+      {"name": "OFPBMC_BAD_WILDCARDS", "default": [0,5]},
+      {"name": "OFPBMC_BAD_FIELD", "default": [0,6]},
+      {"name": "OFPBMC_BAD_VALUE", "default": [0,7]},
+      {"name": "OFPBMC_BAD_MASK", "default": [0,8]},
+      {"name": "OFPBMC_BAD_PREREQ", "default": [0,9]},
+      {"name": "OFPBMC_DUP_FIELD", "default": [0,10]},
+      {"name": "OFPBMC_EPERM", "default": [0,11]}
+    ]
+   },
+
+   {"name": "ofp_flow_mod_failed_code",
+    "type": "enum",
+    "items": "uint_16",
+    "lsit": [
+      {"name": "OFPFMFC_UNKNOWN", "default": [0,0]},
+      {"name": "OFPFMFC_TABLE_FULL", "default": [0,1]},
+      {"name": "OFPFMFC_BAD_TABLE_ID", "default": [0,2]},
+      {"name": "OFPFMFC_OVERLAP", "default": [0,3]},
+      {"name": "OFPFMFC_EPERM", "default": [0,4]},
+      {"name": "OFPFMFC_BAD_TIMEOUT", "default": [0,5]},
+      {"name": "OFPFMFC_BAD_COMMAND", "default": [0,6]},
+      {"name": "OFPFMFC_BAD_FLAGS", "default": [0,7]}
+    ]
+   },
+
+   {"name": "ofp_group_mod_failed_code",
+    "type": "enum",
+    "items": "uint_16",
+    "lsit": [
+      {"name": "OFPGMFC_GROUP_EXISTS", "default": [0,0]},
+      {"name": "OFPGMFC_INVALID_GROUP", "default": [0,1]},
+      {"name": "OFPGMFC_WEIGHT_UNSUPPORTED", "default": [0,2]},
+      {"name": "OFPGMFC_OUT_OF_GROUPS", "default": [0,3]},
+      {"name": "OFPGMFC_OUT_OF_BUCKETS", "default": [0,4]},
+      {"name": "OFPGMFC_CHAINING_UNSUPPORTED", "default": [0,5]},
+      {"name": "OFPGMFC_WATCH_UNSUPPORTED", "default": [0,6]},
+      {"name": "OFPGMFC_LOOP", "default": [0,7]},
+      {"name": "OFPGMFC_UNKNOWN_GROUP", "default": [0,8]},
+      {"name": "OFPGMFC_CHAINED_GROUP", "default": [0,9]},
+      {"name": "OFPGMFC_BAD_TYPE", "default": [0,10]},
+      {"name": "OFPGMFC_BAD_COMMAND", "default": [0,11]},
+      {"name": "OFPGMFC_BAD_BUCKET", "default": [0,12]},
+      {"name": "OFPGMFC_BAD_WATCH", "default": [0,13]},
+      {"name": "OFPGMFC_EPERM", "default": [0,14]}
+    ]
+   },
+
+   {"name": "ofp_port_mod_failed_code",
+    "type": "enum",
+    "items": "uint_16",
+    "lsit": [
+      {"name": "OFPPMFC_BAD_PORT", "default": [0,0]},
+      {"name": "OFPPMFC_BAD_HW_ADDR", "default": [0,1]},
+      {"name": "OFPPMFC_BAD_CONFIG", "default": [0,2]},
+      {"name": "OFPPMFC_BAD_ADVERTISE", "default": [0,3]},
+      {"name": "OFPPMFC_EPERM", "default": [0,4]},
+    ]
+   },
+
+   {"name": "ofp_table_mod_failed_code",
+    "type": "enum",
+    "items": "uint_16",
+    "lsit": [
+      {"name": "OFPTMFC_BAD_TABLE", "default": [0,0]},
+      {"name": "OFPTMFC_BAD_CONFIG", "default": [0,1]},
+      {"name": "OFPTMFC_EPERM", "default": [0,2]}
+    ]
+   },
+
+   {"name": "ofp_queue_op_failed_code",
+    "type": "enum",
+    "items": "uint_16",
+    "lsit": [
+      {"name": "OFPQOFC_BAD_PORT", "default": [0,0]},
+      {"name": "OFPQOFC_BAD_QUEUE", "default": [0,1]},
+      {"name": "OFPQOFC_EPERM", "default": [0,2]}
+    ]
+   },
+
+   {"name": "ofp_switch_config_failed_code",
+    "type": "enum",
+    "items": "uint_16",
+    "lsit": [
+      {"name": "OFPSCFC_BAD_FLAGS", "default": [0,0]},
+      {"name": "OFPSCFC_BAD_LEN", "default": [0,1]},
+      {"name": "OFPSCFC_EPERM", "default": [0,2]}
+    ]
+   },
+
+   {"name": "ofp_switch_config_failed_code",
+    "type": "enum",
+    "items": "uint_16",
+    "lsit": [
+      {"name": "OFPSCFC_BAD_FLAGS", "default": [0,0]},
+      {"name": "OFPSCFC_BAD_LEN", "default": [0,1]},
+      {"name": "OFPSCFC_EPERM", "default": [0,2]}
+    ]
+   },
+
+   {"name": "ofp_role_request_failed_code",
+    "type": "enum",
+    "items": "uint_16",
+    "lsit": [
+      {"name": "OFPRRFC_STALE", "default": [0,0]},
+      {"name": "OFPRRFC_UNSUP", "default": [0,1]},
+      {"name": "OFPRRFC_BAD_ROLE", "default": [0,2]}
+    ]
+   },
+   
+   {"name": "ofp_experimenter_header",
+    "type": "record",
+    "fields": [
+      {"name": "header", "type": "ofp_header"},
+      {"name": "experimenter", "type": "uint_32"},
+      {"name": "exp_type", "type": "uint_32"}
+    ]
+   }
+ ] 
 }
 
 
