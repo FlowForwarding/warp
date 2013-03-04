@@ -663,8 +663,7 @@
       {"name": "pad", "type":"pad_2"},
       {"name": "config", "type":""},
       {"name": "mask", "type":" "},
-      {"name": "advertise", "type":" "},
-      {},
+      {"name": "advertise", "type":" "}
     ]
    },
 
