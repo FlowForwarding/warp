@@ -207,7 +207,7 @@ public class Protocol {
 		GenericRecord ofpFlowModFlagsRecord = new GenericData.Record(ofpFlowModFlagsSchema);
 		GenericRecord ofpMatchTypeRecord = new GenericData.Record(ofpMatchTypeSchema);
 		
-      byte[] ver = {3};    
+      byte[] ver = {3};     
       GenericData.Fixed version = new GenericData.Fixed(ofpHeaderSchema, ver); 
       ofpHeaderRecord.put("version", version);
             
