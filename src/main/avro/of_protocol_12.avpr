@@ -1,4 +1,4 @@
-{ "namespace" : "of12",
+{ "namespace" : "of12", 
   "protocol": "ofp12",
   "types": [
    {"name": "uint_8", "type": "fixed", "size": 1},
