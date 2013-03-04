@@ -48,8 +48,6 @@
     ]
    },
    
-
-
    {"name": "ofp_capabilities",
     "type": "enum",
     "items": "bitmap_32",
@@ -62,7 +60,7 @@
       {"name": "OFPC_QUEUE_STATS", "default": {"shift": [1, 6]}},
       {"name": "OFPC_PORT_BLOCKED", "default": {"shift": [1, 8]}}
     ]
-   }
+   },
    
    {"name": "ofp_config_flags",
     "type": "enum",
@@ -80,7 +78,6 @@
              {"name": "OFPFF_CHECK_OVERLAP", "default": [0,1]},
              {"name": "OFPFF_RESET_COUNTS", "default": [0,2]}]
    },
-
    
    {"name": "ofp_match_type",
     "type": "enum",
@@ -531,7 +528,7 @@
      {"name": "OXM_HAS_MASK_UNSET", "set_bits": []},
      {"name": "OXM_HAS_MASK_SET", "set_bits": [0]}
     ] 
-   }
+   },
    
    {"name": "oxm_length",
     "type": "enum",
@@ -543,7 +540,7 @@
       {"name": "OFPXMT_OFB_IPV4_SRC", "value": 4},
       {"name": "OFPXMT_OFB_IPV4_DST", "value": 4},
      ]
-   }
+   },
 
    {"name": "OXM_HEADER_IN_PORT", 
     "type": "bitmap",
