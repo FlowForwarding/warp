@@ -17,85 +17,75 @@ import org.apache.avro.io.Encoder;
 import org.apache.avro.io.EncoderFactory;
 
 public class Protocol {
-	
-	private final String schemaSrc = "of_protocol_12.avpr";
-	
-	private Schema ofpHeaderSchema = null; 
-	private Schema ofpSwitchFeaturesSchema = null;
-	private Schema ofpSwitchConfigSchema = null; 
-	private Schema ofpMatchSchema = null;
-	private Schema ofpFlowModSchema = null;
-	private Schema ofpFlowModBaseSchema = null;
-	
-	private Schema ofpTypeSchema = null;
-	private Schema ofpConfigFlagsSchema = null;	
-	private Schema ofpFlowModCommandSchema = null;
-	private Schema ofpFlowModFlagsSchema = null;
-	private Schema ofpMatchTypeSchema = null;
-	
-	org.apache.avro.Protocol protocol = null;
 
-	public void init() {
-		 
-		try {
-			protocol = org.apache.avro.Protocol.parse(getClass().getClassLoader().getResourceAsStream(schemaSrc));
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		ofpHeaderSchema =  protocol.getType("of12.ofp_header");
-		ofpSwitchFeaturesSchema = protocol.getType("of12.ofp_switch_features");
-		ofpSwitchConfigSchema = protocol.getType("of12.ofp_switch_config");
-		ofpMatchSchema = protocol.getType("of12.ofp_match");
-		ofpFlowModSchema = protocol.getType("of12.ofp_flow_mod");
-		ofpFlowModBaseSchema = protocol.getType("of12.ofp_flow_mod_base");
-		ofpTypeSchema = protocol.getType("of12.ofp_type");
-		ofpConfigFlagsSchema = protocol.getType("of12.ofp_config_flags");
-		ofpFlowModFlagsSchema = protocol.getType("ofp_flow_mod_flags");
-		ofpMatchTypeSchema = protocol.getType("of12.ofp_match_type");
-		
-		
-		
-	}
-	
-	public ByteArrayOutputStream getHello(ByteArrayOutputStream out) {
-		
-		GenericRecord ofpHeaderRecord = new GenericData.Record(ofpHeaderSchema);
-		
-		byte[] ver = {3};		
-		GenericData.Fixed version = new GenericData.Fixed(ofpHeaderSchema, ver); 
-		ofpHeaderRecord.put("version", version);
-		
-	   ofpHeaderRecord.put("type", new EnumSymbol(ofpTypeSchema, "OFPT_HELLO"));
-		
-	   byte[] len = {0,8};
-	   GenericData.Fixed length = new GenericData.Fixed(ofpHeaderSchema, len);
-		ofpHeaderRecord.put("length", length);
-		
-	   byte[] xd = {0,0,0,1};
-	   GenericData.Fixed xid = new GenericData.Fixed(ofpHeaderSchema, xd);
-	   ofpHeaderRecord.put("xid", xid);
-	   
-		
-      DatumWriter<GenericRecord> writer = new GenericDatumWriter<GenericRecord>(ofpHeaderSchema);
-	    
-	   Encoder encoder = EncoderFactory.get().binaryNonEncoder(out, null);
-	    
-		try {
-			writer.write(ofpHeaderRecord, encoder);
-		    encoder.flush();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return out;
-	}
-	
-	public ByteArrayOutputStream getSwitchFeaturesRequest(ByteArrayOutputStream out) {
-		
-		GenericRecord ofpHeaderRecord = new GenericData.Record(ofpHeaderSchema);
-		GenericRecord ofpSwitchFeaturesRecord = new GenericData.Record(ofpSwitchFeaturesSchema);
+  private final String schemaSrc = "of_protocol_12.avpr";
+    
+  private Schema ofpHeaderSchema = null; 
+  private Schema ofpSwitchFeaturesSchema = null;
+  private Schema ofpSwitchConfigSchema = null; 
+  private Schema ofpMatchSchema = null;
+  private Schema ofpFlowModSchema = null;
+  private Schema ofpFlowModBaseSchema = null;
+   
+  private Schema ofpTypeSchema = null;
+  private Schema ofpConfigFlagsSchema = null;	
+  private Schema ofpFlowModCommandSchema = null;
+  private Schema ofpFlowModFlagsSchema = null;
+  private Schema ofpMatchTypeSchema = null;
+   
+  org.apache.avro.Protocol protocol = null;
+
+  public void init() {
+    try {
+      protocol = org.apache.avro.Protocol.parse(getClass().getClassLoader().getResourceAsStream(schemaSrc));
+      } catch (IOException e) {
+      // TODO Auto-generated catch block
+        e.printStackTrace();
+      }
+
+    ofpHeaderSchema =  protocol.getType("of12.ofp_header");
+    
+    ofpHelloSchema =  protocol.getType("of12.ofp_hello");
+    ofpHelloHeaderSchema =  protocol.getType("of12.ofp_hello_header");
+
+    ofpSwitchFeaturesSchema = protocol.getType("of12.ofp_switch_features");
+    ofpSwitchConfigSchema = protocol.getType("of12.ofp_switch_config");
+    ofpMatchSchema = protocol.getType("of12.ofp_match");
+    ofpFlowModSchema = protocol.getType("of12.ofp_flow_mod");
+    ofpFlowModBaseSchema = protocol.getType("of12.ofp_flow_mod_base");
+    ofpTypeSchema = protocol.getType("of12.ofp_type");
+    ofpConfigFlagsSchema = protocol.getType("of12.ofp_config_flags");
+    ofpFlowModFlagsSchema = protocol.getType("ofp_flow_mod_flags");
+    ofpMatchTypeSchema = protocol.getType("of12.ofp_match_type");
+  }
+
+  public ByteArrayOutputStream getHello(ByteArrayOutputStream out) {
+    
+    GenericRecord ofpHelloRecord = new GenericData.Record(ofpHelloSchema);
+    GenericRecord ofpHelloHeaderRecord = new GenericData.Record(ofpHelloHeaderSchema);
+    
+    byte[] xd = {0,0,0,1};
+    GenericData.Fixed xid = new GenericData.Fixed(ofpHelloSchema, xd);
+    ofpHelloHeaderRecord.put("xid", xid);
+    
+    ofpHelloRecord
+    
+    DatumWriter<GenericRecord> writer = new GenericDatumWriter<GenericRecord>(ofpHelloSchema);
+    Encoder encoder = EncoderFactory.get().binaryNonEncoder(out, null);
+    try {
+      writer.write(ofpHelloSchema, encoder);
+      encoder.flush();
+    } catch (IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+    
+    return out;
+  }
+
+  public ByteArrayOutputStream getSwitchFeaturesRequest(ByteArrayOutputStream out) {
+    GenericRecord ofpHeaderRecord = new GenericData.Record(ofpHeaderSchema);
+    GenericRecord ofpSwitchFeaturesRecord = new GenericData.Record(ofpSwitchFeaturesSchema);
 
 	   byte[] ver = {3};    
 	   GenericData.Fixed version = new GenericData.Fixed(ofpHeaderSchema, ver); 

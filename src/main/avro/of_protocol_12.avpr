@@ -15,36 +15,73 @@
     "type": "enum",
     "items": "uint_8",
     "list": [
-     {"name": "OFPT_HELLO", "value": 1},
-     {"name": "OFPT_ERROR",  "value": 2},
-     {"name": "OFPT_ECHO_REQUEST", "value": 3},
-     {"name": "OFPT_ECHO_REPLY", "value": 4},
-     {"name": "OFPT_EXPERIMENTER", "value": 5},
-     {"name": "OFPT_FEATURES_REQUEST", "value": 6},
-     {"name": "OFPT_FEATURES_REPLY", "value": 7},
-     {"name": "OFPT_GET_CONFIG_REQUEST", "value": 8},
-     {"name": "OFPT_GET_CONFIG_REPLY", "value": 9},
-     {"name": "OFPT_SET_CONFIG", "value": 10},
-     {"name": "OFPT_PACKET_IN", "value": 11},
-     {"name": "OFPT_FLOW_REMOVED", "value": 12},
-     {"name": "OFPT_PORT_STATUS", "value": 13},
-     {"name": "OFPT_PACKET_OUT", "value": 14},
-     {"name": "OFPT_FLOW_MOD", "value": 15},
-     {"name": "OFPT_GROUP_MOD", "value": 16},
-     {"name": "OFPT_PORT_MOD", "value": 17},
-     {"name": "OFPT_TABLE_MOD", "value": 18},
-     {"name": "OFPT_MULTIPART_REQUEST", "value": 19},
-     {"name": "OFPT_MULTIPART_REPLY", "value": 20},
-     {"name": "OFPT_BARRIER_REQUEST", "value": 21},
-     {"name": "OFPT_BARRIER_REPLY", "value": 22},
-     {"name": "OFPT_QUEUE_GET_CONFIG_REQUEST", "value": 23},
-     {"name": "OFPT_QUEUE_GET_CONFIG_REPLY", "value": 24},
-     {"name": "OFPT_ROLE_REQUEST", "value": 25},
-     {"name": "OFPT_GET_ASYNC_REQUEST", "value": 26},
-     {"name": "OFPT_ROLE_REPLY", "value": 27},
-     {"name": "OFPT_GET_ASYNC_REPLY", "value": 28},
-     {"name": "OFPT_SET_ASYNC", "value": 29},
-     {"name": "OFPT_METER_MOD", "value": 30}      
+     {"name": "OFPT_HELLO", "default": [1]},
+     {"name": "OFPT_ERROR",  "default": [2]},
+     {"name": "OFPT_ECHO_REQUEST", "default": [3]},
+     {"name": "OFPT_ECHO_REPLY", "default": [4]},
+     {"name": "OFPT_EXPERIMENTER", "default": [5]},
+     {"name": "OFPT_FEATURES_REQUEST", "default": [6]},
+     {"name": "OFPT_FEATURES_REPLY", "default": [7]},
+     {"name": "OFPT_GET_CONFIG_REQUEST", "default": [8]},
+     {"name": "OFPT_GET_CONFIG_REPLY", "default": [9]},
+     {"name": "OFPT_SET_CONFIG", "default": [10]},
+     {"name": "OFPT_PACKET_IN", "default": [11]},
+     {"name": "OFPT_FLOW_REMOVED", "default": [12]},
+     {"name": "OFPT_PORT_STATUS", "default": [13]},
+     {"name": "OFPT_PACKET_OUT", "default": [14]},
+     {"name": "OFPT_FLOW_MOD", "default": [15]},
+     {"name": "OFPT_GROUP_MOD", "default": [16]},
+     {"name": "OFPT_PORT_MOD", "default": [17]},
+     {"name": "OFPT_TABLE_MOD", "default": [18]},
+     {"name": "OFPT_MULTIPART_REQUEST", "default": [19]},
+     {"name": "OFPT_MULTIPART_REPLY", "default": [20]},
+     {"name": "OFPT_BARRIER_REQUEST", "default": [21]},
+     {"name": "OFPT_BARRIER_REPLY", "default": [22]},
+     {"name": "OFPT_QUEUE_GET_CONFIG_REQUEST", "default": [23]},
+     {"name": "OFPT_QUEUE_GET_CONFIG_REPLY", "default": [24]},
+     {"name": "OFPT_ROLE_REQUEST", "default": [25]},
+     {"name": "OFPT_GET_ASYNC_REQUEST", "default": [26]},
+     {"name": "OFPT_ROLE_REPLY", "default": [27]},
+     {"name": "OFPT_GET_ASYNC_REPLY", "default": [28]},
+     {"name": "OFPT_SET_ASYNC", "default": [29]},
+     {"name": "OFPT_METER_MOD", "default": [30]}      
+    ]
+   },
+
+   {"name": "ofp_length",
+    "type": "enum",
+    "items": "uint_16",
+    "list": [
+     {"name": "OFPL_HELLO_LEN", "default": [0,8]},
+     {"name": "OFPL_ERROR_LEN",  "default": [0,0]},
+     {"name": "OFPL_ECHO_REQUEST_LEN", "default": [0,0]},
+     {"name": "OFPL_ECHO_REPLY_LEN", "default": [0,0]},
+     {"name": "OFPL_EXPERIMENTER_LEN", "default": [0,0]},
+     {"name": "OFPL_FEATURES_REQUEST_LEN", "default": [0,8]},
+     {"name": "OFPL_FEATURES_REPLY_LEN", "default": [0,32]},
+     {"name": "OFPL_GET_CONFIG_REQUEST_LEN", "default": [0,0]},
+     {"name": "OFPL_GET_CONFIG_REPLY_LEN", "default": [0,0]},
+     {"name": "OFPL_SET_CONFIG_LEN", "default": [0,0]},
+     {"name": "OFPL_PACKET_IN_LEN", "default": [0,0]},
+     {"name": "OFPL_FLOW_REMOVED_LEN", "default": [0,0]},
+     {"name": "OFPL_PORT_STATUS_LEN", "default": [0,0]},
+     {"name": "OFPL_PACKET_OUT_LEN", "default": [0,0]},
+     {"name": "OFPL_FLOW_MOD_LEN", "default": [0,0]},
+     {"name": "OFPL_GROUP_MOD_LEN", "default": [0,0]},
+     {"name": "OFPL_PORT_MOD_LEN", "default": [0,0]},
+     {"name": "OFPL_TABLE_MOD_LEN", "default": [0,0]},
+     {"name": "OFPL_MULTIPART_REQUEST_LEN", "default": [0,0]},
+     {"name": "OFPL_MULTIPART_REPLY_LEN", "default": [0,0]},
+     {"name": "OFPL_BARRIER_REQUEST_LEN", "default": [0,0]},
+     {"name": "OFPL_BARRIER_REPLY_LEN", "default": [0,0]},
+     {"name": "OFPL_QUEUE_GET_CONFIG_REQUEST_LEN", "default": [0,0]},
+     {"name": "OFPL_QUEUE_GET_CONFIG_REPLY_LEN", "default": [0,0]},
+     {"name": "OFPL_ROLE_REQUEST_LEN", "default": [0,0]},
+     {"name": "OFPL_GET_ASYNC_REQUEST_LEN", "default": [0,0]},
+     {"name": "OFPL_ROLE_REPLY_LEN", "default": [0,0]},
+     {"name": "OFPL_GET_ASYNC_REPLY_LEN", "default": [0,0]},
+     {"name": "OFPL_SET_ASYNC_LEN", "default": [0,0]},
+     {"name": "OFPL_METER_MOD_LEN", "default": [0,0]}      
     ]
    },
    
@@ -131,18 +168,65 @@
     "fields": [ 
       {"name": "version", "type": "uint_8", "default": [3]},
       {"name": "type", "type": "ofp_type"},
-      {"name": "length", "type": "uint_16"},
+      {"name": "length", "type": "ofp_length"},
       {"name": "xid", "type": "uint_32"}
     ]
    },
 
-   {"name": "ofp_header",
+   {"name": "ofp_hello_header",
     "type": "record",
     "fields": [ 
       {"name": "version", "type": "uint_8", "default": [3]},
-      {"name": "type", "type": "ofp_type", ""},
-      {"name": "length", "type": "uint_16"},
+      {"name": "type", "type": "ofp_type", "default": "OFPT_HELLO"},
+      {"name": "length", "type": "ofp_type", "default": "OFPL_HELLO_LEN"},
       {"name": "xid", "type": "uint_32"}
+    ]
+   },
+
+   {"name": "ofp_hello",
+    "type": "record",
+    "fields": [
+      {"name": "header", "type": "ofp_header_hello"}
+    ]
+   },
+
+   {"name": "ofp_switch_features_request_header",
+    "type": "record",
+    "fields": [ 
+      {"name": "version", "type": "uint_8", "default": [3]},
+      {"name": "type", "type": "ofp_type", "default": "OFPT_FEATURES_REQUEST"},
+      {"name": "length", "type": "ofp_type", "default": "OFPL_FEATURES_REQUEST_LEN"},
+      {"name": "xid", "type": "uint_32"}
+    ]
+   },
+   
+   {"name": "ofp_switch_features_request",
+    "type": "record",
+    "fields": [ 
+      {"name": "header", "type": "ofp_header_switch_features"}
+    ]
+   },
+
+   {"name": "ofp_switch_features_header",
+    "type": "record",
+    "fields": [ 
+      {"name": "version", "type": "uint_8", "default": [3]},
+      {"name": "type", "type": "ofp_type", "default": "OFPT_FEATURES_REPLY"},
+      {"name": "length", "type": "ofp_type", "default": "OFPL_FEATURES_REPLY_LEN"},
+      {"name": "xid", "type": "uint_32"}
+    ]
+   },
+
+   {"name": "ofp_switch_features",
+    "type": "record",
+    "fields": [ 
+      {"name": "header", "type": "ofp_switch_features_header"},
+      {"name": "datapath_id", "type": "uint_64"},
+      {"name": "n_buffers", "type": "uint_32"},
+      {"name": "n_tables", "type": "uint_8"},
+      {"name": "pad", "type": "pad_3"},
+      {"name": "capabilities", "type": "uint_32"},
+      {"name": "reserved", "type": "uint_32"}
     ]
    },
 
@@ -324,19 +408,6 @@
     ]
    },   
 
-   {"name": "ofp_switch_features",
-    "type": "record",
-    "fields": [ 
-      {"name": "header", "type": "ofp_header"},
-      {"name": "datapath_id", "type": "uint_64"},
-      {"name": "n_buffers", "type": "uint_32"},
-      {"name": "n_tables", "type": "uint_8"},
-      {"name": "pad", "type": "pad_3"},
-      {"name": "capabilities", "type": "uint_32"},
-      {"name": "reserved", "type": "uint_32"}
-    ]
-   },
-   
    {"name": "ofp_switch_config",
     "type": "record",
     "fields": [ 
@@ -482,42 +553,42 @@
     "type": "enum",
     "items": "bitmap",
     "list": [
-     {"name": "OFPXMT_OFB_IN_PORT", "value": 0},
-     {"name": "OFPXMT_OFB_IN_PHY_PORT", "value": 1},
-     {"name": "OFPXMT_OFB_METADATA", "value": 2},
-     {"name": "OFPXMT_OFB_ETH_DST", "value": 3},
-     {"name": "OFPXMT_OFB_ETH_SRC", "value": 4},
-     {"name": "OFPXMT_OFB_ETH_TYPE", "value": 5},
-     {"name": "OFPXMT_OFB_VLAN_VID", "value": 6},
-     {"name": "OFPXMT_OFB_VLAN_PCP", "value": 7},
-     {"name": "OFPXMT_OFB_IP_DSCP", "value": 8},
-     {"name": "OFPXMT_OFB_IP_ECN", "value": 9},
-     {"name": "OFPXMT_OFB_IP_PROTO", "value": 10},
-     {"name": "OFPXMT_OFB_IPV4_SRC", "value": 11},
-     {"name": "OFPXMT_OFB_IPV4_DST", "value": 12},
-     {"name": "OFPXMT_OFB_TCP_SRC", "value": 13},
-     {"name": "OFPXMT_OFB_TCP_DST", "value": 14},
-     {"name": "OFPXMT_OFB_UDP_SRC", "value": 15},
-     {"name": "OFPXMT_OFB_UDP_DST", "value": 16},
-     {"name": "OFPXMT_OFB_SCTP_SRC", "value": 17},
-     {"name": "OFPXMT_OFB_SCTP_DST", "value": 18},
-     {"name": "OFPXMT_OFB_ICMPV4_TYPE", "value": 19},
-     {"name": "OFPXMT_OFB_ICMPV4_CODE", "value": 20},
-     {"name": "OFPXMT_OFB_ARP_OP", "value": 21},
-     {"name": "OFPXMT_OFB_ARP_SPA", "value": 22},
-     {"name": "OFPXMT_OFB_ARP_TPA", "value": 23},
-     {"name": "OFPXMT_OFB_ARP_SHA", "value": 24},
-     {"name": "OFPXMT_OFB_ARP_THA", "value": 25},
-     {"name": "OFPXMT_OFB_IPV6_SRC", "value": 26},
-     {"name": "OFPXMT_OFB_IPV6_DST", "value": 27},
-     {"name": "OFPXMT_OFB_IPV6_FLABEL", "value": 28},
-     {"name": "OFPXMT_OFB_ICMPV6_TYPE", "value": 29},
-     {"name": "OFPXMT_OFB_ICMPV6_CODE", "value": 30},
-     {"name": "OFPXMT_OFB_IPV6_ND_TARGET", "value": 31},
-     {"name": "OFPXMT_OFB_IPV6_ND_SLL", "value": 32},
-     {"name": "OFPXMT_OFB_IPV6_ND_TLL", "value": 33},
-     {"name": "OFPXMT_OFB_MPLS_LABEL", "value": 34},
-     {"name": "OFPXMT_OFB_MPLS_TC", "value": 35}
+     {"name": "OFPXMT_OFB_IN_PORT", "default": 0},
+     {"name": "OFPXMT_OFB_IN_PHY_PORT", "default": 1},
+     {"name": "OFPXMT_OFB_METADATA", "default": 2},
+     {"name": "OFPXMT_OFB_ETH_DST", "default": 3},
+     {"name": "OFPXMT_OFB_ETH_SRC", "default": 4},
+     {"name": "OFPXMT_OFB_ETH_TYPE", "default": 5},
+     {"name": "OFPXMT_OFB_VLAN_VID", "default": 6},
+     {"name": "OFPXMT_OFB_VLAN_PCP", "default": 7},
+     {"name": "OFPXMT_OFB_IP_DSCP", "default": 8},
+     {"name": "OFPXMT_OFB_IP_ECN", "default": 9},
+     {"name": "OFPXMT_OFB_IP_PROTO", "default": 10},
+     {"name": "OFPXMT_OFB_IPV4_SRC", "default": 11},
+     {"name": "OFPXMT_OFB_IPV4_DST", "default": 12},
+     {"name": "OFPXMT_OFB_TCP_SRC", "default": 13},
+     {"name": "OFPXMT_OFB_TCP_DST", "default": 14},
+     {"name": "OFPXMT_OFB_UDP_SRC", "default": 15},
+     {"name": "OFPXMT_OFB_UDP_DST", "default": 16},
+     {"name": "OFPXMT_OFB_SCTP_SRC", "default": 17},
+     {"name": "OFPXMT_OFB_SCTP_DST", "default": 18},
+     {"name": "OFPXMT_OFB_ICMPV4_TYPE", "default": 19},
+     {"name": "OFPXMT_OFB_ICMPV4_CODE", "default": 20},
+     {"name": "OFPXMT_OFB_ARP_OP", "default": 21},
+     {"name": "OFPXMT_OFB_ARP_SPA", "default": 22},
+     {"name": "OFPXMT_OFB_ARP_TPA", "default": 23},
+     {"name": "OFPXMT_OFB_ARP_SHA", "default": 24},
+     {"name": "OFPXMT_OFB_ARP_THA", "default": 25},
+     {"name": "OFPXMT_OFB_IPV6_SRC", "default": 26},
+     {"name": "OFPXMT_OFB_IPV6_DST", "default": 27},
+     {"name": "OFPXMT_OFB_IPV6_FLABEL", "default": 28},
+     {"name": "OFPXMT_OFB_ICMPV6_TYPE", "default": 29},
+     {"name": "OFPXMT_OFB_ICMPV6_CODE", "default": 30},
+     {"name": "OFPXMT_OFB_IPV6_ND_TARGET", "default": 31},
+     {"name": "OFPXMT_OFB_IPV6_ND_SLL", "default": 32},
+     {"name": "OFPXMT_OFB_IPV6_ND_TLL", "default": 33},
+     {"name": "OFPXMT_OFB_MPLS_LABEL", "default": 34},
+     {"name": "OFPXMT_OFB_MPLS_TC", "default": 35}
     ]
    },
 
@@ -534,45 +605,261 @@
     "type": "enum",
     "items": "bitmap",
     "list": [
-      {"name": "OXM_LENGTH_IN_PORT", "value": 4},
-      {"name": "OXM_LENGTH_ETH_DST", "value": 2},
-      {"name": "OXM_LENGTH_ETH_SRC", "value": 2},
-      {"name": "OFPXMT_OFB_IPV4_SRC", "value": 4},
-      {"name": "OFPXMT_OFB_IPV4_DST", "value": 4},
+      {"name": "OXM_LENGTH_IN_PORT", "default": 4},
+      {"name": "OXM_LENGTH_IN_PHY_PORT", "default": 4},
+      {"name": "OXM_LENGTH_METADATA", "default": 8},
+      {"name": "OXM_LENGTH_ETH_DST", "default": 6},
+      {"name": "OXM_LENGTH_ETH_SRC", "default": 6},
+      {"name": "OXM_LENGTH_ETH_TYPE", "default": 2},
+      {"name": "OXM_LENGTH_VLAN_VID", "default": 2},
+      {"name": "OXM_LENGTH_VLAN_PCP", "default": 1},
+      {"name": "OXM_LENGTH_IP_DSCP", "default": 1},
+      {"name": "OXM_LENGTH_IP_ECN", "default": 1},
+      {"name": "OXM_LENGTH_IP_PROTO", "default": 1},
+      {"name": "OXM_LENGTH_IPV4_SRC", "default": 4},
+      {"name": "OXM_LENGTH_IPV4_DST", "default": 4},
+      {"name": "OXM_LENGTH_TCP_SRC", "default": 2},
+      {"name": "OXM_LENGTH_TCP_DST", "default": 2},
+      {"name": "OXM_LENGTH_UDP_SRC", "default": 2},
+      {"name": "OXM_LENGTH_UDP_DST", "default": 2},
+      {"name": "OXM_LENGTH_SCTP_SRC", "default": 2},
+      {"name": "OXM_LENGTH_SCTP_DST", "default": 2},
+      {"name": "OXM_LENGTH_ICMPV4_TYPE", "default": 1},
+      {"name": "OXM_LENGTH_ICMPV4_CODE", "default": 1},
+      {"name": "OXM_LENGTH_ARP_OP", "default": 2},
+      {"name": "OXM_LENGTH_ARP_SPA", "default": 4},
+      {"name": "OXM_LENGTH_ARP_TPA", "default": 4},
+      {"name": "OXM_LENGTH_ARP_SHA", "default": 6},
+      {"name": "OXM_LENGTH_ARP_THA", "default": 6},
+      {"name": "OXM_LENGTH_IPV6_SRC", "default": 16},
+      {"name": "OXM_LENGTH_IPV6_DST", "default": 16},
+      {"name": "OXM_LENGTH_ICMPV6_FLABEL", "default": 3},
+      {"name": "OXM_LENGTH_ICMPV6_TYPE", "default": 1},
+      {"name": "OXM_LENGTH_IPV6_CODE", "default": 1},
+      {"name": "OXM_LENGTH_IPV6_ND_TARGET", "default": 16},
+      {"name": "OXM_LENGTH_IPV6_ND_SLL", "default": 6},
+      {"name": "OXM_LENGTH_IPV6_ND_TLL", "default": 6},
+      {"name": "OXM_LENGTH_MPLS_LABEL", "default": 3},
+      {"name": "OXM_LENGTH_MPLS_TC", "default": 1}
      ]
    },
 
    {"name": "OXM_HEADER_IN_PORT", 
     "type": "bitmap",
     "size": 32,
-    "set_bits": {"or": [{"shift": ["OFPXMT_OFB_IN_PORT", 9]},{"shift": ["OFPXMC_OPENFLOW_BASIC", 16]},{"shift": ["OXM_HAS_MASK_UNSET", 8]},"OXM_LENGTH_IN_PORT"]}
+    "default": {"or": [{"shift": ["OFPXMT_OFB_IN_PORT", 9]},{"shift": ["OFPXMC_OPENFLOW_BASIC", 16]},{"shift": ["OXM_HAS_MASK_UNSET", 8]},"OXM_LENGTH_IN_PORT"]}
+   },
+
+   {"name": "OXM_HEADER_IN_PHY_PORT", 
+    "type": "bitmap",
+    "size": 32,
+    "default": {"or": [{"shift": ["OFPXMT_OFB_IN_PHY_PORT", 9]},{"shift": ["OFPXMC_OPENFLOW_BASIC", 16]},{"shift": ["OXM_HAS_MASK_UNSET", 8]},"OXM_LENGTH_IN_PHY_PORT"]}
+   },
+
+   {"name": "OXM_HEADER_METADATA", 
+    "type": "bitmap",
+    "size": 32,
+    "default": {"or": [{"shift": ["OFPXMT_OFB_METADATA", 9]},{"shift": ["OFPXMC_OPENFLOW_BASIC", 16]},{"shift": ["OXM_HAS_MASK_SET", 8]},"OXM_LENGTH_METADATA"]}
    },
 
    {"name": "OXM_HEADER_ETH_DST", 
     "type": "bitmap",
     "size": 32,
-    "set_bits": {"or": [{"shift": ["OFPXMT_OFB_ETH_DST", 9]},{"shift": ["OFPXMC_OPENFLOW_BASIC", 16]},{"shift": ["OXM_HAS_MASK_UNSET", 8]}, "OXM_LENGTH_ETH_DST"]}
+    "default": {"or": [{"shift": ["OFPXMT_OFB_ETH_DST", 9]},{"shift": ["OFPXMC_OPENFLOW_BASIC", 16]},{"shift": ["OXM_HAS_MASK_SET", 8]}, "OXM_LENGTH_ETH_DST"]}
    },
 
    {"name": "OXM_HEADER_ETH_SRC", 
     "type": "bitmap",
     "size": 32,
-    "set_bits": {"or": [{"shift": ["OFPXMT_OFB_ETH_SRC", 9]},{"shift": ["OFPXMC_OPENFLOW_BASIC", 16]},{"shift": ["OXM_HAS_MASK_UNSET", 8]}, "OXM_LENGTH_ETH_SRC"]}
+    "default": {"or": [{"shift": ["OFPXMT_OFB_ETH_SRC", 9]},{"shift": ["OFPXMC_OPENFLOW_BASIC", 16]},{"shift": ["OXM_HAS_MASK_SET", 8]}, "OXM_LENGTH_ETH_SRC"]}
+   },
+
+   {"name": "OXM_HEADER_ETH_TYPE", 
+    "type": "bitmap",
+    "size": 32,
+    "default": {"or": [{"shift": ["OFPXMT_OFB_ETH_TYPE", 9]},{"shift": ["OFPXMC_OPENFLOW_BASIC", 16]},{"shift": ["OXM_HAS_MASK_UNSET", 8]}, "OXM_LENGTH_ETH_TYPE"]}
+   },
+
+   {"name": "OXM_HEADER_VLAN_VID", 
+    "type": "bitmap",
+    "size": 32,
+    "default": {"or": [{"shift": ["OFPXMT_OFB_VLAN_VID", 9]},{"shift": ["OFPXMC_OPENFLOW_BASIC", 16]},{"shift": ["OXM_HAS_MASK_SET", 8]}, "OXM_LENGTH_VLAN_VID"]}
+   },
+
+   {"name": "OXM_HEADER_VLAN_PCP", 
+    "type": "bitmap",
+    "size": 32,
+    "default": {"or": [{"shift": ["OFPXMT_OFB_VLAN_PCP", 9]},{"shift": ["OFPXMC_OPENFLOW_BASIC", 16]},{"shift": ["OXM_HAS_MASK_UNSET", 8]}, "OXM_LENGTH_VLAN_PCP"]}
+   },
+
+   {"name": "OXM_HEADER_IP_DSCP", 
+    "type": "bitmap",
+    "size": 32,
+    "default": {"or": [{"shift": ["OFPXMT_OFB_VLAN_PCP", 9]},{"shift": ["OFPXMC_OPENFLOW_BASIC", 16]},{"shift": ["OXM_HAS_MASK_UNSET", 8]}, "OXM_LENGTH_VLAN_PCP"]}
+   },
+
+   {"name": "OXM_HEADER_IP_ECN", 
+    "type": "bitmap",
+    "size": 32,
+    "default": {"or": [{"shift": ["OFPXMT_OFB_IP_ECN", 9]},{"shift": ["OFPXMC_OPENFLOW_BASIC", 16]},{"shift": ["OXM_HAS_MASK_UNSET", 8]}, "OXM_LENGTH_IP_ECN"]}
+   },
+
+   {"name": "OXM_HEADER_IP_PROTO", 
+    "type": "bitmap",
+    "size": 32,
+    "default": {"or": [{"shift": ["OFPXMT_OFB_IP_PROTO", 9]},{"shift": ["OFPXMC_OPENFLOW_BASIC", 16]},{"shift": ["OXM_HAS_MASK_UNSET", 8]}, "OXM_LENGTH_IP_PROTO"]}
    },
 
    {"name": "OXM_HEADER_IPV4_SRC", 
     "type": "bitmap",
     "size": 32,
-    "set_bits": {"or": [{"shift": ["OFPXMT_OFB_IPV4_SRC", 9]},{"shift": ["OFPXMC_OPENFLOW_BASIC", 16]},{"shift": ["OXM_HAS_MASK_UNSET", 8]}, "OFPXMT_OFB_IPV4_SRC"]}
+    "default": {"or": [{"shift": ["OFPXMT_OFB_IPV4_SRC", 9]},{"shift": ["OFPXMC_OPENFLOW_BASIC", 16]},{"shift": ["OXM_HAS_MASK_UNSET", 8]}, "OFPXMT_OFB_IPV4_SRC"]}
    },
 
    {"name": "OXM_HEADER_IPV4_DST", 
     "type": "bitmap",
     "size": 32,
-    "set_bits": {"or": [{"shift": ["OFPXMT_OFB_IPV4_DST", 9]},{"shift": ["OFPXMC_OPENFLOW_BASIC", 16]},{"shift": ["OXM_HAS_MASK_UNSET", 8]}, "OFPXMT_OFB_IPV4_DST"]}
+    "default": {"or": [{"shift": ["OFPXMT_OFB_IPV4_DST", 9]},{"shift": ["OFPXMC_OPENFLOW_BASIC", 16]},{"shift": ["OXM_HAS_MASK_UNSET", 8]}, "OFPXMT_OFB_IPV4_DST"]}
    },
 
-   
+   {"name": "OXM_HEADER_TCP_SRC", 
+    "type": "bitmap",
+    "size": 32,
+    "default": {"or": [{"shift": ["OFPXMT_OFB_TCP_SRC", 9]},{"shift": ["OFPXMC_OPENFLOW_BASIC", 16]},{"shift": ["OXM_HAS_MASK_UNSET", 8]}, "OFPXMT_OFB_TCP_SRC"]}
+   },
+
+   {"name": "OXM_HEADER_TCP_DST", 
+    "type": "bitmap",
+    "size": 32,
+    "default": {"or": [{"shift": ["OFPXMT_OFB_TCP_DST", 9]},{"shift": ["OFPXMC_OPENFLOW_BASIC", 16]},{"shift": ["OXM_HAS_MASK_UNSET", 8]}, "OFPXMT_OFB_TCP_DST"]}
+   },
+
+   {"name": "OXM_HEADER_UDP_SRC", 
+    "type": "bitmap",
+    "size": 32,
+    "default": {"or": [{"shift": ["OFPXMT_OFB_UDP_SRC", 9]},{"shift": ["OFPXMC_OPENFLOW_BASIC", 16]},{"shift": ["OXM_HAS_MASK_UNSET", 8]}, "OFPXMT_OFB_UDP_SRC"]}
+   },
+
+   {"name": "OXM_HEADER_UDP_DST", 
+    "type": "bitmap",
+    "size": 32,
+    "default": {"or": [{"shift": ["OFPXMT_OFB_UDP_DST", 9]},{"shift": ["OFPXMC_OPENFLOW_BASIC", 16]},{"shift": ["OXM_HAS_MASK_UNSET", 8]}, "OFPXMT_OFB_UDP_DST"]}
+   },
+
+   {"name": "OXM_HEADER_SCTP_SRC", 
+    "type": "bitmap",
+    "size": 32,
+    "default": {"or": [{"shift": ["OFPXMT_OFB_SCTP_SRC", 9]},{"shift": ["OFPXMC_OPENFLOW_BASIC", 16]},{"shift": ["OXM_HAS_MASK_UNSET", 8]}, "OFPXMT_OFB_SCTP_SRC"]}
+   },
+
+   {"name": "OXM_HEADER_SCTP_DST", 
+    "type": "bitmap",
+    "size": 32,
+    "default": {"or": [{"shift": ["OFPXMT_OFB_SCTP_DST", 9]},{"shift": ["OFPXMC_OPENFLOW_BASIC", 16]},{"shift": ["OXM_HAS_MASK_UNSET", 8]}, "OFPXMT_OFB_SCTP_DST"]}
+   },
+
+   {"name": "OXM_HEADER_ICMPV4_TYPE", 
+    "type": "bitmap",
+    "size": 32,
+    "default": {"or": [{"shift": ["OFPXMT_OFB_ICMPV4_TYPE", 9]},{"shift": ["OFPXMC_OPENFLOW_BASIC", 16]},{"shift": ["OXM_HAS_MASK_UNSET", 8]}, "OFPXMT_OFB_ICMPV4_TYPE"]}
+   },
+
+   {"name": "OXM_HEADER_ICMPV4_CODE", 
+    "type": "bitmap",
+    "size": 32,
+    "default": {"or": [{"shift": ["OFPXMT_OFB_ICMPV4_CODE", 9]},{"shift": ["OFPXMC_OPENFLOW_BASIC", 16]},{"shift": ["OXM_HAS_MASK_UNSET", 8]}, "OFPXMT_OFB_ICMPV4_CODE"]}
+   },
+
+   {"name": "OXM_HEADER_ARP_OP", 
+    "type": "bitmap",
+    "size": 32,
+    "default": {"or": [{"shift": ["OFPXMT_OFB_ARP_OP", 9]},{"shift": ["OFPXMC_OPENFLOW_BASIC", 16]},{"shift": ["OXM_HAS_MASK_UNSET", 8]}, "OFPXMT_OFB_ARP_OP"]}
+   },
+
+   {"name": "OXM_HEADER_ARP_SPA", 
+    "type": "bitmap",
+    "size": 32,
+    "default": {"or": [{"shift": ["OFPXMT_OFB_ARP_SPA", 9]},{"shift": ["OFPXMC_OPENFLOW_BASIC", 16]},{"shift": ["OXM_HAS_MASK_UNSET", 8]}, "OFPXMT_OFB_ARP_SPA"]}
+   },
+
+   {"name": "OXM_HEADER_ARP_TPA", 
+    "type": "bitmap",
+    "size": 32,
+    "default": {"or": [{"shift": ["OFPXMT_OFB_ARP_TPA", 9]},{"shift": ["OFPXMC_OPENFLOW_BASIC", 16]},{"shift": ["OXM_HAS_MASK_UNSET", 8]}, "OFPXMT_OFB_ARP_TPA"]}
+   },
+
+   {"name": "OXM_HEADER_ARP_SHA", 
+    "type": "bitmap",
+    "size": 32,
+    "default": {"or": [{"shift": ["OFPXMT_OFB_ARP_SHA", 9]},{"shift": ["OFPXMC_OPENFLOW_BASIC", 16]},{"shift": ["OXM_HAS_MASK_UNSET", 8]}, "OFPXMT_OFB_ARP_SHA"]}
+   },
+
+   {"name": "OXM_HEADER_ARP_THA", 
+    "type": "bitmap",
+    "size": 32,
+    "default": {"or": [{"shift": ["OFPXMT_OFB_ARP_THA", 9]},{"shift": ["OFPXMC_OPENFLOW_BASIC", 16]},{"shift": ["OXM_HAS_MASK_UNSET", 8]}, "OFPXMT_OFB_ARP_THA"]}
+   },
+
+   {"name": "OXM_HEADER_IPV6_SRC", 
+    "type": "bitmap",
+    "size": 32,
+    "default": {"or": [{"shift": ["OFPXMT_OFB_IPV6_SRC", 9]},{"shift": ["OFPXMC_OPENFLOW_BASIC", 16]},{"shift": ["OXM_HAS_MASK_UNSET", 8]}, "OFPXMT_OFB_IPV6_SRC"]}
+   },
+
+   {"name": "OXM_HEADER_IPV6_DST", 
+    "type": "bitmap",
+    "size": 32,
+    "default": {"or": [{"shift": ["OFPXMT_OFB_IPV6_DST", 9]},{"shift": ["OFPXMC_OPENFLOW_BASIC", 16]},{"shift": ["OXM_HAS_MASK_UNSET", 8]}, "OFPXMT_OFB_IPV6_DST"]}
+   },
+
+   {"name": "OXM_HEADER_IPV6_FLABEL", 
+    "type": "bitmap",
+    "size": 32,
+    "default": {"or": [{"shift": ["OFPXMT_OFB_IPV6_FLABEL", 9]},{"shift": ["OFPXMC_OPENFLOW_BASIC", 16]},{"shift": ["OXM_HAS_MASK_UNSET", 8]}, "OFPXMT_OFB_IPV6_FLABEL"]}
+   },
+
+   {"name": "OXM_HEADER_ICMPV6_TYPE", 
+    "type": "bitmap",
+    "size": 32,
+    "default": {"or": [{"shift": ["OFPXMT_OFB_ICMPV6_TYPE", 9]},{"shift": ["OFPXMC_OPENFLOW_BASIC", 16]},{"shift": ["OXM_HAS_MASK_UNSET", 8]}, "OFPXMT_OFB_ICMPV6_TYPE"]}
+   },
+
+   {"name": "OXM_HEADER_ICMPV6_CODE", 
+    "type": "bitmap",
+    "size": 32,
+    "default": {"or": [{"shift": ["OFPXMT_OFB_ICMPV6_CODE", 9]},{"shift": ["OFPXMC_OPENFLOW_BASIC", 16]},{"shift": ["OXM_HAS_MASK_UNSET", 8]}, "OFPXMT_OFB_ICMPV6_CODE"]}
+   },
+
+   {"name": "OXM_HEADER_IPV6_ND_TARGET", 
+    "type": "bitmap",
+    "size": 32,
+    "default": {"or": [{"shift": ["OFPXMT_OFB_IPV6_ND_TARGET", 9]},{"shift": ["OFPXMC_OPENFLOW_BASIC", 16]},{"shift": ["OXM_HAS_MASK_UNSET", 8]}, "OFPXMT_OFB_IPV6_ND_TARGET"]}
+   },
+
+   {"name": "OXM_HEADER_IPV6_ND_SLL", 
+    "type": "bitmap",
+    "size": 32,
+    "default": {"or": [{"shift": ["OFPXMT_OFB_IPV6_ND_SLL", 9]},{"shift": ["OFPXMC_OPENFLOW_BASIC", 16]},{"shift": ["OXM_HAS_MASK_UNSET", 8]}, "OFPXMT_OFB_IPV6_ND_SLL"]}
+   },
+
+   {"name": "OXM_HEADER_IPV6_ND_TLL", 
+    "type": "bitmap",
+    "size": 32,
+    "default": {"or": [{"shift": ["OFPXMT_OFB_IPV6_ND_TLL", 9]},{"shift": ["OFPXMC_OPENFLOW_BASIC", 16]},{"shift": ["OXM_HAS_MASK_UNSET", 8]}, "OFPXMT_OFB_IPV6_ND_TLL"]}
+   },
+
+   {"name": "OXM_HEADER_MPLS_LABEL", 
+    "type": "bitmap",
+    "size": 32,
+    "default": {"or": [{"shift": ["OFPXMT_OFB_MPLS_LABEL", 9]},{"shift": ["OFPXMC_OPENFLOW_BASIC", 16]},{"shift": ["OXM_HAS_MASK_UNSET", 8]}, "OFPXMT_OFB_MPLS_LABEL"]}
+   },
+
+   {"name": "OXM_HEADER_MPLS_TC", 
+    "type": "bitmap",
+    "size": 32,
+    "default": {"or": [{"shift": ["OFPXMT_OFB_MPLS_TC", 9]},{"shift": ["OFPXMC_OPENFLOW_BASIC", 16]},{"shift": ["OXM_HAS_MASK_UNSET", 8]}, "OFPXMT_OFB_MPLS_TC"]}
+   },
+
    {"name": "ofp_match",
     "type": "record",
     "fields": [
@@ -615,9 +902,9 @@
     "type": "enum",
     "items": "uint_16",
     "list": [
-      {"name": "OFPGC_ADD", "value": 0},
-      {"name": "OFPGC_MODIFY", "value": 1},
-      {"name": "OFPGC_DELETE", "value": 2}
+      {"name": "OFPGC_ADD", "default": 0},
+      {"name": "OFPGC_MODIFY", "default": 1},
+      {"name": "OFPGC_DELETE", "default": 2}
     ]
    },
 
@@ -625,10 +912,10 @@
     "type": "enum",
     "items": "uint_8",
     "list": [
-      {"name": "OFPGT_ALL", "value": 0},
-      {"name": "OFPGT_SELECT", "value": 1},
-      {"name": "OFPGT_INDIRECT", "value": 2},
-      {"name": "OFPGT_FF", "value": 3}
+      {"name": "OFPGT_ALL", "default": 0},
+      {"name": "OFPGT_SELECT", "default": 1},
+      {"name": "OFPGT_INDIRECT", "default": 2},
+      {"name": "OFPGT_FF", "default": 3}
     ]
    },
 
