@@ -340,7 +340,7 @@ public abstract class Schema extends JsonProperties {
 
   // TODO OF Changes - New Enum <
   /** An item of Enum */
-  public static class EnumItem extends JsonProperties {
+  /*public static class EnumItem extends JsonProperties {
     
     private final String name;
     private final String itemsType;
@@ -369,7 +369,7 @@ public abstract class Schema extends JsonProperties {
     }
 
     
-  }
+  }*/
   
   // TODO OF Changes - New Enum >    
   
@@ -691,9 +691,8 @@ public abstract class Schema extends JsonProperties {
   private static class EnumSchema extends NamedSchema {
     private final List<String> symbols;
     private final Map<String,Integer> ordinals;
-    private final Map<String, EnumItem> items;
-    private final String itemsType;    
-
+    private final Map<String, JsonNode> items;
+    private final Schema itemsSchema;    
      
     public EnumSchema(Name name, String doc,
         LockableArrayList<String> symbols) {
@@ -701,26 +700,28 @@ public abstract class Schema extends JsonProperties {
       this.symbols = symbols.lock();
       this.ordinals = new HashMap<String,Integer>();
       this.items = null;
-      this.itemsType = null;
+      this.itemsSchema = null;
       
       int i = 0;
       for (String symbol : symbols)
         if (ordinals.put(validateName(symbol), i++) != null)
           throw new SchemaParseException("Duplicate enum symbol: "+symbol);
     }
-    public EnumSchema(Name name, String doc, String itemsType,
+
+    public EnumSchema(Name name, String doc, Schema itemsSchema,
         LockableArrayList<JsonNode> list, LockableArrayList<String> symbols) {
       super(Type.ENUM, name, doc);
       this.symbols = symbols.lock();
       this.ordinals = null;
-      this.itemsType = itemsType;
-      this.items = new HashMap<String,EnumItem>();
+      this.itemsSchema = itemsSchema;
+      
+      this.items = new HashMap<String, JsonNode>();
       
       for (JsonNode n : list) {
-/*         EnumItem item = new EnumItem(n.get("name").getTextValue(), 
-                                      schema, type, defaultValue)*/
+         int i = 0;
       }
     }
+
     public List<String> getEnumSymbols() { return symbols; }
     public boolean hasEnumSymbol(String symbol) { 
       return ordinals.containsKey(symbol); }
@@ -891,11 +892,13 @@ public abstract class Schema extends JsonProperties {
   
   private static class BitmapSchema extends NamedSchema { //TODO OF Changes: BitmapSchema
     private final int size;
-    public BitmapSchema(Name name, String doc, int size) {
+    private final JsonNode value;
+    public BitmapSchema(Name name, String doc, int size, JsonNode defaultValue) {
       super(Type.BITMAP, name, doc);
       if (size < 0)
         throw new IllegalArgumentException("Invalid fixed size: "+size);
       this.size = size;
+      this.value = defaultValue;
     }
   }
 
@@ -1165,9 +1168,14 @@ public abstract class Schema extends JsonProperties {
           if (defaultValue != null
               && (Type.FLOAT.equals(fieldSchema.getType())
                   || Type.DOUBLE.equals(fieldSchema.getType()))
-              && defaultValue.isTextual())
+              && defaultValue.isTextual()) {
             defaultValue =
               new DoubleNode(Double.valueOf(defaultValue.getTextValue()));
+          } else if ( defaultValue.isTextual()) {
+            Schema defaultSchema = names.get(fieldTypeNode.getTextValue());
+            defaultValue.isTextual();
+          }
+          
           Field f = new Field(fieldName, fieldSchema,
                               fieldDoc, defaultValue, order);
           Iterator<String> i = field.getFieldNames();
@@ -1197,20 +1205,17 @@ public abstract class Schema extends JsonProperties {
         }
         
         else if (itemsNode != null && listNode != null) {
-          result = new RecordSchema(name, doc, type.equals("error"));
-          if (name != null) names.add(result);
 
-          String itemsType = itemsNode.get;
+          Schema itemsSchema = parse(itemsNode, names);//String itemsType = itemsNode.get;
           LockableArrayList<JsonNode> list = new LockableArrayList<JsonNode>();
           LockableArrayList<String> symbols = new LockableArrayList<String>();
           Iterator<JsonNode> i =  listNode.getElements();
           while (i.hasNext()) {
             JsonNode n = i.next();
-            
-            list.add(n);
             symbols.add(n.get("name").getTextValue());
+            list.add(n.get("default"));
           }
-          result = new EnumSchema(name, doc, itemsType, list, symbols);
+          result = new EnumSchema(name, doc, itemsSchema, list, symbols);
         }                                             // TODO OF Changes - New Enum >
       } else if (type.equals("array")) {          // array
         JsonNode itemsNode = schema.get("items");
@@ -1231,9 +1236,9 @@ public abstract class Schema extends JsonProperties {
       } else if (type.equals("bitmap")) { // TODO OF changes - Bit operations
         JsonNode setBitsNode = schema.get("set_bits");
         JsonNode sizeNode = schema.get("size");
-        if (setBitsNode == null) 
-          throw new SchemaParseException ("No bits to set:" + schema);
-        result = new BitmapSchema(name, doc, sizeNode.getIntValue());
+        //if (setBitsNode == null) 
+        //  throw new SchemaParseException ("No bits to set:" + schema);
+        result = null;//result = new BitmapSchema(name, doc, sizeNode.getIntValue());
       } else
         throw new SchemaParseException("Type not supported: "+type);
       Iterator<String> i = schema.getFieldNames();
