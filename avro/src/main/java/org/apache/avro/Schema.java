@@ -709,17 +709,22 @@ public abstract class Schema extends JsonProperties {
     }
 
     public EnumSchema(Name name, String doc, Schema itemsSchema,
-        LockableArrayList<JsonNode> list, LockableArrayList<String> symbols) {
+        LockableArrayList<JsonNode> list) {
       super(Type.ENUM, name, doc);
-      this.symbols = symbols.lock();
+      //this.symbols = symbols.lock();
       this.ordinals = null;
       this.itemsSchema = itemsSchema;
       
+      this.symbols = new ArrayList<String>();
       this.items = new HashMap<String, JsonNode>();
       
       for (JsonNode n : list) {
-         int i = 0;
+        items.put(n.get("name").getTextValue(),
+                  n.get("default"));  
+        this.symbols.add(n.get("name").getTextValue());
       }
+
+      return;
     }
 
     public List<String> getEnumSymbols() { return symbols; }
@@ -1213,7 +1218,7 @@ public abstract class Schema extends JsonProperties {
           while (i.hasNext()) {
             JsonNode n = i.next();
             symbols.add(n.get("name").getTextValue());
-            list.add(n.get("default"));
+            list.add(n);
           }
           result = new EnumSchema(name, doc, itemsSchema, list, symbols);
         }                                             // TODO OF Changes - New Enum >
