@@ -1,0 +1,11 @@
+{"namespace" : "of12",
+"protocol": "ofp12",
+"types": [
+ {"type": "bitmap",
+  "name": "bitmap1",
+  "size": 32,
+  "default": 5 
+ }
+ 
+ ]
+}

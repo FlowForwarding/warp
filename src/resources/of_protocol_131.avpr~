@@ -307,7 +307,7 @@
     "type": "record",
     "fields": [
       {"name": "header", "type": "uint_32"},
-      {"name": "tlv", "type": "uint_24", "default": [0,0,0]}
+      {"name": "tlv", "type": "uint_16", "default": [0,0]}
     ]
    },
 
