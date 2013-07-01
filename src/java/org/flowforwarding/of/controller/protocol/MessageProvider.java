@@ -78,6 +78,7 @@ public class MessageProvider {
    private Schema uint_24Schema = null;
    private Schema uint_32Schema = null;
    private Schema uint_48Schema = null;
+   private Schema uint_64Schema = null;
 
    
    private Protocol protocol = null;
@@ -144,6 +145,7 @@ public class MessageProvider {
       uint_16Schema = protocol.getType("of.uint_24");
       uint_32Schema = protocol.getType("of.uint_32");
       uint_48Schema = protocol.getType("of.uint_48");
+      uint_64Schema = protocol.getType("of.uint_64");
 
       
    }
@@ -374,6 +376,104 @@ public class MessageProvider {
             oxmTlvRecord.put("match", oxmTlvIngressPortRecord);
             
             matches.add(oxmTlvRecord);
+            /*
+             * MATCH - IN_PHY PORT
+             */
+         } else if (key.equals("in_phy_port")) {
+            Schema oxmTlvInPhyPortSchema = protocol.getType("of.oxm_tlv_in_phy_port");
+            GenericRecord oxmTlvInPhyPortRecord = new GenericData.Record(oxmTlvInPhyPortSchema);
+               
+            int oxmTlvHeader = (OXMClass.OFPXMC_OPENFLOW_BASIC.getValue() << 16) | 
+                               (OXMField.OFPXMT_OFB_IN_PHY_PORT.getValue() << 9) | 
+                               (0 << 8) |
+                               4;
+                  
+            byte inPH [] = {(byte)(oxmTlvHeader >> 24), (byte)(oxmTlvHeader >> 16), (byte)(oxmTlvHeader >> 8), (byte)(oxmTlvHeader) };
+            int inPort = Integer.valueOf((String) args.get(key));
+            GenericData.Fixed inPortHeader = new GenericData.Fixed(uint_32Schema, inPH);
+               
+            oxmTlvInPhyPortRecord.put("header", inPortHeader);
+            oxmTlvInPhyPortRecord.put("tlv", getUint32Fixed(inPort));
+               
+            Schema oxmTlvSchema = protocol.getType("of.oxm_tlv");
+            GenericRecord oxmTlvRecord = new GenericData.Record(oxmTlvSchema);
+            oxmTlvRecord.put("match", oxmTlvInPhyPortRecord);
+               
+            matches.add(oxmTlvRecord);
+            
+            /*
+             * MATCH - METADATA
+             */
+         } else if (key.equals("metadata")) {
+            Schema oxmTlvMetadataSchema = protocol.getType("of.oxm_tlv_metadata");
+            GenericRecord oxmTlvMetadataRecord = new GenericData.Record(oxmTlvMetadataSchema);
+               
+            int oxmTlvHeader = (OXMClass.OFPXMC_OPENFLOW_BASIC.getValue() << 16) | 
+                               (OXMField.OFPXMT_OFB_METADATA.getValue() << 9) | 
+                               (0 << 8) |
+                               8;
+                  
+            byte h [] = {(byte)(oxmTlvHeader >> 24), (byte)(oxmTlvHeader >> 16), (byte)(oxmTlvHeader >> 8), (byte)(oxmTlvHeader) };
+            long mdata = Integer.valueOf((String) args.get(key));
+            GenericData.Fixed inPortHeader = new GenericData.Fixed(uint_64Schema, h);
+               
+            oxmTlvMetadataRecord.put("header", inPortHeader);
+            oxmTlvMetadataRecord.put("tlv", getUint64Fixed(mdata));
+               
+            Schema oxmTlvSchema = protocol.getType("of.oxm_tlv");
+            GenericRecord oxmTlvRecord = new GenericData.Record(oxmTlvSchema);
+            oxmTlvRecord.put("match", oxmTlvMetadataRecord);
+               
+            matches.add(oxmTlvRecord);
+            
+            /* 
+             * MATCH - ETH_DST
+             */
+        } else if (key.equals("dl_dst")) {
+           int oxmTlvHeader = (OXMClass.OFPXMC_OPENFLOW_BASIC.getValue() << 16) | 
+                 (OXMField.OFPXMT_OFB_ETH_DST.getValue() << 9) | 
+                 (0 << 8) |
+                 6;
+           
+           Schema oxmTlvEthDstSchema = protocol.getType("of.oxm_tlv_eth_dst");
+           GenericRecord oxmTlvEthDstRecord = new GenericData.Record(oxmTlvEthDstSchema);
+
+           //long ethDst = Long.valueOf((String) args.get(key));
+           long ethDst = 1;
+                       
+           oxmTlvEthDstRecord.put("header", getUint32Fixed(oxmTlvHeader));
+           oxmTlvEthDstRecord.put("tlv", getUint48Fixed(ethDst));
+           
+           Schema oxmTlvSchema = protocol.getType("of.oxm_tlv");
+           GenericRecord oxmTlvRecord = new GenericData.Record(oxmTlvSchema);
+           oxmTlvRecord.put("match", oxmTlvEthDstRecord);
+           
+           matches.add(oxmTlvRecord);
+           
+           /* 
+            * MATCH - ETH_SRC
+            */
+       } else if (key.equals("dl_src")) {
+          int oxmTlvHeader = (OXMClass.OFPXMC_OPENFLOW_BASIC.getValue() << 16) | 
+                (OXMField.OFPXMT_OFB_ETH_SRC.getValue() << 9) | 
+                (0 << 8) |
+                6;
+          
+          Schema oxmTlvFieldSchema = protocol.getType("of.oxm_tlv_eth_src");
+          GenericRecord oxmTlvFieldRecord = new GenericData.Record(oxmTlvFieldSchema);
+
+          //long ethDst = Long.valueOf((String) args.get(key));
+          long val = 1;
+                      
+          oxmTlvFieldRecord.put("header", getUint32Fixed(oxmTlvHeader));
+          oxmTlvFieldRecord.put("tlv", getUint48Fixed(val));
+          
+          Schema oxmTlvSchema = protocol.getType("of.oxm_tlv");
+          GenericRecord oxmTlvRecord = new GenericData.Record(oxmTlvSchema);
+          oxmTlvRecord.put("match", oxmTlvFieldRecord);
+          
+          matches.add(oxmTlvRecord);
+
          /* 
           * MATCH - ETH_TYPE
           */
@@ -400,30 +500,6 @@ public class MessageProvider {
             
             matches.add(oxmTlvRecord);
 
-            /* 
-             * MATCH - ETH_DST
-             */
-        } else if (key.equals("dl_dst")) {
-           int oxmTlvHeader = (OXMClass.OFPXMC_OPENFLOW_BASIC.getValue() << 16) | 
-                 (OXMField.OFPXMT_OFB_ETH_DST.getValue() << 9) | 
-                 (0 << 8) |
-                 6;
-           
-           Schema oxmTlvEthDstSchema = protocol.getType("of.oxm_tlv_eth_dst");
-           GenericRecord oxmTlvEthDstRecord = new GenericData.Record(oxmTlvEthDstSchema);
-
-           //long ethDst = Long.valueOf((String) args.get(key));
-           long ethDst = 1;
-                       
-           oxmTlvEthDstRecord.put("header", getUint32Fixed(oxmTlvHeader));
-           oxmTlvEthDstRecord.put("tlv", getUint48Fixed(ethDst));
-           
-           Schema oxmTlvSchema = protocol.getType("of.oxm_tlv");
-           GenericRecord oxmTlvRecord = new GenericData.Record(oxmTlvSchema);
-           oxmTlvRecord.put("match", oxmTlvEthDstRecord);
-           
-           matches.add(oxmTlvRecord);
-           
         } else if (key.equals("vlan_vid")) {
            
            Schema oxmTlvVlanVidSchema = protocol.getType("of.oxm_tlv_vlan_vid");
@@ -1255,6 +1331,7 @@ public class MessageProvider {
       return 0;
    }
    
+   
    // Parse int as decimal, hex (start with 0x or #) or octal (starts with 0)
    private static long get_long(String str) {
        return (long)Long.decode(str);
@@ -1273,6 +1350,13 @@ public class MessageProvider {
    // Parse byte as decimal, hex (start with 0x or #) or octal (starts with 0)
    private static byte get_byte(String str) {
        return Integer.decode(str).byteValue();
+   }
+
+   private GenericData.Fixed getUint64Fixed (long in) {
+      byte temp [] = {(byte)(in >> 56), (byte)(in >> 48), (byte)(in >> 40), (byte)(in >> 32), (byte)(in >> 24),(byte)(in >> 16), (byte)(in >> 8), (byte)(in) };
+      GenericData.Fixed out = new GenericData.Fixed(uint_64Schema, temp);
+      
+      return out;
    }
    
    private GenericData.Fixed getUint48Fixed (long in) {
