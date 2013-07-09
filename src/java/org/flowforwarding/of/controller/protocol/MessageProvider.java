@@ -16,6 +16,7 @@ import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericArray;
 import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.GenericData.Array;
+import org.apache.avro.generic.GenericData.Fixed;
 import org.apache.avro.generic.GenericData.Record;
 import org.apache.avro.generic.GenericDatumReader;
 import org.apache.avro.generic.GenericDatumWriter;
@@ -81,6 +82,18 @@ public class MessageProvider {
    private Schema uint_32Schema = null;
    private Schema uint_48Schema = null;
    private Schema uint_64Schema = null;
+   private Schema uint_128Schema = null;
+   
+   /*
+    * Delayed matches 
+    */
+   // TODO Implement a wrapper around matches.add to handle PREREQs
+   private GenericRecord delayedVlanPcp = null; 
+   private boolean isVlanVid = false;
+   
+   private GenericRecord delayedIpv4Src = null;
+   private GenericRecord delayedIpv4Dst = null;
+   private boolean isEtherType = false;
 
    
    private Protocol protocol = null;
@@ -149,6 +162,7 @@ public class MessageProvider {
       uint_32Schema = protocol.getType("of.uint_32");
       uint_48Schema = protocol.getType("of.uint_48");
       uint_64Schema = protocol.getType("of.uint_64");
+      uint_128Schema = protocol.getType("of.uint_128");
 
       
    }
@@ -429,54 +443,47 @@ public class MessageProvider {
                
             matches.add(oxmTlvRecord);
             
-            /* 
-             * MATCH - ETH_DST
-             */
-        } else if (key.equals("dl_dst")) {
-           int oxmTlvHeader = (OXMClass.OFPXMC_OPENFLOW_BASIC.getValue() << 16) | 
-                 (OXMField.OFPXMT_OFB_ETH_DST.getValue() << 9) | 
-                 (0 << 8) |
-                 6;
-           
-           Schema oxmTlvEthDstSchema = protocol.getType("of.oxm_tlv_eth_dst");
-           GenericRecord oxmTlvEthDstRecord = new GenericData.Record(oxmTlvEthDstSchema);
-
-           //long ethDst = Long.valueOf((String) args.get(key));
-           long ethDst = 1;
-                       
-           oxmTlvEthDstRecord.put("header", getUint32Fixed(oxmTlvHeader));
-           oxmTlvEthDstRecord.put("tlv", getUint48Fixed(ethDst));
-           
-           Schema oxmTlvSchema = protocol.getType("of.oxm_tlv");
-           GenericRecord oxmTlvRecord = new GenericData.Record(oxmTlvSchema);
-           oxmTlvRecord.put("match", oxmTlvEthDstRecord);
-           
-           matches.add(oxmTlvRecord);
-           
            /* 
             * MATCH - ETH_SRC
             */
-       } else if (key.equals("dl_src")) {
-          int oxmTlvHeader = (OXMClass.OFPXMC_OPENFLOW_BASIC.getValue() << 16) | 
+         } else if (key.equals("dl_src")) {
+            int oxmTlvHeader = (OXMClass.OFPXMC_OPENFLOW_BASIC.getValue() << 16) | 
                 (OXMField.OFPXMT_OFB_ETH_SRC.getValue() << 9) | 
                 (0 << 8) |
                 6;
-          
-          Schema oxmTlvFieldSchema = protocol.getType("of.oxm_tlv_eth_src");
-          GenericRecord oxmTlvFieldRecord = new GenericData.Record(oxmTlvFieldSchema);
+            
+            Schema oxmTlvFieldSchema = protocol.getType("of.oxm_tlv_eth_src");
+            GenericRecord oxmTlvFieldRecord = new GenericData.Record(oxmTlvFieldSchema);
+            
+            oxmTlvFieldRecord.put("header", getUint32Fixed(oxmTlvHeader));
+            oxmTlvFieldRecord.put("tlv", getUint48Fixed(get_mac_addr((String) args.get(key))));
+            Schema oxmTlvSchema = protocol.getType("of.oxm_tlv");
+            GenericRecord oxmTlvRecord = new GenericData.Record(oxmTlvSchema);
+            oxmTlvRecord.put("match", oxmTlvFieldRecord);
+            
+            matches.add(oxmTlvRecord);
 
-          //long ethDst = Long.valueOf((String) args.get(key));
-          long val = 1;
-                      
-          oxmTlvFieldRecord.put("header", getUint32Fixed(oxmTlvHeader));
-          oxmTlvFieldRecord.put("tlv", getUint48Fixed(val));
-          
-          Schema oxmTlvSchema = protocol.getType("of.oxm_tlv");
-          GenericRecord oxmTlvRecord = new GenericData.Record(oxmTlvSchema);
-          oxmTlvRecord.put("match", oxmTlvFieldRecord);
-          
-          matches.add(oxmTlvRecord);
+          /* 
+           * MATCH - ETH_DST
+           */
+      } else if (key.equals("dl_dst")) {
+         int oxmTlvHeader = (OXMClass.OFPXMC_OPENFLOW_BASIC.getValue() << 16) | 
+               (OXMField.OFPXMT_OFB_ETH_DST.getValue() << 9) | 
+               (0 << 8) |
+               6;
+         
+         Schema oxmTlvFieldSchema = protocol.getType("of.oxm_tlv_eth_dst");
+         GenericRecord oxmTlvFieldRecord = new GenericData.Record(oxmTlvFieldSchema);
 
+         oxmTlvFieldRecord.put("header", getUint32Fixed(oxmTlvHeader));
+         oxmTlvFieldRecord.put("tlv", getUint48Fixed(get_mac_addr((String) args.get(key))));
+
+         Schema oxmTlvSchema = protocol.getType("of.oxm_tlv");
+         GenericRecord oxmTlvRecord = new GenericData.Record(oxmTlvSchema);
+         oxmTlvRecord.put("match", oxmTlvFieldRecord);
+         
+         matches.add(oxmTlvRecord);
+          
          /* 
           * MATCH - ETH_TYPE
           */
@@ -500,8 +507,15 @@ public class MessageProvider {
             Schema oxmTlvSchema = protocol.getType("of.oxm_tlv");
             GenericRecord oxmTlvRecord = new GenericData.Record(oxmTlvSchema);
             oxmTlvRecord.put("match", oxmTlvEthTypeRecord);
-            
+   
             matches.add(oxmTlvRecord);
+            
+            if (this.delayedIpv4Src != null)
+               matches.add(this.delayedIpv4Src);
+            if (this.delayedIpv4Dst != null)
+               matches.add(this.delayedIpv4Dst);
+            
+            this.isEtherType = true;
 
         /*
          * VLAN_VID
@@ -525,10 +539,16 @@ public class MessageProvider {
            oxmTlvRecord.put("match", oxmTlvVlanVidRecord);
            
            matches.add(oxmTlvRecord);
+           
+           if (this.delayedVlanPcp != null)
+              matches.add(this.delayedVlanPcp);
+           else 
+              this.isVlanVid = true;
+           
          /*
           * VLAN_PCP
           */
-         } else if (key.equals("vlan_pcp")) {
+         } else if (key.equals("dl_vlan_pcp")) {
             
             Schema oxmTlvFieldSchema = protocol.getType("of.oxm_tlv_vlan_pcp");
             GenericRecord oxmTlvFieldRecord = new GenericData.Record(oxmTlvFieldSchema);
@@ -546,7 +566,105 @@ public class MessageProvider {
             GenericRecord oxmTlvRecord = new GenericData.Record(oxmTlvSchema);
             oxmTlvRecord.put("match", oxmTlvFieldRecord);
             
+            if (this.isVlanVid == true)
+               matches.add(oxmTlvRecord);
+            else
+               this.delayedVlanPcp = oxmTlvRecord;
+
+            /* 
+             * MATCH - IPV4_SRC
+             */
+         } else if (key.equals("nw_src")) {
+            int oxmTlvHeader = (OXMClass.OFPXMC_OPENFLOW_BASIC.getValue() << 16) | 
+                (OXMField.OFPXMT_OFB_IPV4_SRC.getValue() << 9) | 
+                (0 << 8) |
+                4;
+             
+            Schema oxmTlvFieldSchema = protocol.getType("of.oxm_tlv_ipv4_src");
+            GenericRecord oxmTlvFieldRecord = new GenericData.Record(oxmTlvFieldSchema);
+             
+            oxmTlvFieldRecord.put("header", getUint32Fixed(oxmTlvHeader));
+            oxmTlvFieldRecord.put("tlv", getUint32Fixed(get_ipv4((String) args.get(key))));
+
+            Schema oxmTlvSchema = protocol.getType("of.oxm_tlv");
+            GenericRecord oxmTlvRecord = new GenericData.Record(oxmTlvSchema);
+            oxmTlvRecord.put("match", oxmTlvFieldRecord);
+            
+            if (this.isEtherType)
+               matches.add(oxmTlvRecord);
+            else 
+               this.delayedIpv4Src = oxmTlvRecord;
+
+            /* 
+             * MATCH - IPV4_DST
+             */
+         } else if (key.equals("nw_dst")) {
+            int oxmTlvHeader = (OXMClass.OFPXMC_OPENFLOW_BASIC.getValue() << 16) | 
+                (OXMField.OFPXMT_OFB_IPV4_DST.getValue() << 9) | 
+                (0 << 8) |
+                4;
+             
+            Schema oxmTlvFieldSchema = protocol.getType("of.oxm_tlv_ipv4_dst");
+            GenericRecord oxmTlvFieldRecord = new GenericData.Record(oxmTlvFieldSchema);
+             
+            oxmTlvFieldRecord.put("header", getUint32Fixed(oxmTlvHeader));
+            oxmTlvFieldRecord.put("tlv", getUint32Fixed(get_ipv4((String) args.get(key))));
+
+            Schema oxmTlvSchema = protocol.getType("of.oxm_tlv");
+            GenericRecord oxmTlvRecord = new GenericData.Record(oxmTlvSchema);
+            oxmTlvRecord.put("match", oxmTlvFieldRecord);
+
+            if (this.isEtherType)
+               matches.add(oxmTlvRecord);
+            else 
+               this.delayedIpv4Dst = oxmTlvRecord;
+
+            /* 
+             * MATCH - IPV6_SRC
+             */
+         } else if (key.equals("ipv6_dst")) {
+            int oxmTlvHeader = (OXMClass.OFPXMC_OPENFLOW_BASIC.getValue() << 16) | 
+                (OXMField.OFPXMT_OFB_IPV6_DST.getValue() << 9) | 
+                (0 << 8) |
+                16;
+             
+            Schema oxmTlvFieldSchema = protocol.getType("of.oxm_tlv_ipv6_dst");
+            GenericRecord oxmTlvFieldRecord = new GenericData.Record(oxmTlvFieldSchema);
+             
+            oxmTlvFieldRecord.put("header", getUint32Fixed(oxmTlvHeader));
+            oxmTlvFieldRecord.put("tlv", getUint128Fixed(get_ipv6((String) args.get(key))));
+            Schema oxmTlvSchema = protocol.getType("of.oxm_tlv");
+            GenericRecord oxmTlvRecord = new GenericData.Record(oxmTlvSchema);
+            oxmTlvRecord.put("match", oxmTlvFieldRecord);
+             
             matches.add(oxmTlvRecord);
+
+            
+
+            
+            
+            /* 
+             * MATCH - IPV6_SRC
+             */
+         } else if (key.equals("ipv6_dst")) {
+            int oxmTlvHeader = (OXMClass.OFPXMC_OPENFLOW_BASIC.getValue() << 16) | 
+                (OXMField.OFPXMT_OFB_IPV6_DST.getValue() << 9) | 
+                (0 << 8) |
+                16;
+             
+            Schema oxmTlvFieldSchema = protocol.getType("of.oxm_tlv_ipv6_dst");
+            GenericRecord oxmTlvFieldRecord = new GenericData.Record(oxmTlvFieldSchema);
+             
+            oxmTlvFieldRecord.put("header", getUint32Fixed(oxmTlvHeader));
+            oxmTlvFieldRecord.put("tlv", getUint128Fixed(get_ipv6((String) args.get(key))));
+            Schema oxmTlvSchema = protocol.getType("of.oxm_tlv");
+            GenericRecord oxmTlvRecord = new GenericData.Record(oxmTlvSchema);
+            oxmTlvRecord.put("match", oxmTlvFieldRecord);
+             
+            matches.add(oxmTlvRecord);
+
+            
+            
 
          /*
           * OXM_OF_IP_DSCP 
@@ -580,7 +698,30 @@ public class MessageProvider {
             GenericRecord oxmTlvFieldRecord = new GenericData.Record(oxmTlvFieldSchema);
             
             int oxmTlvHeader = (OXMClass.OFPXMC_OPENFLOW_BASIC.getValue() << 16) | 
-                               (OXMField.OFPXMT_OFB_VLAN_PCP.getValue() << 9) | 
+                               (OXMField.OFPXMT_OFB_IP_ECN.getValue() << 9) | 
+                               (0 << 8) |
+                               1;
+            byte tmp = U8.t(Short.valueOf((String) args.get(key)));
+            
+            oxmTlvFieldRecord.put("header", getUint32Fixed(oxmTlvHeader));
+            oxmTlvFieldRecord.put("tlv", getUint8Fixed(tmp));
+            
+            Schema oxmTlvSchema = protocol.getType("of.oxm_tlv");
+            GenericRecord oxmTlvRecord = new GenericData.Record(oxmTlvSchema);
+            oxmTlvRecord.put("match", oxmTlvFieldRecord);
+            
+            matches.add(oxmTlvRecord);
+
+         /*
+          * OXM_OF_IP_PROTO 
+          */
+         } else if (key.equals("ip_proto")) {
+            
+            Schema oxmTlvFieldSchema = protocol.getType("of.oxm_tlv_ip_proto");
+            GenericRecord oxmTlvFieldRecord = new GenericData.Record(oxmTlvFieldSchema);
+            
+            int oxmTlvHeader = (OXMClass.OFPXMC_OPENFLOW_BASIC.getValue() << 16) | 
+                               (OXMField.OFPXMT_OFB_IP_PROTO.getValue() << 9) | 
                                (0 << 8) |
                                1;
             byte tmp = U8.t(Short.valueOf((String) args.get(key)));
@@ -594,7 +735,7 @@ public class MessageProvider {
             
             matches.add(oxmTlvRecord);
             
-         }           
+         }
       }
 
       Schema oxmTlvSchema = protocol.getType("of.oxm_tlv");
@@ -994,6 +1135,7 @@ public class MessageProvider {
       Schema ofpActionSetFieldSchema = protocol.getType("of.ofp_action_set_field");
       GenericRecord ofpActionSetFieldRecord = new GenericData.Record(ofpActionSetFieldSchema);
 
+      //TODO implement format XX:XX:XX:XX:XX:XX using the precious get_mac_addr()
       n = Pattern.compile("set_field_eth_src=(?:((?:0x)?\\d+))").matcher(subaction);
       if (n.matches()) {
 
@@ -1441,6 +1583,18 @@ public class MessageProvider {
       return out;
    }
    
+   private GenericData.Fixed getUint48Fixed (byte in []) {
+      return new GenericData.Fixed(uint_48Schema, in);
+   }
+   
+   private GenericData.Fixed getUint128Fixed (byte in []) {
+      return new GenericData.Fixed(uint_128Schema, in);
+   }
+   
+   private GenericData.Fixed getUint32Fixed (byte in []) {
+      return new GenericData.Fixed(uint_32Schema, in);
+   }
+   
    private GenericData.Fixed getUint32Fixed (int in) {
       byte temp [] = {(byte)(in >> 24),(byte)(in >> 16), (byte)(in >> 8), (byte)(in) };
       GenericData.Fixed out = new GenericData.Fixed(uint_32Schema, temp);
@@ -1480,25 +1634,99 @@ public class MessageProvider {
       return out;
    }
    
-   private static byte[] get_mac_addr(Matcher n, String subaction/*, Logger log*/) {
+   private int ipFromCIDR(String cidr, String which)
+         throws IllegalArgumentException {
+     String values[] = cidr.split("/");
+     String[] ip_str = values[0].split("\\.");
+     int ip = 0;
+     ip += Integer.valueOf(ip_str[0]) << 24;
+     ip += Integer.valueOf(ip_str[1]) << 16;
+     ip += Integer.valueOf(ip_str[2]) << 8;
+     ip += Integer.valueOf(ip_str[3]);
+     int prefix = 32; // all bits are fixed, by default
+
+     if (values.length >= 2)
+         prefix = Integer.valueOf(values[1]);
+     int mask = 32 - prefix;
+     
+     return ip;
+   }
+   
+   private static byte[] get_mac_addr(String in) {
       byte[] macaddr = new byte[6];
       
-      for (int i=0; i<6; i++) {
-          if (n.group(i+1) != null) {
-              try {
-                  macaddr[i] = get_byte("0x" + n.group(i+1));
-              }
-              catch (NumberFormatException e) {
-         //         log.debug("  Invalid src-mac in: '{}' (error ignored)", subaction);
-                  return null;
-              }
-          }
-          else { 
-         //     log.debug("  Invalid src-mac in: '{}' (null, error ignored)", subaction);
-              return null;
-          }
-      }
+      Matcher n = Pattern.compile("(?:(\\p{XDigit}+)\\:(\\p{XDigit}+)\\:(\\p{XDigit}+)\\:(\\p{XDigit}+)\\:(\\p{XDigit}+)\\:(\\p{XDigit}+))").matcher(in);
       
+      if (n.matches()) {
+         for (int i=0; i<6; i++) {
+            if (n.group(i+1) != null) {
+                try {
+                    macaddr[i] = get_byte("0x" + n.group(i+1));
+                }
+                catch (NumberFormatException e) {
+           //         log.debug("  Invalid src-mac in: '{}' (error ignored)", subaction);
+                    return null;
+                }
+            }
+            else { 
+           //     log.debug("  Invalid src-mac in: '{}' (null, error ignored)", subaction);
+                return null;
+            }
+        }
+      } else
+         return null;
+
       return macaddr;
   }
+   
+  private static byte[] get_ipv6(String in) {
+      byte[] ipv6 = new byte[16];
+      
+      Matcher n = Pattern.compile("(?:(\\p{XDigit}+)\\:(\\p{XDigit}+)\\:(\\p{XDigit}+)\\:(\\p{XDigit}+)\\:(\\p{XDigit}+)\\:(\\p{XDigit}+)\\:(\\p{XDigit}+)\\:(\\p{XDigit}+))").matcher(in);
+      
+      if (n.matches()) {
+         for (int i=0; i<8; i++) {
+            if (n.group(i+1) != null) {
+                try {
+                   ipv6[2*i] = (byte) (get_short("0x" + n.group(i+1)) & 255);
+                   ipv6[2*i+1] = (byte) (get_short("0x" + n.group(i+1)) >> 8);
+                }
+                catch (NumberFormatException e) {
+                    return null;
+                }
+            }
+            else { 
+                return null;
+            }
+        }
+      } else
+         return null;
+
+      return ipv6;
+  }
+  
+  private static byte[] get_ipv4(String in) {
+     byte[] ipv4 = new byte[4];
+     
+     Matcher n = Pattern.compile("(?:(\\p{XDigit}+)\\.(\\p{XDigit}+)\\.(\\p{XDigit}+)\\.(\\p{XDigit}+))").matcher(in);
+     
+     if (n.matches()) {
+        for (int i=0; i<4; i++) {
+           if (n.group(i+1) != null) {
+               try {
+                  ipv4[i] = get_byte(n.group(i+1));
+               }
+               catch (NumberFormatException e) {
+                   return null;
+               }
+           }
+           else { 
+               return null;
+           }
+       }
+     } else
+        return null;
+
+     return ipv4;
+ }
 }
