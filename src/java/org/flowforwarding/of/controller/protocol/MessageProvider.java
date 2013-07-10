@@ -640,9 +640,6 @@ public class MessageProvider {
             matches.add(oxmTlvRecord);
 
             
-
-            
-            
             /* 
              * MATCH - IPV6_SRC
              */
@@ -662,8 +659,6 @@ public class MessageProvider {
             oxmTlvRecord.put("match", oxmTlvFieldRecord);
              
             matches.add(oxmTlvRecord);
-
-            
             
 
          /*

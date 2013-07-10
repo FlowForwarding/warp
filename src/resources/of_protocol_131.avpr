@@ -234,7 +234,7 @@
     "type": "record",
     "fields": [
       {"name": "header", "type": "oxm_tlv_header_eth_dst"},
-      {"name": "tlv", "type": "uint_16", "default": [0,0,0,0,0,0,0]}
+      {"name": "tlv", "type": "uint_48", "default": [0,0,0,0,0,0,0]}
     ]
    },
 
@@ -366,7 +366,7 @@
     "type": "record",
     "fields": [
       {"name": "header", "type": "oxm_tlv_header_vlan_ip_ecn"},
-      {"name": "tlv", "type": "uint_16", "default": [0]}
+      {"name": "tlv", "type": "uint_8", "default": [0]}
     ]
    },
 
@@ -378,16 +378,32 @@
     ]
    },
 
+   {"name": "oxm_tlv_header_vlan_ip_proto",
+    "type": "bitmap",
+    "size": 32,
+    "default": {"or": [{"shift": [32768, 16]}, {"shift": [10, 9]}, {"shift": [0, 8]}, 1]}
+   },
+
+   {"name": "oxm_tlv_vlan_ip_proto_",
+    "type": "record",
+    "fields": [
+      {"name": "header", "type": "oxm_tlv_header_vlan_ip_proto"},
+      {"name": "tlv", "type": "uint_8", "default": [0]}
+    ]
+   },
+
+   {"name": "oxm_tlv_vlan_ip_proto",
+    "type": "record",
+    "fields": [
+      {"name": "header", "type": "uint_32"},
+      {"name": "tlv", "type": "uint_8", "default": [0]}
+    ]
+   },
+
    {"name": "oxm_tlv_header_ipv4_src",
     "type": "bitmap",
     "size": 32,
     "default": {"or": [{"shift": [32768, 16]}, {"shift": [11, 9]}, {"shift": [0, 8]}, 4]}
-   },
-
-   {"name": "oxm_tlv_header_ipv4_dst",
-    "type": "bitmap",
-    "size": 32,
-    "default": {"or": [{"shift": [32768, 16]}, {"shift": [12, 9]}, {"shift": [0, 8]}, 4]}
    },
 
    {"name": "oxm_tlv_ipv4_src_",
@@ -406,6 +422,11 @@
     ]
    },
 
+   {"name": "oxm_tlv_header_ipv4_dst",
+    "type": "bitmap",
+    "size": 32,
+    "default": {"or": [{"shift": [32768, 16]}, {"shift": [12, 9]}, {"shift": [0, 8]}, 4]}
+   },
 
    {"name": "oxm_tlv_ipv4_dst_",
     "type": "record",
@@ -423,16 +444,296 @@
     ]
    },
 
+   {"name": "oxm_tlv_header_tcp_src",
+    "type": "bitmap",
+    "size": 32,
+    "default": {"or": [{"shift": [32768, 16]}, {"shift": [13, 9]}, {"shift": [0, 8]}, 2]}
+   },
+
+   {"name": "oxm_tlv_tcp_src_",
+    "type": "record",
+    "fields": [
+      {"name": "header", "type": "oxm_tlv_header_tcp_src"},
+      {"name": "tlv", "type": "uint_16", "default": [0,0]}
+    ]
+   },
+
+   {"name": "oxm_tlv_tcp_src",
+    "type": "record",
+    "fields": [
+      {"name": "header", "type": "uint_32"},
+      {"name": "tlv", "type": "uint_16", "default": [0,0]}
+    ]
+   },
+
+   {"name": "oxm_tlv_header_tcp_dst",
+    "type": "bitmap",
+    "size": 32,
+    "default": {"or": [{"shift": [32768, 16]}, {"shift": [14, 9]}, {"shift": [0, 8]}, 2]}
+   },
+
+   {"name": "oxm_tlv_tcp_dst_",
+    "type": "record",
+    "fields": [
+      {"name": "header", "type": "oxm_tlv_header_tcp_dst"},
+      {"name": "tlv", "type": "uint_16", "default": [0,0]}
+    ]
+   },
+
+   {"name": "oxm_tlv_tcp_dst",
+    "type": "record",
+    "fields": [
+      {"name": "header", "type": "uint_32"},
+      {"name": "tlv", "type": "uint_16", "default": [0,0]}
+    ]
+   },
+
+   {"name": "oxm_tlv_header_udp_src",
+    "type": "bitmap",
+    "size": 32,
+    "default": {"or": [{"shift": [32768, 16]}, {"shift": [15, 9]}, {"shift": [0, 8]}, 2]}
+   },
+
+   {"name": "oxm_tlv_udp_src_",
+    "type": "record",
+    "fields": [
+      {"name": "header", "type": "oxm_tlv_header_tcp_src"},
+      {"name": "tlv", "type": "uint_16", "default": [0,0]}
+    ]
+   },
+
+   {"name": "oxm_tlv_udp_src",
+    "type": "record",
+    "fields": [
+      {"name": "header", "type": "uint_32"},
+      {"name": "tlv", "type": "uint_16", "default": [0,0]}
+    ]
+   },
+
+   {"name": "oxm_tlv_header_udp_dst",
+    "type": "bitmap",
+    "size": 32,
+    "default": {"or": [{"shift": [32768, 16]}, {"shift": [16, 9]}, {"shift": [0, 8]}, 2]}
+   },
+
+   {"name": "oxm_tlv_udp_dst_",
+    "type": "record",
+    "fields": [
+      {"name": "header", "type": "oxm_tlv_header_udp_dst"},
+      {"name": "tlv", "type": "uint_16", "default": [0,0]}
+    ]
+   },
+
+   {"name": "oxm_tlv_udp_dst",
+    "type": "record",
+    "fields": [
+      {"name": "header", "type": "uint_32"},
+      {"name": "tlv", "type": "uint_16", "default": [0,0]}
+    ]
+   },
+
+   {"name": "oxm_tlv_header_tcp_src",
+    "type": "bitmap",
+    "size": 32,
+    "default": {"or": [{"shift": [32768, 16]}, {"shift": [17, 9]}, {"shift": [0, 8]}, 2]}
+   },
+
+   {"name": "oxm_tlv_sctp_src_",
+    "type": "record",
+    "fields": [
+      {"name": "header", "type": "oxm_tlv_header_sctp_src"},
+      {"name": "tlv", "type": "uint_16", "default": [0,0]}
+    ]
+   },
+
+   {"name": "oxm_tlv_sctp_src",
+    "type": "record",
+    "fields": [
+      {"name": "header", "type": "uint_32"},
+      {"name": "tlv", "type": "uint_16", "default": [0,0]}
+    ]
+   },
+
+   {"name": "oxm_tlv_header_sctp_dst",
+    "type": "bitmap",
+    "size": 32,
+    "default": {"or": [{"shift": [32768, 16]}, {"shift": [18, 9]}, {"shift": [0, 8]}, 2]}
+   },
+
+   {"name": "oxm_tlv_sctp_dst_",
+    "type": "record",
+    "fields": [
+      {"name": "header", "type": "oxm_tlv_header_sctp_dst"},
+      {"name": "tlv", "type": "uint_16", "default": [0,0]}
+    ]
+   },
+
+   {"name": "oxm_tlv_sctp_dst",
+    "type": "record",
+    "fields": [
+      {"name": "header", "type": "uint_32"},
+      {"name": "tlv", "type": "uint_16", "default": [0,0]}
+    ]
+   },
+
+   {"name": "oxm_tlv_header_icmpv4_type",
+    "type": "bitmap",
+    "size": 32,
+    "default": {"or": [{"shift": [32768, 16]}, {"shift": [19, 9]}, {"shift": [0, 8]}, 1]}
+   },
+
+   {"name": "oxm_tlv_icmpv4_type",
+    "type": "record",
+    "fields": [
+      {"name": "header", "type": "oxm_tlv_header_icmpv4_type"},
+      {"name": "tlv", "type": "uint_8", "default": [0]}
+    ]
+   },
+
+   {"name": "oxm_tlv_icmpv4_type",
+    "type": "record",
+    "fields": [
+      {"name": "header", "type": "uint_32"},
+      {"name": "tlv", "type": "uint_8", "default": [0]}
+    ]
+   },
+
+   {"name": "oxm_tlv_header_icmpv4_code",
+    "type": "bitmap",
+    "size": 32,
+    "default": {"or": [{"shift": [32768, 16]}, {"shift": [20, 9]}, {"shift": [0, 8]}, 1]}
+   },
+
+   {"name": "oxm_tlv_icmpv4_code_",
+    "type": "record",
+    "fields": [
+      {"name": "header", "type": "oxm_tlv_header_icmpv4_code"},
+      {"name": "tlv", "type": "uint_8", "default": [0]}
+    ]
+   },
+
+   {"name": "oxm_tlv_icmpv4_code",
+    "type": "record",
+    "fields": [
+      {"name": "header", "type": "uint_32"},
+      {"name": "tlv", "type": "uint_8", "default": [0]}
+    ]
+   },
+
+   {"name": "oxm_tlv_header_arp_op",
+    "type": "bitmap",
+    "size": 32,
+    "default": {"or": [{"shift": [32768, 16]}, {"shift": [21, 9]}, {"shift": [0, 8]}, 2]}
+   },
+
+   {"name": "oxm_tlv_arp_op_",
+    "type": "record",
+    "fields": [
+      {"name": "header", "type": "oxm_tlv_header_arp_op"},
+      {"name": "tlv", "type": "uint_16", "default": [0,0]}
+    ]
+   },
+
+   {"name": "oxm_tlv_arp_op",
+    "type": "record",
+    "fields": [
+      {"name": "header", "type": "uint_32"},
+      {"name": "tlv", "type": "uint_16", "default": [0,0]}
+    ]
+   },
+
+   {"name": "oxm_tlv_header_arp_spa",
+    "type": "bitmap",
+    "size": 32,
+    "default": {"or": [{"shift": [32768, 16]}, {"shift": [22, 9]}, {"shift": [0, 8]}, 4]}
+   },
+
+   {"name": "oxm_tlv_arp_spa_",
+    "type": "record",
+    "fields": [
+      {"name": "header", "type": "oxm_tlv_header_arp_spa"},
+      {"name": "tlv", "type": "uint_32", "default": [0,0,0,0]}
+    ]
+   },
+
+   {"name": "oxm_tlv_arp_spa",
+    "type": "record",
+    "fields": [
+      {"name": "header", "type": "uint_32"},
+      {"name": "tlv", "type": "uint_32", "default": [0,0,0,0]}
+    ]
+   },
+
+   {"name": "oxm_tlv_header_arp_tpa",
+    "type": "bitmap",
+    "size": 32,
+    "default": {"or": [{"shift": [32768, 16]}, {"shift": [23, 9]}, {"shift": [0, 8]}, 4]}
+   },
+
+   {"name": "oxm_tlv_arp_tpa_",
+    "type": "record",
+    "fields": [
+      {"name": "header", "type": "oxm_tlv_header_arp_tpa"},
+      {"name": "tlv", "type": "uint_32", "default": [0,0,0,0]}
+    ]
+   },
+
+   {"name": "oxm_tlv_arp_tpa",
+    "type": "record",
+    "fields": [
+      {"name": "header", "type": "uint_32"},
+      {"name": "tlv", "type": "uint_32", "default": [0,0,0,0]}
+    ]
+   },
+
+   {"name": "oxm_tlv_header_arp_sha",
+    "type": "bitmap",
+    "size": 32,
+    "default": {"or": [{"shift": [32768, 16]}, {"shift": [24, 9]}, {"shift": [0, 8]}, 6]}
+   },
+
+   {"name": "oxm_tlv_arp_sha_",
+    "type": "record",
+    "fields": [
+      {"name": "header", "type": "oxm_tlv_header_arp_sha"},
+      {"name": "tlv", "type": "uint_48", "default": [0,0,0,0,0,0]}
+    ]
+   },
+
+   {"name": "oxm_tlv_arp_sha",
+    "type": "record",
+    "fields": [
+      {"name": "header", "type": "uint_32"},
+      {"name": "tlv", "type": "uint_48", "default": [0,0,0,0,0,0]}
+    ]
+   },
+
+   {"name": "oxm_tlv_header_arp_tha",
+    "type": "bitmap",
+    "size": 32,
+    "default": {"or": [{"shift": [32768, 16]}, {"shift": [25, 9]}, {"shift": [0, 8]}, 6]}
+   },
+
+   {"name": "oxm_tlv_arp_tha_",
+    "type": "record",
+    "fields": [
+      {"name": "header", "type": "oxm_tlv_header_arp_tha"},
+      {"name": "tlv", "type": "uint_48", "default": [0,0,0,0,0,0]}
+    ]
+   },
+
+   {"name": "oxm_tlv_arp_tha",
+    "type": "record",
+    "fields": [
+      {"name": "header", "type": "uint_32"},
+      {"name": "tlv", "type": "uint_48", "default": [0,0,0,0,0,0]}
+    ]
+   },
+
    {"name": "oxm_tlv_header_ipv6_src",
     "type": "bitmap",
     "size": 32,
     "default": {"or": [{"shift": [32768, 16]}, {"shift": [26, 9]}, {"shift": [0, 8]}, 16]}
-   },
-
-   {"name": "oxm_tlv_header_ipv6_dst",
-    "type": "bitmap",
-    "size": 32,
-    "default": {"or": [{"shift": [32768, 16]}, {"shift": [27, 9]}, {"shift": [0, 8]}, 16]}
    },
 
    {"name": "oxm_tlv_ipv6_src_",
@@ -451,6 +752,11 @@
     ]
    },
 
+   {"name": "oxm_tlv_header_ipv6_dst",
+    "type": "bitmap",
+    "size": 32,
+    "default": {"or": [{"shift": [32768, 16]}, {"shift": [27, 9]}, {"shift": [0, 8]}, 16]}
+   },
 
    {"name": "oxm_tlv_ipv6_dst_",
     "type": "record",
@@ -468,6 +774,138 @@
     ]
    },
 
+   {"name": "oxm_tlv_header_ipv6_flabel",
+    "type": "bitmap",
+    "size": 32,
+    "default": {"or": [{"shift": [32768, 16]}, {"shift": [28, 9]}, {"shift": [0, 8]}, 3]}
+   },
+
+   {"name": "oxm_tlv_ipv6_flabel_",
+    "type": "record",
+    "fields": [
+      {"name": "header", "type": "oxm_tlv_header_ipv6_flabel"},
+      {"name": "tlv", "type": "uint_24", "default": [0,0,0]}
+    ]
+   },
+
+   {"name": "oxm_tlv_ipv6_flabel",
+    "type": "record",
+    "fields": [
+      {"name": "header", "type": "uint_32"},
+      {"name": "tlv", "type": "uint_24", "default": [0,0,0]}
+    ]
+   },
+
+   {"name": "oxm_tlv_header_ipv6_type",
+    "type": "bitmap",
+    "size": 32,
+    "default": {"or": [{"shift": [32768, 16]}, {"shift": [29, 9]}, {"shift": [0, 8]}, 1]}
+   },
+
+   {"name": "oxm_tlv_icmpv6_type_",
+    "type": "record",
+    "fields": [
+      {"name": "header", "type": "oxm_tlv_header_icmpv6_type"},
+      {"name": "tlv", "type": "uint_8", "default": [0]}
+    ]
+   },
+
+   {"name": "oxm_tlv_icmpv6_type",
+    "type": "record",
+    "fields": [
+      {"name": "header", "type": "uint_32"},
+      {"name": "tlv", "type": "uint_8", "default": [0]}
+    ]
+   },
+
+   {"name": "oxm_tlv_header_icmpv6_code",
+    "type": "bitmap",
+    "size": 32,
+    "default": {"or": [{"shift": [32768, 16]}, {"shift": [30, 9]}, {"shift": [0, 8]}, 1]}
+   },
+
+   {"name": "oxm_tlv_icmpv6_code_",
+    "type": "record",
+    "fields": [
+      {"name": "header", "type": "oxm_tlv_header_icmpv6_code"},
+      {"name": "tlv", "type": "uint_8", "default": [0]}
+    ]
+   },
+
+   {"name": "oxm_tlv_icmpv6_code",
+    "type": "record",
+    "fields": [
+      {"name": "header", "type": "uint_32"},
+      {"name": "tlv", "type": "uint_8", "default": [0]}
+    ]
+   },
+
+   {"name": "oxm_tlv_header_ipv6_nd_target",
+    "type": "bitmap",
+    "size": 32,
+    "default": {"or": [{"shift": [32768, 16]}, {"shift": [31, 9]}, {"shift": [0, 8]}, 16]}
+   },
+
+   {"name": "oxm_tlv_ipv6_nd_target_",
+    "type": "record",
+    "fields": [
+      {"name": "header", "type": "oxm_tlv_header_nd_target"},
+      {"name": "tlv", "type": "uint_128", "default": [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]}
+    ]
+   },
+
+   {"name": "oxm_tlv_ipv6_nd_target",
+    "type": "record",
+    "fields": [
+      {"name": "header", "type": "uint_32"},
+      {"name": "tlv", "type": "uint_128", "default": [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]}
+    ]
+   },
+
+   {"name": "oxm_tlv_header_nd_sll",
+    "type": "bitmap",
+    "size": 32,
+    "default": {"or": [{"shift": [32768, 16]}, {"shift": [32, 9]}, {"shift": [0, 8]}, 6]}
+   },
+
+   {"name": "oxm_tlv_nd_sll_",
+    "type": "record",
+    "fields": [
+      {"name": "header", "type": "oxm_tlv_header_nd_sll"},
+      {"name": "tlv", "type": "uint_48", "default": [0,0,0,0,0,0,0]}
+    ]
+   },
+
+   {"name": "oxm_tlv_nd_sll",
+    "type": "record",
+    "fields": [
+      {"name": "header", "type": "uint_32"},
+      {"name": "tlv", "type": "uint_48", "default": [0,0,0,0,0,0,0]}
+    ]
+   },
+
+   {"name": "oxm_tlv_header_nd_tll",
+    "type": "bitmap",
+    "size": 32,
+    "default": {"or": [{"shift": [32768, 16]}, {"shift": [33, 9]}, {"shift": [0, 8]}, 6]}
+   },
+
+   {"name": "oxm_tlv_nd_tll_",
+    "type": "record",
+    "fields": [
+      {"name": "header", "type": "oxm_tlv_header_nd_tll"},
+      {"name": "tlv", "type": "uint_48", "default": [0,0,0,0,0,0,0]}
+    ]
+   },
+
+   {"name": "oxm_tlv_nd_tll",
+    "type": "record",
+    "fields": [
+      {"name": "header", "type": "uint_32"},
+      {"name": "tlv", "type": "uint_48", "default": [0,0,0,0,0,0,0]}
+    ]
+   },
+
    {"name": "oxm_tlv_header_mpls_label",
     "type": "bitmap",
     "size": 32,
@@ -478,7 +916,7 @@
     "type": "record",
     "fields": [
       {"name": "header", "type": "oxm_tlv_header_mpls_label"},
-      {"name": "tlv", "type": "uint_16", "default": [0,0]}
+      {"name": "tlv", "type": "uint_24", "default": [0,0,0]}
     ]
    },
 
@@ -487,6 +925,116 @@
     "fields": [
       {"name": "header", "type": "uint_32"},
       {"name": "tlv", "type": "uint_24", "default": [0,0,0]}
+    ]
+   },
+
+   {"name": "oxm_tlv_header_mpls_tc",
+    "type": "bitmap",
+    "size": 32,
+    "default": {"or": [{"shift": [32768, 16]}, {"shift": [35, 9]}, {"shift": [0, 8]}, 1]}
+   },
+
+   {"name": "oxm_tlv_mpls_tc_",
+    "type": "record",
+    "fields": [
+      {"name": "header", "type": "oxm_tlv_header_mpls_tc"},
+      {"name": "tlv", "type": "uint_8", "default": [0]}
+    ]
+   },
+
+   {"name": "oxm_tlv_mpls_tc",
+    "type": "record",
+    "fields": [
+      {"name": "header", "type": "uint_32"},
+      {"name": "tlv", "type": "uint_8", "default": [0]}
+    ]
+   },
+
+   {"name": "oxm_tlv_header_mpls_bos",
+    "type": "bitmap",
+    "size": 32,
+    "default": {"or": [{"shift": [32768, 16]}, {"shift": [36, 9]}, {"shift": [0, 8]}, 1]}
+   },
+
+   {"name": "oxm_tlv_mpls_bos_",
+    "type": "record",
+    "fields": [
+      {"name": "header", "type": "oxm_tlv_header_mpls_bos"},
+      {"name": "tlv", "type": "uint_8", "default": [0]}
+    ]
+   },
+
+   {"name": "oxm_tlv_mpls_bos",
+    "type": "record",
+    "fields": [
+      {"name": "header", "type": "uint_32"},
+      {"name": "tlv", "type": "uint_8", "default": [0]}
+    ]
+   },
+
+   {"name": "oxm_tlv_header_pbb_isid",
+    "type": "bitmap",
+    "size": 32,
+    "default": {"or": [{"shift": [32768, 16]}, {"shift": [37, 9]}, {"shift": [0, 8]}, 3]}
+   },
+
+   {"name": "oxm_tlv_pbb_isid_",
+    "type": "record",
+    "fields": [
+      {"name": "header", "type": "oxm_tlv_header_pbb_isid"},
+      {"name": "tlv", "type": "uint_24", "default": [0,0,0]}
+    ]
+   },
+
+   {"name": "oxm_tlv_pbb_isid",
+    "type": "record",
+    "fields": [
+      {"name": "header", "type": "uint_32"},
+      {"name": "tlv", "type": "uint_24", "default": [0,0,0]}
+    ]
+   },
+
+   {"name": "oxm_tlv_header_tunnel_id",
+    "type": "bitmap",
+    "size": 32,
+    "default": {"or": [{"shift": [32768, 16]}, {"shift": [38, 9]}, {"shift": [0, 8]}, 8]}
+   },
+
+   {"name": "oxm_tlv_tunnel_id_",
+    "type": "record",
+    "fields": [
+      {"name": "header", "type": "oxm_tlv_header_tunnel_id"},
+      {"name": "tlv", "type": "uint_64", "default": [0,0,0,0,0,0,0,0]}
+    ]
+   },
+
+   {"name": "oxm_tlv_tunnel_id",
+    "type": "record",
+    "fields": [
+      {"name": "header", "type": "uint_32"},
+      {"name": "tlv", "type": "uint_64", "default": [0,0,0,0,0,0,0,0]}
+    ]
+   },
+
+   {"name": "oxm_tlv_header_ipv6_exthdr",
+    "type": "bitmap",
+    "size": 32,
+    "default": {"or": [{"shift": [32768, 16]}, {"shift": [39, 9]}, {"shift": [0, 8]}, 2]}
+   },
+
+   {"name": "oxm_tlv_ipv6_exthdr_",
+    "type": "record",
+    "fields": [
+      {"name": "header", "type": "oxm_tlv_header_ipv6_exthdr"},
+      {"name": "tlv", "type": "uint_16", "default": [0,0]}
+    ]
+   },
+
+   {"name": "oxm_tlv_ipv6_exthdr",
+    "type": "record",
+    "fields": [
+      {"name": "header", "type": "uint_32"},
+      {"name": "tlv", "type": "uint_16", "default": [0,0]}
     ]
    },
 
