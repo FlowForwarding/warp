@@ -67,29 +67,63 @@ public class RestApiTask extends RecursiveTask <Map<String, Object>>
    public static final String COLUMN_PRIORITY = "priority";
    public static final String COLUMN_COOKIE = "cookie";
    public static final String COLUMN_WILDCARD = "wildcards";
-   public static final String COLUMN_IN_PORT = "in_port";
-   public static final String COLUMN_DL_SRC = "dl_src";
-   public static final String COLUMN_DL_DST = "dl_dst";
-   public static final String COLUMN_DL_VLAN = "vlan_vid";
-   public static final String COLUMN_DL_VLAN_PCP = "dl_vlan_pcp";
-   public static final String COLUMN_DL_TYPE = "dl_type";
-   public static final String COLUMN_NW_TOS = "nw_tos";
-   public static final String COLUMN_NW_PROTO = "nw_proto";
+   public static final String COLUMN_IN_PORT = "in_port";                        //0
+   public static final String COLUMN_IN_PHY_PORT = "in_phy_port";                //1
+   public static final String COLUMN_METADATA = "metadata";                        //2
+   public static final String COLUMN_DL_SRC = "dl_src";                          //3
+   public static final String COLUMN_DL_DST = "dl_dst";                          //4
+   public static final String COLUMN_DL_TYPE = "dl_type";                        //5
+   public static final String COLUMN_DL_VLAN = "vlan_vid";                       //6
+   public static final String COLUMN_DL_VLAN_PCP = "dl_vlan_pcp";                //7
+   public static final String COLUMN_IP_DSCP = "ip_dscp";                        //8
+   public static final String COLUMN_IP_ECN = "ip_ecn";                          //9
+   public static final String COLUMN_NW_PROTO = "nw_proto";                      //10
    public static final String COLUMN_NW_SRC = "nw_src"; // includes CIDR-style
                                                         // netmask, e.g.
                                                         // "128.8.128.0/24"
-   public static final String COLUMN_NW_DST = "nw_dst";
-   public static final String COLUMN_TP_DST = "tp_dst";
-   public static final String COLUMN_TP_SRC = "tp_src";
-   public static final String COLUMN_UDP_DST = "udp_dst";
-   public static final String COLUMN_UDP_SRC = "udp_src";
+   public static final String COLUMN_NW_DST = "nw_dst";                          //12
+   public static final String COLUMN_TP_SRC = "tp_src";                          //13
+   public static final String COLUMN_TP_DST = "tp_dst";                          //14
+   public static final String COLUMN_UDP_DST = "udp_dst";                        //15
+   public static final String COLUMN_UDP_SRC = "udp_src";                        //16
+   public static final String COLUMN_SCTP_SRC = "sctp_src";                      //17
+   public static final String COLUMN_SCTP_DST = "sctp_dst";                      //18
+   public static final String COLUMN_ICMPV4_TYPE = "icmpv4_type";                //19
+   public static final String COLUMN_ICMPV4_CODE = "icmpv4_code";                //20
+   public static final String COLUMN_ARP_OP = "arp_op";                          //21
+   public static final String COLUMN_ARP_SPA = "arp_spa";                        //22
+   public static final String COLUMN_ARP_TPA = "arp_tpa";                        //23
+   public static final String COLUMN_ARP_SHA = "arp_sha";                        //24
+   public static final String COLUMN_ARP_THA = "arp_tha";                        //25
+   public static final String COLUMN_IPV6_SRC = "ipv6_src";                      //26
+   public static final String COLUMN_IPV6_DST = "ipv6_dst";                      //27
+   public static final String COLUMN_IPV6_FLABEL = "ipv6_flabel";                //28   
+   public static final String COLUMN_ICMPV6_TYPE = "icmpv6_type";                //29
+   public static final String COLUMN_ICMPV6_CODE = "icmpv6_code";                //30
+   public static final String COLUMN_IPV6_ND_TARGET = "ipv6_nd_target";          //31
+   public static final String COLUMN_IPV6_ND_SLL = "ipv6_nd_sll";                //32
+   public static final String COLUMN_IPV6_ND_TLL = "ipv6_nd_tll";                //33
+   public static final String COLUMN_MPLS_LABEL = "mpls_label";                  //34
+   public static final String COLUMN_MPLS_TC = "mpls_tc";                        //35
+   public static final String COLUMN_MPLS_BOS = "mpls_bos";                      //36
+   public static final String COLUMN_PBB_ISID = "pbb_isid";                      //37
+   public static final String COLUMN_TUNNEL_ID = "tunnel_id";                    //38
+   public static final String COLUMN_IPV6_EXTHDR = "ipv6_exthdr";                //39
+
+   
+   public static final String COLUMN_NW_TOS = "nw_tos";
    public static final String COLUMN_ACTIONS = "actions";
    public static String ColumnNames[] = { COLUMN_NAME, COLUMN_SWITCH,
            COLUMN_ACTIVE, COLUMN_IDLE_TIMEOUT, COLUMN_HARD_TIMEOUT,
-           COLUMN_PRIORITY, COLUMN_COOKIE, COLUMN_WILDCARD, COLUMN_IN_PORT,
-           COLUMN_DL_SRC, COLUMN_DL_DST, COLUMN_DL_VLAN, COLUMN_DL_VLAN_PCP,
-           COLUMN_DL_TYPE, COLUMN_NW_TOS, COLUMN_NW_PROTO, COLUMN_NW_SRC,
-           COLUMN_NW_DST, COLUMN_TP_DST, COLUMN_TP_SRC, COLUMN_UDP_DST, COLUMN_UDP_SRC, COLUMN_ACTIONS };
+           COLUMN_PRIORITY, COLUMN_COOKIE, COLUMN_WILDCARD, COLUMN_IN_PORT, COLUMN_IN_PHY_PORT,
+           COLUMN_METADATA, COLUMN_DL_SRC, COLUMN_DL_DST, COLUMN_DL_TYPE, COLUMN_DL_VLAN,
+           COLUMN_DL_VLAN_PCP, COLUMN_IP_DSCP, COLUMN_IP_ECN, COLUMN_NW_PROTO, COLUMN_NW_SRC,
+           COLUMN_NW_DST, COLUMN_TP_DST, COLUMN_TP_SRC, COLUMN_UDP_DST, COLUMN_UDP_SRC,
+           COLUMN_SCTP_SRC, COLUMN_SCTP_DST, COLUMN_ICMPV4_TYPE, COLUMN_ICMPV4_CODE, COLUMN_ARP_OP,
+           COLUMN_ARP_SPA, COLUMN_ARP_TPA, COLUMN_ARP_SHA, COLUMN_ARP_THA, COLUMN_IPV6_SRC, 
+           COLUMN_IPV6_DST, COLUMN_IPV6_FLABEL, COLUMN_ICMPV6_TYPE, COLUMN_ICMPV6_CODE, COLUMN_IPV6_ND_TARGET,
+           COLUMN_IPV6_ND_SLL, COLUMN_IPV6_ND_TLL, COLUMN_MPLS_LABEL, COLUMN_MPLS_TC, COLUMN_MPLS_BOS,
+           COLUMN_PBB_ISID, COLUMN_TUNNEL_ID, COLUMN_IPV6_EXTHDR, COLUMN_ACTIONS };
    
    private static class SubActionStruct {
       OFAction action;
@@ -306,35 +340,87 @@ public class RestApiTask extends RecursiveTask <Map<String, Object>>
           else if (n == "active")
               entry.put(COLUMN_ACTIVE, jp.getText());
           else if (n == "wildcards")
-              entry.put(COLUMN_WILDCARD, jp.getText());
+              entry.put(COLUMN_WILDCARD, jp.getText());        
           else if (n == "ingress-port")
-              entry.put(COLUMN_IN_PORT, jp.getText());
+              entry.put(COLUMN_IN_PORT, jp.getText());         //0
+          else if (n == "in-phy-port")
+             entry.put(COLUMN_IN_PHY_PORT, jp.getText());      //1
+          else if (n == "metadata")
+             entry.put(COLUMN_METADATA, jp.getText());         //2
           else if (n == "src-mac")
-              entry.put(COLUMN_DL_SRC, jp.getText());
+              entry.put(COLUMN_DL_SRC, jp.getText());          //3
           else if (n == "dst-mac")
-              entry.put(COLUMN_DL_DST, jp.getText());
-          else if (n == "vlan-vid")
-              entry.put(COLUMN_DL_VLAN, jp.getText());
-          else if (n == "vlan-priority")
-              entry.put(COLUMN_DL_VLAN_PCP, jp.getText());
+              entry.put(COLUMN_DL_DST, jp.getText());          //4
           else if (n == "ether-type")
-              entry.put(COLUMN_DL_TYPE, jp.getText());
-          else if (n == "tos-bits")
-              entry.put(COLUMN_NW_TOS, jp.getText());
+             entry.put(COLUMN_DL_TYPE, jp.getText());          //5
+          else if (n == "vlan-vid")
+              entry.put(COLUMN_DL_VLAN, jp.getText());         //6
+          else if (n == "vlan-priority")
+              entry.put(COLUMN_DL_VLAN_PCP, jp.getText());     //7
+          else if (n == "ip-dscp")
+             entry.put(COLUMN_IP_DSCP, jp.getText());          //8
+          else if (n == "ip-ecn")
+             entry.put(COLUMN_IP_ECN, jp.getText());           //9
           else if (n == "protocol")
-              entry.put(COLUMN_NW_PROTO, jp.getText());
-          else if (n == "src-ip")
-              entry.put(COLUMN_NW_SRC, jp.getText());
-          else if (n == "dst-ip")
-              entry.put(COLUMN_NW_DST, jp.getText());
-          else if (n == "src-port")
-              entry.put(COLUMN_TP_SRC, jp.getText());
-          else if (n == "dst-port")
-              entry.put(COLUMN_TP_DST, jp.getText());
-          else if (n == "udp-src")
-              entry.put(COLUMN_UDP_SRC, jp.getText());
-          else if (n == "udp-dst")
-              entry.put(COLUMN_UDP_DST, jp.getText());
+             entry.put(COLUMN_NW_PROTO, jp.getText());         //10
+         else if (n == "src-ip")
+             entry.put(COLUMN_NW_SRC, jp.getText());           //11
+         else if (n == "dst-ip")
+             entry.put(COLUMN_NW_DST, jp.getText());           //12
+         else if (n == "src-port")
+            entry.put(COLUMN_TP_SRC, jp.getText());            //13
+        else if (n == "dst-port")
+            entry.put(COLUMN_TP_DST, jp.getText());            //14
+        else if (n == "udp-src")
+            entry.put(COLUMN_UDP_SRC, jp.getText());           //16
+        else if (n == "udp-dst")
+            entry.put(COLUMN_UDP_DST, jp.getText());           //17
+        else if (n == "sctp-src")
+           entry.put(COLUMN_SCTP_SRC, jp.getText());           //18
+        else if (n == "sctp-dst")
+           entry.put(COLUMN_SCTP_DST, jp.getText());           //19
+        else if (n == "icmpv4-type")
+           entry.put(COLUMN_ICMPV4_TYPE, jp.getText());        //20
+        else if (n == "icmpv4-code")
+           entry.put(COLUMN_ICMPV4_CODE, jp.getText());        //21
+        else if (n == "arp-op")
+           entry.put(COLUMN_ARP_OP, jp.getText());             //22
+        else if (n == "arp-spa")
+           entry.put(COLUMN_ARP_SPA, jp.getText());            //23
+        else if (n == "arp-tpa") 
+           entry.put(COLUMN_ARP_TPA, jp.getText());            //24
+        else if (n == "arp-sha") 
+           entry.put(COLUMN_ARP_SHA, jp.getText());            //25
+        else if (n == "arp-tha")
+           entry.put(COLUMN_ARP_THA, jp.getText());            //26
+        else if (n == "ipv6-src")
+           entry.put(COLUMN_IPV6_SRC, jp.getText());           //27
+        else if (n == "ipv6-dst")
+           entry.put(COLUMN_IPV6_DST, jp.getText());           //28
+        else if (n == "ipv6-flabel")
+           entry.put(COLUMN_IPV6_FLABEL, jp.getText());        //29
+        else if (n == "icmpv6-type")
+           entry.put(COLUMN_ICMPV6_TYPE, jp.getText());        //30
+        else if (n == "icmpv6-code")
+           entry.put(COLUMN_ICMPV6_CODE, jp.getText());        //31
+        else if (n == "ipv6-nd-sll")
+           entry.put(COLUMN_IPV6_ND_SLL, jp.getText());        //32
+        else if (n == "ipv6-nd-tll")
+           entry.put(COLUMN_IPV6_ND_TLL, jp.getText());        //33
+        else if (n == "mpls-label")
+           entry.put(COLUMN_MPLS_LABEL, jp.getText());         //34
+        else if (n == "mpls-tc")
+           entry.put(COLUMN_MPLS_TC, jp.getText());            //35
+        else if (n == "mpls-bos")
+           entry.put(COLUMN_MPLS_BOS, jp.getText());           //36
+        else if (n == "pbb-isid")
+           entry.put(COLUMN_PBB_ISID, jp.getText());           //37
+        else if (n == "tunnel-id")
+           entry.put(COLUMN_TUNNEL_ID, jp.getText());          //38
+        else if (n == "ipv6-exthdr")
+           entry.put(COLUMN_IPV6_EXTHDR, jp.getText());        //39
+        else if (n == "tos-bits")
+           entry.put(COLUMN_NW_TOS, jp.getText());
       }
       
       return entry;

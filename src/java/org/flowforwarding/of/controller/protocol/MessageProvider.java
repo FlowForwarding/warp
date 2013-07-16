@@ -93,8 +93,15 @@ public class MessageProvider {
    
    private GenericRecord delayedIpv4Src = null;
    private GenericRecord delayedIpv4Dst = null;
-   private boolean isEtherType = false;
+   private GenericRecord delayedIpv6Src = null;
+   private GenericRecord delayedIpv6Dst = null;
+   private GenericRecord delayedIpProto = null;
+   private GenericRecord delayedTcpSrc = null;
+   private GenericRecord delayedTcpDst = null;
 
+   private boolean isEtherType = false;
+   private boolean isIpProto = false;
+   
    
    private Protocol protocol = null;
    
@@ -514,6 +521,12 @@ public class MessageProvider {
                matches.add(this.delayedIpv4Src);
             if (this.delayedIpv4Dst != null)
                matches.add(this.delayedIpv4Dst);
+            if (this.delayedIpv6Src != null)
+               matches.add(this.delayedIpv6Src);
+            if (this.delayedIpv6Dst != null)
+               matches.add(this.delayedIpv6Dst);
+            if (this.delayedIpProto != null)
+               matches.add(this.delayedIpProto);
             
             this.isEtherType = true;
 
@@ -596,6 +609,55 @@ public class MessageProvider {
                this.delayedIpv4Src = oxmTlvRecord;
 
             /* 
+             * MATCH - TCP_SRC
+             */
+         } else if (key.equals("tp_src")) {
+            int oxmTlvHeader = (OXMClass.OFPXMC_OPENFLOW_BASIC.getValue() << 16) | 
+                (OXMField.OFPXMT_OFB_TCP_SRC.getValue() << 9) | 
+                (0 << 8) |
+                2;
+             
+            Schema oxmTlvFieldSchema = protocol.getType("of.oxm_tlv_tcp_src");
+            GenericRecord oxmTlvFieldRecord = new GenericData.Record(oxmTlvFieldSchema);
+             
+            oxmTlvFieldRecord.put("header", getUint32Fixed(oxmTlvHeader));
+            oxmTlvFieldRecord.put("tlv", getUint16Fixed(U16.t(Integer.valueOf((String) args.get(key)))));
+
+            Schema oxmTlvSchema = protocol.getType("of.oxm_tlv");
+            GenericRecord oxmTlvRecord = new GenericData.Record(oxmTlvSchema);
+            oxmTlvRecord.put("match", oxmTlvFieldRecord);
+
+            if (this.isIpProto)
+               matches.add(oxmTlvRecord);
+            else 
+               this.delayedTcpSrc = oxmTlvRecord;
+
+            /* 
+             * MATCH - TCP_DST
+             */
+         } else if (key.equals("tp_dst")) {
+            int oxmTlvHeader = (OXMClass.OFPXMC_OPENFLOW_BASIC.getValue() << 16) | 
+                (OXMField.OFPXMT_OFB_TCP_DST.getValue() << 9) | 
+                (0 << 8) |
+                2;
+             
+            Schema oxmTlvFieldSchema = protocol.getType("of.oxm_tlv_tcp_dst");
+            GenericRecord oxmTlvFieldRecord = new GenericData.Record(oxmTlvFieldSchema);
+             
+            oxmTlvFieldRecord.put("header", getUint32Fixed(oxmTlvHeader));
+            oxmTlvFieldRecord.put("tlv", getUint16Fixed(U16.t(Integer.valueOf((String) args.get(key)))));
+
+            Schema oxmTlvSchema = protocol.getType("of.oxm_tlv");
+            GenericRecord oxmTlvRecord = new GenericData.Record(oxmTlvSchema);
+            oxmTlvRecord.put("match", oxmTlvFieldRecord);
+
+            if (this.isIpProto)
+               matches.add(oxmTlvRecord);
+            else 
+               this.delayedTcpDst = oxmTlvRecord;
+            
+            
+            /* 
              * MATCH - IPV4_DST
              */
          } else if (key.equals("nw_dst")) {
@@ -622,13 +684,13 @@ public class MessageProvider {
             /* 
              * MATCH - IPV6_SRC
              */
-         } else if (key.equals("ipv6_dst")) {
+         } else if (key.equals("ipv6_src")) {
             int oxmTlvHeader = (OXMClass.OFPXMC_OPENFLOW_BASIC.getValue() << 16) | 
-                (OXMField.OFPXMT_OFB_IPV6_DST.getValue() << 9) | 
+                (OXMField.OFPXMT_OFB_IPV6_SRC.getValue() << 9) | 
                 (0 << 8) |
                 16;
              
-            Schema oxmTlvFieldSchema = protocol.getType("of.oxm_tlv_ipv6_dst");
+            Schema oxmTlvFieldSchema = protocol.getType("of.oxm_tlv_ipv6_src");
             GenericRecord oxmTlvFieldRecord = new GenericData.Record(oxmTlvFieldSchema);
              
             oxmTlvFieldRecord.put("header", getUint32Fixed(oxmTlvHeader));
@@ -637,8 +699,10 @@ public class MessageProvider {
             GenericRecord oxmTlvRecord = new GenericData.Record(oxmTlvSchema);
             oxmTlvRecord.put("match", oxmTlvFieldRecord);
              
-            matches.add(oxmTlvRecord);
-
+            if (this.isEtherType)
+               matches.add(oxmTlvRecord);
+            else 
+               this.delayedIpv6Src = oxmTlvRecord;
             
             /* 
              * MATCH - IPV6_SRC
@@ -658,7 +722,10 @@ public class MessageProvider {
             GenericRecord oxmTlvRecord = new GenericData.Record(oxmTlvSchema);
             oxmTlvRecord.put("match", oxmTlvFieldRecord);
              
-            matches.add(oxmTlvRecord);
+            if (this.isEtherType)
+               matches.add(oxmTlvRecord);
+            else 
+               this.delayedIpv6Dst = oxmTlvRecord;
             
 
          /*
@@ -710,7 +777,7 @@ public class MessageProvider {
          /*
           * OXM_OF_IP_PROTO 
           */
-         } else if (key.equals("ip_proto")) {
+         } else if (key.equals("nw_proto")) {
             
             Schema oxmTlvFieldSchema = protocol.getType("of.oxm_tlv_ip_proto");
             GenericRecord oxmTlvFieldRecord = new GenericData.Record(oxmTlvFieldSchema);
@@ -728,7 +795,24 @@ public class MessageProvider {
             GenericRecord oxmTlvRecord = new GenericData.Record(oxmTlvSchema);
             oxmTlvRecord.put("match", oxmTlvFieldRecord);
             
-            matches.add(oxmTlvRecord);
+            if (this.isEtherType) {
+               matches.add(oxmTlvRecord);
+               this.isIpProto = true;
+            }
+            else {
+               this.delayedIpProto = oxmTlvRecord;
+            }
+            
+            if (this.delayedTcpSrc != null)
+               matches.add(this.delayedTcpSrc);
+            if (this.delayedTcpDst != null)
+               matches.add(this.delayedTcpDst);
+/*            if (this.delayedIpv6Src != null)
+               matches.add(this.delayedIpv6Src);
+            if (this.delayedIpv6Dst != null)
+               matches.add(this.delayedIpv6Dst);
+            if (this.delayedIpProto != null)
+               matches.add(this.delayedIpProto);*/
             
          }
       }

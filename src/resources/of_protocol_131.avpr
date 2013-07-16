@@ -190,7 +190,7 @@
     "type": "record",
     "fields": [
       {"name": "header", "type": "oxm_tlv_header_ingress_port"},
-      {"name": "tlv", "type": "uint_32"}
+      {"name": "tlv", "type": "uint_32", "default": [0,0,0,0]}
     ]
    },
 
@@ -198,7 +198,7 @@
     "type": "record",
     "fields": [
       {"name": "header", "type": "uint_32"},
-      {"name": "tlv", "type": "uint_32"}
+      {"name": "tlv", "type": "uint_32", "default": [0,0,0,0]}
     ]
    },
 
@@ -212,7 +212,7 @@
     "type": "record",
     "fields": [
       {"name": "header", "type": "oxm_tlv_header_in_phy_port"},
-      {"name": "tlv", "type": "uint_32"}
+      {"name": "tlv", "type": "uint_32", "default": [0,0,0,0]}
     ]
    },
 
@@ -220,9 +220,33 @@
     "type": "record",
     "fields": [
       {"name": "header", "type": "uint_32"},
+      {"name": "tlv", "type": "uint_32", "default": [0,0,0,0]}
+    ]
+   },
+
+   {"name": "oxm_tlv_header_metadata",
+    "type": "bitmap",
+    "size": 32,
+    "default": {"or": [{"shift": [32768, 16]}, {"shift": [2, 9]}, {"shift": [0, 8]}, 8]}
+   },
+
+   {"name": "oxm_tlv_metadata_",
+    "type": "record",
+    "fields": [
+      {"name": "header", "type": "oxm_tlv_header_in_phy_port"},
       {"name": "tlv", "type": "uint_32"}
     ]
    },
+
+   {"name": "oxm_tlv_metadata",
+    "type": "record",
+    "fields": [
+      {"name": "header", "type": "uint_32"},
+      {"name": "tlv", "type": "uint_32"}
+    ]
+   },
+
+
 
    {"name": "oxm_tlv_header_eth_dst",
     "type": "bitmap",
@@ -334,21 +358,21 @@
     ]
    },
 
-   {"name": "oxm_tlv_header_vlan_ip_dscp",
+   {"name": "oxm_tlv_header_ip_dscp",
     "type": "bitmap",
     "size": 32,
     "default": {"or": [{"shift": [32768, 16]}, {"shift": [8, 9]}, {"shift": [0, 8]}, 1]}
    },
 
-   {"name": "oxm_tlv_vlan_ip_dscp_",
+   {"name": "oxm_tlv_ip_dscp_",
     "type": "record",
     "fields": [
-      {"name": "header", "type": "oxm_tlv_header_vlan_ip_dscp"},
+      {"name": "header", "type": "oxm_tlv_header_ip_dscp"},
       {"name": "tlv", "type": "uint_16", "default": [0]}
     ]
    },
 
-   {"name": "oxm_tlv_vlan_ip_dscp",
+   {"name": "oxm_tlv_ip_dscp", 
     "type": "record",
     "fields": [
       {"name": "header", "type": "uint_32"},
@@ -356,21 +380,21 @@
     ]
    },
 
-   {"name": "oxm_tlv_header_vlan_ip_ecn",
+   {"name": "oxm_tlv_header_ip_ecn",
     "type": "bitmap",
     "size": 32,
     "default": {"or": [{"shift": [32768, 16]}, {"shift": [9, 9]}, {"shift": [0, 8]}, 1]}
    },
 
-   {"name": "oxm_tlv_vlan_ip_ecn_",
+   {"name": "oxm_tlv_ip_ecn_",
     "type": "record",
     "fields": [
-      {"name": "header", "type": "oxm_tlv_header_vlan_ip_ecn"},
+      {"name": "header", "type": "oxm_tlv_header_ip_ecn"},
       {"name": "tlv", "type": "uint_8", "default": [0]}
     ]
    },
 
-   {"name": "oxm_tlv_vlan_ip_ecn",
+   {"name": "oxm_tlv_ip_ecn",
     "type": "record",
     "fields": [
       {"name": "header", "type": "uint_32"},
@@ -378,21 +402,21 @@
     ]
    },
 
-   {"name": "oxm_tlv_header_vlan_ip_proto",
+   {"name": "oxm_tlv_header_ip_proto",
     "type": "bitmap",
     "size": 32,
     "default": {"or": [{"shift": [32768, 16]}, {"shift": [10, 9]}, {"shift": [0, 8]}, 1]}
    },
 
-   {"name": "oxm_tlv_vlan_ip_proto_",
+   {"name": "oxm_tlv_ip_proto_",
     "type": "record",
     "fields": [
-      {"name": "header", "type": "oxm_tlv_header_vlan_ip_proto"},
+      {"name": "header", "type": "oxm_tlv_header_ip_proto"},
       {"name": "tlv", "type": "uint_8", "default": [0]}
     ]
    },
 
-   {"name": "oxm_tlv_vlan_ip_proto",
+   {"name": "oxm_tlv_ip_proto",
     "type": "record",
     "fields": [
       {"name": "header", "type": "uint_32"},
@@ -497,7 +521,7 @@
    {"name": "oxm_tlv_udp_src_",
     "type": "record",
     "fields": [
-      {"name": "header", "type": "oxm_tlv_header_tcp_src"},
+      {"name": "header", "type": "oxm_tlv_header_udp_src"},
       {"name": "tlv", "type": "uint_16", "default": [0,0]}
     ]
    },
@@ -532,7 +556,7 @@
     ]
    },
 
-   {"name": "oxm_tlv_header_tcp_src",
+   {"name": "oxm_tlv_header_sctp_src",
     "type": "bitmap",
     "size": 32,
     "default": {"or": [{"shift": [32768, 16]}, {"shift": [17, 9]}, {"shift": [0, 8]}, 2]}
@@ -582,7 +606,7 @@
     "default": {"or": [{"shift": [32768, 16]}, {"shift": [19, 9]}, {"shift": [0, 8]}, 1]}
    },
 
-   {"name": "oxm_tlv_icmpv4_type",
+   {"name": "oxm_tlv_icmpv4_type_",
     "type": "record",
     "fields": [
       {"name": "header", "type": "oxm_tlv_header_icmpv4_type"},
@@ -796,7 +820,7 @@
     ]
    },
 
-   {"name": "oxm_tlv_header_ipv6_type",
+   {"name": "oxm_tlv_header_icmpv6_type",
     "type": "bitmap",
     "size": 32,
     "default": {"or": [{"shift": [32768, 16]}, {"shift": [29, 9]}, {"shift": [0, 8]}, 1]}
@@ -849,7 +873,7 @@
    {"name": "oxm_tlv_ipv6_nd_target_",
     "type": "record",
     "fields": [
-      {"name": "header", "type": "oxm_tlv_header_nd_target"},
+      {"name": "header", "type": "oxm_tlv_header_ipv6_nd_target"},
       {"name": "tlv", "type": "uint_128", "default": [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]}
     ]
    },
@@ -862,21 +886,21 @@
     ]
    },
 
-   {"name": "oxm_tlv_header_nd_sll",
+   {"name": "oxm_tlv_header_ipv6_nd_sll",
     "type": "bitmap",
     "size": 32,
     "default": {"or": [{"shift": [32768, 16]}, {"shift": [32, 9]}, {"shift": [0, 8]}, 6]}
    },
 
-   {"name": "oxm_tlv_nd_sll_",
+   {"name": "oxm_tlv_ipv6_nd_sll_",
     "type": "record",
     "fields": [
-      {"name": "header", "type": "oxm_tlv_header_nd_sll"},
+      {"name": "header", "type": "oxm_tlv_header_ipv6_nd_sll"},
       {"name": "tlv", "type": "uint_48", "default": [0,0,0,0,0,0,0]}
     ]
    },
 
-   {"name": "oxm_tlv_nd_sll",
+   {"name": "oxm_tlv_ipv6_nd_sll",
     "type": "record",
     "fields": [
       {"name": "header", "type": "uint_32"},
@@ -884,21 +908,21 @@
     ]
    },
 
-   {"name": "oxm_tlv_header_nd_tll",
+   {"name": "oxm_tlv_header_ipv6_nd_tll",
     "type": "bitmap",
     "size": 32,
     "default": {"or": [{"shift": [32768, 16]}, {"shift": [33, 9]}, {"shift": [0, 8]}, 6]}
    },
 
-   {"name": "oxm_tlv_nd_tll_",
+   {"name": "oxm_tlv_ipv6_nd_tll_",
     "type": "record",
     "fields": [
-      {"name": "header", "type": "oxm_tlv_header_nd_tll"},
+      {"name": "header", "type": "oxm_tlv_header_ipv6_nd_tll"},
       {"name": "tlv", "type": "uint_48", "default": [0,0,0,0,0,0,0]}
     ]
    },
 
-   {"name": "oxm_tlv_nd_tll",
+   {"name": "oxm_tlv_ipv6_nd_tll",
     "type": "record",
     "fields": [
       {"name": "header", "type": "uint_32"},
@@ -1060,7 +1084,6 @@
                                  "oxm_tlv_udp_dst",
                                  "oxm_tlv_sctp_src",
                                  "oxm_tlv_sctp_dst",
-                                 "oxm_tlv_ipv6_dst",
                                  "oxm_tlv_icmpv4_type",
                                  "oxm_tlv_icmpv4_code",
                                  "oxm_tlv_arp_op",
@@ -1081,8 +1104,7 @@
                                  "oxm_tlv_mpls_bos",
                                  "oxm_tlv_pbb_isid",
                                  "oxm_tlv_tunnel_id",
-                                 "oxm_tlv_ipv6_exthdr",
-                                 "oxm_tlv_mpls_label"]}
+                                 "oxm_tlv_ipv6_exthdr"]}
     ] 
    },
 
