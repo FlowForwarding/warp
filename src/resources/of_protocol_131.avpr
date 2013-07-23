@@ -52,35 +52,35 @@
     "items":"uint_16",
     "list":[
      {"name":"OFPL_HELLO_LEN", "default":[0,8]},
-     {"name":"OFPL_ERROR_LEN",  "default":[0,0]},
-     {"name":"OFPL_ECHO_REQUEST_LEN", "default":[0,0]},
-     {"name":"OFPL_ECHO_REPLY_LEN", "default":[0,0]},
-     {"name":"OFPL_EXPERIMENTER_LEN", "default":[0,0]},
+     {"name":"OFPL_ERROR_LEN",  "default":[0,16]},
+     {"name":"OFPL_ECHO_REQUEST_LEN", "default":[0,8]},
+     {"name":"OFPL_ECHO_REPLY_LEN", "default":[0,8]},
+     {"name":"OFPL_EXPERIMENTER_LEN", "default":[0,16]},
      {"name":"OFPL_FEATURES_REQUEST_LEN", "default":[0,8]},
      {"name":"OFPL_FEATURES_REPLY_LEN", "default":[0,32]},
      {"name":"OFPL_GET_CONFIG_REQUEST_LEN", "default":[0,8]},
      {"name":"OFPL_GET_CONFIG_REPLY_LEN", "default":[0,12]},
      {"name":"OFPL_SET_CONFIG_LEN", "default":[0,12]},
-     {"name":"OFPL_PACKET_IN_LEN", "default":[0,0]},
-     {"name":"OFPL_FLOW_REMOVED_LEN", "default":[0,0]},
-     {"name":"OFPL_PORT_STATUS_LEN", "default":[0,0]},
-     {"name":"OFPL_PACKET_OUT_LEN", "default":[0,0]},
+     {"name":"OFPL_PACKET_IN_LEN", "default":[0,32]},
+     {"name":"OFPL_FLOW_REMOVED_LEN", "default":[0,56]},
+     {"name":"OFPL_PORT_STATUS_LEN", "default":[0,80]},
+     {"name":"OFPL_PACKET_OUT_LEN", "default":[0,24]},
      {"name":"OFPL_FLOW_MOD_LEN", "default":[0,56]},
      {"name":"OFPL_GROUP_MOD_LEN", "default":[0,16]},
-     {"name":"OFPL_PORT_MOD_LEN", "default":[0,0]},
-     {"name":"OFPL_TABLE_MOD_LEN", "default":[0,0]},
-     {"name":"OFPL_MULTIPART_REQUEST_LEN", "default":[0,0]},
-     {"name":"OFPL_MULTIPART_REPLY_LEN", "default":[0,0]},
-     {"name":"OFPL_BARRIER_REQUEST_LEN", "default":[0,0]},
-     {"name":"OFPL_BARRIER_REPLY_LEN", "default":[0,0]},
-     {"name":"OFPL_QUEUE_GET_CONFIG_REQUEST_LEN", "default":[0,0]},
-     {"name":"OFPL_QUEUE_GET_CONFIG_REPLY_LEN", "default":[0,0]},
-     {"name":"OFPL_ROLE_REQUEST_LEN", "default":[0,0]},
-     {"name":"OFPL_GET_ASYNC_REQUEST_LEN", "default":[0,0]},
-     {"name":"OFPL_ROLE_REPLY_LEN", "default":[0,0]},
-     {"name":"OFPL_GET_ASYNC_REPLY_LEN", "default":[0,0]},
-     {"name":"OFPL_SET_ASYNC_LEN", "default":[0,0]},
-     {"name":"OFPL_METER_MOD_LEN", "default":[0,0]}      
+     {"name":"OFPL_PORT_MOD_LEN", "default":[0,40]},
+     {"name":"OFPL_TABLE_MOD_LEN", "default":[0,16]},
+     {"name":"OFPL_MULTIPART_REQUEST_LEN", "default":[0,16]},
+     {"name":"OFPL_MULTIPART_REPLY_LEN", "default":[0,16]},
+     {"name":"OFPL_BARRIER_REQUEST_LEN", "default":[0,24]},
+     {"name":"OFPL_BARRIER_REPLY_LEN", "default":[0,24]},
+     {"name":"OFPL_QUEUE_GET_CONFIG_REQUEST_LEN", "default":[0,16]},
+     {"name":"OFPL_QUEUE_GET_CONFIG_REPLY_LEN", "default":[0,16]},
+     {"name":"OFPL_ROLE_REQUEST_LEN", "default":[0,24]},
+     {"name":"OFPL_GET_ASYNC_REQUEST_LEN", "default":[0,8]},
+     {"name":"OFPL_ROLE_REPLY_LEN", "default":[0,24]},
+     {"name":"OFPL_GET_ASYNC_REPLY_LEN", "default":[0,32]},
+     {"name":"OFPL_SET_ASYNC_LEN", "default":[0,32]},
+     {"name":"OFPL_METER_MOD_LEN", "default":[0,16]}      
     ]
    },
    
@@ -96,7 +96,7 @@
    
    {"name":"ofp_group_type",
     "type":"enum",
-    "items":"uint_16",
+    "items":"uint_8",
     "list":[
      {"name":"OFPGT_ALL", "default":[0,0]},
      {"name":"OFPGT_SELECT", "default":[0,1]},
@@ -1489,21 +1489,6 @@
     ]
    },
    
-   {"name":"group_mod_body",
-    "type":"record",
-    "fields":[
-     {"name":""}
-    ]
-   },
-   
-   {"name":"ofp_group_mod",
-    "type":"record",
-    "fields":[
-     {"name":"header", "type":"group_mod_header"},
-     
-    ]
-   },
-   
    {"name":"ofp_bucket",
     "type":"record",
     "fields":[
@@ -1515,5 +1500,41 @@
      {"name":"actions", "type":"action_set"}
     ]
    },   
+   
+   {"name":"bucket_set",
+    "type":"record",
+    "fields":[ 
+      {"name":"set", "type":{"type":"array", "items":"ofp_bucket"}}
+    ]
+   },
+      
+   {"name":"group_mod_body",
+    "type":"record",
+    "fields":[
+     {"name":"command", "type":"ofp_group_mod_command"},
+     {"name":"type", "type":"ofp_group_type"},
+     {"name":"pad", "type":"pad_1", "default":[0]},
+     {"name":"group_id", "type":"uint_32"}
+    ]
+   },
+   
+   {"name":"ofp_group_mod",
+    "type":"record",
+    "fields":[
+     {"name":"header", "type":"group_mod_header"},
+     {"name":"body", "type":"group_mod_body"},
+     {"name":"buckets", "type":"bucket_set"}          
+    ]
+   },
+   
+   {"name":"port_mod_header",
+    "type":"record",
+    "fields":[ 
+      {"name":"version", "type":"uint_8", "default":[4]},
+      {"name":"type", "type":"ofp_type", "default":"OFPT_FLOW_MOD"},
+      {"name":"length", "type":"ofp_length", "default":"OFPL_FLOW_MOD_LEN"},
+      {"name":"xid", "type":"uint_32", "default":[0,0,0,0]}
+    ]
+   }
  ]
 }
