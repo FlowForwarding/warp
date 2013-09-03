@@ -13,6 +13,7 @@ public abstract class OFSessionHandler extends OFActor{
    
    Map<SwitchRef, ActorRef> switches = new HashMap<> ();
    
+   @Override
    public void onReceive(Object msg) throws Exception {
       if (msg instanceof OFEventHandshaked) {
          
@@ -20,7 +21,11 @@ public abstract class OFSessionHandler extends OFActor{
          switches.put(swState, getSender());
          
          handshaked(swState);         
+      } else if (msg instanceof EventGetSwitches) {
+         System.out.println("*****");
       }
+      
+
    }
    
    /*

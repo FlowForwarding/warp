@@ -7,11 +7,11 @@ package org.flowforwarding.of.controller.session;
 
 import java.io.ByteArrayOutputStream;
 
-import org.flowforwarding.of.controller.protocol.OFMessageProvider;
-import org.flowforwarding.of.controller.protocol.OFMessageProviderFactory;
-import org.flowforwarding.of.controller.protocol.OFMessageProviderFactoryAvroProtocol;
 import org.flowforwarding.of.ofswitch.SwitchState;
 import org.flowforwarding.of.ofswitch.SwitchState.SwitchRef;
+import org.flowforwarding.of.protocol.ofmessages.OFMessageProvider;
+import org.flowforwarding.of.protocol.ofmessages.OFMessageProviderFactory;
+import org.flowforwarding.of.protocol.ofmessages.OFMessageProviderFactoryAvroProtocol;
 
 import akka.actor.ActorRef;
 import akka.actor.UntypedActor;

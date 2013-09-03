@@ -10,19 +10,10 @@ import org.flowforwarding.of.ofswitch.SwitchState.SwitchRef;
  * @author Infoblox Inc.
  *
  */
-public class OFIncoming extends OFEvent {
-
-   protected SwitchRef switchRef;
-   
-   /**
-    * @param switchRef
-    */
-   public OFIncoming(SwitchRef swRef) {
-      switchRef = swRef;
-   }
+public class EventGetSwitches implements Event{
 
    /* (non-Javadoc)
-    * @see org.flowforwarding.of.controller.session.OFEvent#getSwitchRef()
+    * @see org.flowforwarding.of.controller.session.Event#getSwitchRef()
     */
    @Override
    public SwitchRef getSwitchRef() {

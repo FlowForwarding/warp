@@ -5,10 +5,14 @@
 
 package org.flowforwarding.of.controller;
 
+import java.util.List;
 import java.net.InetSocketAddress;
 
+import org.flowforwarding.of.controller.session.EventGetSwitches;
 import org.flowforwarding.of.controller.session.OFActor;
 import org.flowforwarding.of.controller.session.SwitchNurse;
+import org.flowforwarding.of.controller.supply.OFCTellController;
+import org.flowforwarding.of.ofswitch.SwitchState.SwitchRef;
 
 import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
@@ -32,6 +36,7 @@ public class Controller extends UntypedActor{
    
    final ActorRef manager;
    static ActorRef controller;
+   static ActorRef ofEventHandler;
    
    private Controller(ActorRef manager) {
       this.manager = manager;
@@ -51,6 +56,7 @@ public class Controller extends UntypedActor{
    public void onReceive(Object msg) throws Exception {
       if (msg instanceof Bound) {
          manager.tell(msg, getSelf());
+         ofEventHandler = getContext().actorOf(Props.create(ofEventHandlerClass));
       } else if (msg instanceof CommandFailed) {
          getContext().stop(getSelf());
       } else if (msg instanceof Connected) {
@@ -58,7 +64,7 @@ public class Controller extends UntypedActor{
          manager.tell(conn, getSelf());
          System.out.println("[INFO] Getting Switch connection \n");
          
-         final ActorRef ofEventHandler = getContext().actorOf(Props.create(ofEventHandlerClass));
+         //final ActorRef ofEventHandler = getContext().actorOf(Props.create(ofEventHandlerClass));
          final ActorRef handler = getContext().actorOf(Props.create(SwitchNurse.class));
          getSender().tell(TcpMessage.register(handler), getSelf());
          
@@ -74,7 +80,7 @@ public class Controller extends UntypedActor{
    * @param handler
    * The user-defined OpenFlow events handler, e.g. {@link org.flowforwarding.of.controller.session.OFSessionHandler}
    */
-   public static void launch (Configuration config, Class<? extends OFActor> handler) {
+   public static ControllerRef launch (Configuration config, Class<? extends OFActor> handler) {
       
       configuration = config;
       ofEventHandlerClass = handler;
@@ -83,6 +89,7 @@ public class Controller extends UntypedActor{
       final ActorRef manager = Tcp.get(system).manager();
       controller = system.actorOf(Props.create(Controller.class, manager), "Controller-Dispatcher");
 
+      return ControllerRef.create(controller);
    }
    
   /**
@@ -93,7 +100,7 @@ public class Controller extends UntypedActor{
    * The user-defined OpenFlow events handler, e.g. {@link org.flowforwarding.of.controller.session.OFSessionHandler}
    */
    
-   public static void launch (Class<? extends OFActor> handler) {
+   public static ControllerRef launch (Class<? extends OFActor> handler) {
       
       configuration = new Configuration();
       ofEventHandlerClass = handler;
@@ -101,5 +108,31 @@ public class Controller extends UntypedActor{
       final ActorSystem system = ActorSystem.create("OfController");
       final ActorRef manager = Tcp.get(system).manager();
       controller = system.actorOf(Props.create(Controller.class, manager), "Controller-Dispatcher");
+      
+      return ControllerRef.create(controller);
    }
+   
+   public static class ControllerRef {
+      
+      protected ActorRef controller = null;
+      
+      protected OFCTellController tellController = null;
+      
+      protected ControllerRef () {}
+      protected ControllerRef (ActorRef c) {
+         controller = c;
+         tellController = new OFCTellController(controller);
+      }
+      
+      public static ControllerRef create (ActorRef c) {
+         return new ControllerRef (c);
+      }
+      
+      public List<SwitchRef> getSwitches () {
+         tellController.tell(ofEventHandler, new EventGetSwitches());
+         
+         return null;
+      }
+   }
+
 }

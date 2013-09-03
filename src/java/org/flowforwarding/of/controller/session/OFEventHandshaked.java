@@ -2,7 +2,7 @@ package org.flowforwarding.of.controller.session;
 
 import org.flowforwarding.of.ofswitch.SwitchState.SwitchRef;
 
-public class OFEventHandshaked implements OFEvent {
+public class OFEventHandshaked extends OFEvent {
    
    protected SwitchRef switchRef;
    

@@ -7,9 +7,9 @@ package org.flowforwarding.of.ofswitch;
 
 import java.io.ByteArrayOutputStream;
 
-import org.flowforwarding.of.controller.protocol.OFMessageProvider;
-import org.flowforwarding.of.controller.protocol.OFMessageProviderFactory;
-import org.flowforwarding.of.controller.protocol.OFMessageProviderFactoryAvroProtocol;
+import org.flowforwarding.of.protocol.ofmessages.OFMessageProvider;
+import org.flowforwarding.of.protocol.ofmessages.OFMessageProviderFactory;
+import org.flowforwarding.of.protocol.ofmessages.OFMessageProviderFactoryAvroProtocol;
 
 public class SwitchState {
    
