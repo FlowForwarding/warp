@@ -10,7 +10,7 @@ How to build:
 1. Build Avro library:
  ```bash
  $ cd avro-trunk/lang/java/avro
- $ mvn install -DskipTest
+ $ mvn install -DskipTests
 
  ```
 2. Build of_lib.jar:
