@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project default="create_run_jar" name="Create Runnable Jar for Project of_controller">
+    <!--this file was created by Eclipse Runnable JAR Export Wizard-->
+    <!--ANT 1.7 is required                                        -->
+    <target name="create_run_jar">
+        <jar destfile="/home/dmitry/workspace/eclipse/infoblox/of_controller/of_controller/target/of_lib.jar" filesetmanifest="mergewithoutmain">
+            <manifest>
+                <attribute name="Main-Class" value="org.flowforwarding.of.controller.ControllerOld"/>
+                <attribute name="Class-Path" value="."/>
+            </manifest>
+            <fileset dir="bin"/>
+            <zipfileset excludes="META-INF/*.SF" src="/usr/lib/jackson/json/1.9.11/jackson-all-1.9.11.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="/usr/local/lib/netty/3.6.3.Final/jar/netty-3.6.3.Final.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="/usr/local/lib/restlet/2.1.2/lib/org.restlet.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="/usr/local/lib/restlet/2.1.2/lib/org.restlet.ext.jackson.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="/usr/local/lib/akka/2.2.0/scala-library.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="/usr/local/lib/akka/2.2.0/config-1.0.2.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="/usr/local/lib/akka/2.2.0/akka-actor_2.10-2.2.0.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="avro-trunk/lang/java/avro/target/avro-1.7.4-SNAPSHOT.jar"/>
+        </jar>
+    </target>
+</project>
