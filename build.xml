@@ -3,7 +3,9 @@
     <!--this file was created by Eclipse Runnable JAR Export Wizard-->
     <!--ANT 1.7 is required                                        -->
     <target name="create_run_jar">
-        <jar destfile="/home/dmitry/workspace/eclipse/infoblox/of_controller/of_controller/target/of_lib.jar" filesetmanifest="mergewithoutmain">
+        <mkdir dir="./bin"/>
+        <mkdir dir="./target"/>
+        <jar destfile="target/of_lib.jar" filesetmanifest="mergewithoutmain">
             <manifest>
                 <attribute name="Main-Class" value="org.flowforwarding.of.controller.ControllerOld"/>
                 <attribute name="Class-Path" value="."/>
