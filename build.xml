@@ -1,24 +1,19 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!-- WARNING: Eclipse auto-generated file.
-              Any modifications will be overwritten.
-              To include a user specific buildfile here, simply create one in the same
-              directory with the processing instruction <?eclipse.ant.import?>
-              as the first entry and export the buildfile again. --><project basedir="." default="build" name="of_controller">
+    <project basedir="." default="build" name="of_controller">
     <property environment="env"/>
     <property name="avro.location" value="avro-trunk/lang/java/avro"/>
-    <property name="ECLIPSE_HOME" value="../../../../../../../opt/eclipse/4.2.1"/>
     <property name="debuglevel" value="source,lines,vars"/>
     <property name="target" value="1.7"/>
     <property name="source" value="1.7"/>
     <path id="of_controller.classpath">
         <pathelement location="bin"/>
-        <pathelement location="../../../../../../../usr/lib/jackson/json/1.9.11/jackson-all-1.9.11.jar"/>
-        <pathelement location="../../../../../../../usr/local/lib/netty/3.6.3.Final/jar/netty-3.6.3.Final.jar"/>
-        <pathelement location="../../../../../../../usr/local/lib/restlet/2.1.2/lib/org.restlet.jar"/>
-        <pathelement location="../../../../../../../usr/local/lib/restlet/2.1.2/lib/org.restlet.ext.jackson.jar"/>
-        <pathelement location="../../../../../../../usr/local/lib/akka/2.2.0/scala-library.jar"/>
-        <pathelement location="../../../../../../../usr/local/lib/akka/2.2.0/config-1.0.2.jar"/>
-        <pathelement location="../../../../../../../usr/local/lib/akka/2.2.0/akka-actor_2.10-2.2.0.jar"/>
+        <pathelement location="/usr/lib/jackson/json/1.9.11/jackson-all-1.9.11.jar"/>
+        <pathelement location="/usr/local/lib/netty/3.6.3.Final/jar/netty-3.6.3.Final.jar"/>
+        <pathelement location="/usr/local/lib/restlet/2.1.2/lib/org.restlet.jar"/>
+        <pathelement location="/usr/local/lib/restlet/2.1.2/lib/org.restlet.ext.jackson.jar"/>
+        <pathelement location="/usr/local/lib/akka/2.2.0/scala-library.jar"/>
+        <pathelement location="/usr/local/lib/akka/2.2.0/config-1.0.2.jar"/>
+        <pathelement location="/usr/local/lib/akka/2.2.0/akka-actor_2.10-2.2.0.jar"/>
         <pathelement location="${avro.location}/target/avro-1.7.4-SNAPSHOT.jar"/>
     </path>
     <target name="init">
@@ -45,7 +40,7 @@
         <delete dir="bin"/>
     </target>
     <target depends="clean" name="cleanall"/>
-    <target depends="build-subprojects,build-project,create_run_jar" name="build"/>
+    <target depends="build-subprojects,create_run_jar" name="build"/>
     <target name="build-subprojects"/>
     <target depends="init" name="build-project">
         <echo message="${ant.project.name}: ${ant.file}"/>
@@ -59,19 +54,6 @@
         </javac>
     </target>
     <target description="Build all projects which reference this project. Useful to propagate changes." name="build-refprojects"/>
-    <target description="copy Eclipse compiler jars to ant lib directory" name="init-eclipse-compiler">
-        <copy todir="${ant.library.dir}">
-            <fileset dir="${ECLIPSE_HOME}/plugins" includes="org.eclipse.jdt.core_*.jar"/>
-        </copy>
-        <unzip dest="${ant.library.dir}">
-            <patternset includes="jdtCompilerAdapter.jar"/>
-            <fileset dir="${ECLIPSE_HOME}/plugins" includes="org.eclipse.jdt.core_*.jar"/>
-        </unzip>
-    </target>
-    <target description="compile project with Eclipse compiler" name="build-eclipse-compiler">
-        <property name="build.compiler" value="org.eclipse.jdt.core.JDTCompilerAdapter"/>
-        <antcall target="build"/>
-    </target>
     <target name="Controller">
         <java classname="org.flowforwarding.of.controller.ControllerOld" failonerror="true" fork="yes">
             <classpath refid="of_controller.classpath"/>
@@ -87,22 +69,23 @@
             <classpath refid="of_controller.classpath"/>
         </java>
     </target>
-    <target depends="build-project"  name="create_run_jar">
+    <target depends="build-project" name="create_run_jar">
+        <mkdir dir="./bin"/>
     	<mkdir dir="./target"/>
-        <jar destfile="target/of_lib.jar" filesetmanifest="mergewithoutmain">
-        	<manifest>
-        		<attribute name="Main-Class" value="org.flowforwarding.of.controller.ControllerOld"/>
-                <attribute name="Class-Path" value="."/>
+    	<jar destfile="target/of_lib.jar" filesetmanifest="mergewithoutmain">
+    		<manifest>
+    			<attribute name="Main-Class" value="org.flowforwarding.of.controller.ControllerOld"/>
+    			<attribute name="Class-Path" value="."/>
             </manifest>
-        	<fileset dir="bin"/>
-        	<zipfileset excludes="META-INF/*.SF" src="/usr/lib/jackson/json/1.9.11/jackson-all-1.9.11.jar"/>
-        	<zipfileset excludes="META-INF/*.SF" src="/usr/local/lib/netty/3.6.3.Final/jar/netty-3.6.3.Final.jar"/>
-        	<zipfileset excludes="META-INF/*.SF" src="/usr/local/lib/restlet/2.1.2/lib/org.restlet.jar"/>
-        	<zipfileset excludes="META-INF/*.SF" src="/usr/local/lib/restlet/2.1.2/lib/org.restlet.ext.jackson.jar"/>
+    		<fileset dir="bin"/>
+            <zipfileset excludes="META-INF/*.SF" src="/usr/lib/jackson/json/1.9.11/jackson-all-1.9.11.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="/usr/local/lib/netty/3.6.3.Final/jar/netty-3.6.3.Final.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="/usr/local/lib/restlet/2.1.2/lib/org.restlet.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="/usr/local/lib/restlet/2.1.2/lib/org.restlet.ext.jackson.jar"/>
             <zipfileset excludes="META-INF/*.SF" src="/usr/local/lib/akka/2.2.0/scala-library.jar"/>
-        	<zipfileset excludes="META-INF/*.SF" src="/usr/local/lib/akka/2.2.0/config-1.0.2.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="/usr/local/lib/akka/2.2.0/config-1.0.2.jar"/>
             <zipfileset excludes="META-INF/*.SF" src="/usr/local/lib/akka/2.2.0/akka-actor_2.10-2.2.0.jar"/>
-        	<zipfileset excludes="META-INF/*.SF" src="avro-trunk/lang/java/avro/target/avro-1.7.4-SNAPSHOT.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="avro-trunk/lang/java/avro/target/avro-1.7.4-SNAPSHOT.jar"/>
         </jar>
-    </target>              	
+    </target>
 </project>
