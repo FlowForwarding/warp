@@ -70,7 +70,6 @@
         </java>
     </target>
     <target depends="build-project" name="create_run_jar">
-        <mkdir dir="./bin"/>
     	<mkdir dir="./target"/>
     	<jar destfile="target/of_lib.jar" filesetmanifest="mergewithoutmain">
     		<manifest>
