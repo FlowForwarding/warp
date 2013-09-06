@@ -40,7 +40,7 @@ public class OFMessageProvider13AvroProtocol implements OFMessageProvider{
    
    private Schema ofpHeaderSchema = null;
    
-   private Schema ofpHelloHeaderSchema = null;
+   private Schema helloHeaderSchema = null;
    private Schema ofpHelloSchema = null;
    
    private Schema echoRequestHeaderSchema = null;
@@ -50,10 +50,10 @@ public class OFMessageProvider13AvroProtocol implements OFMessageProvider{
    private Schema ofpEchoReplySchema = null;
    
    private Schema ofpSwitchFeaturesRequestSchema = null;
-   private Schema ofpSwitchFeaturesRequestHeaderSchema = null;
+   private Schema switchFeaturesRequestHeaderSchema = null;
    
    private Schema ofpSwitchFeaturesReplySchema = null;
-   private Schema ofpSwitchFeaturesReplyHeaderSchema = null;
+   private Schema switchFeaturesReplyHeaderSchema = null;
    
    private Schema ofpSwitchFeaturesSchema = null;
    private Schema ofpSwitchFeaturesHeaderSchema = null;
@@ -135,6 +135,7 @@ public class OFMessageProvider13AvroProtocol implements OFMessageProvider{
        }
    }
    
+   
    public void init () {
       try {
          //protocol = org.apache.avro.Protocol.parse(new File(schemaSrc));
@@ -148,21 +149,21 @@ public class OFMessageProvider13AvroProtocol implements OFMessageProvider{
 
       ofpHeaderSchema =  protocol.getType("of.ofp_header");
       
-      ofpHelloHeaderSchema = protocol.getType("of.ofp_hello_header");
+      helloHeaderSchema = protocol.getType("of.ofp_hello_header");
       ofpHelloSchema = protocol.getType("of.ofp_hello");
       
-       echoRequestHeaderSchema= protocol.getType("of.echo_request_header");
-       ofpEchoRequestSchema = protocol.getType("of.ofp_echo_request");
+      echoRequestHeaderSchema= protocol.getType("of.echo_request_header");
+      ofpEchoRequestSchema = protocol.getType("of.ofp_echo_request");
 
       echoReplyHeaderSchema = protocol.getType("of.echo_reply_header");
       ofpEchoReplySchema = protocol.getType("of.ofp_echo_reply");
 
       
       ofpSwitchFeaturesRequestSchema =  protocol.getType("of.ofp_switch_features_request");
-      ofpSwitchFeaturesRequestHeaderSchema =  protocol.getType("of.ofp_switch_features_request_header");
+      switchFeaturesRequestHeaderSchema =  protocol.getType("of.ofp_switch_features_request_header");
       
       ofpSwitchFeaturesReplySchema =  protocol.getType("of.ofp_switch_features_reply");
-      ofpSwitchFeaturesReplyHeaderSchema =  protocol.getType("of.ofp_switch_features_reply_header");
+      switchFeaturesReplyHeaderSchema =  protocol.getType("of.ofp_switch_features_reply_header");
       
       ofpSetSwitchConfigSchema = protocol.getType("of.ofp_set_switch_config");
       ofpSetSwitchConfigHeaderSchema = protocol.getType("of.ofp_set_switch_config_header");
@@ -185,10 +186,34 @@ public class OFMessageProvider13AvroProtocol implements OFMessageProvider{
       
    }
    
+   private byte[] encodeMessage (Schema headerSchema, Schema bodySchema) {
+      
+      GenericRecord bodyRecord = new GenericData.Record(bodySchema);
+      GenericRecordBuilder builder = new GenericRecordBuilder(headerSchema);
+
+      GenericRecord headerRecord = builder.build();
+      bodyRecord.put("header", headerRecord);  
+      
+      ByteArrayOutputStream out = new ByteArrayOutputStream();
+      
+      DatumWriter<GenericRecord> writer = new GenericDatumWriter<GenericRecord>(ofpHelloSchema);
+      Encoder encoder = EncoderFactory.get().binaryNonEncoder(out, null);
+      
+      try {
+         writer.write(bodyRecord, encoder);
+         encoder.flush();
+      } catch (IOException e) {
+         // TODO Auto-generated catch block
+         e.printStackTrace();
+      }
+      
+      return out.toByteArray();
+   }
+   
    public ByteArrayOutputStream getHello(ByteArrayOutputStream out) {
       
       GenericRecord ofpHelloRecord = new GenericData.Record(ofpHelloSchema);
-      GenericRecordBuilder builder = new GenericRecordBuilder(ofpHelloHeaderSchema);
+      GenericRecordBuilder builder = new GenericRecordBuilder(helloHeaderSchema);
 
       GenericRecord ofpHelloHeaderRecord = builder.build();
       ofpHelloRecord.put("header", ofpHelloHeaderRecord);  
@@ -208,77 +233,29 @@ public class OFMessageProvider13AvroProtocol implements OFMessageProvider{
     }
    
    public byte[] encodeHelloMessage() {
-      GenericRecord ofpHelloRecord = new GenericData.Record(ofpHelloSchema);
-      GenericRecordBuilder builder = new GenericRecordBuilder(ofpHelloHeaderSchema);
-
-      GenericRecord ofpHelloHeaderRecord = builder.build();
-      ofpHelloRecord.put("header", ofpHelloHeaderRecord);  
-      
-      ByteArrayOutputStream out = new ByteArrayOutputStream();
-      
-      DatumWriter<GenericRecord> writer = new GenericDatumWriter<GenericRecord>(ofpHelloSchema);
-      Encoder encoder = EncoderFactory.get().binaryNonEncoder(out, null);
-      
-      try {
-         writer.write(ofpHelloRecord, encoder);
-         encoder.flush();
-      } catch (IOException e) {
-         // TODO Auto-generated catch block
-         e.printStackTrace();
-      }
-      
-      return out.toByteArray();
-
+      return encodeMessage(helloHeaderSchema, ofpHelloSchema);
    }
    
    public byte[] encodeEchoRequest() {
-      GenericRecord ofpRecord = new GenericData.Record(ofpEchoRequestSchema);
-      GenericRecordBuilder builder = new GenericRecordBuilder(echoRequestHeaderSchema);
-
-      GenericRecord headerRecord = builder.build();
-      ofpRecord.put("header", headerRecord);  
-      
-      ByteArrayOutputStream out = new ByteArrayOutputStream();
-      
-      DatumWriter<GenericRecord> writer = new GenericDatumWriter<GenericRecord>(ofpEchoRequestSchema);
-      Encoder encoder = EncoderFactory.get().binaryNonEncoder(out, null);
-      
-      try {
-         writer.write(ofpRecord, encoder);
-         encoder.flush();
-      } catch (IOException e) {
-         // TODO Auto-generated catch block
-         e.printStackTrace();
-      }
-      return out.toByteArray();
+      return encodeMessage(echoRequestHeaderSchema, ofpEchoRequestSchema);
    }
    
    public byte[] encodeEchoReply() {
-      GenericRecord ofpRecord = new GenericData.Record(ofpEchoReplySchema);
-      GenericRecordBuilder builder = new GenericRecordBuilder(echoReplyHeaderSchema);
-
-      GenericRecord headerRecord = builder.build();
-      ofpRecord.put("header", headerRecord);  
-      
-      ByteArrayOutputStream out = new ByteArrayOutputStream();
-      
-      DatumWriter<GenericRecord> writer = new GenericDatumWriter<GenericRecord>(ofpEchoReplySchema);
-      Encoder encoder = EncoderFactory.get().binaryNonEncoder(out, null);
-      
-      try {
-         writer.write(ofpRecord, encoder);
-         encoder.flush();
-      } catch (IOException e) {
-         // TODO Auto-generated catch block
-         e.printStackTrace();
-      }
-      return out.toByteArray();
+      return encodeMessage(echoReplyHeaderSchema, ofpEchoReplySchema);
    }
    
+   public byte[] encodeSwitchFeaturesRequest () {
+      return encodeMessage(switchFeaturesRequestHeaderSchema, ofpSwitchFeaturesRequestSchema);
+   }
+   
+   public byte[] encodeSwitchFeaturesReply () {
+      return encodeMessage(switchFeaturesReplyHeaderSchema, ofpSwitchFeaturesReplySchema);
+   }
+
    public ByteArrayOutputStream getSwitchFeaturesRequest(ByteArrayOutputStream out) {
       
       GenericRecord ofpSwitchFeaturesRequestRecord = new GenericData.Record(ofpSwitchFeaturesRequestSchema);
-      GenericRecordBuilder builder = new GenericRecordBuilder(ofpSwitchFeaturesRequestHeaderSchema);
+      GenericRecordBuilder builder = new GenericRecordBuilder(switchFeaturesRequestHeaderSchema);
 
       GenericRecord ofpSwitchFeaturesRequestHeaderRecord = builder.build();
       ofpSwitchFeaturesRequestRecord.put("header", ofpSwitchFeaturesRequestHeaderRecord);  
@@ -297,34 +274,10 @@ public class OFMessageProvider13AvroProtocol implements OFMessageProvider{
       return out;
     }
    
-   public byte[] encodeSwitchFeaturesRequest () {
-      
-      GenericRecord ofpSwitchFeaturesRequestRecord = new GenericData.Record(ofpSwitchFeaturesRequestSchema);
-      GenericRecordBuilder builder = new GenericRecordBuilder(ofpSwitchFeaturesRequestHeaderSchema);
-
-      GenericRecord ofpSwitchFeaturesRequestHeaderRecord = builder.build();
-      ofpSwitchFeaturesRequestRecord.put("header", ofpSwitchFeaturesRequestHeaderRecord);
-      
-      ByteArrayOutputStream out = new ByteArrayOutputStream();
-      DatumWriter<GenericRecord> writer = new GenericDatumWriter<GenericRecord>(ofpSwitchFeaturesRequestSchema);
-      Encoder encoder = EncoderFactory.get().binaryNonEncoder(out, null);
-      
-      try {
-         writer.write(ofpSwitchFeaturesRequestRecord, encoder);
-         encoder.flush();
-      } catch (IOException e) {
-         // TODO Auto-generated catch block
-         e.printStackTrace();
-      }
-
-      return out.toByteArray();
-      
-   }
-
    public ByteArrayOutputStream getSwitchFeaturesReply(ByteArrayOutputStream out) {
       
       GenericRecord ofpSwitchFeaturesReplyRecord = new GenericData.Record(ofpSwitchFeaturesReplySchema);
-      GenericRecordBuilder builder = new GenericRecordBuilder(ofpSwitchFeaturesReplyHeaderSchema);
+      GenericRecordBuilder builder = new GenericRecordBuilder(switchFeaturesReplyHeaderSchema);
       
       GenericRecord ofpSwitchFeaturesReplyHeaderRecord = builder.build();
       ofpSwitchFeaturesReplyRecord.put("header", ofpSwitchFeaturesReplyHeaderRecord);  
