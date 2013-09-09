@@ -37,7 +37,7 @@ import org.flowforwarding.of.util.U8;
 
 public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
    
-   private final String schemaSrc = "of_protocol_131.avpr";
+   private final String schemaSrc = "of_protocol_13.avpr";
    
    private Schema ofpHeaderSchema = null;
    
@@ -694,14 +694,25 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
        */
       Schema ofpFlowModSchema = protocol.getType("of.ofp_flow_mod");
       GenericRecord ofpFlowModRecord = new GenericData.Record(ofpFlowModSchema);
+      boolean isDelete = false;
       
       /*
        * Create FlowMod Body
        */
-      Schema flowModBodySchema = protocol.getType("of.flow_mod_body");
+      Schema flowModBodySchema = null;
+      if (args.containsKey("delete")) {
+         flowModBodySchema = protocol.getType("of.flow_mod_body_delete");
+         isDelete = true;
+      }
+      else {
+         flowModBodySchema = protocol.getType("of.flow_mod_body_add");
+         isDelete = false;
+      }
+      
       GenericRecordBuilder flowModBodyBuilder = new GenericRecordBuilder(flowModBodySchema);
       GenericRecord flowModBodyRecord = flowModBodyBuilder.build();
       GenericRecord actionSetRecord = null; // TODO Empty actions instead of null!
+      
       List <GenericRecord> instructions = new ArrayList<>();
       List <GenericRecord> matches = new ArrayList<>();
       
@@ -1241,7 +1252,8 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
       ofpFlowModRecord.put("header", flowModHeaderRecord);      
       ofpFlowModRecord.put("base", flowModBodyRecord);
       ofpFlowModRecord.put("match", ofpMatchRecord);
-      ofpFlowModRecord.put("instructions", instrSetRecord);
+      if (isDelete)
+         ofpFlowModRecord.put("instructions", instrSetRecord);
       
       DatumWriter<GenericRecord> writer = new GenericDatumWriter<GenericRecord>(ofpFlowModSchema);
       Encoder encoder = EncoderFactory.get().binaryNonEncoder(out, null);
@@ -1270,7 +1282,7 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
       }
       
       return out;
-   }
+   }   
    
    /*
     * Utilities

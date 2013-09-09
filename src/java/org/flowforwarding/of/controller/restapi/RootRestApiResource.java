@@ -17,6 +17,7 @@ import org.codehaus.jackson.JsonParser;
 import org.codehaus.jackson.JsonToken;
 import org.codehaus.jackson.map.MappingJsonFactory;
 import org.flowforwarding.of.controller.ControllerOld.ObserverTask;
+import org.restlet.resource.Delete;
 import org.restlet.resource.Get;
 import org.restlet.resource.Post;
 import org.restlet.resource.ServerResource;
@@ -31,19 +32,32 @@ public class RootRestApiResource  extends ServerResource {
    
    @Get
    public String getHandler (String jsonRequest) {
+      processRequest(jsonRequest, false);
+      
+      return "OK";
+   }
+   
+   @Delete
+   public String deleteFlow (String jsonRequest) {
+      processRequest(jsonRequest, true);      
+          
+      return "DELETED";
+   }
+   
+   protected void processRequest (String jsonRequest, boolean isDelete) {
       
       //Map<String, Map<String, OFFlowMod>> entries = (Map<String, Map<String, OFFlowMod>>)getContext().getAttributes().get("entries");
       Map<String, Object> entries = (Map<String, Object>)getContext().getAttributes().get("entries");
       ForkJoinPool pool = (ForkJoinPool) getContext().getAttributes().get("pool");
       ObserverTask<Integer, RestApiTask> observerTask = (ObserverTask<Integer, RestApiTask>) getContext().getAttributes().get("observerTask");
 
+      if (isDelete) entries.put("DELETE", "YES");
+      
       //RecursiveTask <Map<String, Map<String, OFFlowMod>>> task = new RestApiTask(jsonRequest, entries);
       RecursiveTask <Map<String, Object>> task = new RestApiTask(jsonRequest, entries);
       // TODO add something like execute() to IServicePool
       observerTask.update((RestApiTask) task);
       pool.execute(task);
-      
-    
-      return "OK";
+
    }
 }

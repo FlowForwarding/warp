@@ -1189,7 +1189,7 @@
     ]
    },  
 
-   {"name":"flow_mod_body",
+   {"name":"flow_mod_body_add",
     "type":"record",
     "fields":[ 
       {"name":"cookie", "type":"uint_64", "default":[0,0,0,0,0,0,0,0]},
@@ -1206,14 +1206,32 @@
       {"name":"pad", "type":"pad_2", "default":[0,0]}
     ]
    },
+   
+   {"name":"flow_mod_body_delete",
+    "type":"record",
+    "fields":[ 
+      {"name":"cookie", "type":"uint_64", "default":[0,0,0,0,0,0,0,0]},
+      {"name":"cookie_mask", "type":"uint_64", "default":[0,0,0,0,0,0,0,0]},
+      {"name":"table_id", "type":"uint_8", "default":[0]},
+      {"name":"command", "type":"ofp_flow_mod_command", "default":"OFPFC_DELETE"},
+      {"name":"idle_timeout", "type":"uint_16", "default":[0,0]},
+      {"name":"hard_timeout", "type":"uint_16", "default":[0,0]},
+      {"name":"priority", "type":"uint_16", "default":[0,0]},
+      {"name":"buffer_id", "type":"uint_32", "default":[255,255,255,255]},
+      {"name":"out_port", "type":"uint_32", "default":[255,255,255,255]},
+      {"name":"out_group", "type":"uint_32", "default":[0,0,0,0]},
+      {"name":"flags", "type":"ofp_flow_mod_flags", "default":"OFPFF_SEND_FLOW_REM"},
+      {"name":"pad", "type":"pad_2", "default":[0,0]}
+    ]
+   },
 
    {"name":"ofp_flow_mod",
     "type":"record",
     "fields":[
       {"name":"header", "type":"flow_mod_header"},
-      {"name":"base", "type":"flow_mod_body"},
+      {"name":"base", "type":["flow_mod_body_add","flow_mod_body_delete"]},
       {"name":"match", "type":"ofp_match"},
-      {"name":"instructions", "type":"instruction_set"}
+      {"name":"instructions", "type":["instruction_set","null"]}
     ]
    },
    
@@ -1315,6 +1333,40 @@
       {"name":"length", "type":"ofp_length", "default":"OFPL_MULTIPART_REPLY_LEN"},
       {"name":"xid", "type":"uint_32", "default":[0,0,0,0]}
     ]    
+   },
+   
+   {"name":"echo_request_header",
+    "type":"record",
+    "fields":[
+      {"name":"version", "type":"uint_8", "default":[4]},
+      {"name":"type", "type":"ofp_type", "default":"OFPT_ECHO_REQUEST"},
+      {"name":"length", "type":"ofp_length", "default":"OFPL_ECHO_REQUEST_LEN"},
+      {"name":"xid", "type":"uint_32", "default":[0,0,0,0]}
+    ]
+   },
+   
+   {"name":"ofp_echo_request",
+    "type":"record",
+    "fields":[
+      {"name":"header", "type":"echo_request_header"}
+    ]
+   },
+   
+   {"name":"echo_reply_header",
+    "type":"record",
+    "fields":[
+      {"name":"version", "type":"uint_8", "default":[4]},
+      {"name":"type", "type":"ofp_type", "default":"OFPT_ECHO_REPLY"},
+      {"name":"length", "type":"ofp_length", "default":"OFPL_ECHO_REPLY_LEN"},
+      {"name":"xid", "type":"uint_32", "default":[0,0,0,0]}
+    ]
+   },
+   
+   {"name":"ofp_echo_reply",
+    "type":"record",
+    "fields":[
+      {"name":"header", "type":"echo_reply_header"}
+    ]
    }
  ]
 }

@@ -1,3 +1,5 @@
+
+
 package org.flowforwarding.of.controller.restapi;
 
 import java.io.IOException;
@@ -117,7 +119,11 @@ public class RestApiTask extends RecursiveTask <Map<String, Object>>
       Map<String, Object> rowValues = null;
       
       try {
-         rowValues = jsonToStorageEntry(jsonRequest);
+         
+         if (this.entries.containsKey("DELETE"))
+            rowValues = jsonToStorageEntry(jsonRequest, true);
+         else 
+            rowValues = jsonToStorageEntry(jsonRequest, false);
          //parseRow(rowValues, entries);
          
          
@@ -186,7 +192,7 @@ public class RestApiTask extends RecursiveTask <Map<String, Object>>
       return rowValues;
    }
    
-   public static Map<String, Object> jsonToStorageEntry(String fmJson) throws IOException {
+   public static Map<String, Object> jsonToStorageEntry(String fmJson, boolean isDelete) throws IOException {
       Map<String, Object> entry = new HashMap<String, Object>();
       MappingJsonFactory f = new MappingJsonFactory();
       JsonParser jp;
@@ -200,6 +206,10 @@ public class RestApiTask extends RecursiveTask <Map<String, Object>>
       jp.nextToken();
       if (jp.getCurrentToken() != JsonToken.START_OBJECT) {
           throw new IOException("Expected START_OBJECT");
+      }
+      
+      if (isDelete) {
+         entry.put("delete", "yes");
       }
       
       while (jp.nextToken() != JsonToken.END_OBJECT) {
