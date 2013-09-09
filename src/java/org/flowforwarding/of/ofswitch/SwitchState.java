@@ -7,8 +7,8 @@ package org.flowforwarding.of.ofswitch;
 
 import java.io.ByteArrayOutputStream;
 
-import org.flowforwarding.of.protocol.ofmessages.OFMessageProvider;
-import org.flowforwarding.of.protocol.ofmessages.OFMessageProviderFactory;
+import org.flowforwarding.of.protocol.ofmessages.IOFMessageProvider;
+import org.flowforwarding.of.protocol.ofmessages.IOFMessageProviderFactory;
 import org.flowforwarding.of.protocol.ofmessages.OFMessageProviderFactoryAvroProtocol;
 
 public class SwitchState {
@@ -16,8 +16,8 @@ public class SwitchState {
    protected Long dpid = null;
    protected ByteArrayOutputStream lastIncomingMessage = null;
    protected Short version = 4;
-   protected OFMessageProvider provider = null;
-   protected OFMessageProviderFactory factory = null;
+   protected IOFMessageProvider provider = null;
+   protected IOFMessageProviderFactory factory = null;
    
    protected SwitchState () {
       factory = new OFMessageProviderFactoryAvroProtocol();
@@ -68,7 +68,7 @@ public class SwitchState {
          return swState.getDpid();
       }
       
-      public OFMessageProvider getProvider () {
+      public IOFMessageProvider getProvider () {
          return swState.provider;
       }
 

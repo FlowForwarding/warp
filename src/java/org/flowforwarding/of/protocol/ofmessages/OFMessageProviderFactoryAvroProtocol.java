@@ -8,7 +8,7 @@ package org.flowforwarding.of.protocol.ofmessages;
  * @author Infoblox Inc.
  *
  */
-public class OFMessageProviderFactoryAvroProtocol implements OFMessageProviderFactory{
+public class OFMessageProviderFactoryAvroProtocol implements IOFMessageProviderFactory{
 
    /* (non-Javadoc)
     * @see org.flowforwarding.of.controller.protocol.OFMessageProviderFactory#getMessageProvider(java.lang.String)
@@ -16,7 +16,7 @@ public class OFMessageProviderFactoryAvroProtocol implements OFMessageProviderFa
    
    // TODO Improvs: Make Provider static and final?
    @Override
-   public OFMessageProvider getMessageProvider(String version) {
+   public IOFMessageProvider getMessageProvider(String version) {
       
       // TODO Improvs: select an appropriate Protocol based on Version
       return new OFMessageProvider13AvroProtocol();
@@ -26,7 +26,7 @@ public class OFMessageProviderFactoryAvroProtocol implements OFMessageProviderFa
     * @see org.flowforwarding.of.controller.protocol.OFMessageProviderFactory#getMessageProvider(byte[])
     */
    @Override
-   public OFMessageProvider getMessageProvider(byte[] hello) {
+   public IOFMessageProvider getMessageProvider(byte[] hello) {
       // TODO Improvs: Select Protocol depending of version from Hello header
       return new OFMessageProvider13AvroProtocol();
    }

@@ -21,8 +21,8 @@ import org.flowforwarding.of.controller.ControllerOld.Occured;
 import org.flowforwarding.of.controller.ControllerOld.State;
 import org.flowforwarding.of.controller.restapi.RestApiServer;
 import org.flowforwarding.of.controller.restapi.RestApiTask;
-import org.flowforwarding.of.protocol.ofmessages.OFMessageProvider;
-import org.flowforwarding.of.protocol.ofmessages.OFMessageProviderFactory;
+import org.flowforwarding.of.protocol.ofmessages.IOFMessageProvider;
+import org.flowforwarding.of.protocol.ofmessages.IOFMessageProviderFactory;
 import org.flowforwarding.of.protocol.ofmessages.OFMessageProviderFactoryAvroProtocol;
 import org.jboss.netty.bootstrap.ServerBootstrap;
 import org.jboss.netty.buffer.BigEndianHeapChannelBuffer;
@@ -58,8 +58,8 @@ public class ControllerOld {
       READY
    }
    
-   OFMessageProviderFactory factory = new OFMessageProviderFactoryAvroProtocol();
-   OFMessageProvider provider = factory.getMessageProvider("1.3");
+   IOFMessageProviderFactory factory = new OFMessageProviderFactoryAvroProtocol();
+   IOFMessageProvider provider = factory.getMessageProvider("1.3");
    
    private State state = State.STARTED;
    

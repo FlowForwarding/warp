@@ -17,6 +17,7 @@ import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericArray;
 import org.apache.avro.generic.GenericData;
 import org.apache.avro.Protocol;
+import org.flowforwarding.of.protocol.ofmessages.OFMessageFlowMod.OFMessageFlowModeRef;
 import org.flowforwarding.of.protocol.ofstructures.OFStructureInstruction;
 import org.flowforwarding.of.protocol.ofstructures.Tuple;
 import org.apache.avro.generic.GenericDatumReader;
@@ -34,7 +35,7 @@ import org.apache.avro.specific.SpecificFixed;
 import org.flowforwarding.of.util.U16;
 import org.flowforwarding.of.util.U8;
 
-public class OFMessageProvider13AvroProtocol implements OFMessageProvider{
+public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
    
    private final String schemaSrc = "of_protocol_131.avpr";
    
@@ -184,6 +185,10 @@ public class OFMessageProvider13AvroProtocol implements OFMessageProvider{
       uint_128Schema = protocol.getType("of.uint_128");
 
       
+   }
+   
+   public OFMessageFlowModeRef buildFlowModMsg () {
+      return builder.buildFlowMod();
    }
    
    private byte[] encodeMessage (Schema headerSchema, Schema bodySchema) {

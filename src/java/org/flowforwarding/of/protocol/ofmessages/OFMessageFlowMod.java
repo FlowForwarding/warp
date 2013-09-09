@@ -68,7 +68,7 @@ public class OFMessageFlowMod extends OFMessage{
       matches.add(name, value);
    }
    
-   public static class OFMessageRef implements IOFMessageRef {
+   public static class OFMessageFlowModeRef extends OFMessageRef <OFMessageFlowMod> {
       
       protected OFMessageFlowMod flowMod = null;
       
@@ -76,7 +76,7 @@ public class OFMessageFlowMod extends OFMessage{
       protected OFMAddMatch addMatch = null;
       protected OFMAddField addField = null;
       
-      protected OFMessageRef () {
+      protected OFMessageFlowModeRef () {
          flowMod = new OFMessageFlowMod();
          
          addInstruction = new OFMAddInstruction(flowMod);
@@ -84,7 +84,7 @@ public class OFMessageFlowMod extends OFMessage{
          addField = new OFMAddField(flowMod);
       }
       
-      protected OFMessageRef (OFMessageFlowMod fm) {
+      protected OFMessageFlowModeRef (OFMessageFlowMod fm) {
          flowMod = fm;
          
          addInstruction = new OFMAddInstruction(flowMod);
@@ -92,9 +92,9 @@ public class OFMessageFlowMod extends OFMessage{
          addField = new OFMAddField(flowMod);
       }
       
-      public static OFMessageRef create() {
+      public static OFMessageFlowModeRef create() {
          
-         return new OFMessageRef();
+         return new OFMessageFlowModeRef();
       }
       
       public void addField (String name, String value) {
