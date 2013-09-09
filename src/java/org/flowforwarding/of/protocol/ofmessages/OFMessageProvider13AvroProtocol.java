@@ -1252,7 +1252,7 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
       ofpFlowModRecord.put("header", flowModHeaderRecord);      
       ofpFlowModRecord.put("base", flowModBodyRecord);
       ofpFlowModRecord.put("match", ofpMatchRecord);
-      if (isDelete)
+      if (! isDelete)
          ofpFlowModRecord.put("instructions", instrSetRecord);
       
       DatumWriter<GenericRecord> writer = new GenericDatumWriter<GenericRecord>(ofpFlowModSchema);
