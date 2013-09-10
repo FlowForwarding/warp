@@ -1298,24 +1298,24 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
       if (actionstr != null) {
           actionstr = actionstr.toLowerCase();
           for (String subaction : actionstr.split(",")) {
-              String action = subaction.split("[=:]")[0];
+              String action = subaction.split("[=:]")[0].trim();
               
               GenericRecord ofpActionRecord = null;
               
               if (action.equals("output")) {
-                 ofpActionRecord = decode_output(subaction);
+                 ofpActionRecord = decode_output(subaction.trim());
               } else if (action.equals("set_field_eth_dst")) {
-                 ofpActionRecord = decode_set_field_eth_dst(subaction);
+                 ofpActionRecord = decode_set_field_eth_dst(subaction.trim());
               }  else if (action.equals("set_field_eth_src")) {
-                 ofpActionRecord = decode_set_field_eth_src(subaction);
+                 ofpActionRecord = decode_set_field_eth_src(subaction.trim());
               }  else if (action.equals("set_field_vlan_vid")) {
-                 ofpActionRecord = decode_set_field_vlan_vid(subaction);
+                 ofpActionRecord = decode_set_field_vlan_vid(subaction.trim());
               }  else if (action.equals("set_field_mpls_label")) {
-                 ofpActionRecord = decode_set_field_mpls_label(subaction);
+                 ofpActionRecord = decode_set_field_mpls_label(subaction.trim());
               }  else if (action.equals("pop_vlan")) {
-                 ofpActionRecord = decode_pop_vlan(subaction);
+                 ofpActionRecord = decode_pop_vlan(subaction.trim());
               }  else if (action.equals("push_mpls")) {
-                 ofpActionRecord = decode_push_mpls(subaction);
+                 ofpActionRecord = decode_push_mpls(subaction.trim());
               }
 /*              else if (action.equals("enqueue")) {
                   subaction_struct = decode_enqueue(subaction);
