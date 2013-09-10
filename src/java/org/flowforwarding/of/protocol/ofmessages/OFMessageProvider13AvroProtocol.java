@@ -17,7 +17,7 @@ import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericArray;
 import org.apache.avro.generic.GenericData;
 import org.apache.avro.Protocol;
-import org.flowforwarding.of.protocol.ofmessages.OFMessageFlowMod.OFMessageFlowModeRef;
+import org.flowforwarding.of.protocol.ofmessages.OFMessageFlowMod.OFMessageFlowModRef;
 import org.flowforwarding.of.protocol.ofstructures.OFStructureInstruction;
 import org.flowforwarding.of.protocol.ofstructures.Tuple;
 import org.apache.avro.generic.GenericDatumReader;
@@ -187,7 +187,7 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
       
    }
    
-   public OFMessageFlowModeRef buildFlowModMsg () {
+   public OFMessageFlowModRef buildFlowModMsg () {
       return builder.buildFlowMod();
    }
    
@@ -403,20 +403,22 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
       return out.toByteArray();
    }
    
-   public byte[] encodeFlowMod (OFMessageFlowMod flowMod) {
+   public byte[] encodeFlowMod (OFMessageFlowModRef fmRef) {
       
       Schema ofpFlowModSchema = protocol.getType("of.ofp_flow_mod");
       GenericRecord ofpFlowModRecord = new GenericData.Record(ofpFlowModSchema);
       
-      Schema flowModBodySchema = protocol.getType("of.flow_mod_body");
+      Schema flowModBodySchema = protocol.getType("of.flow_mod_body_add");
       GenericRecordBuilder flowModBodyBuilder = new GenericRecordBuilder(flowModBodySchema);
       GenericRecord flowModBodyRecord = flowModBodyBuilder.build();
       List <GenericRecord> instructions = new ArrayList<>();
       List <GenericRecord> matches = new ArrayList<>();
       
-      Iterator<Tuple<String, String>> matchIter = flowMod.getMatches().getIterator();
-      while (matchIter.hasNext()) {
-         Tuple<String, String> match = matchIter.next();
+   // TODO Improvs: I dislike this *.getMatches().getIterator();
+//      Iterator<Tuple<String, String>> matchIter = fmRef.getMatches().getIterator();
+      List<Tuple<String, String>> matchList = fmRef.getMatches().getMatches();
+      for (Tuple<String, String> match : matchList) {
+         //Tuple<String, String> match = matchIter.next();
          String name = match.getName();
          
          // TODO Improvs: Replace Switch with a structure... say, HashMap
@@ -595,11 +597,13 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
          }
       }
       
-      Iterator<Tuple<String, OFStructureInstruction>> instrIter = flowMod.getInstructions().getIterator();
-      while (instrIter.hasNext()) {
+      // TODO Improvs: I dislike this *.getInstructions().getIterator();
+      //Iterator<Tuple<String, OFStructureInstruction>> instrIter = fmRef.getInstructions().getIterator();
+      List<Tuple<String, OFStructureInstruction>> instrList = fmRef.getInstructions().getInstructions();
+      for (Tuple<String, OFStructureInstruction> tuple : instrList) {
          Schema instrHeaderSchema = null;
          boolean isActions = false;
-         Tuple<String, OFStructureInstruction> tuple = instrIter.next();
+         //Tuple<String, OFStructureInstruction> tuple = instrIter.next();
          String name = tuple.getName();
          OFStructureInstruction instruction = tuple.getValue();
          

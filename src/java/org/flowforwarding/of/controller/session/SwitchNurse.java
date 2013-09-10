@@ -10,7 +10,7 @@ import java.io.ByteArrayOutputStream;
 import org.flowforwarding.of.ofswitch.SwitchState;
 import org.flowforwarding.of.ofswitch.SwitchState.SwitchRef;
 import org.flowforwarding.of.protocol.ofmessages.IOFMessageRef;
-import org.flowforwarding.of.protocol.ofmessages.OFMessageFlowMod.OFMessageFlowModeRef;
+import org.flowforwarding.of.protocol.ofmessages.OFMessageFlowMod.OFMessageFlowModRef;
 import org.flowforwarding.of.protocol.ofmessages.IOFMessageProvider;
 import org.flowforwarding.of.protocol.ofmessages.IOFMessageProviderFactory;
 import org.flowforwarding.of.protocol.ofmessages.OFMessageProviderFactoryAvroProtocol;
@@ -86,8 +86,11 @@ public class SwitchNurse extends UntypedActor {
          case HANDSHAKED:
             in = ((Received) msg).data();
             
-            OFMessageFlowModeRef flowModRef = provider.buildFlowModMsg();
+            OFMessageFlowModRef flowModRef = provider.buildFlowModMsg();
             flowModRef.addField("priority", "32000");
+            flowModRef.addInPort("1");
+            
+            provider.encodeFlowMod(flowModRef);
             
    //         flowModRef.
             

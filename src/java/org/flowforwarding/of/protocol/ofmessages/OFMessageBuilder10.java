@@ -4,7 +4,7 @@
  */
 package org.flowforwarding.of.protocol.ofmessages;
 
-import org.flowforwarding.of.protocol.ofmessages.OFMessageFlowMod.OFMessageFlowModeRef;
+import org.flowforwarding.of.protocol.ofmessages.OFMessageFlowMod.OFMessageFlowModRef;
 
 /**
  * @author Infoblox Inc.
@@ -25,7 +25,7 @@ public class OFMessageBuilder10  implements OFMessageBuilder {
     * @see org.flowforwarding.of.protocol.ofmessages.OFMessageBuilder#buildFlowMod()
     */
    @Override
-   public OFMessageFlowModeRef buildFlowMod() {
+   public OFMessageFlowModRef buildFlowMod() {
       // TODO Auto-generated method stub
       return null;
    }

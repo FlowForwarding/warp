@@ -5,7 +5,7 @@
 package org.flowforwarding.of.protocol.ofmessages;
 
 import org.flowforwarding.of.protocol.ofmessages.OFMessageBuilder;
-import org.flowforwarding.of.protocol.ofmessages.OFMessageFlowMod.OFMessageFlowModeRef;
+import org.flowforwarding.of.protocol.ofmessages.OFMessageFlowMod.OFMessageFlowModRef;
 
 /**
  * @author Infoblox Inc.
@@ -23,10 +23,10 @@ public class OFMessageBuilder13 implements OFMessageBuilder {
    }
    
    @Override
-   public OFMessageFlowModeRef buildFlowMod() {
+   public OFMessageFlowModRef buildFlowMod() {
       // TODO Improvs. To make bulder a REAL builder: FlowMod and Ref should be combined from parts.
       // TODO Improvs: OFMessageRef?
-      return OFMessageFlowModeRef.create();
+      return OFMessageFlowModRef.create();
    }
 
 }

@@ -14,6 +14,8 @@ import org.flowforwarding.of.protocol.ofstructures.Tuple;
 import org.flowforwarding.of.protocol.supply.OFMAddField;
 import org.flowforwarding.of.protocol.supply.OFMAddInstruction;
 import org.flowforwarding.of.protocol.supply.OFMAddMatch;
+import org.flowforwarding.of.protocol.supply.OFMGetInstructions;
+import org.flowforwarding.of.protocol.supply.OFMGetMatches;
 
 /**
  * @author Infoblox Inc.
@@ -25,6 +27,12 @@ public class OFMessageFlowMod extends OFMessage{
    protected Iterator<Tuple<String, String>> iter = parms.iterator();
    protected InstructionSet instructions;
    protected MatchSet matches;
+   
+   protected OFMessageFlowMod() {
+      // TODO Improvs: create() instead of Constructor?
+      matches = new MatchSet();
+      instructions = new InstructionSet();
+   }
    
    public List<Tuple<String, String>> getParms() {
       return parms;
@@ -68,33 +76,39 @@ public class OFMessageFlowMod extends OFMessage{
       matches.add(name, value);
    }
    
-   public static class OFMessageFlowModeRef extends OFMessageRef <OFMessageFlowMod> {
+   public static class OFMessageFlowModRef extends OFMessageRef <OFMessageFlowMod> {
       
       protected OFMessageFlowMod flowMod = null;
       
       protected OFMAddInstruction addInstruction = null;
       protected OFMAddMatch addMatch = null;
       protected OFMAddField addField = null;
+      protected OFMGetInstructions getInstructions = null;
+      protected OFMGetMatches getMatches = null;
       
-      protected OFMessageFlowModeRef () {
+      protected OFMessageFlowModRef () {
          flowMod = new OFMessageFlowMod();
          
          addInstruction = new OFMAddInstruction(flowMod);
          addMatch = new OFMAddMatch(flowMod);
          addField = new OFMAddField(flowMod);
+         getInstructions = new OFMGetInstructions(flowMod);
+         getMatches = new OFMGetMatches(flowMod);
       }
       
-      protected OFMessageFlowModeRef (OFMessageFlowMod fm) {
+      protected OFMessageFlowModRef (OFMessageFlowMod fm) {
          flowMod = fm;
          
          addInstruction = new OFMAddInstruction(flowMod);
          addMatch = new OFMAddMatch(flowMod);
          addField = new OFMAddField(flowMod);
+         getInstructions = new OFMGetInstructions(flowMod);
+         getMatches = new OFMGetMatches(flowMod);
       }
       
-      public static OFMessageFlowModeRef create() {
+      public static OFMessageFlowModRef create() {
          
-         return new OFMessageFlowModeRef();
+         return new OFMessageFlowModRef();
       }
       
       public void addField (String name, String value) {
@@ -107,6 +121,19 @@ public class OFMessageFlowMod extends OFMessage{
       
       public void addMatch (String name, String match) {
          addMatch.add(name, match);
+      }
+      
+      public void addInPort(String value) {
+         addMatch.add("ingress_port", value);
+      }
+
+      
+      public InstructionSet getInstructions() {
+         return getInstructions.get();
+      }
+      
+      public MatchSet getMatches() {
+         return getMatches.get();
       }
       
    }
