@@ -90,14 +90,19 @@ public class SwitchNurse extends UntypedActor {
             OFMessageFlowModHandler flowModHandler = provider.buildFlowModMsg();
             flowModHandler.addField("priority", "32000");
             flowModHandler.addInPort(switchRef.getDpid().toString().substring(0, 3));
+           // flowModHandler.addInPort("25");         
+                              
             
-            OFStructureInstructionHandler instruction = provider.buildInstructionApplyActions();
+           /* OFStructureInstructionHandler instruction = provider.buildInstructionApplyActions();
             instruction.addActionOutput("1");
             
-            flowModHandler.addInstruction("apply_actions", instruction);
+            flowModHandler.addInstruction("apply_actions", instruction);*/
             
-            provider.encodeFlowMod(flowModHandler);
+            OFStructureInstructionHandler instruction = provider.buildInstructionGotoTable();
+            flowModHandler.addInstruction("goto_table", instruction);
             
+            getSender().tell(TcpMessage.write(ByteString.fromArray(provider.encodeFlowMod(flowModHandler))), getSelf());  
+                        
    //         flowModRef.
             
 //            ofSessionHandler.tell(new OFIncoming(switchRef), getSelf());

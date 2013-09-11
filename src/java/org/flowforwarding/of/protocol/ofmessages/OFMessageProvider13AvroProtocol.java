@@ -438,9 +438,19 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
       Schema ofpFlowModSchema = protocol.getType("of.ofp_flow_mod");
       GenericRecord ofpFlowModRecord = new GenericData.Record(ofpFlowModSchema);
       
+      GenericRecordBuilder builder = null;
+      
+      Schema flowModHeaderSchema = protocol.getType("of.flow_mod_header");
+      builder = new GenericRecordBuilder (flowModHeaderSchema);
+      GenericRecord flowModHeaderRecord = builder.build();
+      
       Schema flowModBodySchema = protocol.getType("of.flow_mod_body_add");
-      GenericRecordBuilder flowModBodyBuilder = new GenericRecordBuilder(flowModBodySchema);
-      GenericRecord flowModBodyRecord = flowModBodyBuilder.build();
+      builder = new GenericRecordBuilder(flowModBodySchema);
+      GenericRecord flowModBodyRecord = builder.build();
+      
+      GenericRecord ofpMatchRecord = null;
+      Schema ofpMatchSchema = null;
+      
       List <GenericRecord> instructions = new ArrayList<>();
       List <GenericRecord> matches = new ArrayList<>();
       
@@ -676,8 +686,8 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
       /*
        * Assemble ofp_match structure
        */
-      Schema ofpMatchSchema = protocol.getType("of.ofp_match");
-      GenericRecord ofpMatchRecord = new GenericData.Record(ofpMatchSchema);
+      ofpMatchSchema = protocol.getType("of.ofp_match");
+      ofpMatchRecord = new GenericData.Record(ofpMatchSchema);
       ofpMatchRecord.put("header", matchHeaderRecord);
       ofpMatchRecord.put("fields", oxmTlvFieldsRecord);
       ofpMatchRecord.put("closing_pad", clP);
@@ -686,8 +696,11 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
       // TODO Improvs: I dislike this *.getInstructions().getIterator();
       //Iterator<Tuple<String, OFStructureInstruction>> instrIter = fmRef.getInstructions().getIterator();
       List<Tuple<String, OFStructureInstructionHandler>> instrList = fmHandler.getInstructions().getInstructions();
+      Schema instrHeaderSchema = null;
+      Schema instrSchema = null;
+      GenericRecord instrHeaderRecord = null;
+      GenericRecord instrRecord = null;
       for (Tuple<String, OFStructureInstructionHandler> tuple : instrList) {
-         Schema instrHeaderSchema = null;
          boolean isActions = false;
          //Tuple<String, OFStructureInstruction> tuple = instrIter.next();
          String name = tuple.getName();
@@ -698,32 +711,41 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
          switch (name) {
          case "apply_actions":
             instrHeaderSchema = protocol.getType("of.instruction_apply_actions_header");
+            instrSchema = protocol.getType("of.ofp_instruction_apply_actions");
             isActions = true;
             break;
          case "write_actions":
             instrHeaderSchema = protocol.getType("of.instruction_write_actions_header");
+            instrSchema = protocol.getType("of.ofp_instruction_write_actions");
             isActions = true;            
             break;
          case "clear_actions":
             instrHeaderSchema = protocol.getType("of.instruction_clear_actions_header");
+            instrSchema = protocol.getType("of.ofp_instruction_clear_actions");
             isActions = true;            
             break;
          case "goto_table":
-            instrHeaderSchema = protocol.getType("of.instruction_goto_table_header");            
+            instrHeaderSchema = protocol.getType("of.instruction_goto_table_header"); 
+            instrSchema = protocol.getType("of.ofp_instruction_goto_table");
             isActions = false;            
             break;
          case "write_metadata":
-            instrHeaderSchema = protocol.getType("of.instruction_write_metadata_header");            
+            instrHeaderSchema = protocol.getType("of.instruction_write_metadata_header");  
+            instrSchema = protocol.getType("of.ofp_instruction_write_metadata");
             isActions = false;            
             break;
          case "meter":
-            instrHeaderSchema = protocol.getType("of.instruction_meter_header");            
+            instrHeaderSchema = protocol.getType("of.instruction_meter_header"); 
+            instrSchema = protocol.getType("of.ofp_instruction_meter");          
             isActions = false;            
             break;
          }
          
          GenericRecordBuilder instrHeaderBuilder = new GenericRecordBuilder(instrHeaderSchema);
-         GenericRecord instrHeaderRecord = instrHeaderBuilder.build();
+         instrHeaderRecord = instrHeaderBuilder.build();
+         instrRecord = new GenericData.Record(instrSchema);
+         instrRecord.put("header", instrHeaderRecord);
+         
 
          if (isActions) {
             List<Tuple<String, String>> actionList = instruction.getActions().getActions();
@@ -769,12 +791,39 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
             instrHeaderRecord.put("length", getUint16Fixed(calculateLength(ofpInstructionsSchema, ofpInstructionsRecord)));
             ofpInstructionsRecord.put("header", instrHeaderRecord);
             
-         } else {
-            // TODO ANOTHER ACTIONS HERE
-         }
+         } 
+         
+         instructions.add(instrRecord);
       }
       
-      return null;
+      Schema ofpInstructionSchema = protocol.getType("of.ofp_instruction");
+      Schema instructionSetSchema = protocol.getType("of.instruction_set");
+      GenericRecord instructionSetRecord = new GenericData.Record(instructionSetSchema);
+      instructionSetRecord.put("set", new GenericData.Array<> (Schema.createArray(ofpInstructionSchema), instructions));
+      
+      
+      ofpFlowModRecord.put("header", flowModHeaderRecord);
+      ofpFlowModRecord.put("base", flowModBodyRecord);
+      ofpFlowModRecord.put("match", ofpMatchRecord);
+      
+      flowModHeaderRecord.put("length", getUint16Fixed(calculateLength(ofpFlowModSchema, ofpFlowModRecord)));
+      ofpFlowModRecord.put("header", flowModHeaderRecord);
+      
+//      ofpFlowModRecord.put("instructions", instructionSetRecord);
+      
+      ByteArrayOutputStream fmOut = new ByteArrayOutputStream();
+      DatumWriter<GenericRecord> writer = new GenericDatumWriter<GenericRecord>(ofpFlowModSchema);
+      Encoder encoder = EncoderFactory.get().binaryNonEncoder(fmOut, null);
+      
+      try {
+         writer.write(ofpFlowModRecord, encoder);
+         encoder.flush();
+      } catch (IOException e1) {
+         // TODO Auto-generated catch block
+         e1.printStackTrace();
+      }       
+      
+      return fmOut.toByteArray();
    }
    
    public ByteArrayOutputStream getFlowMod (Map<String, Object> args, ByteArrayOutputStream out) {

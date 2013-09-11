@@ -1060,8 +1060,7 @@
    {"name":"ofp_instruction_goto_table",
     "type":"record",
     "fields":[
-      {"name":"type", "type":"ofp_instruction_type", "default":"OFPIT_GOTO_TABLE"},
-      {"name":"length", "type":"instruction_length", "default":"IL_GOTO_TABLE"},
+      {"name":"header", "type":"instruction_goto_table_header"},
       {"name":"table_id", "type":"uint_8", "default":[0]},
       {"name":"pad", "type":"pad_3", "default":[0,0,0]}
     ]
