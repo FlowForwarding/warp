@@ -10,7 +10,16 @@ import org.flowforwarding.of.protocol.ofmessages.ActionSet;
  * @author Infoblox Inc.
  *
  */
-public class OFStructureInstruction implements OFStructure{
+public class OFStructureInstruction implements IOFStructure{
+   
+   protected enum InstructionTypes {
+      GOTO_TABLE,
+      WRITE_METADATA,
+      WRITE_ACTIONS,
+      APPLY_ACTIONS,
+      CLEAR_ACTIONS,
+      OFPIT_METER,
+   }
    
    protected ActionSet actions;
 

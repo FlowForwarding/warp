@@ -17,7 +17,7 @@ import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericArray;
 import org.apache.avro.generic.GenericData;
 import org.apache.avro.Protocol;
-import org.flowforwarding.of.protocol.ofmessages.OFMessageFlowMod.OFMessageFlowModRef;
+import org.flowforwarding.of.protocol.ofmessages.OFMessageFlowMod.OFMessageFlowModHandler;
 import org.flowforwarding.of.protocol.ofstructures.OFStructureInstruction;
 import org.flowforwarding.of.protocol.ofstructures.Tuple;
 import org.apache.avro.generic.GenericDatumReader;
@@ -187,7 +187,7 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
       
    }
    
-   public OFMessageFlowModRef buildFlowModMsg () {
+   public OFMessageFlowModHandler buildFlowModMsg () {
       return builder.buildFlowMod();
    }
    
@@ -403,7 +403,7 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
       return out.toByteArray();
    }
    
-   public byte[] encodeFlowMod (OFMessageFlowModRef fmRef) {
+   public byte[] encodeFlowMod (OFMessageFlowModHandler fmHandler) {
       
       Schema ofpFlowModSchema = protocol.getType("of.ofp_flow_mod");
       GenericRecord ofpFlowModRecord = new GenericData.Record(ofpFlowModSchema);
@@ -416,7 +416,7 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
       
    // TODO Improvs: I dislike this *.getMatches().getIterator();
 //      Iterator<Tuple<String, String>> matchIter = fmRef.getMatches().getIterator();
-      List<Tuple<String, String>> matchList = fmRef.getMatches().getMatches();
+      List<Tuple<String, String>> matchList = fmHandler.getMatches().getMatches();
       for (Tuple<String, String> match : matchList) {
          //Tuple<String, String> match = matchIter.next();
          String name = match.getName();
@@ -599,7 +599,7 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
       
       // TODO Improvs: I dislike this *.getInstructions().getIterator();
       //Iterator<Tuple<String, OFStructureInstruction>> instrIter = fmRef.getInstructions().getIterator();
-      List<Tuple<String, OFStructureInstruction>> instrList = fmRef.getInstructions().getInstructions();
+      List<Tuple<String, OFStructureInstruction>> instrList = fmHandler.getInstructions().getInstructions();
       for (Tuple<String, OFStructureInstruction> tuple : instrList) {
          Schema instrHeaderSchema = null;
          boolean isActions = false;

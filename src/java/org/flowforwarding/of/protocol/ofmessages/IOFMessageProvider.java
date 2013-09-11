@@ -3,7 +3,7 @@ package org.flowforwarding.of.protocol.ofmessages;
 import java.io.ByteArrayOutputStream;
 import java.util.Map;
 
-import org.flowforwarding.of.protocol.ofmessages.OFMessageFlowMod.OFMessageFlowModRef;
+import org.flowforwarding.of.protocol.ofmessages.OFMessageFlowMod.OFMessageFlowModHandler;
 
 public interface IOFMessageProvider {
 
@@ -81,10 +81,10 @@ public interface IOFMessageProvider {
    /*
     * 
     */
-   public byte[] encodeFlowMod (OFMessageFlowModRef fmRef);
+   public byte[] encodeFlowMod (OFMessageFlowModHandler fmHandler);
    
    /**
     * 
     */
-   public OFMessageFlowModRef buildFlowModMsg ();
+   public OFMessageFlowModHandler buildFlowModMsg ();
 }

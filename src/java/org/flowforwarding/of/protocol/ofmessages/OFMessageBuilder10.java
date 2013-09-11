@@ -4,7 +4,7 @@
  */
 package org.flowforwarding.of.protocol.ofmessages;
 
-import org.flowforwarding.of.protocol.ofmessages.OFMessageFlowMod.OFMessageFlowModRef;
+import org.flowforwarding.of.protocol.ofmessages.OFMessageFlowMod.OFMessageFlowModHandler;
 
 /**
  * @author Infoblox Inc.
@@ -16,7 +16,7 @@ public class OFMessageBuilder10  implements OFMessageBuilder {
     * @see org.flowforwarding.of.protocol.ofmessages.OFMessageBuilder#build(java.lang.String)
     */
    @Override
-   public IOFMessageRef build(String msg) {
+   public IOFMessageHandler build(String msg) {
       // TODO Auto-generated method stub
       return null;
    }
@@ -25,7 +25,7 @@ public class OFMessageBuilder10  implements OFMessageBuilder {
     * @see org.flowforwarding.of.protocol.ofmessages.OFMessageBuilder#buildFlowMod()
     */
    @Override
-   public OFMessageFlowModRef buildFlowMod() {
+   public OFMessageFlowModHandler buildFlowMod() {
       // TODO Auto-generated method stub
       return null;
    }

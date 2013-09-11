@@ -4,7 +4,7 @@
  */
 package org.flowforwarding.of.protocol.ofmessages;
 
-import org.flowforwarding.of.protocol.ofmessages.OFMessageFlowMod.OFMessageFlowModRef;
+import org.flowforwarding.of.protocol.ofmessages.OFMessageFlowMod.OFMessageFlowModHandler;
 
 /**
  * @author Infoblox Inc.
@@ -12,7 +12,7 @@ import org.flowforwarding.of.protocol.ofmessages.OFMessageFlowMod.OFMessageFlowM
  */
 public interface OFMessageBuilder {
    
-   public IOFMessageRef build (String msg);
+   public IOFMessageHandler build (String msg);
    
-   public OFMessageFlowModRef buildFlowMod();
+   public OFMessageFlowModHandler buildFlowMod();
 }
