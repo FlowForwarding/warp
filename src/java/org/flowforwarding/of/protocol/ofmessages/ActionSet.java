@@ -21,7 +21,7 @@ public class ActionSet {
    
    // TODO Improvements: Is this ok solution to return the List? Think about Avro API and AKKA Api decoupling in general.
    // TODO Improvements: Use this class as a Wrapper around the List: implement next(), hasNext() etc.
-   public List<Tuple<String, String>> getInstructions() {
+   public List<Tuple<String, String>> getActions() {
       return actionSet;
    }
    

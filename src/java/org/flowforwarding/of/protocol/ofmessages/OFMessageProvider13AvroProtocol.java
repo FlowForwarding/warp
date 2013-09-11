@@ -627,6 +627,62 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
          }
       }
       
+      Schema oxmTlvSchema = protocol.getType("of.oxm_tlv");
+      
+      Schema oxmTlvFieldsSchema = protocol.getType("of.oxm_tlv_fields");
+      GenericRecord oxmTlvFieldsRecord = new GenericData.Record(oxmTlvFieldsSchema);
+      oxmTlvFieldsRecord.put("oxm_tlvs", new GenericData.Array<>(Schema.createArray(oxmTlvSchema), matches));
+
+      /*
+       * Build match header
+       */
+      Schema matchHeaderSchema = protocol.getType("of.match_header");
+      GenericRecordBuilder matchHeaderBuilder = new GenericRecordBuilder(matchHeaderSchema);
+      GenericRecord matchHeaderRecord = matchHeaderBuilder.build();
+      
+      /*
+       * Calculating oxm_tlvs length
+       */
+      ByteArrayOutputStream oxmOut = new ByteArrayOutputStream();
+      DatumWriter<GenericRecord> oxmWriter = new GenericDatumWriter<GenericRecord>(oxmTlvFieldsSchema);
+      Encoder oxmEncoder = EncoderFactory.get().binaryNonEncoder(oxmOut, null);
+      
+      int closingPadLength = 4;
+      
+      try {
+         oxmWriter.write(oxmTlvFieldsRecord, oxmEncoder);
+         oxmEncoder.flush();
+         
+         int matchLength = oxmOut.size() + 4;
+         closingPadLength = (int) ((matchLength + 7)/8*8 - matchLength);
+         
+         Schema uint16Schema = protocol.getType("of.uint_16");
+         
+         byte len[] = {(byte)(matchLength >> 8), (byte)(255 & matchLength)}; 
+         GenericData.Fixed lenght = new GenericData.Fixed(uint16Schema, len);
+         
+         matchHeaderRecord.put("length", lenght);
+      } catch (IOException e1) {
+         // TODO Auto-generated catch block
+         e1.printStackTrace();
+      }      
+      
+      /*
+       * Build closing pad
+       */
+      ByteBuffer clP = ByteBuffer.allocate(closingPadLength);
+//      GenericData.Fixed closingPadRecord = new GenericData.Fixed(Schema.createFixed("", "", "of", closingPadLength), clP.toByteArray());
+  
+      /*
+       * Assemble ofp_match structure
+       */
+      Schema ofpMatchSchema = protocol.getType("of.ofp_match");
+      GenericRecord ofpMatchRecord = new GenericData.Record(ofpMatchSchema);
+      ofpMatchRecord.put("header", matchHeaderRecord);
+      ofpMatchRecord.put("fields", oxmTlvFieldsRecord);
+      ofpMatchRecord.put("closing_pad", clP);
+      
+      
       // TODO Improvs: I dislike this *.getInstructions().getIterator();
       //Iterator<Tuple<String, OFStructureInstruction>> instrIter = fmRef.getInstructions().getIterator();
       List<Tuple<String, OFStructureInstructionHandler>> instrList = fmHandler.getInstructions().getInstructions();
@@ -638,7 +694,7 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
          OFStructureInstructionHandler instruction = tuple.getValue();
          
          // TODO Improvs: Replace Switch with a structure... say, HashMap
-         // TODO Improvs: How to control type compatibility between Shema types and incoming tlvs?
+         // TODO Improvs: How to control type compatibility between Schema types and incoming tlvs?
          switch (name) {
          case "apply_actions":
             instrHeaderSchema = protocol.getType("of.instruction_apply_actions_header");
@@ -668,15 +724,16 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
          
          GenericRecordBuilder instrHeaderBuilder = new GenericRecordBuilder(instrHeaderSchema);
          GenericRecord instrHeaderRecord = instrHeaderBuilder.build();
-         
+
          if (isActions) {
-            Iterator<Tuple<String, String>> actionIter = instruction.getActions().getIterator();
+            List<Tuple<String, String>> actionList = instruction.getActions().getActions();
+//            Iterator<Tuple<String, String>> actionIter = instruction.getActions().getIterator();
             Schema ofpActionSchema = protocol.getType("of.ofp_action");
             List<GenericRecord> actions = new LinkedList<GenericRecord>();
             GenericRecord actionSetRecord = null;
 
-            while (actionIter.hasNext()) {
-               Tuple<String, String> action = actionIter.next();
+            for (Tuple<String, String> action : actionList) {
+//               Tuple<String, String> action = actionIter.next();
                String actName = action.getName();
 
                GenericRecord ofpActionRecord = new GenericData.Record(ofpActionSchema);
@@ -704,19 +761,18 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
             actionSetRecord = new GenericData.Record(actionSetSchema);
             actionSetRecord.put("set", actionArray);
             
-            Schema ofpActionsSchema = protocol.getType("ofp_instruction_actions");
-            GenericRecord ofpActionsRecord = new GenericData.Record(ofpActionsSchema);
-            ofpActionsRecord.put("header", instrHeaderRecord);
-            ofpActionsRecord.put("actions", actionSetRecord);
+            Schema ofpInstructionsSchema = protocol.getType("ofp_instruction_actions");
+            GenericRecord ofpInstructionsRecord = new GenericData.Record(ofpInstructionsSchema);
+            ofpInstructionsRecord.put("header", instrHeaderRecord);
+            ofpInstructionsRecord.put("actions", actionSetRecord);
             
-            instrHeaderRecord.put("length", getUint16Fixed(calculateLength(ofpActionsSchema, ofpActionsRecord)));
-            ofpActionsRecord.put("header", instrHeaderRecord);
+            instrHeaderRecord.put("length", getUint16Fixed(calculateLength(ofpInstructionsSchema, ofpInstructionsRecord)));
+            ofpInstructionsRecord.put("header", instrHeaderRecord);
             
          } else {
             // TODO ANOTHER ACTIONS HERE
          }
       }
-      
       
       return null;
    }

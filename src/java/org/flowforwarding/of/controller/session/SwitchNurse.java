@@ -89,7 +89,7 @@ public class SwitchNurse extends UntypedActor {
             
             OFMessageFlowModHandler flowModHandler = provider.buildFlowModMsg();
             flowModHandler.addField("priority", "32000");
-            flowModHandler.addInPort(switchRef.getDpid().toString());
+            flowModHandler.addInPort(switchRef.getDpid().toString().substring(0, 3));
             
             OFStructureInstructionHandler instruction = provider.buildInstructionApplyActions();
             instruction.addActionOutput("1");
