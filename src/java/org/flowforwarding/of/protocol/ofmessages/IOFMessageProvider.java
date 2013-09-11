@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.util.Map;
 
 import org.flowforwarding.of.protocol.ofmessages.OFMessageFlowMod.OFMessageFlowModHandler;
+import org.flowforwarding.of.protocol.ofstructures.OFStructureInstruction.OFStructureInstructionHandler;
 
 public interface IOFMessageProvider {
 
@@ -87,4 +88,16 @@ public interface IOFMessageProvider {
     * 
     */
    public OFMessageFlowModHandler buildFlowModMsg ();
+   
+   public OFStructureInstructionHandler buildInstructionApplyActions ();
+   
+   public OFStructureInstructionHandler buildInstructionWriteActions ();
+   
+   public OFStructureInstructionHandler buildInstructionGotoTable ();
+   
+   public OFStructureInstructionHandler buildInstructionClearActions ();
+   
+   public OFStructureInstructionHandler buildInstructionMeter ();
+   
+   public OFStructureInstructionHandler buildInstructionWriteMetadata ();
 }

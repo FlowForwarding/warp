@@ -18,7 +18,10 @@ import org.apache.avro.generic.GenericArray;
 import org.apache.avro.generic.GenericData;
 import org.apache.avro.Protocol;
 import org.flowforwarding.of.protocol.ofmessages.OFMessageFlowMod.OFMessageFlowModHandler;
+import org.flowforwarding.of.protocol.ofstructures.IOFStructureBuilder;
+import org.flowforwarding.of.protocol.ofstructures.OFStructureBuilder13;
 import org.flowforwarding.of.protocol.ofstructures.OFStructureInstruction;
+import org.flowforwarding.of.protocol.ofstructures.OFStructureInstruction.OFStructureInstructionHandler;
 import org.flowforwarding.of.protocol.ofstructures.Tuple;
 import org.apache.avro.generic.GenericDatumReader;
 import org.apache.avro.generic.GenericDatumWriter;
@@ -106,7 +109,8 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
    
    
    private Protocol protocol = null;
-   protected OFMessageBuilder builder;
+   protected IOFMessageBuilder builder = null;
+   protected IOFStructureBuilder structureBuilder = null;
    
    
    final class MatchEntry<K, V> implements Map.Entry<K, V> {
@@ -142,6 +146,8 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
          //protocol = org.apache.avro.Protocol.parse(new File(schemaSrc));
          protocol = org.apache.avro.Protocol.parse(getClass().getClassLoader().getResourceAsStream(schemaSrc));
          builder = new OFMessageBuilder13();
+         structureBuilder = new OFStructureBuilder13();
+         
          
          } catch (IOException e) {
          // TODO Auto-generated catch block
@@ -189,6 +195,30 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
    
    public OFMessageFlowModHandler buildFlowModMsg () {
       return builder.buildFlowMod();
+   }
+   
+   public OFStructureInstructionHandler buildInstructionApplyActions () {
+      return structureBuilder.buildInstructionApplyActions();
+   }
+   
+   public OFStructureInstructionHandler buildInstructionWriteActions () {
+      return structureBuilder.buildInstructionWriteActions();
+   }
+   
+   public OFStructureInstructionHandler buildInstructionGotoTable () {
+      return structureBuilder.buildInstructionGotoTable();
+   }
+   
+   public OFStructureInstructionHandler buildInstructionClearActions () {
+      return structureBuilder.buildInstructionClearActions();
+   }
+   
+   public OFStructureInstructionHandler buildInstructionMeter () {
+      return structureBuilder.buildInstructionMeter();
+   }
+   
+   public OFStructureInstructionHandler buildInstructionWriteMetadata () {
+      return structureBuilder.buildInstructionWriteMetadata();
    }
    
    private byte[] encodeMessage (Schema headerSchema, Schema bodySchema) {
@@ -599,13 +629,13 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
       
       // TODO Improvs: I dislike this *.getInstructions().getIterator();
       //Iterator<Tuple<String, OFStructureInstruction>> instrIter = fmRef.getInstructions().getIterator();
-      List<Tuple<String, OFStructureInstruction>> instrList = fmHandler.getInstructions().getInstructions();
-      for (Tuple<String, OFStructureInstruction> tuple : instrList) {
+      List<Tuple<String, OFStructureInstructionHandler>> instrList = fmHandler.getInstructions().getInstructions();
+      for (Tuple<String, OFStructureInstructionHandler> tuple : instrList) {
          Schema instrHeaderSchema = null;
          boolean isActions = false;
          //Tuple<String, OFStructureInstruction> tuple = instrIter.next();
          String name = tuple.getName();
-         OFStructureInstruction instruction = tuple.getValue();
+         OFStructureInstructionHandler instruction = tuple.getValue();
          
          // TODO Improvs: Replace Switch with a structure... say, HashMap
          // TODO Improvs: How to control type compatibility between Shema types and incoming tlvs?

@@ -10,6 +10,7 @@ import java.util.List;
 
 import org.flowforwarding.of.protocol.ofstructures.MatchSet;
 import org.flowforwarding.of.protocol.ofstructures.OFStructureInstruction;
+import org.flowforwarding.of.protocol.ofstructures.OFStructureInstruction.OFStructureInstructionHandler;
 import org.flowforwarding.of.protocol.ofstructures.Tuple;
 import org.flowforwarding.of.protocol.supply.OFMAddField;
 import org.flowforwarding.of.protocol.supply.OFMAddInstruction;
@@ -58,7 +59,7 @@ public class OFMessageFlowMod extends OFMessage{
       parms.add(new Tuple<String, String>(name, value));
    }
 
-   public void addInstruction (String name, OFStructureInstruction value) {
+   public void addInstruction (String name, OFStructureInstructionHandler value) {
       instructions.add(name, value);
    }
    
@@ -76,7 +77,7 @@ public class OFMessageFlowMod extends OFMessage{
       matches.add(name, value);
    }
    
-   public static class OFMessageFlowModHandler extends OFMessageRef <OFMessageFlowMod> {
+   public static class OFMessageFlowModHandler extends OFMessageHandler <OFMessageFlowMod> {
       
       protected OFMessageFlowMod flowMod = null;
       
@@ -115,7 +116,7 @@ public class OFMessageFlowMod extends OFMessage{
          addField.add(name, value);
       }
       
-      public void addInstruction (String name, OFStructureInstruction instruction) {
+      public void addInstruction (String name, OFStructureInstructionHandler instruction) {
          addInstruction.add(name, instruction);
       }
       

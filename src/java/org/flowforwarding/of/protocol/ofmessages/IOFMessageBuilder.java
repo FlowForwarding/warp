@@ -10,9 +10,9 @@ import org.flowforwarding.of.protocol.ofmessages.OFMessageFlowMod.OFMessageFlowM
  * @author Infoblox Inc.
  *
  */
-public interface OFMessageBuilder {
+public interface IOFMessageBuilder {
    
-   public IOFMessageHandler build (String msg);
+   public OFMessageHandler build (String msg);
    
    public OFMessageFlowModHandler buildFlowMod();
 }

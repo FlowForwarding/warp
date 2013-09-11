@@ -8,7 +8,7 @@ package org.flowforwarding.of.protocol.ofmessages;
  * @author Infoblox Inc.
  *
  */
-public class OFMessageRef <Message>{
+public class OFMessageHandler <Message>{
 //TODO Improvs: Force Message to implement IOFMessage?? Do we really need it?
    protected Message message;
 }

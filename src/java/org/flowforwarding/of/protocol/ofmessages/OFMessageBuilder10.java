@@ -10,13 +10,13 @@ import org.flowforwarding.of.protocol.ofmessages.OFMessageFlowMod.OFMessageFlowM
  * @author Infoblox Inc.
  *
  */
-public class OFMessageBuilder10  implements OFMessageBuilder {
+public class OFMessageBuilder10  implements IOFMessageBuilder {
 
    /* (non-Javadoc)
     * @see org.flowforwarding.of.protocol.ofmessages.OFMessageBuilder#build(java.lang.String)
     */
    @Override
-   public IOFMessageHandler build(String msg) {
+   public OFMessageHandler build(String msg) {
       // TODO Auto-generated method stub
       return null;
    }

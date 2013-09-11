@@ -14,6 +14,7 @@ import org.flowforwarding.of.protocol.ofmessages.OFMessageFlowMod.OFMessageFlowM
 import org.flowforwarding.of.protocol.ofmessages.IOFMessageProvider;
 import org.flowforwarding.of.protocol.ofmessages.IOFMessageProviderFactory;
 import org.flowforwarding.of.protocol.ofmessages.OFMessageProviderFactoryAvroProtocol;
+import org.flowforwarding.of.protocol.ofstructures.OFStructureInstruction.OFStructureInstructionHandler;
 
 import akka.actor.ActorRef;
 import akka.actor.UntypedActor;
@@ -88,7 +89,12 @@ public class SwitchNurse extends UntypedActor {
             
             OFMessageFlowModHandler flowModHandler = provider.buildFlowModMsg();
             flowModHandler.addField("priority", "32000");
-            flowModHandler.addInPort("1");
+            flowModHandler.addInPort(switchRef.getDpid().toString());
+            
+            OFStructureInstructionHandler instruction = provider.buildInstructionApplyActions();
+            instruction.addActionOutput("1");
+            
+            flowModHandler.addInstruction("apply_actions", instruction);
             
             provider.encodeFlowMod(flowModHandler);
             

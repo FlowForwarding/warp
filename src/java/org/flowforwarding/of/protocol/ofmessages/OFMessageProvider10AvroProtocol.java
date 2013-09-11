@@ -36,7 +36,7 @@ public class OFMessageProvider10AvroProtocol {
    
    
    private Protocol protocol = null;
-   protected OFMessageBuilder builder;
+   protected IOFMessageBuilder builder;
    
    public void init () {
       try {
