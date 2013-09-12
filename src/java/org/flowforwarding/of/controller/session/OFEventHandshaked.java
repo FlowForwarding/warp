@@ -1,22 +1,22 @@
 package org.flowforwarding.of.controller.session;
 
-import org.flowforwarding.of.ofswitch.SwitchState.SwitchRef;
+import org.flowforwarding.of.ofswitch.SwitchState.SwitchHandler;
 
 public class OFEventHandshaked extends OFEvent {
    
-   protected SwitchRef switchRef;
+   protected SwitchHandler swHandler;
    
-   public SwitchRef getSwitchRef() {
-      return switchRef;
+   public SwitchHandler getSwitchHandler() {
+      return swHandler;
    }
 
-   public void setSwitchRef(SwitchRef swRef) {
-      this.switchRef = swRef;
+   public void setSwitchHandler(SwitchHandler swRef) {
+      this.swHandler = swRef;
    }
 
-   public OFEventHandshaked(SwitchRef swRef) {
+   public OFEventHandshaked(SwitchHandler swRef) {
       super();
-      this.switchRef = swRef;
+      this.swHandler = swRef;
    }
 
 }

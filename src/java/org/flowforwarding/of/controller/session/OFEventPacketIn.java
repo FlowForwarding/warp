@@ -4,30 +4,30 @@
  */
 package org.flowforwarding.of.controller.session;
 
-import org.flowforwarding.of.ofswitch.SwitchState.SwitchRef;
+import org.flowforwarding.of.ofswitch.SwitchState.SwitchHandler;
 
 /**
  * @author Infoblox Inc.
  *
  */
-public class OFIncoming extends OFEvent {
+public class OFEventPacketIn extends OFEvent {
 
-   protected SwitchRef switchRef;
+   protected SwitchHandler swHandler;
    
    /**
-    * @param switchRef
+    * @param SwitchHandler swH
     */
-   public OFIncoming(SwitchRef swRef) {
-      switchRef = swRef;
+   public OFEventPacketIn(SwitchHandler swH) {
+      swHandler = swH;
    }
 
    /* (non-Javadoc)
     * @see org.flowforwarding.of.controller.session.OFEvent#getSwitchRef()
     */
    @Override
-   public SwitchRef getSwitchRef() {
+   public SwitchHandler getSwitchHandler() {
       // TODO Auto-generated method stub
-      return null;
+      return swHandler;
    }
 
 }

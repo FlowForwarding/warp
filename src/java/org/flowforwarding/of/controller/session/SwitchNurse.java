@@ -8,7 +8,7 @@ package org.flowforwarding.of.controller.session;
 import java.io.ByteArrayOutputStream;
 
 import org.flowforwarding.of.ofswitch.SwitchState;
-import org.flowforwarding.of.ofswitch.SwitchState.SwitchRef;
+import org.flowforwarding.of.ofswitch.SwitchState.SwitchHandler;
 import org.flowforwarding.of.protocol.ofmessages.IOFMessageHandler;
 import org.flowforwarding.of.protocol.ofmessages.OFMessageFlowMod.OFMessageFlowModHandler;
 import org.flowforwarding.of.protocol.ofmessages.IOFMessageProvider;
@@ -34,7 +34,7 @@ public class SwitchNurse extends UntypedActor {
    }
    
    private State state = State.STARTED;
-   private SwitchRef switchRef;
+   private SwitchHandler swHandler;
    
    private ActorRef ofSessionHandler = null;
    private ActorRef tcpChannel = null;
@@ -46,7 +46,7 @@ public class SwitchNurse extends UntypedActor {
    public void preStart() throws Exception {
       super.preStart();
       
-      switchRef = SwitchRef.create();
+      swHandler = SwitchHandler.create();
    }
    @Override
    public void onReceive(Object msg) throws Exception {
@@ -60,7 +60,7 @@ public class SwitchNurse extends UntypedActor {
             if (provider != null) {
                
                provider.init();
-               switchRef.setVersion(provider.getVersion());
+               swHandler.setVersion(provider.getVersion());
                
                getSender().tell(TcpMessage.write(ByteString.fromArray(provider.encodeHelloMessage())), getSelf());
                this.state = State.CONNECTED;
@@ -74,12 +74,12 @@ public class SwitchNurse extends UntypedActor {
             in = ((Received) msg).data();
             
             if (provider.getDPID(in.toArray()) != null) {
-               switchRef.setDpid(provider.getDPID(in.toArray()));
+               swHandler.setDpid(provider.getDPID(in.toArray()));
                
-               System.out.println("[INFO-OF] Connected to Switch "+ Long.toHexString(switchRef.getDpid().longValue()));
+               System.out.println("[INFO-OF] Connected to Switch "+ Long.toHexString(swHandler.getDpid().longValue()));
                state = State.HANDSHAKED;
                
-               ofSessionHandler.tell(new OFEventHandshaked(switchRef), getSelf());
+               ofSessionHandler.tell(new OFEventHandshaked(swHandler), getSelf());
             }
             
             break;
@@ -87,25 +87,22 @@ public class SwitchNurse extends UntypedActor {
          case HANDSHAKED:
             in = ((Received) msg).data();
             
-            OFMessageFlowModHandler flowModHandler = provider.buildFlowModMsg();
-            flowModHandler.addField("priority", "32000");
-            flowModHandler.addInPort(switchRef.getDpid().toString().substring(0, 3));
-           // flowModHandler.addInPort("25");         
-                              
+            ofSessionHandler.tell(new OFEventIncoming(swHandler), getSelf());
             
-           /* OFStructureInstructionHandler instruction = provider.buildInstructionApplyActions();
+/*            OFMessageFlowModHandler flowModHandler = provider.buildFlowModMsg();
+            flowModHandler.addField("priority", "32000");
+            flowModHandler.addInPort(swHandler.getDpid().toString().substring(0, 3));
+            
+            OFStructureInstructionHandler instruction = provider.buildInstructionApplyActions();
             instruction.addActionOutput("1");
             
-            flowModHandler.addInstruction("apply_actions", instruction);*/
+            flowModHandler.addInstruction("apply_actions", instruction);
             
-            OFStructureInstructionHandler instruction = provider.buildInstructionGotoTable();
+            instruction = provider.buildInstructionGotoTable();
             flowModHandler.addInstruction("goto_table", instruction);
             
-            getSender().tell(TcpMessage.write(ByteString.fromArray(provider.encodeFlowMod(flowModHandler))), getSelf());  
+            getSender().tell(TcpMessage.write(ByteString.fromArray(provider.encodeFlowMod(flowModHandler))), getSelf());*/  
                         
-   //         flowModRef.
-            
-//            ofSessionHandler.tell(new OFIncoming(switchRef), getSelf());
             
             break;
          default:

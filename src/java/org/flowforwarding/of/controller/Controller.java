@@ -5,44 +5,14 @@
 
 package org.flowforwarding.of.controller;
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ForkJoinPool;
-import java.util.concurrent.RecursiveTask;
-import java.util.concurrent.atomic.AtomicLong;
-import java.io.ByteArrayOutputStream;
 import java.net.InetSocketAddress;
+import java.util.List;
 
-import org.flowforwarding.of.controller.restapi.RestApiServer;
-import org.flowforwarding.of.controller.restapi.RestApiTask;
 import org.flowforwarding.of.controller.session.EventGetSwitches;
 import org.flowforwarding.of.controller.session.OFActor;
 import org.flowforwarding.of.controller.session.SwitchNurse;
 import org.flowforwarding.of.controller.supply.OFCTellController;
-import org.flowforwarding.of.ofswitch.SwitchState.SwitchRef;
-import org.flowforwarding.of.protocol.ofmessages.IOFMessageProvider;
-import org.flowforwarding.of.protocol.ofmessages.IOFMessageProviderFactory;
-import org.flowforwarding.of.protocol.ofmessages.OFMessageProviderFactoryAvroProtocol;
-import org.jboss.netty.buffer.BigEndianHeapChannelBuffer;
-import org.jboss.netty.buffer.ChannelBuffer;
-import org.jboss.netty.buffer.ChannelBuffers;
-import org.jboss.netty.bootstrap.ServerBootstrap;
-import org.jboss.netty.channel.Channel;
-import org.jboss.netty.channel.ChannelHandlerContext;
-import org.jboss.netty.channel.ChannelPipeline;
-import org.jboss.netty.channel.ChannelPipelineFactory;
-import org.jboss.netty.channel.ChannelStateEvent;
-import org.jboss.netty.channel.Channels;
-import org.jboss.netty.channel.MessageEvent;
-import org.jboss.netty.channel.socket.nio.NioServerSocketChannelFactory;
-import org.jboss.netty.handler.timeout.IdleState;
-import org.jboss.netty.handler.timeout.IdleStateHandler;
-import org.jboss.netty.util.HashedWheelTimer;
-import org.jboss.netty.util.Timer;
+import org.flowforwarding.of.ofswitch.SwitchState.SwitchHandler;
 
 import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
@@ -158,7 +128,7 @@ public class Controller extends UntypedActor{
          return new ControllerRef (c);
       }
       
-      public List<SwitchRef> getSwitches () {
+      public List<SwitchHandler> getSwitches () {
          tellController.tell(ofEventHandler, new EventGetSwitches());
          
          return null;

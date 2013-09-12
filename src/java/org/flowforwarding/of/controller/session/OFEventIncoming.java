@@ -10,15 +10,24 @@ import org.flowforwarding.of.ofswitch.SwitchState.SwitchHandler;
  * @author Infoblox Inc.
  *
  */
-public class EventGetSwitches implements Event{
+public class OFEventIncoming extends OFEvent {
+
+   protected SwitchHandler swHandler;
+   
+   /**
+    * @param SwitchHandler swH
+    */
+   public OFEventIncoming(SwitchHandler swH) {
+      swHandler = swH;
+   }
 
    /* (non-Javadoc)
-    * @see org.flowforwarding.of.controller.session.Event#getSwitchRef()
+    * @see org.flowforwarding.of.controller.session.OFEvent#getSwitchRef()
     */
    @Override
    public SwitchHandler getSwitchHandler() {
       // TODO Auto-generated method stub
-      return null;
+      return swHandler;
    }
 
 }

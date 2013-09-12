@@ -4,26 +4,37 @@ package org.flowforwarding.of.controller.session;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.flowforwarding.of.ofswitch.SwitchState.SwitchRef;
+import org.flowforwarding.of.ofswitch.SwitchState.SwitchHandler;
 
-import akka.actor.UntypedActor;
 import akka.actor.ActorRef;
 
 public abstract class OFSessionHandler extends OFActor{
    
-   Map<SwitchRef, ActorRef> switches = new HashMap<> ();
+   Map<SwitchHandler, ActorRef> switches = new HashMap<> ();
    
    @Override
    public void onReceive(Object msg) throws Exception {
+      
+      // TODO Improvs: replace if-else with HashMap
       if (msg instanceof OFEventHandshaked) {
          
-         SwitchRef swState = ((OFEventHandshaked) msg).getSwitchRef();
-         switches.put(swState, getSender());
+         SwitchHandler swH = ((OFEventHandshaked) msg).getSwitchHandler();
+         switches.put(swH, getSender());
          
-         handshaked(swState);         
+         handshaked(swH);         
+      } else if (msg instanceof OFEventIncoming) {
+         
+      } else if (msg instanceof OFEventPacketIn) {
+         SwitchHandler swH = ((OFEventPacketIn) msg).getSwitchHandler();
+         packetIn(swH);
+         
+      } else if (msg instanceof OFEventSwitchConfig) {
+         SwitchHandler swH = ((OFEventSwitchConfig) msg).getSwitchHandler();
+         switchConfig(swH);
+         
       } else if (msg instanceof EventGetSwitches) {
-         System.out.println("*****");
-      }
+         
+      } 
       
 
    }
@@ -31,22 +42,17 @@ public abstract class OFSessionHandler extends OFActor{
    /*
     * User-defined Switch event handlers
     */
-   protected void handshaked (SwitchRef swRef) {
-   }
+   protected void handshaked(SwitchHandler swH) {}
+   protected void connected(SwitchHandler swH) {}
+   protected void packetIn(SwitchHandler swH) {}
+   protected void switchConfig(SwitchHandler swH) {}
    
-   protected void connected (SwitchRef swRef) {
-      
-   }
-   
-   protected void packetIn (SwitchRef swRef) {
-      
-   }
    
    /*
     * User-defined Application event handlers 
     */
-   protected void sendSwitchConfigRequest (SwitchRef swRef) {
-      switches.get(swRef).tell(new OFCommandSendSwConfigRequest(), getSelf());
+   protected void sendSwitchConfigRequest (SwitchHandler swH) {
+      switches.get(swH).tell(new OFCommandSendSwConfigRequest(), getSelf());
    }
    
 }
