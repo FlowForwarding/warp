@@ -1366,6 +1366,6 @@
     "fields":[
       {"name":"header", "type":"echo_reply_header"}
     ]
-   }
+   },
  ]
 }

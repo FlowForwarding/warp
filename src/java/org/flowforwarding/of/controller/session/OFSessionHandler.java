@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.flowforwarding.of.ofswitch.SwitchState.SwitchHandler;
+import org.flowforwarding.of.protocol.ofmessages.OFMessagePacketIn.OFMessagePacketInHandler;
 
 import akka.actor.ActorRef;
 
@@ -26,7 +27,7 @@ public abstract class OFSessionHandler extends OFActor{
          
       } else if (msg instanceof OFEventPacketIn) {
          SwitchHandler swH = ((OFEventPacketIn) msg).getSwitchHandler();
-         packetIn(swH);
+         packetIn(swH, OFMessagePacketInHandler.create());
          
       } else if (msg instanceof OFEventSwitchConfig) {
          SwitchHandler swH = ((OFEventSwitchConfig) msg).getSwitchHandler();
@@ -44,7 +45,7 @@ public abstract class OFSessionHandler extends OFActor{
     */
    protected void handshaked(SwitchHandler swH) {}
    protected void connected(SwitchHandler swH) {}
-   protected void packetIn(SwitchHandler swH) {}
+   protected void packetIn(SwitchHandler swH, OFMessagePacketInHandler pIn) {}
    protected void switchConfig(SwitchHandler swH) {}
    
    
