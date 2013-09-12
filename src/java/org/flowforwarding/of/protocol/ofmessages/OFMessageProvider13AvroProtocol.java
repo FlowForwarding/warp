@@ -712,38 +712,45 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
          case "apply_actions":
             instrHeaderSchema = protocol.getType("of.instruction_apply_actions_header");
             instrSchema = protocol.getType("of.ofp_instruction_apply_actions");
+            instrRecord = new GenericData.Record(instrSchema);
             isActions = true;
             break;
          case "write_actions":
             instrHeaderSchema = protocol.getType("of.instruction_write_actions_header");
             instrSchema = protocol.getType("of.ofp_instruction_write_actions");
+            instrRecord = new GenericData.Record(instrSchema);
             isActions = true;            
             break;
          case "clear_actions":
             instrHeaderSchema = protocol.getType("of.instruction_clear_actions_header");
             instrSchema = protocol.getType("of.ofp_instruction_clear_actions");
+            instrRecord = new GenericData.Record(instrSchema);
             isActions = true;            
             break;
          case "goto_table":
             instrHeaderSchema = protocol.getType("of.instruction_goto_table_header"); 
             instrSchema = protocol.getType("of.ofp_instruction_goto_table");
+            instrRecord = new GenericData.Record(instrSchema);
+            instrRecord.put("table_id", getUint8Fixed((byte)15));
+            instrRecord.put("pad", getPad3(0));
             isActions = false;            
             break;
          case "write_metadata":
             instrHeaderSchema = protocol.getType("of.instruction_write_metadata_header");  
             instrSchema = protocol.getType("of.ofp_instruction_write_metadata");
+            instrRecord = new GenericData.Record(instrSchema);
             isActions = false;            
             break;
          case "meter":
             instrHeaderSchema = protocol.getType("of.instruction_meter_header"); 
-            instrSchema = protocol.getType("of.ofp_instruction_meter");          
+            instrSchema = protocol.getType("of.ofp_instruction_meter");
+            instrRecord = new GenericData.Record(instrSchema);
             isActions = false;            
             break;
          }
          
          GenericRecordBuilder instrHeaderBuilder = new GenericRecordBuilder(instrHeaderSchema);
          instrHeaderRecord = instrHeaderBuilder.build();
-         instrRecord = new GenericData.Record(instrSchema);
          instrRecord.put("header", instrHeaderRecord);
          
 
@@ -778,22 +785,21 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
                actions.add(ofpActionRecord);
             }
                         
-            GenericArray<GenericRecord> actionArray = new GenericData.Array<> (Schema.createArray(ofpActionSchema), actions);
             Schema actionSetSchema = protocol.getType("of.action_set");
             actionSetRecord = new GenericData.Record(actionSetSchema);
-            actionSetRecord.put("set", actionArray);
+            actionSetRecord.put("set", new GenericData.Array<> (Schema.createArray(ofpActionSchema), actions));
             
-            Schema ofpInstructionsSchema = protocol.getType("ofp_instruction_actions");
-            GenericRecord ofpInstructionsRecord = new GenericData.Record(ofpInstructionsSchema);
-            ofpInstructionsRecord.put("header", instrHeaderRecord);
-            ofpInstructionsRecord.put("actions", actionSetRecord);
+            instrRecord.put("header", instrHeaderRecord);
+            instrRecord.put("actions", actionSetRecord);
             
-            instrHeaderRecord.put("length", getUint16Fixed(calculateLength(ofpInstructionsSchema, ofpInstructionsRecord)));
-            ofpInstructionsRecord.put("header", instrHeaderRecord);
-            
-         } 
-         
-         instructions.add(instrRecord);
+            instrHeaderRecord.put("length", getUint16Fixed(calculateLength(instrSchema, instrRecord)));
+            instrRecord.put("header", instrHeaderRecord);
+         }
+
+         Schema ofpInstructionSchema = protocol.getType("of.ofp_instruction");
+         GenericRecord ofpInstructionRecord = new GenericData.Record(ofpInstructionSchema);
+         ofpInstructionRecord.put("instruction", instrRecord);
+         instructions.add(ofpInstructionRecord);
       }
       
       Schema ofpInstructionSchema = protocol.getType("of.ofp_instruction");
@@ -805,11 +811,10 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
       ofpFlowModRecord.put("header", flowModHeaderRecord);
       ofpFlowModRecord.put("base", flowModBodyRecord);
       ofpFlowModRecord.put("match", ofpMatchRecord);
+      ofpFlowModRecord.put("instructions", instructionSetRecord);
       
       flowModHeaderRecord.put("length", getUint16Fixed(calculateLength(ofpFlowModSchema, ofpFlowModRecord)));
       ofpFlowModRecord.put("header", flowModHeaderRecord);
-      
-//      ofpFlowModRecord.put("instructions", instructionSetRecord);
       
       ByteArrayOutputStream fmOut = new ByteArrayOutputStream();
       DatumWriter<GenericRecord> writer = new GenericDatumWriter<GenericRecord>(ofpFlowModSchema);
@@ -2201,6 +2206,11 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
    private GenericData.Fixed getPad2 (short in) {
       // TODO Implement based on pad_2 schema    
       return getUint16Fixed(in);
+   }
+   
+   private GenericData.Fixed getPad3 (int in) {
+      // TODO Implement based on pad_2 schema    
+      return getUint24Fixed(in);
    }
    
    

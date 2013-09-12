@@ -1117,7 +1117,7 @@
     ]
    },   
       
-   {"name":"instruction_write_metadata",
+   {"name":"ofp_instruction_write_metadata",
     "type":"record",
     "fields":[
       {"name":"header", "type":"instruction_write_metadata_header"},
@@ -1126,7 +1126,7 @@
     ]
    },
 
-   {"name":"instruction_write_actions",
+   {"name":"ofp_instruction_write_actions",
     "type":"record",
     "fields":[
       {"name":"header", "type":"instruction_write_actions_header"},
@@ -1135,7 +1135,7 @@
     ]
    },
    
-   {"name":"instruction_clear_actions",
+   {"name":"ofp_instruction_clear_actions",
     "type":"record",
     "fields":[
       {"name":"header", "type":"instruction_clear_actions_header"},
@@ -1147,7 +1147,11 @@
    {"name":"ofp_instruction",
     "type":"record",
     "fields":[
-      {"name":"instruction", "type":["ofp_instruction_goto_table", "ofp_instruction_actions"]}
+      {"name":"instruction", "type":["ofp_instruction_goto_table", 
+                                     "ofp_instruction_write_metadata", 
+                                     "ofp_instruction_write_actions", 
+                                     "ofp_instruction_clear_actions", 
+                                     "ofp_instruction_apply_actions"]}
     ]
    },  
    
@@ -1366,6 +1370,6 @@
     "fields":[
       {"name":"header", "type":"echo_reply_header"}
     ]
-   },
+   }
  ]
 }

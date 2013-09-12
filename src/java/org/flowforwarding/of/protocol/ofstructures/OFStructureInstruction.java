@@ -81,7 +81,7 @@ public class OFStructureInstruction implements IOFStructure{
       }
       
       public void addActionOutput (String value) {
-         addAction.add("output", "1");
+         addAction.add("output", value);
       }
       
       public ActionSet getActions() {
