@@ -10,7 +10,7 @@ How to build:
 1. Setup a BLOX_OFCONTROLLER_ROOT environment variable where the project is placed, e.g.:
 ```bash
  $ cd <blox_of_controller_dir>
- $ BLOX_OFCONTROLLER_ROOT=`pwd`
+ $ export BLOX_OFCONTROLLER_ROOT=`pwd`
 ```
 
 2. Build Avro library:
