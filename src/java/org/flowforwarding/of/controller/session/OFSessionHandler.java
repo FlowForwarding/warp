@@ -27,7 +27,7 @@ public abstract class OFSessionHandler extends OFActor{
          
       } else if (msg instanceof OFEventPacketIn) {
          SwitchHandler swH = ((OFEventPacketIn) msg).getSwitchHandler();
-         packetIn(swH, OFMessagePacketInHandler.create());
+         packetIn(swH, OFMessagePacketInHandler.create(((OFEventPacketIn) msg).getPacketIn(), swH.getProvider()));
          
       } else if (msg instanceof OFEventSwitchConfig) {
          SwitchHandler swH = ((OFEventSwitchConfig) msg).getSwitchHandler();
@@ -36,8 +36,6 @@ public abstract class OFSessionHandler extends OFActor{
       } else if (msg instanceof EventGetSwitches) {
          
       } 
-      
-
    }
    
    /*

@@ -13,12 +13,14 @@ import org.flowforwarding.of.ofswitch.SwitchState.SwitchHandler;
 public class OFEventPacketIn extends OFEvent {
 
    protected SwitchHandler swHandler;
+   protected byte[] packetIn;
    
    /**
     * @param SwitchHandler swH
     */
-   public OFEventPacketIn(SwitchHandler swH) {
+   public OFEventPacketIn(SwitchHandler swH, byte [] pIn) {
       swHandler = swH;
+      packetIn = pIn;
    }
 
    /* (non-Javadoc)
@@ -29,5 +31,8 @@ public class OFEventPacketIn extends OFEvent {
       // TODO Auto-generated method stub
       return swHandler;
    }
-
+   
+   public byte[] getPacketIn() {
+      return packetIn;
+   }
 }
