@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.flowforwarding.of.protocol.ofstructures.OFStructureMatch;
-import org.flowforwarding.of.protocol.supply.OFMGetPacketInMatch;
+//import org.flowforwarding.of.protocol.supply.OFMGetPacketInMatch;
 /**
  * @author Infoblox Inc.
  *
@@ -34,11 +34,11 @@ public class OFMessagePacketIn extends OFMessage {
    
    public static class OFMessagePacketInHandler extends OFMessageHandler <OFMessagePacketIn> {
       
-      protected OFMGetPacketInMatch getMatch; 
+      //protected OFMGetPacketInMatch getMatch; 
 
       protected OFMessagePacketInHandler (byte [] packetIn, IOFMessageProvider provider) {
          message = new OFMessagePacketIn(packetIn, provider);
-         getMatch = new OFMGetPacketInMatch(message);
+        // getMatch = new OFMGetPacketInMatch(message);
       }
       
       /**
@@ -50,11 +50,11 @@ public class OFMessagePacketIn extends OFMessage {
       }
       
       public OFStructureMatch getMatch(String name) {
-         return getMatch.get(name);
+         return null;// getMatch.get(name);
       }
       
       public boolean existMatch (String name) {
-         return getMatch.exist(name);
+         return false; // getMatch.exist(name);
       }
    }
 
