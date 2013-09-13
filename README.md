@@ -7,15 +7,21 @@ Based on AVRO library
 
 How to build:
 
-1. Build Avro library:
+1. Setup a BLOX_OFCONTROLLER_ROOT environment variable where the project is placed, e.g.:
+```bash
+ $ cd <blox_of_controller_dir>
+ $ BLOX_OFCONTROLLER_ROOT=`pwd`
+```
+
+2. Build Avro library:
  ```bash
- $ cd avro-trunk/lang/java/avro
+ $ cd $BLOX_OFCONTROLLER_ROOT/avro-trunk/lang/java/avro
  $ mvn install -DskipTests
 
  ```
 2. Build of_lib.jar:
  ```bash
- $ cd ../../../..
+ $ cd $BLOX_OFCONTROLLER_ROOT
  $ ant
  ```
 
