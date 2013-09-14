@@ -18,6 +18,7 @@ import org.apache.avro.io.DatumWriter;
 import org.apache.avro.io.Encoder;
 import org.apache.avro.io.EncoderFactory;
 import org.flowforwarding.of.protocol.ofmessages.OFMessageFlowMod.OFMessageFlowModHandler;
+import org.flowforwarding.of.protocol.ofmessages.OFMessageSwitchConfig.OFMessageSwitchConfigHandler;
 import org.flowforwarding.of.protocol.ofstructures.OFStructureInstruction.OFStructureInstructionHandler;
 
 /**
@@ -290,6 +291,15 @@ public class OFMessageProvider10AvroProtocol implements IOFMessageProvider{
    public boolean isConfig(byte[] in) {
       // TODO Auto-generated method stub
       return false;
+   }
+
+   /* (non-Javadoc)
+    * @see org.flowforwarding.of.protocol.ofmessages.IOFMessageProvider#parseSwitchConfig(byte[])
+    */
+   @Override
+   public OFMessageSwitchConfigHandler parseSwitchConfig(byte[] in) {
+      // TODO Auto-generated method stub
+      return null;
    }
    
 }

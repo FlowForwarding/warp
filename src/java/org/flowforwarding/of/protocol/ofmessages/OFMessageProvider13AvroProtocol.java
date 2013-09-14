@@ -18,6 +18,7 @@ import org.apache.avro.generic.GenericArray;
 import org.apache.avro.generic.GenericData;
 import org.apache.avro.Protocol;
 import org.flowforwarding.of.protocol.ofmessages.OFMessageFlowMod.OFMessageFlowModHandler;
+import org.flowforwarding.of.protocol.ofmessages.OFMessageSwitchConfig.OFMessageSwitchConfigHandler;
 import org.flowforwarding.of.protocol.ofstructures.IOFStructureBuilder;
 import org.flowforwarding.of.protocol.ofstructures.OFStructureBuilder13;
 import org.flowforwarding.of.protocol.ofstructures.OFStructureInstruction;
@@ -2423,6 +2424,15 @@ public boolean isConfig(byte[] in) {
       return true;
    else 
       return false;
+}
+
+/* (non-Javadoc)
+ * @see org.flowforwarding.of.protocol.ofmessages.IOFMessageProvider#parseSwitchConfig(byte[])
+ */
+@Override
+public OFMessageSwitchConfigHandler parseSwitchConfig(byte[] in) {
+   // TODO Auto-generated method stub
+   return null;
 }
   
 }
