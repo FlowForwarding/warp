@@ -37,7 +37,8 @@
         </copy>
     </target>
     <target name="clean">
-        <delete dir="bin"/>
+        <delete dir="${basedir}/bin"/>
+        <delete dir="${basedir}/docs/api"/>
     </target>
     <target depends="clean" name="cleanall"/>
     <target depends="build-subprojects,create_run_jar" name="build"/>
@@ -70,7 +71,7 @@
         </java>
     </target>
     <target depends="build-project" name="create_run_jar">
-    	<mkdir dir="./target"/>
+    	<mkdir dir="${basedir}/target"/>
     	<jar destfile="target/of_lib.jar" filesetmanifest="mergewithoutmain">
     		<manifest>
     			<attribute name="Main-Class" value="org.flowforwarding.of.controller.ControllerOld"/>
@@ -87,4 +88,23 @@
             <zipfileset excludes="META-INF/*.SF" src="avro-trunk/lang/java/avro/target/avro-1.7.4-SNAPSHOT.jar"/>
         </jar>
     </target>
+
+ <target name="javadoc" description="Create Javadocs for the FlowForwarding OF Controller ...">
+        <mkdir dir="${basedir}/docs/api"/>
+  <javadoc packagenames="org.flowforwarding.of.*"
+           sourcepath="src/java"
+           defaultexcludes="yes"
+           destdir="docs/api"
+           author="true"
+           version="true"
+           use="true"
+           windowtitle="FlowFowarding OF Controller API">
+    <classpath refid="of_controller.classpath"/>
+    <doctitle><![CDATA[<h1>Test</h1>]]></doctitle>
+    <bottom><![CDATA[<i>Copyright &#169; 2013 FlowForwarding.Org. All Rights Reserved.</i>]]></bottom>
+    <tag name="todo" scope="all" description="To do:"/>
+    <link href="http://docs.oracle.com/javase/7/docs/api/"/>
+  </javadoc>
+</target>
+
 </project>
