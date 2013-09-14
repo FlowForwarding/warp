@@ -172,6 +172,7 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
       ofpSwitchFeaturesReplySchema =  protocol.getType("of.ofp_switch_features_reply");
       switchFeaturesReplyHeaderSchema =  protocol.getType("of.ofp_switch_features_reply_header");
       
+      ofpSwitchConfigSchema = protocol.getType("of.ofp_switch_config");
       ofpSetSwitchConfigSchema = protocol.getType("of.ofp_set_switch_config");
       ofpSetSwitchConfigHeaderSchema = protocol.getType("of.ofp_set_switch_config_header");
       
@@ -341,6 +342,24 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
          reader.read(featureReplyRecord, decoder);
          
          return featureReplyRecord;
+    } catch (IOException e) {
+       // TODO Auto-generated catch block
+       e.printStackTrace();
+       
+       return null;
+    }
+   }
+   
+   protected GenericRecord getSwitchCofigRecord (byte[] buffer) {
+      // TODO Improvs: make a protected getter to get general records.
+      try {
+         GenericRecord record = new GenericData.Record(ofpSwitchConfigSchema);
+         GenericDatumReader<GenericRecord> reader = new GenericDatumReader<GenericRecord>(ofpSwitchConfigSchema);
+         Decoder decoder = DecoderFactory.get().binaryDecoder(buffer, null);
+         
+         reader.read(record, decoder);
+         
+         return record;
     } catch (IOException e) {
        // TODO Auto-generated catch block
        e.printStackTrace();
@@ -2147,6 +2166,12 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
  
       return new Long(result);
    }
+
+   private static Byte get_byte(GenericData.Fixed in) {
+      return new Byte(in.bytes()[0]);
+   }
+
+
   
    // Parse short as decimal, hex (start with 0x or #) or octal (starts with 0)
    private static short get_short(String str) {
@@ -2363,8 +2388,7 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
  */
 @Override
 public boolean isHello(byte[] in) {
-   // TODO Auto-generated method stub
-   return false;
+   return true;
 }
 
 /* (non-Javadoc)
@@ -2372,8 +2396,33 @@ public boolean isHello(byte[] in) {
  */
 @Override
 public Short getVersion() {
-   // TODO Auto-generated method stub
    return null;
+}
+
+/* (non-Javadoc)
+ * @see org.flowforwarding.of.protocol.ofmessages.IOFMessageProvider#isFeautureReply(byte[])
+ */
+@Override
+public boolean isFeautureReply(byte[] in) {
+   
+   return false;
+}
+
+/* (non-Javadoc)
+ * @see org.flowforwarding.of.protocol.ofmessages.IOFMessageProvider#isConfig(byte[])
+ */
+@Override
+public boolean isConfig(byte[] in) {
+   GenericRecord record = getSwitchCofigRecord(in);
+   GenericRecord header = new GenericData.Record(ofpHeaderSchema);
+   
+   header = (GenericRecord) record.get("header");
+   // TODO Improvs: We plan to get all types from Avro protocol type... soon... so let it be now just 8
+   Byte type = get_byte((GenericData.Fixed)header.get("type")); 
+   if (type.byteValue() == 8 )  // OFPT_GET_CONFIG_REPLY
+      return true;
+   else 
+      return false;
 }
   
 }

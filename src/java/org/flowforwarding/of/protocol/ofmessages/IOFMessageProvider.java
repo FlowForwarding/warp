@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.util.Map;
 
 import org.flowforwarding.of.protocol.ofmessages.OFMessageFlowMod.OFMessageFlowModHandler;
+import org.flowforwarding.of.protocol.ofmessages.OFMessageSwitchConfig.OFMessageSwitchConfigHandler;
 import org.flowforwarding.of.protocol.ofstructures.OFStructureInstruction.OFStructureInstructionHandler;
 
 public interface IOFMessageProvider {
@@ -73,16 +74,33 @@ public interface IOFMessageProvider {
     * @return
     */
    boolean isHello(byte [] in);
+   
+   /**
+    * @param in
+    * @return
+    */
+   boolean isFeautureReply (byte [] in);
+   
+   /**
+    * @param in
+    * @return
+    */
+   boolean isConfig (byte [] in);
 
    /**
     * 
     */
    byte [] encodeEchoRequest();
    
-   /*
+   /**
     * 
     */
    public byte[] encodeFlowMod (OFMessageFlowModHandler fmHandler);
+   
+   /**
+    * 
+    */
+   public OFMessageSwitchConfigHandler parseSwitchConfig (byte[] in);
    
    /**
     * 

@@ -27,8 +27,21 @@ public class OFMessageProviderFactoryAvroProtocol implements IOFMessageProviderF
     */
    @Override
    public IOFMessageProvider getMessageProvider(byte[] hello) {
-      // TODO Improvs: Select Protocol depending of version from Hello header
-      return new OFMessageProvider13AvroProtocol();
+      IOFMessageProvider provider;     
+      byte probVersion = hello[0];
+      
+      switch (probVersion) {
+      case 1:
+         provider = new OFMessageProvider10AvroProtocol(); 
+         break;
+      case 4:
+         provider = new OFMessageProvider13AvroProtocol();
+         break;
+      default:
+         provider = null;
+      }
+   // TODO Improvs: Getting provider, let's check whether this is a Hello message?
+      return provider; 
    }
 
 }
