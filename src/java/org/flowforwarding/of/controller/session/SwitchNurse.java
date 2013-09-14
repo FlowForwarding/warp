@@ -90,6 +90,7 @@ public class SwitchNurse extends UntypedActor {
             
             if (provider.isConfig(in.toArray())) {
                System.out.println("[OF-INFO] Switch Config is received from the Switch "+ Long.toHexString(swHandler.getDpid().longValue()));
+               provider.parseSwitchConfig(in.toArray());
             }
                
             

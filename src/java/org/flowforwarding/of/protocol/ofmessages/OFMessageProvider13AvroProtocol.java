@@ -351,7 +351,7 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
     }
    }
    
-   protected GenericRecord getSwitchCofigRecord (byte[] buffer) {
+   protected GenericRecord getSwitchConfigRecord (byte[] buffer) {
       // TODO Improvs: make a protected getter to get general records.
       try {
          GenericRecord record = new GenericData.Record(ofpSwitchConfigSchema);
@@ -374,7 +374,7 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
       GenericRecord featureReplyRecord = getSwitchFeaturesReplyRecord (buffer);
       
       GenericData.Fixed dpid = (GenericData.Fixed) featureReplyRecord.get("datapath_id");
-      return get_long(dpid);
+      return getLong(dpid);
    }
    
    public ByteArrayOutputStream getSetSwitchConfig(ByteArrayOutputStream out) {
@@ -1549,7 +1549,7 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
          int port = 0;
          if (n.group(1) != null) {
               try {
-                  port = get_int(n.group(1));
+                  port = getInt(n.group(1));
               }
               catch (NumberFormatException e) {
                  // log.debug("  Invalid port in: '{}' (error ignored)", subaction);
@@ -1602,7 +1602,7 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
           long eth = 0;
           if (n.group(1) != null) {
               try {
-                  eth = get_long(n.group(1));
+                  eth = getLong(n.group(1));
               }
               catch (NumberFormatException e) {
                  // log.debug("  Invalid port in: '{}' (error ignored)", subaction);
@@ -1724,7 +1724,7 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
           long eth = 0;
           if (n.group(1) != null) {
               try {
-                  eth = get_long(n.group(1));
+                  eth = getLong(n.group(1));
               }
               catch (NumberFormatException e) {
                  // log.debug("  Invalid port in: '{}' (error ignored)", subaction);
@@ -1845,7 +1845,7 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
          if (n.group(1) != null) {
              try {
                 ethertype = U16.t(Integer.valueOf(((String) n.group(1)).replaceFirst("0x", ""), 16));
-                      //get_short(n.group(1));
+                      //getShort(n.group(1));
              }
              catch (NumberFormatException e) {
                 // log.debug("  Invalid port in: '{}' (error ignored)", subaction);
@@ -1903,7 +1903,7 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
           short vid = 0;
           if (n.group(1) != null) {
               try {
-                  vid = get_short(n.group(1));
+                  vid = getShort(n.group(1));
               }
               catch (NumberFormatException e) {
                  // log.debug("  Invalid port in: '{}' (error ignored)", subaction);
@@ -2021,7 +2021,7 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
          int label = 0;
          if (n.group(1) != null) {
              try {
-                 label = get_int(n.group(1));
+                 label = getInt(n.group(1));
              }
              catch (NumberFormatException e) {
                 // log.debug("  Invalid port in: '{}' (error ignored)", subaction);
@@ -2135,16 +2135,16 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
    
    
    // Parse int as decimal, hex (start with 0x or #) or octal (starts with 0)
-   private static long get_long(String str) {
+   private static long getLong(String str) {
        return (long)Long.decode(str);
    }
    
    // Parse int as decimal, hex (start with 0x or #) or octal (starts with 0)
-   private static int get_int(String str) {
+   private static int getInt(String str) {
        return (int)Integer.decode(str);
    }
    
-   private static Long get_long(byte[] buffer) {
+   private static Long getLong(byte[] buffer) {
       long result = 0;
       for (int i=0; i<8; i++) 
          result = (result | buffer[i]) << 8; 
@@ -2152,7 +2152,7 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
       return new Long(result);
    }
    
-   private static Long get_long(GenericData.Fixed in) {
+   private static Long getLong(GenericData.Fixed in) {
       long result = 0;
       byte [] buffer = in.bytes();
       
@@ -2168,19 +2168,29 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
       return new Long(result);
    }
 
-   private static Byte get_byte(GenericData.Fixed in) {
+   private static Byte getByte(GenericData.Fixed in) {
       return new Byte(in.bytes()[0]);
+   }
+   
+   private static Short getShort(GenericData.Fixed in) {
+      short result = 0;
+      byte [] buffer = in.bytes();
+      
+      result |=  ((long)(buffer[1])  & 255);
+      result |=  (((long)(buffer[0])  & 255) << 8);
+      
+      return new Short(result);
    }
 
 
   
    // Parse short as decimal, hex (start with 0x or #) or octal (starts with 0)
-   private static short get_short(String str) {
+   private static short getShort(String str) {
        return (short)(int)Integer.decode(str);
    }
   
    // Parse byte as decimal, hex (start with 0x or #) or octal (starts with 0)
-   private static byte get_byte(String str) {
+   private static byte getByte(String str) {
        return Integer.decode(str).byteValue();
    }
 
@@ -2281,7 +2291,7 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
          for (int i=0; i<6; i++) {
             if (n.group(i+1) != null) {
                 try {
-                    macaddr[i] = get_byte("0x" + n.group(i+1));
+                    macaddr[i] = getByte("0x" + n.group(i+1));
                 }
                 catch (NumberFormatException e) {
            //         log.debug("  Invalid src-mac in: '{}' (error ignored)", subaction);
@@ -2308,8 +2318,8 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
          for (int i=0; i<8; i++) {
             if (n.group(i+1) != null) {
                 try {
-                   ipv6[2*i] = (byte) (get_short("0x" + n.group(i+1)) & 255);
-                   ipv6[2*i+1] = (byte) (get_short("0x" + n.group(i+1)) >> 8);
+                   ipv6[2*i] = (byte) (getShort("0x" + n.group(i+1)) & 255);
+                   ipv6[2*i+1] = (byte) (getShort("0x" + n.group(i+1)) >> 8);
                 }
                 catch (NumberFormatException e) {
                     return null;
@@ -2334,7 +2344,7 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
         for (int i=0; i<4; i++) {
            if (n.group(i+1) != null) {
                try {
-                  ipv4[i] = get_byte(n.group(i+1));
+                  ipv4[i] = getByte(n.group(i+1));
                }
                catch (NumberFormatException e) {
                    return null;
@@ -2414,12 +2424,12 @@ public boolean isFeautureReply(byte[] in) {
  */
 @Override
 public boolean isConfig(byte[] in) {
-   GenericRecord record = getSwitchCofigRecord(in);
+   GenericRecord record = getSwitchConfigRecord(in);
    GenericRecord header = new GenericData.Record(ofpHeaderSchema);
    
    header = (GenericRecord) record.get("header");
    // TODO Improvs: We plan to get all types from Avro protocol type... soon... so let it be now just 8
-   Byte type = get_byte((GenericData.Fixed)header.get("type")); 
+   Byte type = getByte((GenericData.Fixed)header.get("type")); 
    if (type.byteValue() == 8 )  // OFPT_GET_CONFIG_REPLY
       return true;
    else 
@@ -2431,8 +2441,20 @@ public boolean isConfig(byte[] in) {
  */
 @Override
 public OFMessageSwitchConfigHandler parseSwitchConfig(byte[] in) {
-   // TODO Auto-generated method stub
-   return null;
+   GenericRecord record = getSwitchConfigRecord(in);
+   
+// TODO Improvs: We plan to get all flags from Avro protocol type... soon... so let it be now just numbers
+   short flags = getShort((GenericData.Fixed)record.get("flags"));
+   OFMessageSwitchConfigHandler configH = OFMessageSwitchConfigHandler.create();
+   if (flags == 0) {
+      configH.setConfigFlagFragNormal();
+   } else {
+      if ((flags & 1) != 0) configH.setConfigFlagFragDrop();
+      if ((flags & 2) != 0) configH.setConfigFlagFragReasm();
+      if ((flags & 3) != 0) configH.setConfigFlagFragMask();
+   }
+   
+   return configH;
 }
   
 }
