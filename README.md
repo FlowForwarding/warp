@@ -9,24 +9,24 @@ This OF Controller implementation is based on [Apache AVRO] (https://avro.apache
  $ export BLOX_OFCONTROLLER_ROOT=`pwd`
 ```
 
->2. Build of_lib.jar and JavaDoc API:
+>2. Build Avro library (One time Step - and when ever Avro library is modified):
+ ```bash
+ $ cd $BLOX_OFCONTROLLER_ROOT/avro-trunk/lang/java/avro
+ $ mvn install -DskipTests
+ ```
+
+>3. Build of_lib.jar and JavaDoc API:
  ```bash
  $ cd $BLOX_OFCONTROLLER_ROOT
  $ ant
  $ ant javadoc
  ```
 
->3. Running the OpenFlow Switch and blox_OFController
+>4. Running the OpenFlow Switch and blox_OFController
    Blox OF Controller [User's Guide] (https://github.com/FlowForwarding/LINC-Switch/wiki/Blox-OF-Controller-User's-Guide)
    [OpenFlow Java library testing against OpenFlow 1.3 LINC Switch] (https://github.com/FlowForwarding/LINC-Switch/wiki/OpenFlow-Java-library-testing-against-OpenFlow-1.3-LINC-Switch)
 
    For Developers, interested in [using the API] (https://github.com/FlowForwarding/LINC-Switch/wiki/OpenFlow-Java-library-API-Cookbook)
-
->4. Build Avro library (Optional Step):
- ```bash
- $ cd $BLOX_OFCONTROLLER_ROOT/avro-trunk/lang/java/avro
- $ mvn install -DskipTests
- ```
 
 >5. Additional Documentation (docs directory):
      (1) Using Apache Avro to implement an OpenFlow protocol library: UsingApacheAVROtoimplementOFProtocol.pdf
