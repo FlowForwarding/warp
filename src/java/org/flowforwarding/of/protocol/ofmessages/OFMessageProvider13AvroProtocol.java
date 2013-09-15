@@ -2445,7 +2445,7 @@ public OFMessageSwitchConfigHandler parseSwitchConfig(byte[] in) {
    
 // TODO Improvs: We plan to get all flags from Avro protocol type... soon... so let it be now just numbers
    short flags = getShort((GenericData.Fixed)record.get("flags"));
-   OFMessageSwitchConfigHandler configH = OFMessageSwitchConfigHandler.create();
+   OFMessageSwitchConfigHandler configH = builder.buildSwitchConfig();
    if (flags == 0) {
       configH.setConfigFlagFragNormal();
    } else {

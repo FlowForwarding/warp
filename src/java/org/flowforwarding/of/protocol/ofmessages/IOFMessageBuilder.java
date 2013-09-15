@@ -5,6 +5,7 @@
 package org.flowforwarding.of.protocol.ofmessages;
 
 import org.flowforwarding.of.protocol.ofmessages.OFMessageFlowMod.OFMessageFlowModHandler;
+import org.flowforwarding.of.protocol.ofmessages.OFMessageSwitchConfig.OFMessageSwitchConfigHandler;
 
 /**
  * @author Infoblox Inc.
@@ -15,4 +16,6 @@ public interface IOFMessageBuilder {
    public OFMessageHandler build (String msg);
    
    public OFMessageFlowModHandler buildFlowMod();
+   
+   public OFMessageSwitchConfigHandler buildSwitchConfig ();
 }

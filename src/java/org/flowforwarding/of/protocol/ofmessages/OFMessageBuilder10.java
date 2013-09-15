@@ -5,6 +5,7 @@
 package org.flowforwarding.of.protocol.ofmessages;
 
 import org.flowforwarding.of.protocol.ofmessages.OFMessageFlowMod.OFMessageFlowModHandler;
+import org.flowforwarding.of.protocol.ofmessages.OFMessageSwitchConfig.OFMessageSwitchConfigHandler;
 
 /**
  * @author Infoblox Inc.
@@ -26,6 +27,15 @@ public class OFMessageBuilder10  implements IOFMessageBuilder {
     */
    @Override
    public OFMessageFlowModHandler buildFlowMod() {
+      // TODO Auto-generated method stub
+      return null;
+   }
+
+   /* (non-Javadoc)
+    * @see org.flowforwarding.of.protocol.ofmessages.IOFMessageBuilder#buildSwitchConfig()
+    */
+   @Override
+   public OFMessageSwitchConfigHandler buildSwitchConfig() {
       // TODO Auto-generated method stub
       return null;
    }
