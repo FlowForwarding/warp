@@ -1494,6 +1494,26 @@
      {"name":"code", "type":["ofp_hello_failed_code",
                              "ofp_bad_request_code"]}
     ]
+   },
+   
+   {"name":"error_msg_header",
+    "type":"record",
+    "fields":[ 
+     {"name":"version", "type":"uint_8", "default":[4]},
+     {"name":"type", "type":"ofp_type", "default":"OFPT_ERROR"},
+     {"name":"length", "type":"ofp_length", "default":"OFPL_ERROR_LEN"},
+     {"name":"xid", "type":"uint_32", "default":[0,0,0,0]}
+    ]
+   },
+   
+   {"name":"ofp_error_msg",
+    "type":"record",
+    "fields":[
+     {"name":"header", "type":"error_msg_header"},
+     {"name":"type", "type":"uint_16"},
+     {"name":"code", "type":"uint_16"},
+     {"name":"data", "type":{"type":"array", "items":"uint_8"}}
+    ]
    }
  ]
 }

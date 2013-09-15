@@ -17,6 +17,7 @@ import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericArray;
 import org.apache.avro.generic.GenericData;
 import org.apache.avro.Protocol;
+import org.flowforwarding.of.protocol.ofmessages.OFMessageError.OFMessageErrorHandler;
 import org.flowforwarding.of.protocol.ofmessages.OFMessageFlowMod.OFMessageFlowModHandler;
 import org.flowforwarding.of.protocol.ofmessages.OFMessagePacketIn.OFMessagePacketInHandler;
 import org.flowforwarding.of.protocol.ofmessages.OFMessageSwitchConfig.OFMessageSwitchConfigHandler;
@@ -81,10 +82,12 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
    private Schema flowModHeaderSchema = null;
    private Schema ofpFlowModSchema = null;
    
-   
    private Schema packetInHeaderSchema = null;
    private Schema ofpPacketInSchema = null;
-      
+   
+   private Schema errorMessageHeader = null;
+   private Schema ofpErrorMessageSchema = null;
+   
    private Schema uint_8Schema = null;
    private Schema uint_16Schema = null;
    private Schema uint_24Schema = null;
@@ -196,6 +199,9 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
       
       packetInHeaderSchema = protocol.getType("of.packet_in_header");
       ofpPacketInSchema = protocol.getType("of.ofp_packet_in");
+      
+      errorMessageHeader = protocol.getType("of.error_msg_header");
+      ofpErrorMessageSchema = protocol.getType("of.ofp_error_msg");
       
       uint_8Schema = protocol.getType("of.uint_8");
       uint_16Schema = protocol.getType("of.uint_16");
@@ -2472,6 +2478,21 @@ public OFMessageSwitchConfigHandler parseSwitchConfig(byte[] in) {
    return configH;
 }
 
+@Override
+public OFMessageErrorHandler parseError(byte[] in) {
+   GenericRecord record = getRecord(ofpErrorMessageSchema, in);
+   
+// TODO Improvs: We plan to get all flags from Avro protocol type... soon... so let it be now just numbers
+   short type = getShort((GenericData.Fixed)record.get("type"));
+   short code = getShort((GenericData.Fixed)record.get("code"));
+   OFMessageErrorHandler errorH = builder.buildError();
+   
+   errorH.setCode(code);
+   errorH.setType(type);
+   
+   return errorH;
+}
+
 /* (non-Javadoc)
  * @see org.flowforwarding.of.protocol.ofmessages.IOFMessageProvider#isPacketIn(byte[])
  */
@@ -2495,5 +2516,19 @@ public OFMessagePacketInHandler parsePacketIn(byte[] in) {
  
    return builder.buildPacketIn();
 }
+
+/* (non-Javadoc)
+ * @see org.flowforwarding.of.protocol.ofmessages.IOFMessageProvider#isError(byte[])
+ */
+@Override
+public boolean isError(byte[] in) {
+   GenericRecord header = getRecord(errorMessageHeader, in);
+
+   // TODO Improvs: We plan to get all types from Avro protocol type... soon... so let it be now just 1
+   Byte type = getByte((GenericData.Fixed)header.get("type")); 
+   if (type.byteValue() == 1 )  // ERROR
+      return true;
+   else 
+      return false;}
   
 }

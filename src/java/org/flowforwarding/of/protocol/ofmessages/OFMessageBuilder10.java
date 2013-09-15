@@ -4,6 +4,7 @@
  */
 package org.flowforwarding.of.protocol.ofmessages;
 
+import org.flowforwarding.of.protocol.ofmessages.OFMessageError.OFMessageErrorHandler;
 import org.flowforwarding.of.protocol.ofmessages.OFMessageFlowMod.OFMessageFlowModHandler;
 import org.flowforwarding.of.protocol.ofmessages.OFMessagePacketIn.OFMessagePacketInHandler;
 import org.flowforwarding.of.protocol.ofmessages.OFMessageSwitchConfig.OFMessageSwitchConfigHandler;
@@ -44,9 +45,17 @@ public class OFMessageBuilder10  implements IOFMessageBuilder {
     * @see org.flowforwarding.of.protocol.ofmessages.IOFMessageBuilder#buildPacketIn()
     */
    @Override
+   public OFMessageErrorHandler buildError() {
+      // TODO Auto-generated method stub
+      return OFMessageErrorHandler.create();
+   }
+
+   /* (non-Javadoc)
+    * @see org.flowforwarding.of.protocol.ofmessages.IOFMessageBuilder#buildPacketIn()
+    */
+   @Override
    public OFMessagePacketInHandler buildPacketIn() {
       // TODO Auto-generated method stub
       return OFMessagePacketInHandler.create();
    }
-
 }

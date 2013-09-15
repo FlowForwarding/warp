@@ -5,7 +5,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.flowforwarding.of.ofswitch.SwitchState.SwitchHandler;
+import org.flowforwarding.of.protocol.ofmessages.OFMessageError;
+import org.flowforwarding.of.protocol.ofmessages.OFMessageError.OFMessageErrorHandler;
 import org.flowforwarding.of.protocol.ofmessages.OFMessagePacketIn.OFMessagePacketInHandler;
+import org.flowforwarding.of.protocol.ofmessages.OFMessageSwitchConfig.OFMessageSwitchConfigHandler;
 
 import akka.actor.ActorRef;
 
@@ -32,11 +35,14 @@ public abstract class OFSessionHandler extends OFActor{
          
       } else if (msg instanceof OFEventSwitchConfig) {
          SwitchHandler swH = ((OFEventSwitchConfig) msg).getSwitchHandler();
-         switchConfig(swH);
+         OFMessageSwitchConfigHandler configH = ((OFEventSwitchConfig) msg).getConfigHandler();
+         switchConfig(swH, configH);
          
       } else if (msg instanceof EventGetSwitches) {
          
-      } 
+      } else if (msg instanceof OFEventError) {
+         error(((OFEventError)msg).getSwitchHandler(), ((OFEventError)msg).getError());
+      }
    }
    
    /*
@@ -45,7 +51,8 @@ public abstract class OFSessionHandler extends OFActor{
    protected void handshaked(SwitchHandler swH) {}
    protected void connected(SwitchHandler swH) {}
    protected void packetIn(SwitchHandler swH, OFMessagePacketInHandler pIn) {}
-   protected void switchConfig(SwitchHandler swH) {}
+   protected void switchConfig(SwitchHandler swH, OFMessageSwitchConfigHandler configH) {}
+   protected void error(SwitchHandler swH, OFMessageErrorHandler error) {}
    
    
    /*

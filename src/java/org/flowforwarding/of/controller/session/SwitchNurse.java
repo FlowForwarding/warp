@@ -76,7 +76,7 @@ public class SwitchNurse extends UntypedActor {
             if (provider.getDPID(in.toArray()) != null) {
                swHandler.setDpid(provider.getDPID(in.toArray()));
                
-               System.out.println("[OF-INFO] Feature Reply is received from the Switch "+ Long.toHexString(swHandler.getDpid().longValue()));
+               System.out.println("[OF-INFO] DPID: " + Long.toHexString(swHandler.getDpid().longValue()) +" Feature Reply is received from the Switch ");
                System.out.println("[OF-INFO] Connected to Switch "+ Long.toHexString(swHandler.getDpid().longValue()));
                state = State.HANDSHAKED;
                
@@ -89,17 +89,23 @@ public class SwitchNurse extends UntypedActor {
             in = ((Received) msg).data();
             
             if (provider.isConfig(in.toArray())) {
-               System.out.println("[OF-INFO] Switch Config is received from the Switch "+ Long.toHexString(swHandler.getDpid().longValue()));
-               provider.parseSwitchConfig(in.toArray());
+               System.out.println("[OF-INFO] DPID: " + Long.toHexString(swHandler.getDpid().longValue()) +" Switch Config is received from the Switch ");
+               ofSessionHandler.tell(new OFEventSwitchConfig(swHandler, provider.parseSwitchConfig(in.toArray())), getSelf());
             }
             
             if (provider.isPacketIn(in.toArray())) {
-               System.out.println("[OF-INFO] Packet-In is received from the Switch "+ Long.toHexString(swHandler.getDpid().longValue()));
+               System.out.println("[OF-INFO] DPID: " + Long.toHexString(swHandler.getDpid().longValue()) +" Packet-In is received from the Switch");
                ofSessionHandler.tell(new OFEventPacketIn(swHandler, provider.parsePacketIn(in.toArray())), getSelf());
             }
+            
+            if (provider.isError(in.toArray())) {
+               System.out.println("[OF-INFO] DPID: " + Long.toHexString(swHandler.getDpid().longValue()) + "Error is received from the Switch ");
+               ofSessionHandler.tell(new OFEventError(swHandler, provider.parseError(in.toArray())), getSelf());
+            }
+            
                
             
-            ofSessionHandler.tell(new OFEventIncoming(swHandler), getSelf());
+/*            ofSessionHandler.tell(new OFEventIncoming(swHandler), getSelf());
             
             OFMessageFlowModHandler flowModHandler = provider.buildFlowModMsg();
             flowModHandler.addField("priority", "32000");
@@ -115,7 +121,7 @@ public class SwitchNurse extends UntypedActor {
             byte [] fmBuffer = provider.encodeFlowMod(flowModHandler);
             provider.isPacketIn(fmBuffer);
             
-            getSender().tell(TcpMessage.write(ByteString.fromArray(provider.encodeFlowMod(flowModHandler))), getSelf());  
+            getSender().tell(TcpMessage.write(ByteString.fromArray(provider.encodeFlowMod(flowModHandler))), getSelf());*/  
             
             break;
          default:

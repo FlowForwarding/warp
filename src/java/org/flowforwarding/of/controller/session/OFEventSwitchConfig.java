@@ -19,8 +19,9 @@ public class OFEventSwitchConfig extends OFEvent {
    /**
     * @param SwitchHandler swH
     */
-   public OFEventSwitchConfig(SwitchHandler swH) {
+   public OFEventSwitchConfig(SwitchHandler swH, OFMessageSwitchConfigHandler configH) {
       swHandler = swH;
+      configHandler = configH;
    }
 
    /* (non-Javadoc)
@@ -31,4 +32,13 @@ public class OFEventSwitchConfig extends OFEvent {
       // TODO Auto-generated method stub
       return swHandler;
    }
+   
+   public OFMessageSwitchConfigHandler getConfigHandler() {
+      return configHandler;
+   }
+
+   public void setConfigHandler(OFMessageSwitchConfigHandler configHandler) {
+      this.configHandler = configHandler;
+   }
+
 }

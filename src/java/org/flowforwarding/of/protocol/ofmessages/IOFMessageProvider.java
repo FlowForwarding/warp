@@ -3,6 +3,7 @@ package org.flowforwarding.of.protocol.ofmessages;
 import java.io.ByteArrayOutputStream;
 import java.util.Map;
 
+import org.flowforwarding.of.protocol.ofmessages.OFMessageError.OFMessageErrorHandler;
 import org.flowforwarding.of.protocol.ofmessages.OFMessageFlowMod.OFMessageFlowModHandler;
 import org.flowforwarding.of.protocol.ofmessages.OFMessagePacketIn.OFMessagePacketInHandler;
 import org.flowforwarding.of.protocol.ofmessages.OFMessageSwitchConfig.OFMessageSwitchConfigHandler;
@@ -93,6 +94,12 @@ public interface IOFMessageProvider {
     * @return
     */
    boolean isPacketIn (byte [] in);
+   
+   /**
+    * @param in
+    * @return
+    */
+   boolean isError (byte [] in);
 
    /**
     * 
@@ -130,4 +137,10 @@ public interface IOFMessageProvider {
    public OFStructureInstructionHandler buildInstructionMeter ();
    
    public OFStructureInstructionHandler buildInstructionWriteMetadata ();
+
+   /**
+    * @param in
+    * @return
+    */
+   OFMessageErrorHandler parseError(byte[] in);
 }

@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.flowforwarding.of.protocol.supply.OFMAddConfigFlag;
+import org.flowforwarding.of.protocol.supply.OFMGet;
 
 /**
  * @author Infoblox Inc.
@@ -33,6 +34,12 @@ public class OFMessageSwitchConfig  extends OFMessage{
       configFlags.put(flag, value.booleanValue());
    }
    
+   // TODO Improvs: does Boolean configFlags.get(flag) means something? Or containsKey(flag) is enough?
+   public Boolean getFlag (ConfigFlag flag) {
+      return configFlags.containsKey(flag);
+   }
+   
+   
    protected OFMessageSwitchConfig() {
       configFlags = new HashMap<>();
    }
@@ -40,10 +47,12 @@ public class OFMessageSwitchConfig  extends OFMessage{
    public static class OFMessageSwitchConfigHandler extends OFMessageHandler <OFMessageSwitchConfig> {
       
       protected OFMAddConfigFlag addFlag;
+      protected OFMGetConfigFlag getFlag;
       
       protected OFMessageSwitchConfigHandler() {
          message = new OFMessageSwitchConfig();
          addFlag = new OFMAddConfigFlag(message);
+         getFlag = new OFMGetConfigFlag(message);
       }
       
       public static OFMessageSwitchConfigHandler create () {
@@ -64,6 +73,33 @@ public class OFMessageSwitchConfig  extends OFMessage{
       
       public void setConfigFlagFragMask () {
          addFlag.add(ConfigFlag.FRAG_MASK, true);
+      }
+      
+      public Boolean isFragNormal() {
+         return getFlag.get(ConfigFlag.FRAG_NORMAL);
+      }
+      
+      public Boolean isFragDrop() {
+         return getFlag.get(ConfigFlag.FRAG_DROP);
+      }
+
+      public Boolean isFragReasm() {
+         return getFlag.get(ConfigFlag.FRAG_REASM);
+      }
+
+      public Boolean isFragMask() {
+         return getFlag.get(ConfigFlag.FRAG_MASK);
+      }
+      
+      public class OFMGetConfigFlag extends OFMGet<OFMessageSwitchConfig, ConfigFlag> {
+         public OFMGetConfigFlag(OFMessageSwitchConfig swConfig) {
+            receiver = swConfig;
+         }
+         
+         // TODO Improvs: add another get to OFMGet
+         public Boolean get (ConfigFlag flag) {
+            return receiver.getFlag(flag);
+         }
       }
    }
 }
