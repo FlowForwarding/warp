@@ -104,8 +104,8 @@ public class SwitchNurse extends UntypedActor {
             instruction.addActionOutput("2");
             flowModHandler.addInstruction("apply_actions", instruction);
             
-            instruction = provider.buildInstructionGotoTable();
-            flowModHandler.addInstruction("goto_table", instruction);
+/*            instruction = provider.buildInstructionGotoTable();
+            flowModHandler.addInstruction("goto_table", instruction);*/
             
             getSender().tell(TcpMessage.write(ByteString.fromArray(provider.encodeFlowMod(flowModHandler))), getSelf());  
             

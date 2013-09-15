@@ -301,5 +301,14 @@ public class OFMessageProvider10AvroProtocol implements IOFMessageProvider{
       // TODO Auto-generated method stub
       return null;
    }
+
+   /* (non-Javadoc)
+    * @see org.flowforwarding.of.protocol.ofmessages.IOFMessageProvider#isPacketIn(byte[])
+    */
+   @Override
+   public boolean isPacketIn(byte[] in) {
+      // TODO Auto-generated method stub
+      return false;
+   }
    
 }

@@ -86,6 +86,12 @@ public interface IOFMessageProvider {
     * @return
     */
    boolean isConfig (byte [] in);
+   
+   /**
+    * @param in
+    * @return
+    */
+   boolean isPacketIn (byte [] in);
 
    /**
     * 

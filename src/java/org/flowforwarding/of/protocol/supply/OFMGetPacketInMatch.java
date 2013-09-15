@@ -12,7 +12,7 @@ import org.flowforwarding.of.protocol.ofstructures.OFStructureMatch;
  *
  */
 public class OFMGetPacketInMatch extends OFMGet <OFMessagePacketIn, OFStructureMatch>{
-
+   
    public OFMGetPacketInMatch (OFMessagePacketIn packetIn) {
       receiver = packetIn;
    }

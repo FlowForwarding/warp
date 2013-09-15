@@ -809,6 +809,7 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
             actionSetRecord = new GenericData.Record(actionSetSchema);
             actionSetRecord.put("set", new GenericData.Array<> (Schema.createArray(ofpActionSchema), actions));
             
+            //TODO Improvs: Double putting?
             instrRecord.put("header", instrHeaderRecord);
             instrRecord.put("actions", actionSetRecord);
             
@@ -906,54 +907,41 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
             /*
              * Build Write Actions Instruction for Test
              */
-            Schema instrActionsHeaderSchema = null;
-            if (key.equals("apply_actions")) 
-               instrActionsHeaderSchema = protocol.getType("of.instruction_apply_actions_header");
-            else if (key.equals("write_actions"))
-               instrActionsHeaderSchema = protocol.getType("of.instruction_write_actions_header");
-            else if (key.equals("clear_actions"))
-               instrActionsHeaderSchema = protocol.getType("of.instruction_clear_actions_header");
-
+            Schema instrHeaderSchema = null;
+            Schema instrSchema = null;
+            GenericRecord instrHeaderRecord = null;
+            GenericRecord instrRecord = null;
             
-            GenericRecordBuilder instrHeaderBuilder = new GenericRecordBuilder(instrActionsHeaderSchema);
-            GenericRecord instrActionsHeaderRecord = instrHeaderBuilder.build();
+            if (key.equals("apply_actions")) {
+               instrHeaderSchema = protocol.getType("of.instruction_apply_actions_header");
+               instrSchema = protocol.getType("of.ofp_instruction_apply_actions");
+               instrRecord = new GenericData.Record(instrSchema);
+            }  else if (key.equals("write_actions")) {
+               instrHeaderSchema = protocol.getType("of.instruction_write_actions_header");
+               instrSchema = protocol.getType("of.ofp_instruction_write_actions");
+               instrRecord = new GenericData.Record(instrSchema);
+            } else if (key.equals("clear_actions")) {
+               instrHeaderSchema = protocol.getType("of.instruction_clear_actions_header");
+               instrSchema = protocol.getType("of.ofp_instruction_clear_actions");
+               instrRecord = new GenericData.Record(instrSchema);
+            }
+            
+            GenericRecordBuilder instrHeaderBuilder = new GenericRecordBuilder(instrHeaderSchema);
+            instrHeaderRecord = instrHeaderBuilder.build();
+            instrRecord.put("header", instrHeaderRecord);
+            instrRecord.put("actions", actionSetRecord);
+            
+            instrHeaderRecord.put("length", getUint16Fixed(calculateLength(instrSchema, instrRecord)));
+            instrRecord.put("header", instrHeaderRecord);
             
             /*
              * Create ofp_instruction_write_actions
              */
-            Schema ofpInstrWriteActionsSchema = protocol.getType("ofp_instruction_actions");
-            GenericRecord ofpInstrWriteActionsRecord = new GenericData.Record(ofpInstrWriteActionsSchema);
-            ofpInstrWriteActionsRecord.put("header", instrActionsHeaderRecord);
-            ofpInstrWriteActionsRecord.put("actions", actionSetRecord);
-            
-            /*
-             * Calculate ofp_instruction_write_actions length 
-             */
-            
-            ByteArrayOutputStream instrOut = new ByteArrayOutputStream();
-            DatumWriter<GenericRecord> instrWriter = new GenericDatumWriter<GenericRecord>(ofpInstrWriteActionsSchema);
-            Encoder instrEncoder = EncoderFactory.get().binaryNonEncoder(instrOut, null);
-           
-            try {
-               instrWriter.write(ofpInstrWriteActionsRecord, instrEncoder);
-               instrEncoder.flush();
-               
-               Schema uint16Schema = protocol.getType("of.uint_16");
-               
-               byte len[] = {(byte)(instrOut.size() >> 8), (byte)(255 & instrOut.size())}; 
-               GenericData.Fixed lenght = new GenericData.Fixed(uint16Schema, len);
-               
-               instrActionsHeaderRecord.put("length", lenght);
-               ofpInstrWriteActionsRecord.put("header", instrActionsHeaderRecord);
-            } catch (IOException e1) {
-               // TODO Auto-generated catch block
-               e1.printStackTrace();
-            }
 
             Schema ofpInstrSchema = protocol.getType("of.ofp_instruction");
             GenericRecord ofpInstrRecord = new GenericData.Record(ofpInstrSchema);
 
-            ofpInstrRecord.put("instruction", ofpInstrWriteActionsRecord);
+            ofpInstrRecord.put("instruction", instrRecord);
             instructions.add(ofpInstrRecord);
          /*
           * MATCH - INGRESS PORT
@@ -1416,7 +1404,7 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
       ofpFlowModRecord.put("header", flowModHeaderRecord);      
       ofpFlowModRecord.put("base", flowModBodyRecord);
       ofpFlowModRecord.put("match", ofpMatchRecord);
-      if (! isDelete)
+      /*if (! isDelete)*/
          ofpFlowModRecord.put("instructions", instrSetRecord);
       
       DatumWriter<GenericRecord> writer = new GenericDatumWriter<GenericRecord>(ofpFlowModSchema);
@@ -2455,6 +2443,15 @@ public OFMessageSwitchConfigHandler parseSwitchConfig(byte[] in) {
    }
    
    return configH;
+}
+
+/* (non-Javadoc)
+ * @see org.flowforwarding.of.protocol.ofmessages.IOFMessageProvider#isPacketIn(byte[])
+ */
+@Override
+public boolean isPacketIn(byte[] in) {
+   // TODO Auto-generated method stub
+   return false;
 }
   
 }

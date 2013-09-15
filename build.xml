@@ -1,19 +1,20 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
     <project basedir="." default="build" name="of_controller">
     <property environment="env"/>
+    <property name="controller.root" value="${basedir}"/>
     <property name="avro.location" value="avro-trunk/lang/java/avro"/>
     <property name="debuglevel" value="source,lines,vars"/>
     <property name="target" value="1.7"/>
     <property name="source" value="1.7"/>
     <path id="of_controller.classpath">
         <pathelement location="bin"/>
-        <pathelement location="${env.BLOX_OFCONTROLLER_ROOT}/lib/jackson-all-1.9.11.jar"/>
-        <pathelement location="${env.BLOX_OFCONTROLLER_ROOT}/lib/netty-3.6.3.Final.jar"/>
-        <pathelement location="${env.BLOX_OFCONTROLLER_ROOT}/lib/org.restlet.jar"/>
-        <pathelement location="${env.BLOX_OFCONTROLLER_ROOT}/lib/org.restlet.ext.jackson.jar"/>
-        <pathelement location="${env.BLOX_OFCONTROLLER_ROOT}/lib/scala-library.jar"/>
-        <pathelement location="${env.BLOX_OFCONTROLLER_ROOT}/lib/config-1.0.2.jar"/>
-        <pathelement location="${env.BLOX_OFCONTROLLER_ROOT}/lib/akka-actor_2.10-2.2.0.jar"/>
+        <pathelement location="${controller.root}/lib/jackson-all-1.9.11.jar"/>
+        <pathelement location="${controller.root}/lib/netty-3.6.3.Final.jar"/>
+        <pathelement location="${controller.root}/lib/org.restlet.jar"/>
+        <pathelement location="${controller.root}/lib/org.restlet.ext.jackson.jar"/>
+        <pathelement location="${controller.root}/lib/scala-library.jar"/>
+        <pathelement location="${controller.root}/lib/config-1.0.2.jar"/>
+        <pathelement location="${controller.root}/lib/akka-actor_2.10-2.2.0.jar"/>
         <pathelement location="${avro.location}/target/avro-1.7.4-SNAPSHOT.jar"/>
     </path>
     <target name="init">
@@ -78,13 +79,13 @@
     			<attribute name="Class-Path" value="."/>
             </manifest>
     		<fileset dir="bin"/>
-            <zipfileset excludes="META-INF/*.SF" src="${env.BLOX_OFCONTROLLER_ROOT}/lib/jackson-all-1.9.11.jar"/>
-            <zipfileset excludes="META-INF/*.SF" src="${env.BLOX_OFCONTROLLER_ROOT}/lib/netty-3.6.3.Final.jar"/>
-            <zipfileset excludes="META-INF/*.SF" src="${env.BLOX_OFCONTROLLER_ROOT}/lib/org.restlet.jar"/>
-            <zipfileset excludes="META-INF/*.SF" src="${env.BLOX_OFCONTROLLER_ROOT}/lib/org.restlet.ext.jackson.jar"/>
-            <zipfileset excludes="META-INF/*.SF" src="${env.BLOX_OFCONTROLLER_ROOT}/lib/scala-library.jar"/>
-            <zipfileset excludes="META-INF/*.SF" src="${env.BLOX_OFCONTROLLER_ROOT}/lib/config-1.0.2.jar"/>
-            <zipfileset excludes="META-INF/*.SF" src="${env.BLOX_OFCONTROLLER_ROOT}/lib/akka-actor_2.10-2.2.0.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="${controller.root}/lib/jackson-all-1.9.11.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="${controller.root}/lib/netty-3.6.3.Final.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="${controller.root}/lib/org.restlet.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="${controller.root}/lib/org.restlet.ext.jackson.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="${controller.root}/lib/scala-library.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="${controller.root}/lib/config-1.0.2.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="${controller.root}/lib/akka-actor_2.10-2.2.0.jar"/>
             <zipfileset excludes="META-INF/*.SF" src="avro-trunk/lang/java/avro/target/avro-1.7.4-SNAPSHOT.jar"/>
         </jar>
     </target>
