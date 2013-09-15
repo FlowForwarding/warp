@@ -700,7 +700,7 @@
    "type":"record",
    "fields":[
       {"name":"pad", "type":"pad_1",
-       {"name":"wildcards", "type":ofp_flow_wildcards_enum"}
+       {"name":"wildcards", "type":"ofp_flow_wildcards_enum"}
     ]
   },
   
@@ -710,7 +710,7 @@
       {"name":"len", "type":"uint_16"},
       {"name":"pad", "type":"pad_6"},
       {"name":"queue_id", "type":"uint_32"}
-      ]
+    ]
   },
   
   {"name":"ofp_action_vlan_vid",
@@ -791,13 +791,13 @@
       ]
   },  
   
-struct ofp_queue_get_config_reply {
+  {"name":"ofp_queue_get_config_reply",
    "type":"record" [
       {"name":"header", "type":"ofp_header"},
       {"name":"port", "type":"uint_16"},
       {"name":"pad", "type":"pad_6"},
-      {"name":"queues", "type":"ofp_packet_queue"},
+      {"name":"queues", "type":"ofp_packet_queue"}
       ]
-  }
+    }
   ]
 }
