@@ -120,14 +120,34 @@ public class OFMessageFlowMod extends OFMessage{
          addInstruction.add(name, instruction);
       }
       
+      public void addInstructionApplyAction (OFStructureInstructionHandler instruction) {
+         addInstruction.add("apply_action", instruction);
+      }
+      
+      public void addInstructionWriteAction (OFStructureInstructionHandler instruction) {
+         addInstruction.add("write_action", instruction);
+      }
+      
+      public void addInstructionClearAction (OFStructureInstructionHandler instruction) {
+         addInstruction.add("clear_action", instruction);
+      }
+
+      
       public void addMatch (String name, String match) {
          addMatch.add(name, match);
       }
       
-      public void addInPort(String value) {
+      public void addMatchInPort(String value) {
          addMatch.add("ingress_port", value);
       }
-
+      
+      public void addMatchEthDst(String value) {
+         addMatch.add("eth_dst", value);
+      }
+      
+      public void addMatchEthSrc(String value) {
+         addMatch.add("eth_src", value);
+      }
       
       public InstructionSet getInstructions() {
          return getInstructions.get();

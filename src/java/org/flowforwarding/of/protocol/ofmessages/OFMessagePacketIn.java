@@ -65,6 +65,30 @@ public class OFMessagePacketIn extends OFMessage {
          return getMatch.exist(name);
       }
       
+      public OFStructureMatch<String, String> getMatchInPort () {
+         return getMatch.get("ingress_port");
+      }
+      
+      public OFStructureMatch<String, String> getMatchEthDst () {
+         return getMatch.get("eth_dst");
+      }
+      
+      public OFStructureMatch<String, String> getMatchEthSrc () {
+         return getMatch.get("eth_src");
+      }
+      
+      public boolean existMatchInPort () {
+         return getMatch.exist("ingress_port");
+      }
+      
+      public boolean existMatchEthDst () {
+         return getMatch.exist("eth_dst");
+      }
+      
+      public boolean existMatchEthSrc () {
+         return getMatch.exist("eth_src");
+      }
+      
       public void addMatch (String name, String value) {
          
       }

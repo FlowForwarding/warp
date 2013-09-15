@@ -2,8 +2,11 @@ package org.flowforwarding.of.demo;
 
 import org.flowforwarding.of.controller.session.OFSessionHandler;
 import org.flowforwarding.of.ofswitch.SwitchState.SwitchHandler;
-import org.flowforwarding.of.protocol.ofmessages.OFMessagePacketIn;
+import org.flowforwarding.of.protocol.ofmessages.IOFMessageProvider;
+import org.flowforwarding.of.protocol.ofmessages.OFMessageFlowMod.OFMessageFlowModHandler;
+import org.flowforwarding.of.protocol.ofmessages.OFMessagePacketIn.OFMessagePacketInHandler;
 import org.flowforwarding.of.protocol.ofmessages.OFMessageSwitchConfig.OFMessageSwitchConfigHandler;
+import org.flowforwarding.of.protocol.ofstructures.OFStructureInstruction.OFStructureInstructionHandler;
 
 public class SimpleHandler extends OFSessionHandler {
 
@@ -39,12 +42,25 @@ public class SimpleHandler extends OFSessionHandler {
       sendSwitchConfigRequest(swH);
    }
    
-/*   @Override
-   protected void packetIn(SwitchHandler swH, OFMessagePacketIn packetIn) {
-      super.packetIn(swH);
+   @Override
+   protected void packetIn(SwitchHandler swH, OFMessagePacketInHandler packetIn) {
+      super.packetIn(swH, packetIn);
+      IOFMessageProvider provider = swH.getProvider();
       
-      Long dpid = swH.getDpid();
+      OFMessageFlowModHandler flowMod = provider.buildFlowModMsg();
       
-   }*/
+      if (packetIn.existMatchInPort()) {
+         flowMod.addMatchInPort(packetIn.getMatchInPort().getMatch());
+      } else if (packetIn.existMatchEthDst()) {
+         flowMod.addMatchEthDst(packetIn.getMatchEthDst().getMatch());
+      } else if (packetIn.existMatchEthSrc()) {
+         flowMod.addMatchEthSrc(packetIn.getMatchEthSrc().getMatch());
+      }
+      
+      OFStructureInstructionHandler instruction = provider.buildInstructionApplyActions();
+      instruction.addActionOutput("2");
+      flowMod.addInstruction("apply_actions", instruction);
 
+      sendFlowModMessage(swH, flowMod);
+   }
 }

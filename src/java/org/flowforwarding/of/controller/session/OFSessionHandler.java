@@ -7,6 +7,7 @@ import java.util.Map;
 import org.flowforwarding.of.ofswitch.SwitchState.SwitchHandler;
 import org.flowforwarding.of.protocol.ofmessages.OFMessageError;
 import org.flowforwarding.of.protocol.ofmessages.OFMessageError.OFMessageErrorHandler;
+import org.flowforwarding.of.protocol.ofmessages.OFMessageFlowMod.OFMessageFlowModHandler;
 import org.flowforwarding.of.protocol.ofmessages.OFMessagePacketIn.OFMessagePacketInHandler;
 import org.flowforwarding.of.protocol.ofmessages.OFMessageSwitchConfig.OFMessageSwitchConfigHandler;
 
@@ -55,11 +56,14 @@ public abstract class OFSessionHandler extends OFActor{
    protected void error(SwitchHandler swH, OFMessageErrorHandler error) {}
    
    
-   /*
-    * User-defined Application event handlers 
-    */
    protected void sendSwitchConfigRequest (SwitchHandler swH) {
       switches.get(swH).tell(new OFCommandSendSwConfigRequest(), getSelf());
    }
+   
+   protected void sendFlowModMessage (SwitchHandler swH, OFMessageFlowModHandler flowMod) {
+      switches.get(swH).tell(new OFCommandSendSwConfigRequest(), getSelf());
+   }
+   
+   
    
 }

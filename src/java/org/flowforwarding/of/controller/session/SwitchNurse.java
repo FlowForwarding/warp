@@ -103,25 +103,6 @@ public class SwitchNurse extends UntypedActor {
                ofSessionHandler.tell(new OFEventError(swHandler, provider.parseError(in.toArray())), getSelf());
             }
             
-               
-            
-/*            ofSessionHandler.tell(new OFEventIncoming(swHandler), getSelf());
-            
-            OFMessageFlowModHandler flowModHandler = provider.buildFlowModMsg();
-            flowModHandler.addField("priority", "32000");
-            flowModHandler.addInPort(swHandler.getDpid().toString().substring(0, 3));
-            
-            OFStructureInstructionHandler instruction = provider.buildInstructionApplyActions();
-            instruction.addActionOutput("2");
-            flowModHandler.addInstruction("apply_actions", instruction);
-            
-            instruction = provider.buildInstructionGotoTable();
-            flowModHandler.addInstruction("goto_table", instruction);
-            
-            byte [] fmBuffer = provider.encodeFlowMod(flowModHandler);
-            provider.isPacketIn(fmBuffer);
-            
-            getSender().tell(TcpMessage.write(ByteString.fromArray(provider.encodeFlowMod(flowModHandler))), getSelf());*/  
             
             break;
          default:
