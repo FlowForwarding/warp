@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.util.Map;
 
 import org.flowforwarding.of.protocol.ofmessages.OFMessageFlowMod.OFMessageFlowModHandler;
+import org.flowforwarding.of.protocol.ofmessages.OFMessagePacketIn.OFMessagePacketInHandler;
 import org.flowforwarding.of.protocol.ofmessages.OFMessageSwitchConfig.OFMessageSwitchConfigHandler;
 import org.flowforwarding.of.protocol.ofstructures.OFStructureInstruction.OFStructureInstructionHandler;
 
@@ -107,6 +108,11 @@ public interface IOFMessageProvider {
     * 
     */
    public OFMessageSwitchConfigHandler parseSwitchConfig (byte[] in);
+   
+   /**
+    * 
+    */
+   public OFMessagePacketInHandler parsePacketIn (byte[] in);
    
    /**
     * 

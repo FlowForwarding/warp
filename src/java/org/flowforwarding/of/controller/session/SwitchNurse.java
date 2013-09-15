@@ -92,6 +92,11 @@ public class SwitchNurse extends UntypedActor {
                System.out.println("[OF-INFO] Switch Config is received from the Switch "+ Long.toHexString(swHandler.getDpid().longValue()));
                provider.parseSwitchConfig(in.toArray());
             }
+            
+            if (provider.isPacketIn(in.toArray())) {
+               System.out.println("[OF-INFO] Packet-In is received from the Switch "+ Long.toHexString(swHandler.getDpid().longValue()));
+               ofSessionHandler.tell(new OFEventPacketIn(swHandler, provider.parsePacketIn(in.toArray())), getSelf());
+            }
                
             
             ofSessionHandler.tell(new OFEventIncoming(swHandler), getSelf());
@@ -104,8 +109,11 @@ public class SwitchNurse extends UntypedActor {
             instruction.addActionOutput("2");
             flowModHandler.addInstruction("apply_actions", instruction);
             
-/*            instruction = provider.buildInstructionGotoTable();
-            flowModHandler.addInstruction("goto_table", instruction);*/
+            instruction = provider.buildInstructionGotoTable();
+            flowModHandler.addInstruction("goto_table", instruction);
+            
+            byte [] fmBuffer = provider.encodeFlowMod(flowModHandler);
+            provider.isPacketIn(fmBuffer);
             
             getSender().tell(TcpMessage.write(ByteString.fromArray(provider.encodeFlowMod(flowModHandler))), getSelf());  
             

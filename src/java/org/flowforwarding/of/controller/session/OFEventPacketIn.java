@@ -5,6 +5,7 @@
 package org.flowforwarding.of.controller.session;
 
 import org.flowforwarding.of.ofswitch.SwitchState.SwitchHandler;
+import org.flowforwarding.of.protocol.ofmessages.OFMessagePacketIn.OFMessagePacketInHandler;
 
 /**
  * @author Infoblox Inc.
@@ -13,12 +14,12 @@ import org.flowforwarding.of.ofswitch.SwitchState.SwitchHandler;
 public class OFEventPacketIn extends OFEvent {
 
    protected SwitchHandler swHandler;
-   protected byte[] packetIn;
+   protected OFMessagePacketInHandler packetIn;
    
    /**
     * @param SwitchHandler swH
     */
-   public OFEventPacketIn(SwitchHandler swH, byte [] pIn) {
+   public OFEventPacketIn(SwitchHandler swH, OFMessagePacketInHandler pIn) {
       swHandler = swH;
       packetIn = pIn;
    }
@@ -32,7 +33,7 @@ public class OFEventPacketIn extends OFEvent {
       return swHandler;
    }
    
-   public byte[] getPacketIn() {
+   public OFMessagePacketInHandler getPacketIn() {
       return packetIn;
    }
 }

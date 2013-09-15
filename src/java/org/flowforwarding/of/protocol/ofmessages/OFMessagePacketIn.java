@@ -9,8 +9,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.flowforwarding.of.protocol.ofstructures.OFStructureMatch;
-import org.flowforwarding.of.protocol.supply.OFMGetPacketInMatch;
+import org.flowforwarding.of.protocol.ofstructures.match.OFStructureMatch;
+import org.flowforwarding.of.protocol.supply.OFMAdd;
+import org.flowforwarding.of.protocol.supply.OFMGet;
 //import org.flowforwarding.of.protocol.supply.OFMGetPacketInMatch;
 /**
  * @author Infoblox Inc.
@@ -20,7 +21,7 @@ public class OFMessagePacketIn extends OFMessage {
    
    protected Map<String, OFStructureMatch> matches = null;
    
-   protected OFMessagePacketIn (byte [] packetIn, IOFMessageProvider provider) {
+   protected OFMessagePacketIn () {
       matches = new HashMap<>();
    }
    
@@ -31,32 +32,70 @@ public class OFMessagePacketIn extends OFMessage {
    public OFStructureMatch getMatch(String name) {
       return matches.get(name);
    }
+   
+   public void addMatch (String name, OFStructureMatch value) {
+      matches.put(name, value);
+   }
 
    
    public static class OFMessagePacketInHandler extends OFMessageHandler <OFMessagePacketIn> {
       
-      protected OFMGetPacketInMatch getMatch; 
+      protected OFMGetMatch getMatch;
+      protected OFMAddMatch addMatch;
 
-      protected OFMessagePacketInHandler (byte [] packetIn, IOFMessageProvider provider) {
-         message = new OFMessagePacketIn(packetIn, provider);
-         getMatch = new OFMGetPacketInMatch(message);
+      protected OFMessagePacketInHandler () {
+         message = new OFMessagePacketIn();
+         getMatch = new OFMGetMatch(message);
+         addMatch = new OFMAddMatch(message);
       }
       
       /**
        * @return
        */
-      public static OFMessagePacketInHandler create(byte [] packetIn, IOFMessageProvider provider) {
-
-         return new OFMessagePacketInHandler(packetIn, provider);
+      public static OFMessagePacketInHandler create() {
+         return new OFMessagePacketInHandler();
       }
       
       public OFStructureMatch getMatch(String name) {
          return getMatch.get(name);
       }
       
+      // TODO Improvs: Instead of String parameter - implement named methods for every Match 
       public boolean existMatch (String name) {
          return getMatch.exist(name);
       }
+      
+      public void addMatch (String name, String value) {
+         
+      }
+
+      /*
+       * Internal commands classes
+       */
+      public class OFMAddMatch extends OFMAdd<OFMessagePacketIn, String, OFStructureMatch>{
+         public OFMAddMatch (OFMessagePacketIn pIn) {
+            receiver = pIn;
+         }
+         @Override
+         public void add (String name, OFStructureMatch match) {
+            receiver.addMatch(name, match);
+         }
+      }
+      
+      public class OFMGetMatch extends OFMGet <OFMessagePacketIn, OFStructureMatch>{
+         
+         public OFMGetMatch (OFMessagePacketIn packetIn) {
+            receiver = packetIn;
+         }
+         public OFStructureMatch get(String name) {
+            return receiver.getMatch(name);
+         }
+         public boolean exist (String name) {
+            return receiver.existMatch(name);
+         }
+         
+      }
+
    }
 
 }

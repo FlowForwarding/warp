@@ -18,6 +18,7 @@ import org.apache.avro.io.DatumWriter;
 import org.apache.avro.io.Encoder;
 import org.apache.avro.io.EncoderFactory;
 import org.flowforwarding.of.protocol.ofmessages.OFMessageFlowMod.OFMessageFlowModHandler;
+import org.flowforwarding.of.protocol.ofmessages.OFMessagePacketIn.OFMessagePacketInHandler;
 import org.flowforwarding.of.protocol.ofmessages.OFMessageSwitchConfig.OFMessageSwitchConfigHandler;
 import org.flowforwarding.of.protocol.ofstructures.OFStructureInstruction.OFStructureInstructionHandler;
 
@@ -309,6 +310,15 @@ public class OFMessageProvider10AvroProtocol implements IOFMessageProvider{
    public boolean isPacketIn(byte[] in) {
       // TODO Auto-generated method stub
       return false;
+   }
+
+   /* (non-Javadoc)
+    * @see org.flowforwarding.of.protocol.ofmessages.IOFMessageProvider#parsePacketIn(byte[])
+    */
+   @Override
+   public OFMessagePacketInHandler parsePacketIn(byte[] in) {
+      // TODO Auto-generated method stub
+      return null;
    }
    
 }

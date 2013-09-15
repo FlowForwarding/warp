@@ -5,6 +5,7 @@
 package org.flowforwarding.of.controller.session;
 
 import org.flowforwarding.of.ofswitch.SwitchState.SwitchHandler;
+import org.flowforwarding.of.protocol.ofmessages.OFMessageSwitchConfig.OFMessageSwitchConfigHandler;
 
 /**
  * @author Infoblox Inc.
@@ -13,6 +14,7 @@ import org.flowforwarding.of.ofswitch.SwitchState.SwitchHandler;
 public class OFEventSwitchConfig extends OFEvent {
 
    protected SwitchHandler swHandler;
+   protected OFMessageSwitchConfigHandler configHandler;
    
    /**
     * @param SwitchHandler swH

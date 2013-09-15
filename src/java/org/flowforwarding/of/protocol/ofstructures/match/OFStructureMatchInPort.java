@@ -2,7 +2,9 @@
  * © 2013 FlowForwarding.Org
  * All Rights Reserved.  Use is subject to license terms.
  */
-package org.flowforwarding.of.protocol.ofstructures;
+package org.flowforwarding.of.protocol.ofstructures.match;
+
+import org.flowforwarding.of.protocol.ofstructures.Tuple;
 
 /**
  * @author Infoblox Inc.

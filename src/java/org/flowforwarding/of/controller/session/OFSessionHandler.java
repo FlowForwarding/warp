@@ -27,7 +27,8 @@ public abstract class OFSessionHandler extends OFActor{
          
       } else if (msg instanceof OFEventPacketIn) {
          SwitchHandler swH = ((OFEventPacketIn) msg).getSwitchHandler();
-         packetIn(swH, OFMessagePacketInHandler.create(((OFEventPacketIn) msg).getPacketIn(), swH.getProvider()));
+         OFMessagePacketInHandler pIn = ((OFEventPacketIn) msg).getPacketIn();
+         packetIn(swH, pIn);
          
       } else if (msg instanceof OFEventSwitchConfig) {
          SwitchHandler swH = ((OFEventSwitchConfig) msg).getSwitchHandler();

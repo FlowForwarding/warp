@@ -18,6 +18,7 @@ import org.apache.avro.generic.GenericArray;
 import org.apache.avro.generic.GenericData;
 import org.apache.avro.Protocol;
 import org.flowforwarding.of.protocol.ofmessages.OFMessageFlowMod.OFMessageFlowModHandler;
+import org.flowforwarding.of.protocol.ofmessages.OFMessagePacketIn.OFMessagePacketInHandler;
 import org.flowforwarding.of.protocol.ofmessages.OFMessageSwitchConfig.OFMessageSwitchConfigHandler;
 import org.flowforwarding.of.protocol.ofstructures.IOFStructureBuilder;
 import org.flowforwarding.of.protocol.ofstructures.OFStructureBuilder13;
@@ -77,7 +78,13 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
    private Schema ofpConfigFlagsSchema = null;   
    private Schema ofpFlowModCommandSchema = null;
    private Schema ofpFlowModFlagsSchema = null;
+   private Schema flowModHeaderSchema = null;
+   private Schema ofpFlowModSchema = null;
    
+   
+   private Schema packetInHeaderSchema = null;
+   private Schema ofpPacketInSchema = null;
+      
    private Schema uint_8Schema = null;
    private Schema uint_16Schema = null;
    private Schema uint_24Schema = null;
@@ -183,6 +190,12 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
       
       ofpSwitchFeaturesSchema = protocol.getType("of.ofp_switch_features");
       ofpSwitchFeaturesHeaderSchema = protocol.getType("of.ofp_switch_features_header");
+      
+      flowModHeaderSchema = protocol.getType("of.flow_mod_header");
+      ofpFlowModSchema = protocol.getType("of.ofp_flow_mod");
+      
+      packetInHeaderSchema = protocol.getType("of.packet_in_header");
+      ofpPacketInSchema = protocol.getType("of.ofp_packet_in");
       
       uint_8Schema = protocol.getType("of.uint_8");
       uint_16Schema = protocol.getType("of.uint_16");
@@ -369,6 +382,24 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
     }
    }
    
+   protected GenericRecord getRecord (Schema schema, byte[] buffer) {
+      // TODO Improvs: make a protected getter to get general records.
+      try {
+         GenericRecord record = new GenericData.Record(schema);
+         GenericDatumReader<GenericRecord> reader = new GenericDatumReader<GenericRecord>(schema);
+         Decoder decoder = DecoderFactory.get().binaryDecoder(buffer, null);
+         
+         reader.read(record, decoder);
+         
+         return record;
+    } catch (IOException e) {
+       // TODO Auto-generated catch block
+       e.printStackTrace();
+       
+       return null;
+    }
+   }
+   
    public Long getDPID(byte[] buffer) {
       
       GenericRecord featureReplyRecord = getSwitchFeaturesReplyRecord (buffer);
@@ -455,12 +486,10 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
    
    public byte[] encodeFlowMod (OFMessageFlowModHandler fmHandler) {
       
-      Schema ofpFlowModSchema = protocol.getType("of.ofp_flow_mod");
       GenericRecord ofpFlowModRecord = new GenericData.Record(ofpFlowModSchema);
       
       GenericRecordBuilder builder = null;
-      
-      Schema flowModHeaderSchema = protocol.getType("of.flow_mod_header");
+
       builder = new GenericRecordBuilder (flowModHeaderSchema);
       GenericRecord flowModHeaderRecord = builder.build();
       
@@ -857,7 +886,6 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
       /*
        * Build FlowMod message
        */
-      Schema ofpFlowModSchema = protocol.getType("of.ofp_flow_mod");
       GenericRecord ofpFlowModRecord = new GenericData.Record(ofpFlowModSchema);
       boolean isDelete = false;
       
@@ -1394,7 +1422,6 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
       /*
        * Create FlowMod Header
        */
-      Schema flowModHeaderSchema = protocol.getType("of.flow_mod_header");
       GenericRecordBuilder flowModHeaderBuilder = new GenericRecordBuilder(flowModHeaderSchema);
       GenericRecord flowModHeaderRecord = flowModHeaderBuilder.build();
       
@@ -2450,8 +2477,23 @@ public OFMessageSwitchConfigHandler parseSwitchConfig(byte[] in) {
  */
 @Override
 public boolean isPacketIn(byte[] in) {
-   // TODO Auto-generated method stub
-   return false;
+   GenericRecord header = getRecord(packetInHeaderSchema, in);
+
+   // TODO Improvs: We plan to get all types from Avro protocol type... soon... so let it be now just 10
+   Byte type = getByte((GenericData.Fixed)header.get("type")); 
+   if (type.byteValue() == 10 )  // OFPT_PACKET_IN
+      return true;
+   else 
+      return false;
+}
+
+/* (non-Javadoc)
+ * @see org.flowforwarding.of.protocol.ofmessages.IOFMessageProvider#parsePacketIn(byte[])
+ */
+@Override
+public OFMessagePacketInHandler parsePacketIn(byte[] in) {
+ 
+   return builder.buildPacketIn();
 }
   
 }

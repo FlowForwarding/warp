@@ -5,6 +5,7 @@
 package org.flowforwarding.of.protocol.ofmessages;
 
 import org.flowforwarding.of.protocol.ofmessages.OFMessageFlowMod.OFMessageFlowModHandler;
+import org.flowforwarding.of.protocol.ofmessages.OFMessagePacketIn.OFMessagePacketInHandler;
 import org.flowforwarding.of.protocol.ofmessages.OFMessageSwitchConfig.OFMessageSwitchConfigHandler;
 
 /**
@@ -14,21 +15,19 @@ import org.flowforwarding.of.protocol.ofmessages.OFMessageSwitchConfig.OFMessage
 public class OFMessageBuilder10  implements IOFMessageBuilder {
 
    /* (non-Javadoc)
-    * @see org.flowforwarding.of.protocol.ofmessages.OFMessageBuilder#build(java.lang.String)
+    * @see org.flowforwarding.of.controller.protocol.OFMessageBuilder#build(java.lang.String)
     */
    @Override
    public OFMessageHandler build(String msg) {
-      // TODO Auto-generated method stub
+
       return null;
    }
-
-   /* (non-Javadoc)
-    * @see org.flowforwarding.of.protocol.ofmessages.OFMessageBuilder#buildFlowMod()
-    */
+   
    @Override
    public OFMessageFlowModHandler buildFlowMod() {
-      // TODO Auto-generated method stub
-      return null;
+      // TODO Improvs. To make bulder a REAL builder: FlowMod and Ref should be combined from parts.
+      // TODO Improvs: OFMessageHandler?
+      return OFMessageFlowModHandler.create();
    }
 
    /* (non-Javadoc)
@@ -36,8 +35,18 @@ public class OFMessageBuilder10  implements IOFMessageBuilder {
     */
    @Override
    public OFMessageSwitchConfigHandler buildSwitchConfig() {
+      // TODO Improvs. To make bulder a REAL builder: Config and Handler should be combined from parts.
+      // TODO Improvs: OFMessageHandler?
+      return OFMessageSwitchConfigHandler.create();
+   }
+
+   /* (non-Javadoc)
+    * @see org.flowforwarding.of.protocol.ofmessages.IOFMessageBuilder#buildPacketIn()
+    */
+   @Override
+   public OFMessagePacketInHandler buildPacketIn() {
       // TODO Auto-generated method stub
-      return null;
+      return OFMessagePacketInHandler.create();
    }
 
 }
