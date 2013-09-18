@@ -73,16 +73,16 @@ public class SwitchNurse extends UntypedActor {
          case CONNECTED:   
             in = ((Received) msg).data();
             
-            if (provider.getDPID(in.toArray()) != null) {
-               swHandler.setDpid(provider.getDPID(in.toArray()));
-               
-               System.out.println("[OF-INFO] DPID: " + Long.toHexString(swHandler.getDpid().longValue()) +" Feature Reply is received from the Switch ");
-               System.out.println("[OF-INFO] Connected to Switch "+ Long.toHexString(swHandler.getDpid().longValue()));
-               state = State.HANDSHAKED;
-               
-               ofSessionHandler.tell(new OFEventHandshaked(swHandler), getSelf());
+            if (provider.isSwitchFeatures(in.toArray())) {
+               if (provider.getDPID(in.toArray()) != null) {
+                  swHandler.setDpid(provider.getDPID(in.toArray()));
+                  System.out.println("[OF-INFO] DPID: " + Long.toHexString(swHandler.getDpid().longValue()) +" Feature Reply is received from the Switch ");
+                  System.out.println("[OF-INFO] Connected to Switch "+ Long.toHexString(swHandler.getDpid().longValue()));
+                  state = State.HANDSHAKED;
+                  
+                  ofSessionHandler.tell(new OFEventHandshaked(swHandler), getSelf());
+               }
             }
-            
             break;
             
          case HANDSHAKED:

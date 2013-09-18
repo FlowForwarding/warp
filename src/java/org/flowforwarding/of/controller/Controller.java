@@ -49,6 +49,7 @@ public class Controller extends UntypedActor{
    public void preStart() throws Exception {
       
       final ActorRef tcp = Tcp.get(getContext().system()).manager();
+//      tcp.tell(TcpMessage.bind(getSelf(), new InetSocketAddress("192.168.56.101", this.configuration.getTcpPort()), 100), getSelf());
       tcp.tell(TcpMessage.bind(getSelf(), new InetSocketAddress("localhost", this.configuration.getTcpPort()), 100), getSelf());
    }
    

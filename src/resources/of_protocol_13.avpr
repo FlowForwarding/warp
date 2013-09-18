@@ -1,5 +1,5 @@
-{ "namespace" :"of",
-  "protocol":"ofp",
+{ "namespace" :"of13",
+  "protocol":"ofp13",
   "types":[
    {"name":"uint_8", "type":"fixed", "size":1},
    {"name":"uint_16", "type":"fixed", "size":2},
@@ -186,7 +186,7 @@
     ]
    }, 
    
-   {"name":"ofp_switch_features_header",
+   {"name":"switch_features_header",
     "type":"record",
     "fields":[ 
       {"name":"version", "type":"uint_8", "default":[4]},
@@ -199,7 +199,7 @@
    {"name":"ofp_switch_features",
     "type":"record",
     "fields":[ 
-      {"name":"header", "type":"ofp_switch_features_header"},
+      {"name":"header", "type":"switch_features_header"},
       {"name":"datapath_id", "type":"uint_64"},
       {"name":"n_buffers", "type":"uint_32"},      
       {"name":"n_tables", "type":"uint_8"},
@@ -229,7 +229,7 @@
     ]
    },
 
-   {"name":"ofp_get_config_request_header",
+   {"name":"get_config_request_header",
     "type":"record", 
     "fields":[ 
       {"name":"version", "type":"uint_8", "default":[4]},
@@ -242,7 +242,7 @@
    {"name":"ofp_get_config_request",
     "type":"record",
     "fields":[ 
-      {"name":"header", "type":"ofp_get_config_request_header"}
+      {"name":"header", "type":"get_config_request_header"}
     ]
    },
    

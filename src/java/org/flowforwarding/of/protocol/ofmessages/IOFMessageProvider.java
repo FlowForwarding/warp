@@ -3,6 +3,7 @@ package org.flowforwarding.of.protocol.ofmessages;
 import java.io.ByteArrayOutputStream;
 import java.util.Map;
 
+import org.apache.avro.Schema;
 import org.flowforwarding.of.protocol.ofmessages.OFMessageError.OFMessageErrorHandler;
 import org.flowforwarding.of.protocol.ofmessages.OFMessageFlowMod.OFMessageFlowModHandler;
 import org.flowforwarding.of.protocol.ofmessages.OFMessagePacketIn.OFMessagePacketInHandler;
@@ -72,16 +73,15 @@ public interface IOFMessageProvider {
    Long getDPID(byte[] array);
    
    /**
-    * @param in
-    * @return
+    * 
     */
-   boolean isHello(byte [] in);
+   boolean isMessage (Schema header, byte[] in);
    
    /**
     * @param in
     * @return
     */
-   boolean isFeautureReply (byte [] in);
+   boolean isHello(byte [] in);
    
    /**
     * @param in
@@ -143,4 +143,6 @@ public interface IOFMessageProvider {
     * @return
     */
    OFMessageErrorHandler parseError(byte[] in);
+
+   boolean isSwitchFeatures(byte[] in);
 }

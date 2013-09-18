@@ -59,18 +59,15 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
    private Schema ofpSwitchFeaturesRequestSchema = null;
    private Schema switchFeaturesRequestHeaderSchema = null;
    
-   private Schema ofpSwitchFeaturesReplySchema = null;
-   private Schema switchFeaturesReplyHeaderSchema = null;
-   
    private Schema ofpSwitchFeaturesSchema = null;
-   private Schema ofpSwitchFeaturesHeaderSchema = null;
+   private Schema switchFeaturesHeaderSchema = null;
    
+   private Schema switchConfigHeaderSchema = null;
    private Schema ofpSwitchConfigSchema = null; 
-   
    private Schema ofpSetSwitchConfigSchema;
    private Schema ofpSetSwitchConfigHeaderSchema;
    
-   private Schema ofpGetConfigRequestHeaderSchema = null;
+   private Schema getConfigRequestHeaderSchema = null;
    private Schema ofpGetConfigRequestSchema = null;
    private Schema ofpGetConfigReplyHeaderSchema = null;
    private Schema ofpGetConfigReplySchema = null;
@@ -85,7 +82,7 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
    private Schema packetInHeaderSchema = null;
    private Schema ofpPacketInSchema = null;
    
-   private Schema errorMessageHeader = null;
+   private Schema errorMessageHeaderSchema = null;
    private Schema ofpErrorMessageSchema = null;
    
    private Schema uint_8Schema = null;
@@ -165,51 +162,48 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
            e.printStackTrace();
          }
 
-      ofpHeaderSchema =  protocol.getType("of.ofp_header");
+      ofpHeaderSchema =  protocol.getType("of13.ofp_header");
       
-      helloHeaderSchema = protocol.getType("of.ofp_hello_header");
-      ofpHelloSchema = protocol.getType("of.ofp_hello");
+      helloHeaderSchema = protocol.getType("of13.ofp_hello_header");
+      ofpHelloSchema = protocol.getType("of13.ofp_hello");
       
-      echoRequestHeaderSchema= protocol.getType("of.echo_request_header");
-      ofpEchoRequestSchema = protocol.getType("of.ofp_echo_request");
+      echoRequestHeaderSchema= protocol.getType("of13.echo_request_header");
+      ofpEchoRequestSchema = protocol.getType("of13.ofp_echo_request");
 
-      echoReplyHeaderSchema = protocol.getType("of.echo_reply_header");
-      ofpEchoReplySchema = protocol.getType("of.ofp_echo_reply");
+      echoReplyHeaderSchema = protocol.getType("of13.echo_reply_header");
+      ofpEchoReplySchema = protocol.getType("of13.ofp_echo_reply");
 
       
-      ofpSwitchFeaturesRequestSchema =  protocol.getType("of.ofp_switch_features_request");
-      switchFeaturesRequestHeaderSchema =  protocol.getType("of.ofp_switch_features_request_header");
+      ofpSwitchFeaturesRequestSchema =  protocol.getType("of13.ofp_switch_features_request");
+      switchFeaturesRequestHeaderSchema =  protocol.getType("of13.ofp_switch_features_request_header");
+      ofpSwitchFeaturesSchema =  protocol.getType("of13.ofp_switch_features");
+      switchFeaturesHeaderSchema =  protocol.getType("of13.switch_features_header");
+
+      switchConfigHeaderSchema = protocol.getType("of13.switch_config_header");
+      ofpSwitchConfigSchema = protocol.getType("of13.ofp_switch_config");
+      ofpSetSwitchConfigSchema = protocol.getType("of13.ofp_set_switch_config");
+      ofpSetSwitchConfigHeaderSchema = protocol.getType("of13.ofp_set_switch_config_header");
       
-      ofpSwitchFeaturesReplySchema =  protocol.getType("of.ofp_switch_features_reply");
-      switchFeaturesReplyHeaderSchema =  protocol.getType("of.ofp_switch_features_reply_header");
+      getConfigRequestHeaderSchema = protocol.getType("of13.get_config_request_header");
+      ofpGetConfigRequestSchema = protocol.getType("of13.ofp_get_config_request");
+      ofpGetConfigReplyHeaderSchema = protocol.getType("of13.ofp_get_config_reply_header");
       
-      ofpSwitchConfigSchema = protocol.getType("of.ofp_switch_config");
-      ofpSetSwitchConfigSchema = protocol.getType("of.ofp_set_switch_config");
-      ofpSetSwitchConfigHeaderSchema = protocol.getType("of.ofp_set_switch_config_header");
+      flowModHeaderSchema = protocol.getType("of13.flow_mod_header");
+      ofpFlowModSchema = protocol.getType("of13.ofp_flow_mod");
       
-      ofpGetConfigRequestHeaderSchema = protocol.getType("of.ofp_get_config_request_header");
-      ofpGetConfigRequestSchema = protocol.getType("of.ofp_get_config_request");
-      ofpGetConfigReplyHeaderSchema = protocol.getType("of.ofp_get_config_reply_header");
+      packetInHeaderSchema = protocol.getType("of13.packet_in_header");
+      ofpPacketInSchema = protocol.getType("of13.ofp_packet_in");
       
-      ofpSwitchFeaturesSchema = protocol.getType("of.ofp_switch_features");
-      ofpSwitchFeaturesHeaderSchema = protocol.getType("of.ofp_switch_features_header");
+      errorMessageHeaderSchema = protocol.getType("of13.error_msg_header");
+      ofpErrorMessageSchema = protocol.getType("of13.ofp_error_msg");
       
-      flowModHeaderSchema = protocol.getType("of.flow_mod_header");
-      ofpFlowModSchema = protocol.getType("of.ofp_flow_mod");
-      
-      packetInHeaderSchema = protocol.getType("of.packet_in_header");
-      ofpPacketInSchema = protocol.getType("of.ofp_packet_in");
-      
-      errorMessageHeader = protocol.getType("of.error_msg_header");
-      ofpErrorMessageSchema = protocol.getType("of.ofp_error_msg");
-      
-      uint_8Schema = protocol.getType("of.uint_8");
-      uint_16Schema = protocol.getType("of.uint_16");
-      uint_16Schema = protocol.getType("of.uint_24");
-      uint_32Schema = protocol.getType("of.uint_32");
-      uint_48Schema = protocol.getType("of.uint_48");
-      uint_64Schema = protocol.getType("of.uint_64");
-      uint_128Schema = protocol.getType("of.uint_128");
+      uint_8Schema = protocol.getType("of13.uint_8");
+      uint_16Schema = protocol.getType("of13.uint_16");
+      uint_16Schema = protocol.getType("of13.uint_24");
+      uint_32Schema = protocol.getType("of13.uint_32");
+      uint_48Schema = protocol.getType("of13.uint_48");
+      uint_64Schema = protocol.getType("of13.uint_64");
+      uint_128Schema = protocol.getType("of13.uint_128");
 
       
    }
@@ -252,7 +246,7 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
       
       ByteArrayOutputStream out = new ByteArrayOutputStream();
       
-      DatumWriter<GenericRecord> writer = new GenericDatumWriter<GenericRecord>(ofpHelloSchema);
+      DatumWriter<GenericRecord> writer = new GenericDatumWriter<GenericRecord>(bodySchema);
       Encoder encoder = EncoderFactory.get().binaryNonEncoder(out, null);
       
       try {
@@ -305,7 +299,7 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
    }
    
    public byte[] encodeSwitchFeaturesReply () {
-      return encodeMessage(switchFeaturesReplyHeaderSchema, ofpSwitchFeaturesReplySchema);
+      return encodeMessage(switchFeaturesHeaderSchema, ofpSwitchFeaturesSchema);
    }
 
    public ByteArrayOutputStream getSwitchFeaturesRequest(ByteArrayOutputStream out) {
@@ -332,13 +326,13 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
    
    public ByteArrayOutputStream getSwitchFeaturesReply(ByteArrayOutputStream out) {
       
-      GenericRecord ofpSwitchFeaturesReplyRecord = new GenericData.Record(ofpSwitchFeaturesReplySchema);
-      GenericRecordBuilder builder = new GenericRecordBuilder(switchFeaturesReplyHeaderSchema);
+      GenericRecord ofpSwitchFeaturesReplyRecord = new GenericData.Record(ofpSwitchFeaturesSchema);
+      GenericRecordBuilder builder = new GenericRecordBuilder(switchFeaturesHeaderSchema);
       
       GenericRecord ofpSwitchFeaturesReplyHeaderRecord = builder.build();
       ofpSwitchFeaturesReplyRecord.put("header", ofpSwitchFeaturesReplyHeaderRecord);  
       
-      DatumWriter<GenericRecord> writer = new GenericDatumWriter<GenericRecord>(ofpSwitchFeaturesReplySchema);
+      DatumWriter<GenericRecord> writer = new GenericDatumWriter<GenericRecord>(ofpSwitchFeaturesSchema);
       Encoder encoder = EncoderFactory.get().binaryNonEncoder(out, null);
       
       try {
@@ -352,7 +346,7 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
       return out;
    }
    
-   protected GenericRecord getSwitchFeaturesReplyRecord (byte[] buffer) {
+   protected GenericRecord getSwitchFeaturesRecord (byte[] buffer) {
       
       try {
          GenericRecord featureReplyRecord = new GenericData.Record(ofpSwitchFeaturesSchema);
@@ -408,7 +402,7 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
    
    public Long getDPID(byte[] buffer) {
       
-      GenericRecord featureReplyRecord = getSwitchFeaturesReplyRecord (buffer);
+      GenericRecord featureReplyRecord = getSwitchFeaturesRecord (buffer);
       
       GenericData.Fixed dpid = (GenericData.Fixed) featureReplyRecord.get("datapath_id");
       return getLong(dpid);
@@ -448,7 +442,7 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
    public ByteArrayOutputStream getSwitchConfigRequest(ByteArrayOutputStream out) {
       
       GenericRecord ofpGetConfigRequestRecord = new GenericData.Record(ofpGetConfigRequestSchema);
-      GenericRecordBuilder builder = new GenericRecordBuilder(ofpGetConfigRequestHeaderSchema);
+      GenericRecordBuilder builder = new GenericRecordBuilder(getConfigRequestHeaderSchema);
       
       GenericRecord ofpGetConfigRequestHeaderRecord = builder.build();
       ofpGetConfigRequestRecord.put("header", ofpGetConfigRequestHeaderRecord);  
@@ -470,7 +464,7 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
    public byte[] encodeSwitchConfigRequest () {
       
       GenericRecord ofpGetConfigRequestRecord = new GenericData.Record(ofpGetConfigRequestSchema);
-      GenericRecordBuilder builder = new GenericRecordBuilder(ofpGetConfigRequestHeaderSchema);
+      GenericRecordBuilder builder = new GenericRecordBuilder(getConfigRequestHeaderSchema);
       
       GenericRecord ofpGetConfigRequestHeaderRecord = builder.build();
       ofpGetConfigRequestRecord.put("header", ofpGetConfigRequestHeaderRecord);  
@@ -499,7 +493,7 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
       builder = new GenericRecordBuilder (flowModHeaderSchema);
       GenericRecord flowModHeaderRecord = builder.build();
       
-      Schema flowModBodySchema = protocol.getType("of.flow_mod_body_add");
+      Schema flowModBodySchema = protocol.getType("of13.flow_mod_body_add");
       builder = new GenericRecordBuilder(flowModBodySchema);
       GenericRecord flowModBodyRecord = builder.build();
       
@@ -520,170 +514,170 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
          // TODO Improvs: How to control type compatibility between Shema types and incoming tlvs?
          switch (name) {
          case "ingress_port":
-            matches.add(getMatch("of.oxm_tlv_ingress_port", getUint32Fixed(Integer.parseInt(match.getValue()))));
+            matches.add(getMatch("of13.oxm_tlv_ingress_port", getUint32Fixed(Integer.parseInt(match.getValue()))));
             break;
          
          case "in_phy_port":
-            matches.add(getMatch("of.oxm_tlv_in_phy_port", getUint32Fixed(Integer.parseInt(match.getValue()))));
+            matches.add(getMatch("of13.oxm_tlv_in_phy_port", getUint32Fixed(Integer.parseInt(match.getValue()))));
             break;
 
          case "metadata":
-            matches.add(getMatch("of.oxm_tlv_metadata", getUint64Fixed(Long.parseLong(match.getValue()))));
+            matches.add(getMatch("of13.oxm_tlv_metadata", getUint64Fixed(Long.parseLong(match.getValue()))));
             break;
 
          case "eth_dst":
-            matches.add(getMatch("of.oxm_tlv_eth_dst", getUint48Fixed(get_mac_addr(match.getValue()))));
+            matches.add(getMatch("of13.oxm_tlv_eth_dst", getUint48Fixed(get_mac_addr(match.getValue()))));
             break;
             
          case "eth_src":
-            matches.add(getMatch("of.oxm_tlv_eth_src", getUint48Fixed(get_mac_addr(match.getValue()))));
+            matches.add(getMatch("of13.oxm_tlv_eth_src", getUint48Fixed(get_mac_addr(match.getValue()))));
             break;
 
          case "eth_type":
             short ethType = U16.t(Integer.valueOf(match.getValue().replaceFirst("0x", ""), 16));
-            matches.add(getMatch("of.oxm_tlv_eth_type", getUint32Fixed(ethType)));
+            matches.add(getMatch("of13.oxm_tlv_eth_type", getUint32Fixed(ethType)));
             break;            
 
          case "vlan_vid":
             short vid = U16.t(Integer.valueOf(match.getValue()));
-            matches.add(getMatch("of.oxm_tlv_vlan_vid", getUint32Fixed(vid)));
+            matches.add(getMatch("of13.oxm_tlv_vlan_vid", getUint32Fixed(vid)));
             break;            
 
          case "ip_dscp":
             byte tmp = U8.t(Short.valueOf(match.getValue()));
-            matches.add(getMatch("of.oxm_tlv_ip_dscp", getUint8Fixed(tmp)));
+            matches.add(getMatch("of13.oxm_tlv_ip_dscp", getUint8Fixed(tmp)));
             break;
 
          case "ip_ecn":
             tmp = U8.t(Short.valueOf(match.getValue()));
-            matches.add(getMatch("of.oxm_tlv_ip_ecn", getUint8Fixed(tmp)));
+            matches.add(getMatch("of13.oxm_tlv_ip_ecn", getUint8Fixed(tmp)));
             break;
 
          case "ip_proto":
             tmp = U8.t(Short.valueOf(match.getValue()));
-            matches.add(getMatch("of.oxm_tlv_ip_proto", getUint8Fixed(tmp)));
+            matches.add(getMatch("of13.oxm_tlv_ip_proto", getUint8Fixed(tmp)));
             break;
 
          case "ipv4_src":
-            matches.add(getMatch("of.oxm_tlv_ipv4_src", getUint32Fixed(get_ipv4(match.getValue()))));
+            matches.add(getMatch("of13.oxm_tlv_ipv4_src", getUint32Fixed(get_ipv4(match.getValue()))));
             break;
 
          case "ipv4_dst":
-            matches.add(getMatch("of.oxm_tlv_ipv4_dst", getUint32Fixed(get_ipv4(match.getValue()))));
+            matches.add(getMatch("of13.oxm_tlv_ipv4_dst", getUint32Fixed(get_ipv4(match.getValue()))));
             break;
 
          case "tcp_src":
-            matches.add(getMatch("of.oxm_tlv_tcp_src", getUint16Fixed(U16.t(Integer.valueOf(match.getValue())))));
+            matches.add(getMatch("of13.oxm_tlv_tcp_src", getUint16Fixed(U16.t(Integer.valueOf(match.getValue())))));
             break;
             
          case "tcp_dst":
-            matches.add(getMatch("of.oxm_tlv_tcp_dst", getUint16Fixed(U16.t(Integer.valueOf(match.getValue())))));
+            matches.add(getMatch("of13.oxm_tlv_tcp_dst", getUint16Fixed(U16.t(Integer.valueOf(match.getValue())))));
             break;
 
          case "udp_src":
-            matches.add(getMatch("of.oxm_tlv_udp_src", getUint16Fixed(U16.t(Integer.valueOf(match.getValue())))));
+            matches.add(getMatch("of13.oxm_tlv_udp_src", getUint16Fixed(U16.t(Integer.valueOf(match.getValue())))));
             break;
 
          case "udp_dst":
-            matches.add(getMatch("of.oxm_tlv_udp_dst", getUint16Fixed(U16.t(Integer.valueOf(match.getValue())))));
+            matches.add(getMatch("of13.oxm_tlv_udp_dst", getUint16Fixed(U16.t(Integer.valueOf(match.getValue())))));
             break;
 
          case "sctp_src":
-            matches.add(getMatch("of.oxm_tlv_sctp_src", getUint16Fixed(U16.t(Integer.valueOf(match.getValue())))));
+            matches.add(getMatch("of13.oxm_tlv_sctp_src", getUint16Fixed(U16.t(Integer.valueOf(match.getValue())))));
             break;
 
          case "sctp_dst":
-            matches.add(getMatch("of.oxm_tlv_sctp_dst", getUint16Fixed(U16.t(Integer.valueOf(match.getValue())))));
+            matches.add(getMatch("of13.oxm_tlv_sctp_dst", getUint16Fixed(U16.t(Integer.valueOf(match.getValue())))));
             break;
             
          case "icmpv4_type":
             tmp = U8.t(Short.valueOf(match.getValue()));
-            matches.add(getMatch("of.oxm_tlv_icmpv4_type", getUint8Fixed(tmp)));
+            matches.add(getMatch("of13.oxm_tlv_icmpv4_type", getUint8Fixed(tmp)));
             break;
 
          case "icmpv4_code":
             tmp = U8.t(Short.valueOf(match.getValue()));
-            matches.add(getMatch("of.oxm_tlv_icmpv4_code", getUint8Fixed(tmp)));
+            matches.add(getMatch("of13.oxm_tlv_icmpv4_code", getUint8Fixed(tmp)));
             break;
 
          case "arp_op":
-            matches.add(getMatch("of.oxm_tlv_arp_op", getUint16Fixed(U16.t(Integer.parseInt(match.getValue())))));
+            matches.add(getMatch("of13.oxm_tlv_arp_op", getUint16Fixed(U16.t(Integer.parseInt(match.getValue())))));
             break;
 
          case "arp_spa":
-            matches.add(getMatch("of.oxm_tlv_arp_spa", getUint32Fixed(Integer.parseInt(match.getValue()))));
+            matches.add(getMatch("of13.oxm_tlv_arp_spa", getUint32Fixed(Integer.parseInt(match.getValue()))));
             break;
 
          case "arp_tpa":
-            matches.add(getMatch("of.oxm_tlv_arp_tpa", getUint32Fixed(Integer.parseInt(match.getValue()))));
+            matches.add(getMatch("of13.oxm_tlv_arp_tpa", getUint32Fixed(Integer.parseInt(match.getValue()))));
             break;
             
          case "arp_sha":
-            matches.add(getMatch("of.oxm_tlv_arp_sha", getUint48Fixed(Long.parseLong(match.getValue()))));
+            matches.add(getMatch("of13.oxm_tlv_arp_sha", getUint48Fixed(Long.parseLong(match.getValue()))));
             break;
             
          case "arp_tha":
-            matches.add(getMatch("of.oxm_tlv_arp_tha", getUint48Fixed(Long.parseLong(match.getValue()))));
+            matches.add(getMatch("of13.oxm_tlv_arp_tha", getUint48Fixed(Long.parseLong(match.getValue()))));
             break;
 
          case "ipv6_src":
-            matches.add(getMatch("of.oxm_tlv_ipv6_src", getUint128Fixed(get_ipv6(match.getValue()))));
+            matches.add(getMatch("of13.oxm_tlv_ipv6_src", getUint128Fixed(get_ipv6(match.getValue()))));
             break;
 
          case "ipv6_dst":
-            matches.add(getMatch("of.oxm_tlv_ipv6_dst", getUint128Fixed(get_ipv6(match.getValue()))));
+            matches.add(getMatch("of13.oxm_tlv_ipv6_dst", getUint128Fixed(get_ipv6(match.getValue()))));
             break;
 
          case "ipv6_flabel":
-            matches.add(getMatch("of.oxm_tlv_ipv6_flabel", getUint32Fixed(Integer.parseInt(match.getValue()))));
+            matches.add(getMatch("of13.oxm_tlv_ipv6_flabel", getUint32Fixed(Integer.parseInt(match.getValue()))));
             break;
 
          case "icmpv6_type":
             tmp = U8.t(Short.valueOf(match.getValue()));
-            matches.add(getMatch("of.oxm_tlv_icmpv6_type", getUint8Fixed(tmp)));
+            matches.add(getMatch("of13.oxm_tlv_icmpv6_type", getUint8Fixed(tmp)));
             break;
          
          case "icmpv6_code":
             tmp = U8.t(Short.valueOf(match.getValue()));
-            matches.add(getMatch("of.oxm_tlv_icmpv6_code", getUint8Fixed(tmp)));
+            matches.add(getMatch("of13.oxm_tlv_icmpv6_code", getUint8Fixed(tmp)));
             break;
 
          case "ipv6_nd_target":
-            matches.add(getMatch("of.oxm_tlv_ipv6_nd_target", getUint128Fixed(get_ipv6(match.getValue()))));
+            matches.add(getMatch("of13.oxm_tlv_ipv6_nd_target", getUint128Fixed(get_ipv6(match.getValue()))));
             break;
 
          case "ipv6_nd_sll":
-            matches.add(getMatch("of.oxm_tlv_ipv6_nd_sll", getUint48Fixed(Long.parseLong(match.getValue()))));
+            matches.add(getMatch("of13.oxm_tlv_ipv6_nd_sll", getUint48Fixed(Long.parseLong(match.getValue()))));
             break;
 
          case "ipv6_nd_tll":
-            matches.add(getMatch("of.oxm_tlv_ipv6_nd_tll", getUint48Fixed(Long.parseLong(match.getValue()))));
+            matches.add(getMatch("of13.oxm_tlv_ipv6_nd_tll", getUint48Fixed(Long.parseLong(match.getValue()))));
             break;
 
          case "mpls_label":
-            matches.add(getMatch("of.oxm_tlv_mpls_label", getUint32Fixed(Integer.parseInt(match.getValue()))));
+            matches.add(getMatch("of13.oxm_tlv_mpls_label", getUint32Fixed(Integer.parseInt(match.getValue()))));
             break;
 
          case "mpls_tc":
             tmp = U8.t(Short.valueOf(match.getValue()));
-            matches.add(getMatch("of.oxm_tlv_mpls_tc", getUint8Fixed(tmp)));
+            matches.add(getMatch("of13.oxm_tlv_mpls_tc", getUint8Fixed(tmp)));
             break;
 
          case "mpls_bos":
             tmp = U8.t(Short.valueOf(match.getValue()));
-            matches.add(getMatch("of.oxm_tlv_mpls_bos", getUint8Fixed(tmp)));
+            matches.add(getMatch("of13.oxm_tlv_mpls_bos", getUint8Fixed(tmp)));
             break;
 
          case "pbb_isid":
-            matches.add(getMatch("of.oxm_tlv_pbb_isid", getUint32Fixed(Integer.parseInt(match.getValue()))));
+            matches.add(getMatch("of13.oxm_tlv_pbb_isid", getUint32Fixed(Integer.parseInt(match.getValue()))));
             break;
 
          case "tunnel_id":
-            matches.add(getMatch("of.oxm_tlv_tunnel_id", getUint32Fixed(Integer.parseInt(match.getValue()))));
+            matches.add(getMatch("of13.oxm_tlv_tunnel_id", getUint32Fixed(Integer.parseInt(match.getValue()))));
             break;
 
          case "ipv6_exthdr":
-            matches.add(getMatch("of.oxm_tlv_ipv6_exthdr", getUint32Fixed(Integer.parseInt(match.getValue()))));
+            matches.add(getMatch("of13.oxm_tlv_ipv6_exthdr", getUint32Fixed(Integer.parseInt(match.getValue()))));
             break;
             
          default:
@@ -692,16 +686,16 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
          }
       }
       
-      Schema oxmTlvSchema = protocol.getType("of.oxm_tlv");
+      Schema oxmTlvSchema = protocol.getType("of13.oxm_tlv");
       
-      Schema oxmTlvFieldsSchema = protocol.getType("of.oxm_tlv_fields");
+      Schema oxmTlvFieldsSchema = protocol.getType("of13.oxm_tlv_fields");
       GenericRecord oxmTlvFieldsRecord = new GenericData.Record(oxmTlvFieldsSchema);
       oxmTlvFieldsRecord.put("oxm_tlvs", new GenericData.Array<>(Schema.createArray(oxmTlvSchema), matches));
 
       /*
        * Build match header
        */
-      Schema matchHeaderSchema = protocol.getType("of.match_header");
+      Schema matchHeaderSchema = protocol.getType("of13.match_header");
       GenericRecordBuilder matchHeaderBuilder = new GenericRecordBuilder(matchHeaderSchema);
       GenericRecord matchHeaderRecord = matchHeaderBuilder.build();
       
@@ -721,7 +715,7 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
          int matchLength = oxmOut.size() + 4;
          closingPadLength = (int) ((matchLength + 7)/8*8 - matchLength);
          
-         Schema uint16Schema = protocol.getType("of.uint_16");
+         Schema uint16Schema = protocol.getType("of13.uint_16");
          
          byte len[] = {(byte)(matchLength >> 8), (byte)(255 & matchLength)}; 
          GenericData.Fixed lenght = new GenericData.Fixed(uint16Schema, len);
@@ -741,7 +735,7 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
       /*
        * Assemble ofp_match structure
        */
-      ofpMatchSchema = protocol.getType("of.ofp_match");
+      ofpMatchSchema = protocol.getType("of13.ofp_match");
       ofpMatchRecord = new GenericData.Record(ofpMatchSchema);
       ofpMatchRecord.put("header", matchHeaderRecord);
       ofpMatchRecord.put("fields", oxmTlvFieldsRecord);
@@ -765,40 +759,40 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
          // TODO Improvs: How to control type compatibility between Schema types and incoming tlvs?
          switch (name) {
          case "apply_actions":
-            instrHeaderSchema = protocol.getType("of.instruction_apply_actions_header");
-            instrSchema = protocol.getType("of.ofp_instruction_apply_actions");
+            instrHeaderSchema = protocol.getType("of13.instruction_apply_actions_header");
+            instrSchema = protocol.getType("of13.ofp_instruction_apply_actions");
             instrRecord = new GenericData.Record(instrSchema);
             isActions = true;
             break;
          case "write_actions":
-            instrHeaderSchema = protocol.getType("of.instruction_write_actions_header");
-            instrSchema = protocol.getType("of.ofp_instruction_write_actions");
+            instrHeaderSchema = protocol.getType("of13.instruction_write_actions_header");
+            instrSchema = protocol.getType("of13.ofp_instruction_write_actions");
             instrRecord = new GenericData.Record(instrSchema);
             isActions = true;            
             break;
          case "clear_actions":
-            instrHeaderSchema = protocol.getType("of.instruction_clear_actions_header");
-            instrSchema = protocol.getType("of.ofp_instruction_clear_actions");
+            instrHeaderSchema = protocol.getType("of13.instruction_clear_actions_header");
+            instrSchema = protocol.getType("of13.ofp_instruction_clear_actions");
             instrRecord = new GenericData.Record(instrSchema);
             isActions = true;            
             break;
          case "goto_table":
-            instrHeaderSchema = protocol.getType("of.instruction_goto_table_header"); 
-            instrSchema = protocol.getType("of.ofp_instruction_goto_table");
+            instrHeaderSchema = protocol.getType("of13.instruction_goto_table_header"); 
+            instrSchema = protocol.getType("of13.ofp_instruction_goto_table");
             instrRecord = new GenericData.Record(instrSchema);
             instrRecord.put("table_id", getUint8Fixed((byte)15));
             instrRecord.put("pad", getPad3(0));
             isActions = false;            
             break;
          case "write_metadata":
-            instrHeaderSchema = protocol.getType("of.instruction_write_metadata_header");  
-            instrSchema = protocol.getType("of.ofp_instruction_write_metadata");
+            instrHeaderSchema = protocol.getType("of13.instruction_write_metadata_header");  
+            instrSchema = protocol.getType("of13.ofp_instruction_write_metadata");
             instrRecord = new GenericData.Record(instrSchema);
             isActions = false;            
             break;
          case "meter":
-            instrHeaderSchema = protocol.getType("of.instruction_meter_header"); 
-            instrSchema = protocol.getType("of.ofp_instruction_meter");
+            instrHeaderSchema = protocol.getType("of13.instruction_meter_header"); 
+            instrSchema = protocol.getType("of13.ofp_instruction_meter");
             instrRecord = new GenericData.Record(instrSchema);
             isActions = false;            
             break;
@@ -812,7 +806,7 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
          if (isActions) {
             List<Tuple<String, String>> actionList = instruction.getActions().getActions();
 //            Iterator<Tuple<String, String>> actionIter = instruction.getActions().getIterator();
-            Schema ofpActionSchema = protocol.getType("of.ofp_action");
+            Schema ofpActionSchema = protocol.getType("of13.ofp_action");
             List<GenericRecord> actions = new LinkedList<GenericRecord>();
             GenericRecord actionSetRecord = null;
 
@@ -824,7 +818,7 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
                
                switch (actName) {
                case "output":
-                  Schema ofpActionOutSchema = protocol.getType("of.ofp_action_output");
+                  Schema ofpActionOutSchema = protocol.getType("of13.ofp_action_output");
                   GenericRecordBuilder actionBuilder = new GenericRecordBuilder(ofpActionOutSchema);
                   GenericRecord ofpActionOutRecord = actionBuilder.build();
                   
@@ -840,7 +834,7 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
                actions.add(ofpActionRecord);
             }
                         
-            Schema actionSetSchema = protocol.getType("of.action_set");
+            Schema actionSetSchema = protocol.getType("of13.action_set");
             actionSetRecord = new GenericData.Record(actionSetSchema);
             actionSetRecord.put("set", new GenericData.Array<> (Schema.createArray(ofpActionSchema), actions));
             
@@ -852,14 +846,14 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
             instrRecord.put("header", instrHeaderRecord);
          }
 
-         Schema ofpInstructionSchema = protocol.getType("of.ofp_instruction");
+         Schema ofpInstructionSchema = protocol.getType("of13.ofp_instruction");
          GenericRecord ofpInstructionRecord = new GenericData.Record(ofpInstructionSchema);
          ofpInstructionRecord.put("instruction", instrRecord);
          instructions.add(ofpInstructionRecord);
       }
       
-      Schema ofpInstructionSchema = protocol.getType("of.ofp_instruction");
-      Schema instructionSetSchema = protocol.getType("of.instruction_set");
+      Schema ofpInstructionSchema = protocol.getType("of13.ofp_instruction");
+      Schema instructionSetSchema = protocol.getType("of13.instruction_set");
       GenericRecord instructionSetRecord = new GenericData.Record(instructionSetSchema);
       instructionSetRecord.put("set", new GenericData.Array<> (Schema.createArray(ofpInstructionSchema), instructions));
       
@@ -900,11 +894,11 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
        */
       Schema flowModBodySchema = null;
       if (args.containsKey("delete")) {
-         flowModBodySchema = protocol.getType("of.flow_mod_body_delete");
+         flowModBodySchema = protocol.getType("of13.flow_mod_body_delete");
          isDelete = true;
       }
       else {
-         flowModBodySchema = protocol.getType("of.flow_mod_body_add");
+         flowModBodySchema = protocol.getType("of13.flow_mod_body_add");
          isDelete = false;
       }
       
@@ -947,16 +941,16 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
             GenericRecord instrRecord = null;
             
             if (key.equals("apply_actions")) {
-               instrHeaderSchema = protocol.getType("of.instruction_apply_actions_header");
-               instrSchema = protocol.getType("of.ofp_instruction_apply_actions");
+               instrHeaderSchema = protocol.getType("of13.instruction_apply_actions_header");
+               instrSchema = protocol.getType("of13.ofp_instruction_apply_actions");
                instrRecord = new GenericData.Record(instrSchema);
             }  else if (key.equals("write_actions")) {
-               instrHeaderSchema = protocol.getType("of.instruction_write_actions_header");
-               instrSchema = protocol.getType("of.ofp_instruction_write_actions");
+               instrHeaderSchema = protocol.getType("of13.instruction_write_actions_header");
+               instrSchema = protocol.getType("of13.ofp_instruction_write_actions");
                instrRecord = new GenericData.Record(instrSchema);
             } else if (key.equals("clear_actions")) {
-               instrHeaderSchema = protocol.getType("of.instruction_clear_actions_header");
-               instrSchema = protocol.getType("of.ofp_instruction_clear_actions");
+               instrHeaderSchema = protocol.getType("of13.instruction_clear_actions_header");
+               instrSchema = protocol.getType("of13.ofp_instruction_clear_actions");
                instrRecord = new GenericData.Record(instrSchema);
             }
             
@@ -972,7 +966,7 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
              * Create ofp_instruction_write_actions
              */
 
-            Schema ofpInstrSchema = protocol.getType("of.ofp_instruction");
+            Schema ofpInstrSchema = protocol.getType("of13.ofp_instruction");
             GenericRecord ofpInstrRecord = new GenericData.Record(ofpInstrSchema);
 
             ofpInstrRecord.put("instruction", instrRecord);
@@ -983,30 +977,30 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
          } else if (key.equals("in_port")) {
             
             
-            /*Schema oxmTlvIngressPortSchema = protocol.getType("of.oxm_tlv_ingress_port");
+            /*Schema oxmTlvIngressPortSchema = protocol.getType("of13.oxm_tlv_ingress_port");
             GenericRecord oxmTlvIngressPortRecord = new GenericData.Record(oxmTlvIngressPortSchema);
          
             int inPort = Integer.valueOf((String) args.get(key));
             oxmTlvIngressPortRecord.put("tlv", getUint32Fixed(inPort));
             
-            Schema oxmTlvSchema = protocol.getType("of.oxm_tlv");
+            Schema oxmTlvSchema = protocol.getType("of13.oxm_tlv");
             GenericRecord oxmTlvRecord = new GenericData.Record(oxmTlvSchema);
             oxmTlvRecord.put("match", oxmTlvIngressPortRecord);*/
             
-            matches.add(getMatch("of.oxm_tlv_ingress_port", getUint32Fixed(Integer.valueOf((String) args.get(key)))));
+            matches.add(getMatch("of13.oxm_tlv_ingress_port", getUint32Fixed(Integer.valueOf((String) args.get(key)))));
             
             /*
              * MATCH - IN_PHY PORT
              */
          } else if (key.equals("in_phy_port")) {
-            Schema oxmTlvInPhyPortSchema = protocol.getType("of.oxm_tlv_in_phy_port");
+            Schema oxmTlvInPhyPortSchema = protocol.getType("of13.oxm_tlv_in_phy_port");
             GenericRecord oxmTlvInPhyPortRecord = new GenericData.Record(oxmTlvInPhyPortSchema);
                
             int inPort = Integer.valueOf((String) args.get(key));
 
             oxmTlvInPhyPortRecord.put("tlv", getUint32Fixed(inPort));
                
-            Schema oxmTlvSchema = protocol.getType("of.oxm_tlv");
+            Schema oxmTlvSchema = protocol.getType("of13.oxm_tlv");
             GenericRecord oxmTlvRecord = new GenericData.Record(oxmTlvSchema);
             oxmTlvRecord.put("match", oxmTlvInPhyPortRecord);
                
@@ -1016,13 +1010,13 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
              * MATCH - METADATA
              */
          } else if (key.equals("metadata")) {
-            Schema oxmTlvMetadataSchema = protocol.getType("of.oxm_tlv_metadata");
+            Schema oxmTlvMetadataSchema = protocol.getType("of13.oxm_tlv_metadata");
             GenericRecord oxmTlvMetadataRecord = new GenericData.Record(oxmTlvMetadataSchema);
                
             long mdata = Integer.valueOf((String) args.get(key));
             oxmTlvMetadataRecord.put("tlv", getUint64Fixed(mdata));
                
-            Schema oxmTlvSchema = protocol.getType("of.oxm_tlv");
+            Schema oxmTlvSchema = protocol.getType("of13.oxm_tlv");
             GenericRecord oxmTlvRecord = new GenericData.Record(oxmTlvSchema);
             oxmTlvRecord.put("match", oxmTlvMetadataRecord);
                
@@ -1033,11 +1027,11 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
             */
          } else if (key.equals("dl_src")) {
 
-            Schema oxmTlvFieldSchema = protocol.getType("of.oxm_tlv_eth_src");
+            Schema oxmTlvFieldSchema = protocol.getType("of13.oxm_tlv_eth_src");
             GenericRecord oxmTlvFieldRecord = new GenericData.Record(oxmTlvFieldSchema);
             
             oxmTlvFieldRecord.put("tlv", getUint48Fixed(get_mac_addr((String) args.get(key))));
-            Schema oxmTlvSchema = protocol.getType("of.oxm_tlv");
+            Schema oxmTlvSchema = protocol.getType("of13.oxm_tlv");
             GenericRecord oxmTlvRecord = new GenericData.Record(oxmTlvSchema);
             oxmTlvRecord.put("match", oxmTlvFieldRecord);
             
@@ -1048,11 +1042,11 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
            */
       } else if (key.equals("dl_dst")) {
       
-         Schema oxmTlvFieldSchema = protocol.getType("of.oxm_tlv_eth_dst");
+         Schema oxmTlvFieldSchema = protocol.getType("of13.oxm_tlv_eth_dst");
          GenericRecord oxmTlvFieldRecord = new GenericData.Record(oxmTlvFieldSchema);
 
          oxmTlvFieldRecord.put("tlv", getUint48Fixed(get_mac_addr((String) args.get(key))));
-         Schema oxmTlvSchema = protocol.getType("of.oxm_tlv");
+         Schema oxmTlvSchema = protocol.getType("of13.oxm_tlv");
          GenericRecord oxmTlvRecord = new GenericData.Record(oxmTlvSchema);
          oxmTlvRecord.put("match", oxmTlvFieldRecord);
          
@@ -1062,14 +1056,14 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
           * MATCH - ETH_TYPE
           */
       } else if (key.equals("dl_type")) {
-         Schema oxmTlvEthTypeSchema = protocol.getType("of.oxm_tlv_eth_type");
+         Schema oxmTlvEthTypeSchema = protocol.getType("of13.oxm_tlv_eth_type");
          GenericRecord oxmTlvEthTypeRecord = new GenericData.Record(oxmTlvEthTypeSchema);
 
          short ethType = U16.t(Integer.valueOf(((String) args.get(key)).replaceFirst("0x", ""), 16));
          
          oxmTlvEthTypeRecord.put("tlv", getUint16Fixed(ethType));
             
-         Schema oxmTlvSchema = protocol.getType("of.oxm_tlv");
+         Schema oxmTlvSchema = protocol.getType("of13.oxm_tlv");
          GenericRecord oxmTlvRecord = new GenericData.Record(oxmTlvSchema);
          oxmTlvRecord.put("match", oxmTlvEthTypeRecord);
    
@@ -1093,13 +1087,13 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
          */
         } else if (key.equals("vlan_vid")) {
            
-           Schema oxmTlvVlanVidSchema = protocol.getType("of.oxm_tlv_vlan_vid");
+           Schema oxmTlvVlanVidSchema = protocol.getType("of13.oxm_tlv_vlan_vid");
            GenericRecord oxmTlvVlanVidRecord = new GenericData.Record(oxmTlvVlanVidSchema);
            
            short vid = U16.t(Integer.valueOf((String) args.get(key)));
            oxmTlvVlanVidRecord.put("tlv", getUint16Fixed(vid));
            
-           Schema oxmTlvSchema = protocol.getType("of.oxm_tlv");
+           Schema oxmTlvSchema = protocol.getType("of13.oxm_tlv");
            GenericRecord oxmTlvRecord = new GenericData.Record(oxmTlvSchema);
            oxmTlvRecord.put("match", oxmTlvVlanVidRecord);
            
@@ -1115,13 +1109,13 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
           */
          } else if (key.equals("dl_vlan_pcp")) {
             
-            Schema oxmTlvFieldSchema = protocol.getType("of.oxm_tlv_vlan_pcp");
+            Schema oxmTlvFieldSchema = protocol.getType("of13.oxm_tlv_vlan_pcp");
             GenericRecord oxmTlvFieldRecord = new GenericData.Record(oxmTlvFieldSchema);
             
             byte tmp = U8.t(Short.valueOf((String) args.get(key)));
             oxmTlvFieldRecord.put("tlv", getUint8Fixed(tmp));
             
-            Schema oxmTlvSchema = protocol.getType("of.oxm_tlv");
+            Schema oxmTlvSchema = protocol.getType("of13.oxm_tlv");
             GenericRecord oxmTlvRecord = new GenericData.Record(oxmTlvSchema);
             oxmTlvRecord.put("match", oxmTlvFieldRecord);
             
@@ -1136,11 +1130,11 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
              */
          } else if (key.equals("ipv6_src")) {
 
-            Schema oxmTlvFieldSchema = protocol.getType("of.oxm_tlv_ipv6_src");
+            Schema oxmTlvFieldSchema = protocol.getType("of13.oxm_tlv_ipv6_src");
             GenericRecord oxmTlvFieldRecord = new GenericData.Record(oxmTlvFieldSchema);
              
             oxmTlvFieldRecord.put("tlv", getUint128Fixed(get_ipv6((String) args.get(key))));
-            Schema oxmTlvSchema = protocol.getType("of.oxm_tlv");
+            Schema oxmTlvSchema = protocol.getType("of13.oxm_tlv");
             GenericRecord oxmTlvRecord = new GenericData.Record(oxmTlvSchema);
             oxmTlvRecord.put("match", oxmTlvFieldRecord);
              
@@ -1154,11 +1148,11 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
              */
          } else if (key.equals("ipv6_dst")) {
 
-            Schema oxmTlvFieldSchema = protocol.getType("of.oxm_tlv_ipv6_dst");
+            Schema oxmTlvFieldSchema = protocol.getType("of13.oxm_tlv_ipv6_dst");
             GenericRecord oxmTlvFieldRecord = new GenericData.Record(oxmTlvFieldSchema);
              
             oxmTlvFieldRecord.put("tlv", getUint128Fixed(get_ipv6((String) args.get(key))));
-            Schema oxmTlvSchema = protocol.getType("of.oxm_tlv");
+            Schema oxmTlvSchema = protocol.getType("of13.oxm_tlv");
             GenericRecord oxmTlvRecord = new GenericData.Record(oxmTlvSchema);
             oxmTlvRecord.put("match", oxmTlvFieldRecord);
              
@@ -1173,14 +1167,14 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
           */
          } else if (key.equals("ip_dscp")) {
             
-            Schema oxmTlvFieldSchema = protocol.getType("of.oxm_tlv_ip_dscp");
+            Schema oxmTlvFieldSchema = protocol.getType("of13.oxm_tlv_ip_dscp");
             GenericRecord oxmTlvFieldRecord = new GenericData.Record(oxmTlvFieldSchema);
             
             byte tmp = U8.t(Short.valueOf((String) args.get(key)));
             
             oxmTlvFieldRecord.put("tlv", getUint8Fixed(tmp));
             
-            Schema oxmTlvSchema = protocol.getType("of.oxm_tlv");
+            Schema oxmTlvSchema = protocol.getType("of13.oxm_tlv");
             GenericRecord oxmTlvRecord = new GenericData.Record(oxmTlvSchema);
             oxmTlvRecord.put("match", oxmTlvFieldRecord);
             
@@ -1191,13 +1185,13 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
           */
          } else if (key.equals("ip_ecn")) {
             
-            Schema oxmTlvFieldSchema = protocol.getType("of.oxm_tlv_ip_ecn");
+            Schema oxmTlvFieldSchema = protocol.getType("of13.oxm_tlv_ip_ecn");
             GenericRecord oxmTlvFieldRecord = new GenericData.Record(oxmTlvFieldSchema);
             
             byte tmp = U8.t(Short.valueOf((String) args.get(key)));
             oxmTlvFieldRecord.put("tlv", getUint8Fixed(tmp));
             
-            Schema oxmTlvSchema = protocol.getType("of.oxm_tlv");
+            Schema oxmTlvSchema = protocol.getType("of13.oxm_tlv");
             GenericRecord oxmTlvRecord = new GenericData.Record(oxmTlvSchema);
             oxmTlvRecord.put("match", oxmTlvFieldRecord);
             
@@ -1208,13 +1202,13 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
           */
          } else if (key.equals("nw_proto")) {
             
-            Schema oxmTlvFieldSchema = protocol.getType("of.oxm_tlv_ip_proto");
+            Schema oxmTlvFieldSchema = protocol.getType("of13.oxm_tlv_ip_proto");
             GenericRecord oxmTlvFieldRecord = new GenericData.Record(oxmTlvFieldSchema);
             
             byte tmp = U8.t(Short.valueOf((String) args.get(key)));
             oxmTlvFieldRecord.put("tlv", getUint8Fixed(tmp));
             
-            Schema oxmTlvSchema = protocol.getType("of.oxm_tlv");
+            Schema oxmTlvSchema = protocol.getType("of13.oxm_tlv");
             GenericRecord oxmTlvRecord = new GenericData.Record(oxmTlvSchema);
             oxmTlvRecord.put("match", oxmTlvFieldRecord);
             
@@ -1246,12 +1240,12 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
              */
          } else if (key.equals("nw_src")) {
             
-            Schema oxmTlvFieldSchema = protocol.getType("of.oxm_tlv_ipv4_src");
+            Schema oxmTlvFieldSchema = protocol.getType("of13.oxm_tlv_ipv4_src");
             GenericRecord oxmTlvFieldRecord = new GenericData.Record(oxmTlvFieldSchema);
              
             oxmTlvFieldRecord.put("tlv", getUint32Fixed(get_ipv4((String) args.get(key))));
 
-            Schema oxmTlvSchema = protocol.getType("of.oxm_tlv");
+            Schema oxmTlvSchema = protocol.getType("of13.oxm_tlv");
             GenericRecord oxmTlvRecord = new GenericData.Record(oxmTlvSchema);
             oxmTlvRecord.put("match", oxmTlvFieldRecord);
             
@@ -1266,12 +1260,12 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
              */
          } else if (key.equals("nw_dst")) {
              
-            Schema oxmTlvFieldSchema = protocol.getType("of.oxm_tlv_ipv4_dst");
+            Schema oxmTlvFieldSchema = protocol.getType("of13.oxm_tlv_ipv4_dst");
             GenericRecord oxmTlvFieldRecord = new GenericData.Record(oxmTlvFieldSchema);
              
             oxmTlvFieldRecord.put("tlv", getUint32Fixed(get_ipv4((String) args.get(key))));
 
-            Schema oxmTlvSchema = protocol.getType("of.oxm_tlv");
+            Schema oxmTlvSchema = protocol.getType("of13.oxm_tlv");
             GenericRecord oxmTlvRecord = new GenericData.Record(oxmTlvSchema);
             oxmTlvRecord.put("match", oxmTlvFieldRecord);
 
@@ -1285,12 +1279,12 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
              */
          } else if (key.equals("tp_src")) {
              
-            Schema oxmTlvFieldSchema = protocol.getType("of.oxm_tlv_tcp_src");
+            Schema oxmTlvFieldSchema = protocol.getType("of13.oxm_tlv_tcp_src");
             GenericRecord oxmTlvFieldRecord = new GenericData.Record(oxmTlvFieldSchema);
              
             oxmTlvFieldRecord.put("tlv", getUint16Fixed(U16.t(Integer.valueOf((String) args.get(key)))));
 
-            Schema oxmTlvSchema = protocol.getType("of.oxm_tlv");
+            Schema oxmTlvSchema = protocol.getType("of13.oxm_tlv");
             GenericRecord oxmTlvRecord = new GenericData.Record(oxmTlvSchema);
             oxmTlvRecord.put("match", oxmTlvFieldRecord);
 
@@ -1304,12 +1298,12 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
              */
          } else if (key.equals("tp_dst")) {
              
-            Schema oxmTlvFieldSchema = protocol.getType("of.oxm_tlv_tcp_dst");
+            Schema oxmTlvFieldSchema = protocol.getType("of13.oxm_tlv_tcp_dst");
             GenericRecord oxmTlvFieldRecord = new GenericData.Record(oxmTlvFieldSchema);
              
             oxmTlvFieldRecord.put("tlv", getUint16Fixed(U16.t(Integer.valueOf((String) args.get(key)))));
 
-            Schema oxmTlvSchema = protocol.getType("of.oxm_tlv");
+            Schema oxmTlvSchema = protocol.getType("of13.oxm_tlv");
             GenericRecord oxmTlvRecord = new GenericData.Record(oxmTlvSchema);
             oxmTlvRecord.put("match", oxmTlvFieldRecord);
 
@@ -1325,9 +1319,9 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
          } else if (key.equals("udp_src")) {
 
             if (this.isIpProto)
-               matches.add(getMatch("of.oxm_tlv_udp_src", getUint16Fixed(U16.t(Integer.valueOf((String) args.get(key))))));
+               matches.add(getMatch("of13.oxm_tlv_udp_src", getUint16Fixed(U16.t(Integer.valueOf((String) args.get(key))))));
             else 
-               this.delayedUdpSrc = getMatch("of.oxm_tlv_udp_src", getUint16Fixed(U16.t(Integer.valueOf((String) args.get(key)))));
+               this.delayedUdpSrc = getMatch("of13.oxm_tlv_udp_src", getUint16Fixed(U16.t(Integer.valueOf((String) args.get(key)))));
 
             /* 
              * MATCH - UDP_DST
@@ -1335,25 +1329,25 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
          } else if (key.equals("udp_dst")) {
 
             if (this.isIpProto)
-               matches.add(getMatch("of.oxm_tlv_udp_dst", getUint16Fixed(U16.t(Integer.valueOf((String) args.get(key))))));
+               matches.add(getMatch("of13.oxm_tlv_udp_dst", getUint16Fixed(U16.t(Integer.valueOf((String) args.get(key))))));
             else 
-               this.delayedUdpDst = getMatch("of.oxm_tlv_udp_dst", getUint16Fixed(U16.t(Integer.valueOf((String) args.get(key)))));
+               this.delayedUdpDst = getMatch("of13.oxm_tlv_udp_dst", getUint16Fixed(U16.t(Integer.valueOf((String) args.get(key)))));
             
             
          }
       }
 
-      Schema oxmTlvSchema = protocol.getType("of.oxm_tlv");
+      Schema oxmTlvSchema = protocol.getType("of13.oxm_tlv");
       GenericArray<GenericRecord> oxmTlvsArray = new GenericData.Array<>(Schema.createArray(oxmTlvSchema), matches);
       
-      Schema oxmTlvFieldsSchema = protocol.getType("of.oxm_tlv_fields");
+      Schema oxmTlvFieldsSchema = protocol.getType("of13.oxm_tlv_fields");
       GenericRecord oxmTlvFieldsRecord = new GenericData.Record(oxmTlvFieldsSchema);
       oxmTlvFieldsRecord.put("oxm_tlvs", oxmTlvsArray);
 
       /*
        * Build match header
        */
-      Schema matchHeaderSchema = protocol.getType("of.match_header");
+      Schema matchHeaderSchema = protocol.getType("of13.match_header");
       GenericRecordBuilder matchHeaderBuilder = new GenericRecordBuilder(matchHeaderSchema);
       GenericRecord matchHeaderRecord = matchHeaderBuilder.build();
       
@@ -1373,7 +1367,7 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
          int matchLength = oxmOut.size() + 4;
          closingPadLength = (int) ((matchLength + 7)/8*8 - matchLength);
          
-         Schema uint16Schema = protocol.getType("of.uint_16");
+         Schema uint16Schema = protocol.getType("of13.uint_16");
          
          byte len[] = {(byte)(matchLength >> 8), (byte)(255 & matchLength)}; 
          GenericData.Fixed lenght = new GenericData.Fixed(uint16Schema, len);
@@ -1393,7 +1387,7 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
       /*
        * Assemble ofp_match structure
        */
-      Schema ofpMatchSchema = protocol.getType("of.ofp_match");
+      Schema ofpMatchSchema = protocol.getType("of13.ofp_match");
       GenericRecord ofpMatchRecord = new GenericData.Record(ofpMatchSchema);
       ofpMatchRecord.put("header", matchHeaderRecord);
       ofpMatchRecord.put("fields", oxmTlvFieldsRecord);
@@ -1405,10 +1399,10 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
        * Build Instruction records
        * Build GoTo Instruction for Test
        */
-      Schema ofpInstrSchema = protocol.getType("of.ofp_instruction");
+      Schema ofpInstrSchema = protocol.getType("of13.ofp_instruction");
   /*    GenericRecord ofpInstrRecord = new GenericData.Record(ofpInstrSchema);
       
-      Schema ofpInstrGoToSchema = protocol.getType("of.ofp_instruction_goto_table");
+      Schema ofpInstrGoToSchema = protocol.getType("of13.ofp_instruction_goto_table");
       GenericRecordBuilder instrBuilder = new GenericRecordBuilder(ofpInstrGoToSchema);
       GenericRecord ofpInstrGoToRecord = instrBuilder.build();
       ofpInstrRecord.put("instruction", ofpInstrGoToRecord);
@@ -1420,7 +1414,7 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
       /* 
        * Create Instruction Set
        */
-      Schema instrSetSchema = protocol.getType("of.instruction_set");
+      Schema instrSetSchema = protocol.getType("of13.instruction_set");
       GenericRecord instrSetRecord = new GenericData.Record(instrSetSchema);
       instrSetRecord.put("set", instrArray);
 
@@ -1448,7 +1442,7 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
          writer.write(ofpFlowModRecord, encoder);
          encoder.flush();
          
-         Schema uint16Schema = protocol.getType("of.uint_16");
+         Schema uint16Schema = protocol.getType("of13.uint_16");
                
          byte len[] = {(byte)(out.size() >> 8), (byte)(255 & out.size())}; 
          GenericData.Fixed lenght = new GenericData.Fixed(uint16Schema, len);
@@ -1475,7 +1469,7 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
    
    public GenericRecord parseActionString(String actionstr) {
       
-      Schema ofpActionSchema = protocol.getType("of.ofp_action");      
+      Schema ofpActionSchema = protocol.getType("of13.ofp_action");      
       List<GenericRecord> actions = new LinkedList<GenericRecord>();
       
       GenericRecord actionSetRecord = null;
@@ -1543,7 +1537,7 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
           
 
           GenericArray<GenericRecord> actionArray = new GenericData.Array<> (Schema.createArray(ofpActionSchema), actions);
-          Schema actionSetSchema = protocol.getType("of.action_set");
+          Schema actionSetSchema = protocol.getType("of13.action_set");
           actionSetRecord = new GenericData.Record(actionSetSchema);
           actionSetRecord.put("set", actionArray);
       }
@@ -1555,11 +1549,11 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
 
       Matcher n;      
       
-      Schema ofpActionSchema = protocol.getType("of.ofp_action");
+      Schema ofpActionSchema = protocol.getType("of13.ofp_action");
       GenericRecord ofpActionBaseRecord = new GenericData.Record(ofpActionSchema);
         
     
-      Schema ofpActionOutSchema = protocol.getType("of.ofp_action_output");
+      Schema ofpActionOutSchema = protocol.getType("of13.ofp_action_output");
       GenericRecordBuilder actionBuilder = new GenericRecordBuilder(ofpActionOutSchema);
       GenericRecord ofpActionOutRecord = actionBuilder.build();
       
@@ -1606,15 +1600,15 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
 
       Matcher n;      
       
-      Schema ofpActionSchema = protocol.getType("of.ofp_action");
+      Schema ofpActionSchema = protocol.getType("of13.ofp_action");
       GenericRecord ofpActionRecord = new GenericData.Record(ofpActionSchema);
       List <GenericRecord> matches = new ArrayList<>();
       
-      Schema actionSetFieldHeaderSchema = protocol.getType("of.action_set_field_header");
+      Schema actionSetFieldHeaderSchema = protocol.getType("of13.action_set_field_header");
       GenericRecordBuilder headerBuilder = new GenericRecordBuilder(actionSetFieldHeaderSchema);
       GenericRecord actionSetFieldHeaderRecord = headerBuilder.build();
     
-      Schema ofpActionSetFieldSchema = protocol.getType("of.ofp_action_set_field");
+      Schema ofpActionSetFieldSchema = protocol.getType("of13.ofp_action_set_field");
       GenericRecord ofpActionSetFieldRecord = new GenericData.Record(ofpActionSetFieldSchema);
 
       n = Pattern.compile("set_field_eth_dst=(?:((?:0x)?\\d+))").matcher(subaction);
@@ -1631,7 +1625,7 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
               }
           }
           
-/*          Schema oxmTlvEthDstSchema = protocol.getType("of.oxm_tlv_eth_dst");
+/*          Schema oxmTlvEthDstSchema = protocol.getType("of13.oxm_tlv_eth_dst");
           GenericRecord oxmTlvEthDstRecord = new GenericData.Record(oxmTlvEthDstSchema);
           int oxmTlvHeader = (OXMClass.OFPXMC_OPENFLOW_BASIC.getValue() << 16) | 
                              (OXMField.OFPXMT_OFB_ETH_DST.getValue() << 9) | 
@@ -1642,18 +1636,18 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
           oxmTlvEthDstRecord.put("header", getUint32Fixed(oxmTlvHeader));
           oxmTlvEthDstRecord.put("tlv", getUint48Fixed(eth));
           
-          Schema oxmTlvSchema = protocol.getType("of.oxm_tlv");
+          Schema oxmTlvSchema = protocol.getType("of13.oxm_tlv");
           GenericRecord oxmTlvRecord = new GenericData.Record(oxmTlvSchema);
           oxmTlvRecord.put("match", oxmTlvEthDstRecord);
           
           matches.add(oxmTlvRecord);*/
 
-          Schema oxmTlvSchema = protocol.getType("of.oxm_tlv");
-          matches.add(getMatch("of.oxm_tlv_eth_dst", getUint48Fixed(eth)));
+          Schema oxmTlvSchema = protocol.getType("of13.oxm_tlv");
+          matches.add(getMatch("of13.oxm_tlv_eth_dst", getUint48Fixed(eth)));
           
           GenericArray<GenericRecord> oxmTlvsArray = new GenericData.Array<>(Schema.createArray(oxmTlvSchema), matches);
           
-          Schema oxmTlvFieldsSchema = protocol.getType("of.oxm_tlv_fields");
+          Schema oxmTlvFieldsSchema = protocol.getType("of13.oxm_tlv_fields");
           GenericRecord oxmTlvFieldsRecord = new GenericData.Record(oxmTlvFieldsSchema);
           oxmTlvFieldsRecord.put("oxm_tlvs", oxmTlvsArray);
 
@@ -1702,7 +1696,7 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
              actWriter.write(ofpActionSetFieldRecord, instrEncoder);
              instrEncoder.flush();
              
-             Schema uint16Schema = protocol.getType("of.uint_16");
+             Schema uint16Schema = protocol.getType("of13.uint_16");
              
              byte len[] = {(byte)(actOut.size() >> 8), (byte)(255 & actOut.size())}; 
              GenericData.Fixed lenght = new GenericData.Fixed(uint16Schema, len);
@@ -1727,15 +1721,15 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
 
       Matcher n;      
       
-      Schema ofpActionSchema = protocol.getType("of.ofp_action");
+      Schema ofpActionSchema = protocol.getType("of13.ofp_action");
       GenericRecord ofpActionRecord = new GenericData.Record(ofpActionSchema);
       List <GenericRecord> matches = new ArrayList<>();
       
-      Schema actionSetFieldHeaderSchema = protocol.getType("of.action_set_field_header");
+      Schema actionSetFieldHeaderSchema = protocol.getType("of13.action_set_field_header");
       GenericRecordBuilder headerBuilder = new GenericRecordBuilder(actionSetFieldHeaderSchema);
       GenericRecord actionSetFieldHeaderRecord = headerBuilder.build();
     
-      Schema ofpActionSetFieldSchema = protocol.getType("of.ofp_action_set_field");
+      Schema ofpActionSetFieldSchema = protocol.getType("of13.ofp_action_set_field");
       GenericRecord ofpActionSetFieldRecord = new GenericData.Record(ofpActionSetFieldSchema);
 
       //TODO implement format XX:XX:XX:XX:XX:XX using the precious get_mac_addr()
@@ -1753,7 +1747,7 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
               }
           }
           
-/*          Schema oxmTlvEthSrcSchema = protocol.getType("of.oxm_tlv_eth_src");
+/*          Schema oxmTlvEthSrcSchema = protocol.getType("of13.oxm_tlv_eth_src");
           GenericRecord oxmTlvEthSrcRecord = new GenericData.Record(oxmTlvEthSrcSchema);
           
           int oxmTlvHeader = (OXMClass.OFPXMC_OPENFLOW_BASIC.getValue() << 16) | 
@@ -1764,16 +1758,16 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
           oxmTlvEthSrcRecord.put("header", getUint32Fixed(oxmTlvHeader));
           oxmTlvEthSrcRecord.put("tlv", getUint48Fixed(eth));
           
-          Schema oxmTlvSchema = protocol.getType("of.oxm_tlv");
+          Schema oxmTlvSchema = protocol.getType("of13.oxm_tlv");
           GenericRecord oxmTlvRecord = new GenericData.Record(oxmTlvSchema);
           oxmTlvRecord.put("match", oxmTlvEthSrcRecord);*/
 
-          Schema oxmTlvSchema = protocol.getType("of.oxm_tlv");          
-          matches.add(getMatch("of.oxm_tlv_eth_src", getUint48Fixed(eth)));
+          Schema oxmTlvSchema = protocol.getType("of13.oxm_tlv");          
+          matches.add(getMatch("of13.oxm_tlv_eth_src", getUint48Fixed(eth)));
           
           GenericArray<GenericRecord> oxmTlvsArray = new GenericData.Array<>(Schema.createArray(oxmTlvSchema), matches);
           
-          Schema oxmTlvFieldsSchema = protocol.getType("of.oxm_tlv_fields");
+          Schema oxmTlvFieldsSchema = protocol.getType("of13.oxm_tlv_fields");
           GenericRecord oxmTlvFieldsRecord = new GenericData.Record(oxmTlvFieldsSchema);
           oxmTlvFieldsRecord.put("oxm_tlvs", oxmTlvsArray);
           
@@ -1821,7 +1815,7 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
              actWriter.write(ofpActionSetFieldRecord, instrEncoder);
              instrEncoder.flush();
              
-             Schema uint16Schema = protocol.getType("of.uint_16");
+             Schema uint16Schema = protocol.getType("of13.uint_16");
              
              byte len[] = {(byte)(actOut.size() >> 8), (byte)(255 & actOut.size())}; 
              GenericData.Fixed lenght = new GenericData.Fixed(uint16Schema, len);
@@ -1846,14 +1840,14 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
      
      Matcher n;
      
-     Schema ofpActionSchema = protocol.getType("of.ofp_action");
+     Schema ofpActionSchema = protocol.getType("of13.ofp_action");
      GenericRecord ofpActionRecord = new GenericData.Record(ofpActionSchema);
      
-     Schema actionPushMplsHeaderSchema = protocol.getType("of.action_push_mpls_header");
+     Schema actionPushMplsHeaderSchema = protocol.getType("of13.action_push_mpls_header");
      GenericRecordBuilder headerBuilder = new GenericRecordBuilder(actionPushMplsHeaderSchema);
      GenericRecord actionPushMplsHeaderRecord = headerBuilder.build();
      
-     Schema ofpActionPushMplsSchema = protocol.getType("of.ofp_action_push_mpls");
+     Schema ofpActionPushMplsSchema = protocol.getType("of13.ofp_action_push_mpls");
      GenericRecord ofpActionPushMplsRecord = new GenericData.Record(ofpActionPushMplsSchema);
 
      ofpActionPushMplsRecord.put("header", actionPushMplsHeaderRecord);
@@ -1885,14 +1879,14 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
      
      Matcher n;
      
-     Schema ofpActionSchema = protocol.getType("of.ofp_action");
+     Schema ofpActionSchema = protocol.getType("of13.ofp_action");
      GenericRecord ofpActionRecord = new GenericData.Record(ofpActionSchema);
      
-     Schema actionPopVlanHeaderSchema = protocol.getType("of.action_pop_vlan_header");
+     Schema actionPopVlanHeaderSchema = protocol.getType("of13.action_pop_vlan_header");
      GenericRecordBuilder headerBuilder = new GenericRecordBuilder(actionPopVlanHeaderSchema);
      GenericRecord actionPopVlanHeaderRecord = headerBuilder.build();
      
-     Schema ofpActionPopVlanSchema = protocol.getType("of.ofp_action_pop_vlan");
+     Schema ofpActionPopVlanSchema = protocol.getType("of13.ofp_action_pop_vlan");
      GenericRecord ofpActionPopVlanRecord = new GenericData.Record(ofpActionPopVlanSchema);
      
      ofpActionPopVlanRecord.put("header", actionPopVlanHeaderRecord);
@@ -1907,15 +1901,15 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
 
       Matcher n;      
       
-      Schema ofpActionSchema = protocol.getType("of.ofp_action");
+      Schema ofpActionSchema = protocol.getType("of13.ofp_action");
       GenericRecord ofpActionRecord = new GenericData.Record(ofpActionSchema);
       List <GenericRecord> matches = new ArrayList<>();
       
-      Schema actionSetFieldHeaderSchema = protocol.getType("of.action_set_field_header");
+      Schema actionSetFieldHeaderSchema = protocol.getType("of13.action_set_field_header");
       GenericRecordBuilder headerBuilder = new GenericRecordBuilder(actionSetFieldHeaderSchema);
       GenericRecord actionSetFieldHeaderRecord = headerBuilder.build();
     
-      Schema ofpActionSetFieldSchema = protocol.getType("of.ofp_action_set_field");
+      Schema ofpActionSetFieldSchema = protocol.getType("of13.ofp_action_set_field");
       GenericRecord ofpActionSetFieldRecord = new GenericData.Record(ofpActionSetFieldSchema);
 
       n = Pattern.compile("set_field_vlan_vid=(?:((?:0x)?\\d+))").matcher(subaction);
@@ -1932,7 +1926,7 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
               }
           }
           
-/*          Schema oxmTlvVlanVidSchema = protocol.getType("of.oxm_tlv_vlan_vid");
+/*          Schema oxmTlvVlanVidSchema = protocol.getType("of13.oxm_tlv_vlan_vid");
           GenericRecord oxmTlvVlanVidRecord = new GenericData.Record(oxmTlvVlanVidSchema);
           
           int oxmTlvHeader = (OXMClass.OFPXMC_OPENFLOW_BASIC.getValue() << 16) | 
@@ -1943,16 +1937,16 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
           oxmTlvVlanVidRecord.put("header", getUint32Fixed(oxmTlvHeader));
           oxmTlvVlanVidRecord.put("tlv", getUint16Fixed(vid));
           
-          Schema oxmTlvSchema = protocol.getType("of.oxm_tlv");
+          Schema oxmTlvSchema = protocol.getType("of13.oxm_tlv");
           GenericRecord oxmTlvRecord = new GenericData.Record(oxmTlvSchema);
           oxmTlvRecord.put("match", oxmTlvVlanVidRecord);*/
           
-          Schema oxmTlvSchema = protocol.getType("of.oxm_tlv");          
-          matches.add(getMatch("of.oxm_tlv_vlan_vid", getUint16Fixed(vid)));
+          Schema oxmTlvSchema = protocol.getType("of13.oxm_tlv");          
+          matches.add(getMatch("of13.oxm_tlv_vlan_vid", getUint16Fixed(vid)));
           
           GenericArray<GenericRecord> oxmTlvsArray = new GenericData.Array<>(Schema.createArray(oxmTlvSchema), matches);
           
-          Schema oxmTlvFieldsSchema = protocol.getType("of.oxm_tlv_fields");
+          Schema oxmTlvFieldsSchema = protocol.getType("of13.oxm_tlv_fields");
           GenericRecord oxmTlvFieldsRecord = new GenericData.Record(oxmTlvFieldsSchema);
           oxmTlvFieldsRecord.put("oxm_tlvs", oxmTlvsArray);
           
@@ -2000,7 +1994,7 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
              actWriter.write(ofpActionSetFieldRecord, instrEncoder);
              instrEncoder.flush();
              
-             Schema uint16Schema = protocol.getType("of.uint_16");
+             Schema uint16Schema = protocol.getType("of13.uint_16");
              
              byte len[] = {(byte)(actOut.size() >> 8), (byte)(255 & actOut.size())}; 
              GenericData.Fixed lenght = new GenericData.Fixed(uint16Schema, len);
@@ -2025,15 +2019,15 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
 
      Matcher n;      
      
-     Schema ofpActionSchema = protocol.getType("of.ofp_action");
+     Schema ofpActionSchema = protocol.getType("of13.ofp_action");
      GenericRecord ofpActionRecord = new GenericData.Record(ofpActionSchema);
      List <GenericRecord> matches = new ArrayList<>();
      
-     Schema actionSetFieldHeaderSchema = protocol.getType("of.action_set_field_header");
+     Schema actionSetFieldHeaderSchema = protocol.getType("of13.action_set_field_header");
      GenericRecordBuilder headerBuilder = new GenericRecordBuilder(actionSetFieldHeaderSchema);
      GenericRecord actionSetFieldHeaderRecord = headerBuilder.build();
    
-     Schema ofpActionSetFieldSchema = protocol.getType("of.ofp_action_set_field");
+     Schema ofpActionSetFieldSchema = protocol.getType("of13.ofp_action_set_field");
      GenericRecord ofpActionSetFieldRecord = new GenericData.Record(ofpActionSetFieldSchema);
 
      n = Pattern.compile("set_field_mpls_label=(?:((?:0x)?\\d+))").matcher(subaction);
@@ -2050,7 +2044,7 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
              }
          }
          
-/*         Schema oxmTlvMplsLabelSchema = protocol.getType("of.oxm_tlv_mpls_label");
+/*         Schema oxmTlvMplsLabelSchema = protocol.getType("of13.oxm_tlv_mpls_label");
          GenericRecord oxmTlvMplsLabelRecord = new GenericData.Record(oxmTlvMplsLabelSchema);
          
          int oxmTlvHeader = (OXMClass.OFPXMC_OPENFLOW_BASIC.getValue() << 16) | 
@@ -2061,16 +2055,16 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
          oxmTlvMplsLabelRecord.put("header", getUint32Fixed(oxmTlvHeader));
          oxmTlvMplsLabelRecord.put("tlv", getUint24Fixed(label));
          
-         Schema oxmTlvSchema = protocol.getType("of.oxm_tlv");
+         Schema oxmTlvSchema = protocol.getType("of13.oxm_tlv");
          GenericRecord oxmTlvRecord = new GenericData.Record(oxmTlvSchema);
          oxmTlvRecord.put("match", oxmTlvMplsLabelRecord);*/
          
-         Schema oxmTlvSchema = protocol.getType("of.oxm_tlv");         
-         matches.add(getMatch("of.oxm_tlv_mpls_label", getUint32Fixed(label)));
+         Schema oxmTlvSchema = protocol.getType("of13.oxm_tlv");         
+         matches.add(getMatch("of13.oxm_tlv_mpls_label", getUint32Fixed(label)));
          
          GenericArray<GenericRecord> oxmTlvsArray = new GenericData.Array<>(Schema.createArray(oxmTlvSchema), matches);
          
-         Schema oxmTlvFieldsSchema = protocol.getType("of.oxm_tlv_fields");
+         Schema oxmTlvFieldsSchema = protocol.getType("of13.oxm_tlv_fields");
          GenericRecord oxmTlvFieldsRecord = new GenericData.Record(oxmTlvFieldsSchema);
          oxmTlvFieldsRecord.put("oxm_tlvs", oxmTlvsArray);
          
@@ -2118,7 +2112,7 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
             actWriter.write(ofpActionSetFieldRecord, instrEncoder);
             instrEncoder.flush();
             
-            Schema uint16Schema = protocol.getType("of.uint_16");
+            Schema uint16Schema = protocol.getType("of13.uint_16");
             
             byte len[] = {(byte)(actOut.size() >> 8), (byte)(255 & actOut.size())}; 
             GenericData.Fixed lenght = new GenericData.Fixed(uint16Schema, len);
@@ -2388,7 +2382,7 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
 
      oxmTlvFieldRecord.put("tlv", tlv);
      
-     Schema oxmTlvSchema = protocol.getType("of.oxm_tlv");
+     Schema oxmTlvSchema = protocol.getType("of13.oxm_tlv");
      GenericRecord oxmTlvRecord = new GenericData.Record(oxmTlvSchema);
      oxmTlvRecord.put("match", oxmTlvFieldRecord);
      
@@ -2432,21 +2426,12 @@ public Short getVersion() {
 }
 
 /* (non-Javadoc)
- * @see org.flowforwarding.of.protocol.ofmessages.IOFMessageProvider#isFeautureReply(byte[])
- */
-@Override
-public boolean isFeautureReply(byte[] in) {
-   
-   return false;
-}
-
-/* (non-Javadoc)
  * @see org.flowforwarding.of.protocol.ofmessages.IOFMessageProvider#isConfig(byte[])
  */
 @Override
 public boolean isConfig(byte[] in) {
    GenericRecord record = getSwitchConfigRecord(in);
-   GenericRecord header = new GenericData.Record(ofpHeaderSchema);
+   GenericRecord header = new GenericData.Record(switchConfigHeaderSchema);
    
    header = (GenericRecord) record.get("header");
    // TODO Improvs: We plan to get all types from Avro protocol type... soon... so let it be now just 8
@@ -2522,13 +2507,38 @@ public OFMessagePacketInHandler parsePacketIn(byte[] in) {
  */
 @Override
 public boolean isError(byte[] in) {
-   GenericRecord header = getRecord(errorMessageHeader, in);
+   GenericRecord header = getRecord(errorMessageHeaderSchema, in);
 
    // TODO Improvs: We plan to get all types from Avro protocol type... soon... so let it be now just 1
    Byte type = getByte((GenericData.Fixed)header.get("type")); 
    if (type.byteValue() == 1 )  // ERROR
       return true;
    else 
-      return false;}
+      return false;
+ }
+
+   @Override
+   public boolean isSwitchFeatures(byte[] in) {
+      GenericRecord header = getRecord(switchFeaturesHeaderSchema, in);
+      
+      // TODO Improvs: We plan to get all types from Avro protocol type... soon... so let it be now just 6
+      Byte type = getByte((GenericData.Fixed)header.get("type"));
+      if (type.byteValue() == 6 )  // FEATURES_REPLY
+         return true;
+      else
+         return false;
+   }
+
+@Override
+public boolean isMessage (Schema headerSchema, byte[] in) {
+   GenericRecord header = getRecord(headerSchema, in);
+
+   // TODO Improvs: We plan to get all types from Avro protocol type... soon... so let it be now just 1
+   Byte type = getByte((GenericData.Fixed)header.get("type")); 
+   if (type.byteValue() == 1 )  // ERROR
+      return true;
+   else 
+      return false;
+}
   
 }
