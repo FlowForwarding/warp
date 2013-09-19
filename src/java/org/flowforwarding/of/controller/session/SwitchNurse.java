@@ -5,16 +5,10 @@
 
 package org.flowforwarding.of.controller.session;
 
-import java.io.ByteArrayOutputStream;
-
-import org.flowforwarding.of.ofswitch.SwitchState;
 import org.flowforwarding.of.ofswitch.SwitchState.SwitchHandler;
-import org.flowforwarding.of.protocol.ofmessages.IOFMessageHandler;
-import org.flowforwarding.of.protocol.ofmessages.OFMessageFlowMod.OFMessageFlowModHandler;
 import org.flowforwarding.of.protocol.ofmessages.IOFMessageProvider;
 import org.flowforwarding.of.protocol.ofmessages.IOFMessageProviderFactory;
 import org.flowforwarding.of.protocol.ofmessages.OFMessageProviderFactoryAvroProtocol;
-import org.flowforwarding.of.protocol.ofstructures.OFStructureInstruction.OFStructureInstructionHandler;
 
 import akka.actor.ActorRef;
 import akka.actor.UntypedActor;
@@ -91,18 +85,16 @@ public class SwitchNurse extends UntypedActor {
             if (provider.isConfig(in.toArray())) {
                System.out.println("[OF-INFO] DPID: " + Long.toHexString(swHandler.getDpid().longValue()) +" Switch Config is received from the Switch ");
                ofSessionHandler.tell(new OFEventSwitchConfig(swHandler, provider.parseSwitchConfig(in.toArray())), getSelf());
-            }
-            
-            if (provider.isPacketIn(in.toArray())) {
+            } else if (provider.isPacketIn(in.toArray())) {
                System.out.println("[OF-INFO] DPID: " + Long.toHexString(swHandler.getDpid().longValue()) +" Packet-In is received from the Switch");
                ofSessionHandler.tell(new OFEventPacketIn(swHandler, provider.parsePacketIn(in.toArray())), getSelf());
-            }
-            
-            if (provider.isError(in.toArray())) {
-               System.out.println("[OF-INFO] DPID: " + Long.toHexString(swHandler.getDpid().longValue()) + "Error is received from the Switch ");
+            }  else if (provider.isError(in.toArray())) {
+               System.out.println("[OF-INFO] DPID: " + Long.toHexString(swHandler.getDpid().longValue()) + " Error is received from the Switch ");
                ofSessionHandler.tell(new OFEventError(swHandler, provider.parseError(in.toArray())), getSelf());
+            }  else if (provider.isEchoRequest(in.toArray())) {
+               System.out.println("[OF-INFO] DPID: " + Long.toHexString(swHandler.getDpid().longValue()) + " Echo request is received from the Switch ");
+               getSender().tell(TcpMessage.write(ByteString.fromArray(provider.encodeEchoReply())), getSelf());
             }
-            
             
             break;
          default:

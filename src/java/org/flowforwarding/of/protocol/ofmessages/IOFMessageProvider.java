@@ -100,11 +100,22 @@ public interface IOFMessageProvider {
     * @return
     */
    boolean isError (byte [] in);
+   
+   /**
+    * @param in
+    * @return
+    */
+   boolean isEchoRequest (byte [] in);
 
    /**
     * 
     */
    byte [] encodeEchoRequest();
+   
+   /**
+    * 
+    */
+   byte [] encodeEchoReply();
    
    /**
     * 

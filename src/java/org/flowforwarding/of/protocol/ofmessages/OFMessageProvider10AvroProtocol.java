@@ -52,6 +52,8 @@ public class OFMessageProvider10AvroProtocol implements IOFMessageProvider{
    private Schema ofpEchoRequestSchema = null;
    private Schema ofpEchoReplySchema = null;
    
+   private Schema packetInHeaderSchema = null;
+   private Schema ofpPacketInSchema = null;
    
    
    private Protocol protocol = null;
@@ -82,10 +84,12 @@ public class OFMessageProvider10AvroProtocol implements IOFMessageProvider{
       ofpSwitchConfigSchema = protocol.getType("of10.ofp_switch_config");
       
       echoRequestHeaderSchema = protocol.getType("of10.echo_request_header");
-      echoReplyHeaderSchema = protocol.getType("of10.echo_reply_header");
       ofpEchoRequestSchema = protocol.getType("of10.ofp_echo_request");
+      echoReplyHeaderSchema = protocol.getType("of10.echo_reply_header");
       ofpEchoReplySchema = protocol.getType("of10.ofp_echo_reply");
       
+      packetInHeaderSchema = protocol.getType("of10.packet_in_header");
+      ofpPacketInSchema = protocol.getType("of10.ofp_packet_in");
    }
 
    public byte[] encodeMessage (Schema headerSchema, Schema bodySchema) {
@@ -387,17 +391,34 @@ public class OFMessageProvider10AvroProtocol implements IOFMessageProvider{
     */
    @Override
    public OFMessageSwitchConfigHandler parseSwitchConfig(byte[] in) {
-      // TODO Auto-generated method stub
-      return null;
+      GenericRecord record = getRecord(ofpSwitchConfigSchema, in);
+      
+   // TODO Improvs: We plan to get all flags from Avro protocol type... soon... so let it be now just numbers
+      short flags = getShort((GenericData.Fixed)record.get("flags"));
+      OFMessageSwitchConfigHandler configH = builder.buildSwitchConfig();
+      if (flags == 0) {
+         configH.setConfigFlagFragNormal();
+      } else {
+         if ((flags & 1) != 0) configH.setConfigFlagFragDrop();
+         if ((flags & 2) != 0) configH.setConfigFlagFragReasm();
+         if ((flags & 3) != 0) configH.setConfigFlagFragMask();
+      }
+      
+      return configH;
    }
-
    /* (non-Javadoc)
     * @see org.flowforwarding.of.protocol.ofmessages.IOFMessageProvider#isPacketIn(byte[])
     */
    @Override
    public boolean isPacketIn(byte[] in) {
-      // TODO Auto-generated method stub
-      return false;
+      GenericRecord header = getRecord(packetInHeaderSchema, in);
+
+      // TODO Improvs: We plan to get all types from Avro protocol type... soon... so let it be now just 10
+      Byte type = getByte((GenericData.Fixed)header.get("type")); 
+      if (type.byteValue() == 10 )  // OFPT_PACKET_IN
+         return true;
+      else 
+         return false;   
    }
 
    /* (non-Javadoc)
@@ -438,7 +459,7 @@ public class OFMessageProvider10AvroProtocol implements IOFMessageProvider{
       else 
          return false;
    }
-
+   
    @Override
    public boolean isSwitchFeatures(byte[] in) {
       GenericRecord header = getRecord(switchFeaturesHeaderSchema, in);
@@ -446,6 +467,18 @@ public class OFMessageProvider10AvroProtocol implements IOFMessageProvider{
       // TODO Improvs: We plan to get all types from Avro protocol type... soon... so let it be now just 6
       Byte type = getByte((GenericData.Fixed)header.get("type"));
       if (type.byteValue() == 6 )  // FEATURES_REPLY
+         return true;
+      else
+         return false;
+   }
+
+   @Override
+   public boolean isEchoRequest(byte[] in) {
+      GenericRecord header = getRecord(echoRequestHeaderSchema, in);
+      
+      // TODO Improvs: We plan to get all types from Avro protocol type... soon... so let it be now just 6
+      Byte type = getByte((GenericData.Fixed)header.get("type"));
+      if (type.byteValue() == 2 )  // ECHO_REQUEST
          return true;
       else
          return false;

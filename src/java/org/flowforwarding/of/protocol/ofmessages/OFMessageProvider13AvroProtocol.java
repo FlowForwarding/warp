@@ -2528,7 +2528,19 @@ public boolean isError(byte[] in) {
       else
          return false;
    }
-
+   
+   @Override
+   public boolean isEchoRequest(byte[] in) {
+      GenericRecord header = getRecord(echoRequestHeaderSchema, in);
+      
+      // TODO Improvs: We plan to get all types from Avro protocol type... soon... so let it be now just 6
+      Byte type = getByte((GenericData.Fixed)header.get("type"));
+      if (type.byteValue() == 2 )  // ECHO_REQUEST
+         return true;
+      else
+         return false;
+   }
+   
 @Override
 public boolean isMessage (Schema headerSchema, byte[] in) {
    GenericRecord header = getRecord(headerSchema, in);
@@ -2540,5 +2552,7 @@ public boolean isMessage (Schema headerSchema, byte[] in) {
    else 
       return false;
 }
+
+
   
 }
