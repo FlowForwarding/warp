@@ -13,12 +13,21 @@ import org.flowforwarding.of.protocol.ofstructures.OFStructureHandler;
  */
 public abstract class OFStructureMatch <Name, Value> implements IOFStructure {
 
+   
+   protected OFStructureMatch() {
+      super();
+   }
+
+   protected Name name;
+   protected Value value;
+   
+   
    /**
     * @return
     */
    public Name getName() {
       // TODO Auto-generated method stub
-      return null;
+      return name;
    }
 
    /**
@@ -26,10 +35,13 @@ public abstract class OFStructureMatch <Name, Value> implements IOFStructure {
     */
    public Value getMatch() {
       // TODO Auto-generated method stub
-      return null;
+      return value;
    }
    
    public class OFStructureMatchHandler extends OFStructureHandler<OFStructureMatch<Name, Value>> {
+      
+      protected OFStructureMatchHandler () {
+      }
       
    }
 }

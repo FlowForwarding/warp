@@ -403,7 +403,6 @@
      {"name":"buffer_id", "type":"uint_32"},
      {"name":"total_len", "type":"uint_16"},
      {"name":"in_port", "type":"uint_16"}, 
-     {"name":"in_port", "type":"uint_16"}, 
      {"name":"reason", "type":"uint_8"},
      {"name":"pad", "type":"pad_1"},
      {"name":"data", "type":{"type":"array", "items":"uint_8"}}

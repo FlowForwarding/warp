@@ -426,8 +426,9 @@ public class OFMessageProvider10AvroProtocol implements IOFMessageProvider{
     */
    @Override
    public OFMessagePacketInHandler parsePacketIn(byte[] in) {
-      // TODO Auto-generated method stub
-      return null;
+      GenericRecord packetIn = getRecord(ofpPacketInSchema, in);
+      
+      return null;      
    }
 
    /* (non-Javadoc)
