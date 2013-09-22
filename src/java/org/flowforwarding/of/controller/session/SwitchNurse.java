@@ -8,7 +8,9 @@ package org.flowforwarding.of.controller.session;
 import org.flowforwarding.of.ofswitch.SwitchState.SwitchHandler;
 import org.flowforwarding.of.protocol.ofmessages.IOFMessageProvider;
 import org.flowforwarding.of.protocol.ofmessages.IOFMessageProviderFactory;
+import org.flowforwarding.of.protocol.ofmessages.OFMessageFlowMod.OFMessageFlowModHandler;
 import org.flowforwarding.of.protocol.ofmessages.OFMessageProviderFactoryAvroProtocol;
+import org.flowforwarding.of.protocol.ofstructures.OFStructureInstruction.OFStructureInstructionHandler;
 
 import akka.actor.ActorRef;
 import akka.actor.UntypedActor;
@@ -85,6 +87,20 @@ public class SwitchNurse extends UntypedActor {
             if (provider.isConfig(in.toArray())) {
                System.out.println("[OF-INFO] DPID: " + Long.toHexString(swHandler.getDpid().longValue()) +" Switch Config is received from the Switch ");
                ofSessionHandler.tell(new OFEventSwitchConfig(swHandler, provider.parseSwitchConfig(in.toArray())), getSelf());
+               
+               OFMessageFlowModHandler flowModHandler = provider.buildFlowModMsg();
+               flowModHandler.addField("priority", "32000");
+               flowModHandler.addMatchInPort(swHandler.getDpid().toString().substring(0, 3));
+
+               OFStructureInstructionHandler instruction = provider.buildInstructionApplyActions();
+               instruction.addActionOutput("2");
+               flowModHandler.addInstruction("apply_actions", instruction);
+
+               instruction = provider.buildInstructionGotoTable();
+               flowModHandler.addInstruction("goto_table", instruction);
+               
+               getSender().tell(TcpMessage.write(ByteString.fromArray(provider.encodeFlowMod(flowModHandler))), getSelf());
+               
             } else if (provider.isPacketIn(in.toArray())) {
                System.out.println("[OF-INFO] DPID: " + Long.toHexString(swHandler.getDpid().longValue()) +" Packet-In is received from the Switch");
                ofSessionHandler.tell(new OFEventPacketIn(swHandler, provider.parsePacketIn(in.toArray())), getSelf());
@@ -95,6 +111,21 @@ public class SwitchNurse extends UntypedActor {
                System.out.println("[OF-INFO] DPID: " + Long.toHexString(swHandler.getDpid().longValue()) + " Echo request is received from the Switch ");
                getSender().tell(TcpMessage.write(ByteString.fromArray(provider.encodeEchoReply())), getSelf());
             }
+            
+            //ofSessionHandler.tell(new OFEventIncoming(swHandler), getSelf());
+            
+            OFMessageFlowModHandler flowModHandler = provider.buildFlowModMsg();
+            flowModHandler.addField("priority", "32000");
+            flowModHandler.addMatchInPort(swHandler.getDpid().toString().substring(0, 3));
+
+            OFStructureInstructionHandler instruction = provider.buildInstructionApplyActions();
+            instruction.addActionOutput("2");
+            flowModHandler.addInstruction("apply_actions", instruction);
+
+            instruction = provider.buildInstructionGotoTable();
+            flowModHandler.addInstruction("goto_table", instruction);
+            
+            getSender().tell(TcpMessage.write(ByteString.fromArray(provider.encodeFlowMod(flowModHandler))), getSelf());
             
             break;
          default:
