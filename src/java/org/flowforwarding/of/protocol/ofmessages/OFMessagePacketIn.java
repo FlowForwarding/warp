@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.flowforwarding.of.protocol.params.match.OFStructureMatch;
+import org.flowforwarding.of.protocol.offields.match.OFStructureMatch;
 import org.flowforwarding.of.protocol.supply.OFMAdd;
 import org.flowforwarding.of.protocol.supply.OFMGet;
 //import org.flowforwarding.of.protocol.supply.OFMGetPacketInMatch;

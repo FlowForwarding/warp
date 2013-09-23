@@ -47,24 +47,26 @@ public interface IOFMessageProvider {
          ByteArrayOutputStream byteArrayOutputStream);
 
    /**
-    * 
+    * Initializes Message provider
     */
    void init();
 
    /**
-    * @return
+    * Encodes a OpenFlow protocol Hello message
+    * @return byte array containing encoded Hello message
     */
    byte[] encodeHelloMessage();
-
-   /**
-    * @return
-    */
-   byte[] encodeSwitchConfigRequest();
-
+   
    /**
     * @return
     */
    byte[] encodeSwitchFeaturesRequest();
+
+   /**
+    * Encodes a OpenFlow protocol Switch Config request message
+    * @return byte array containing encoded  message
+    */
+   byte[] encodeSwitchConfigRequest();
 
    /**
     * @param array
@@ -78,8 +80,10 @@ public interface IOFMessageProvider {
    boolean isMessage (Schema header, byte[] in);
    
    /**
-    * @param in
-    * @return
+    * Verify whether a binary message is an OpenFlow Hello message
+    * @param in Should contain an OpenFlow message
+    * @return true if this is a Hello message
+    * 
     */
    boolean isHello(byte [] in);
    

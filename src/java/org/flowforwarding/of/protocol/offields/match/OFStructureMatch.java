@@ -2,7 +2,7 @@
  * © 2013 FlowForwarding.Org
  * All Rights Reserved.  Use is subject to license terms.
  */
-package org.flowforwarding.of.protocol.params.match;
+package org.flowforwarding.of.protocol.offields.match;
 
 import org.flowforwarding.of.protocol.ofstructures.IOFStructure;
 import org.flowforwarding.of.protocol.ofstructures.OFStructureHandler;
