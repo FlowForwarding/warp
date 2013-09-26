@@ -1,22 +1,39 @@
+/**
+ * © 2013 FlowForwarding.Org
+ * All Rights Reserved.  Use is subject to license terms.
+ */
 package org.flowforwarding.of.controller.session;
 
-import org.flowforwarding.of.ofswitch.SwitchState.SwitchHandler;
+import org.flowforwarding.of.ofswitch.SwitchState.SwitchRef;
 
+/**
+ * @author Infoblox Inc.
+ * @doc Issued after Controller and Switch perform Handshake procedure 
+ */
 public class OFEventHandshaked extends OFEvent {
    
-   protected SwitchHandler swHandler;
+   protected SwitchRef switchRef;
    
-   public SwitchHandler getSwitchHandler() {
-      return swHandler;
+   /**
+    * @return SwitchRef switchRef
+    */
+   public SwitchRef getSwitchRef() {
+      return switchRef;
    }
 
-   public void setSwitchHandler(SwitchHandler swRef) {
-      this.swHandler = swRef;
+   /**
+    * @param SwitchRef swRef
+    */
+   public void setSwitchRef(SwitchRef swRef) {
+      this.switchRef = swRef;
    }
-
-   public OFEventHandshaked(SwitchHandler swRef) {
+   
+   /**
+    * @param SwitchRef swRef
+    */
+   public OFEventHandshaked(SwitchRef swRef) {
       super();
-      this.swHandler = swRef;
+      this.switchRef = swRef;
    }
 
 }

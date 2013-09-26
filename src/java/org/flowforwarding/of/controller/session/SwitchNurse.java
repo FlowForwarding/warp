@@ -5,12 +5,12 @@
 
 package org.flowforwarding.of.controller.session;
 
-import org.flowforwarding.of.ofswitch.SwitchState.SwitchHandler;
+import org.flowforwarding.of.ofswitch.SwitchState.SwitchRef;
 import org.flowforwarding.of.protocol.ofmessages.IOFMessageProvider;
 import org.flowforwarding.of.protocol.ofmessages.IOFMessageProviderFactory;
-import org.flowforwarding.of.protocol.ofmessages.OFMessageFlowMod.OFMessageFlowModHandler;
+import org.flowforwarding.of.protocol.ofmessages.OFMessageFlowMod.OFMessageFlowModRef;
 import org.flowforwarding.of.protocol.ofmessages.OFMessageProviderFactoryAvroProtocol;
-import org.flowforwarding.of.protocol.ofstructures.OFStructureInstruction.OFStructureInstructionHandler;
+import org.flowforwarding.of.protocol.ofstructures.OFStructureInstruction.OFStructureInstructionRef;
 
 import akka.actor.ActorRef;
 import akka.actor.UntypedActor;
@@ -19,6 +19,12 @@ import akka.io.Tcp.ConnectionClosed;
 import akka.io.Tcp.Received;
 import akka.util.ByteString;
 
+/**
+ * 
+ * @author Infoblox Inc.
+ * @doc 
+ *
+ */
 public class SwitchNurse extends UntypedActor {
    
    private enum State {
@@ -30,7 +36,7 @@ public class SwitchNurse extends UntypedActor {
    }
    
    private State state = State.STARTED;
-   private SwitchHandler swHandler;
+   private SwitchRef swRef;
    
    private ActorRef ofSessionHandler = null;
    private ActorRef tcpChannel = null;
@@ -42,7 +48,7 @@ public class SwitchNurse extends UntypedActor {
    public void preStart() throws Exception {
       super.preStart();
       
-      swHandler = SwitchHandler.create();
+      swRef = SwitchRef.create();
    }
    @Override
    public void onReceive(Object msg) throws Exception {
@@ -56,7 +62,7 @@ public class SwitchNurse extends UntypedActor {
             if (provider != null) {
                
                provider.init();
-               swHandler.setVersion(provider.getVersion());
+               swRef.setVersion(provider.getVersion());
                
                getSender().tell(TcpMessage.write(ByteString.fromArray(provider.encodeHelloMessage())), getSelf());
                this.state = State.CONNECTED;
@@ -71,12 +77,12 @@ public class SwitchNurse extends UntypedActor {
             
             if (provider.isSwitchFeatures(in.toArray())) {
                if (provider.getDPID(in.toArray()) != null) {
-                  swHandler.setDpid(provider.getDPID(in.toArray()));
-                  System.out.println("[OF-INFO] DPID: " + Long.toHexString(swHandler.getDpid().longValue()) +" Feature Reply is received from the Switch ");
-                  System.out.println("[OF-INFO] Connected to Switch "+ Long.toHexString(swHandler.getDpid().longValue()));
+                  swRef.setDpid(provider.getDPID(in.toArray()));
+                  System.out.println("[OF-INFO] DPID: " + Long.toHexString(swRef.getDpid().longValue()) +" Feature Reply is received from the Switch ");
+                  System.out.println("[OF-INFO] Connected to Switch "+ Long.toHexString(swRef.getDpid().longValue()));
                   state = State.HANDSHAKED;
                   
-                  ofSessionHandler.tell(new OFEventHandshaked(swHandler), getSelf());
+                  ofSessionHandler.tell(new OFEventHandshaked(swRef), getSelf());
                }
             }
             break;
@@ -85,47 +91,47 @@ public class SwitchNurse extends UntypedActor {
             in = ((Received) msg).data();
             
             if (provider.isConfig(in.toArray())) {
-               System.out.println("[OF-INFO] DPID: " + Long.toHexString(swHandler.getDpid().longValue()) +" Switch Config is received from the Switch ");
-               ofSessionHandler.tell(new OFEventSwitchConfig(swHandler, provider.parseSwitchConfig(in.toArray())), getSelf());
+               System.out.println("[OF-INFO] DPID: " + Long.toHexString(swRef.getDpid().longValue()) +" Switch Config is received from the Switch ");
+               ofSessionHandler.tell(new OFEventSwitchConfig(swRef, provider.parseSwitchConfig(in.toArray())), getSelf());
                
-               OFMessageFlowModHandler flowModHandler = provider.buildFlowModMsg();
-               flowModHandler.addField("priority", "32000");
-               flowModHandler.addMatchInPort(swHandler.getDpid().toString().substring(0, 3));
+               OFMessageFlowModRef flowModRef = provider.buildFlowModMsg();
+               flowModRef.addField("priority", "32000");
+               flowModRef.addMatchInPort(swRef.getDpid().toString().substring(0, 3));
 
-               OFStructureInstructionHandler instruction = provider.buildInstructionApplyActions();
+               OFStructureInstructionRef instruction = provider.buildInstructionApplyActions();
                instruction.addActionOutput("2");
-               flowModHandler.addInstruction("apply_actions", instruction);
+               flowModRef.addInstruction("apply_actions", instruction);
 
                instruction = provider.buildInstructionGotoTable();
-               flowModHandler.addInstruction("goto_table", instruction);
+               flowModRef.addInstruction("goto_table", instruction);
                
-               getSender().tell(TcpMessage.write(ByteString.fromArray(provider.encodeFlowMod(flowModHandler))), getSelf());
+               getSender().tell(TcpMessage.write(ByteString.fromArray(provider.encodeFlowMod(flowModRef))), getSelf());
                
             } else if (provider.isPacketIn(in.toArray())) {
-               System.out.println("[OF-INFO] DPID: " + Long.toHexString(swHandler.getDpid().longValue()) +" Packet-In is received from the Switch");
-               ofSessionHandler.tell(new OFEventPacketIn(swHandler, provider.parsePacketIn(in.toArray())), getSelf());
+               System.out.println("[OF-INFO] DPID: " + Long.toHexString(swRef.getDpid().longValue()) +" Packet-In is received from the Switch");
+               ofSessionHandler.tell(new OFEventPacketIn(swRef, provider.parsePacketIn(in.toArray())), getSelf());
             }  else if (provider.isError(in.toArray())) {
-               System.out.println("[OF-INFO] DPID: " + Long.toHexString(swHandler.getDpid().longValue()) + " Error is received from the Switch ");
-               ofSessionHandler.tell(new OFEventError(swHandler, provider.parseError(in.toArray())), getSelf());
+               System.out.println("[OF-INFO] DPID: " + Long.toHexString(swRef.getDpid().longValue()) + " Error is received from the Switch ");
+               ofSessionHandler.tell(new OFEventError(swRef, provider.parseError(in.toArray())), getSelf());
             }  else if (provider.isEchoRequest(in.toArray())) {
-               System.out.println("[OF-INFO] DPID: " + Long.toHexString(swHandler.getDpid().longValue()) + " Echo request is received from the Switch ");
+               System.out.println("[OF-INFO] DPID: " + Long.toHexString(swRef.getDpid().longValue()) + " Echo request is received from the Switch ");
                getSender().tell(TcpMessage.write(ByteString.fromArray(provider.encodeEchoReply())), getSelf());
             }
             
-            //ofSessionHandler.tell(new OFEventIncoming(swHandler), getSelf());
+            //ofSessionHandler.tell(new OFEventIncoming(swRef), getSelf());
             
-            OFMessageFlowModHandler flowModHandler = provider.buildFlowModMsg();
-            flowModHandler.addField("priority", "32000");
-            flowModHandler.addMatchInPort(swHandler.getDpid().toString().substring(0, 3));
+            OFMessageFlowModRef flowModRef = provider.buildFlowModMsg();
+            flowModRef.addField("priority", "32000");
+            flowModRef.addMatchInPort(swRef.getDpid().toString().substring(0, 3));
 
-            OFStructureInstructionHandler instruction = provider.buildInstructionApplyActions();
+            OFStructureInstructionRef instruction = provider.buildInstructionApplyActions();
             instruction.addActionOutput("2");
-            flowModHandler.addInstruction("apply_actions", instruction);
+            flowModRef.addInstruction("apply_actions", instruction);
 
             instruction = provider.buildInstructionGotoTable();
-            flowModHandler.addInstruction("goto_table", instruction);
+            flowModRef.addInstruction("goto_table", instruction);
             
-            getSender().tell(TcpMessage.write(ByteString.fromArray(provider.encodeFlowMod(flowModHandler))), getSelf());
+            getSender().tell(TcpMessage.write(ByteString.fromArray(provider.encodeFlowMod(flowModRef))), getSelf());
             
             break;
          default:

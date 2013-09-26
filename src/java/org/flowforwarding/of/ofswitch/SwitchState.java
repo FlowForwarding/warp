@@ -32,24 +32,24 @@ public class SwitchState {
       this.dpid = dpid;
    }
    
-   public static class SwitchHandler {
+   public static class SwitchRef {
       
       protected SwitchState swState = null;
       
-      protected SwitchHandler () {
+      protected SwitchRef () {
          swState = new SwitchState ();
       }
       
-      protected SwitchHandler (SwitchState sws) {
+      protected SwitchRef (SwitchState sws) {
          swState = sws;
       }
       
-      public SwitchHandler create (SwitchState sws) {
-         return new SwitchHandler (sws);
+      public SwitchRef create (SwitchState sws) {
+         return new SwitchRef (sws);
       }
       
-      public static SwitchHandler create () {
-         return new SwitchHandler ();
+      public static SwitchRef create () {
+         return new SwitchRef ();
       }
 
       /**

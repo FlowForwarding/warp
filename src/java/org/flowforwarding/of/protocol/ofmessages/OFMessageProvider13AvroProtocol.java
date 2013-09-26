@@ -1,3 +1,7 @@
+/**
+ * © 2013 FlowForwarding.Org
+ * All Rights Reserved.  Use is subject to license terms.
+ */
 package org.flowforwarding.of.protocol.ofmessages;
 
 import java.io.ByteArrayOutputStream;
@@ -17,14 +21,14 @@ import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericArray;
 import org.apache.avro.generic.GenericData;
 import org.apache.avro.Protocol;
-import org.flowforwarding.of.protocol.ofmessages.OFMessageError.OFMessageErrorHandler;
-import org.flowforwarding.of.protocol.ofmessages.OFMessageFlowMod.OFMessageFlowModHandler;
-import org.flowforwarding.of.protocol.ofmessages.OFMessagePacketIn.OFMessagePacketInHandler;
-import org.flowforwarding.of.protocol.ofmessages.OFMessageSwitchConfig.OFMessageSwitchConfigHandler;
+import org.flowforwarding.of.protocol.ofmessages.OFMessageError.OFMessageErrorRef;
+import org.flowforwarding.of.protocol.ofmessages.OFMessageFlowMod.OFMessageFlowModRef;
+import org.flowforwarding.of.protocol.ofmessages.OFMessagePacketIn.OFMessagePacketInRef;
+import org.flowforwarding.of.protocol.ofmessages.OFMessageSwitchConfig.OFMessageSwitchConfigRef;
 import org.flowforwarding.of.protocol.ofstructures.IOFStructureBuilder;
 import org.flowforwarding.of.protocol.ofstructures.OFStructureBuilder13;
 import org.flowforwarding.of.protocol.ofstructures.OFStructureInstruction;
-import org.flowforwarding.of.protocol.ofstructures.OFStructureInstruction.OFStructureInstructionHandler;
+import org.flowforwarding.of.protocol.ofstructures.OFStructureInstruction.OFStructureInstructionRef;
 import org.flowforwarding.of.protocol.ofstructures.Tuple;
 import org.apache.avro.generic.GenericDatumReader;
 import org.apache.avro.generic.GenericDatumWriter;
@@ -208,31 +212,31 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
       
    }
    
-   public OFMessageFlowModHandler buildFlowModMsg () {
+   public OFMessageFlowModRef buildFlowModMsg () {
       return builder.buildFlowMod();
    }
    
-   public OFStructureInstructionHandler buildInstructionApplyActions () {
+   public OFStructureInstructionRef buildInstructionApplyActions () {
       return structureBuilder.buildInstructionApplyActions();
    }
    
-   public OFStructureInstructionHandler buildInstructionWriteActions () {
+   public OFStructureInstructionRef buildInstructionWriteActions () {
       return structureBuilder.buildInstructionWriteActions();
    }
    
-   public OFStructureInstructionHandler buildInstructionGotoTable () {
+   public OFStructureInstructionRef buildInstructionGotoTable () {
       return structureBuilder.buildInstructionGotoTable();
    }
    
-   public OFStructureInstructionHandler buildInstructionClearActions () {
+   public OFStructureInstructionRef buildInstructionClearActions () {
       return structureBuilder.buildInstructionClearActions();
    }
    
-   public OFStructureInstructionHandler buildInstructionMeter () {
+   public OFStructureInstructionRef buildInstructionMeter () {
       return structureBuilder.buildInstructionMeter();
    }
    
-   public OFStructureInstructionHandler buildInstructionWriteMetadata () {
+   public OFStructureInstructionRef buildInstructionWriteMetadata () {
       return structureBuilder.buildInstructionWriteMetadata();
    }
    
@@ -484,7 +488,7 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
       return out.toByteArray();
    }
    
-   public byte[] encodeFlowMod (OFMessageFlowModHandler fmHandler) {
+   public byte[] encodeFlowMod (OFMessageFlowModRef fmRef) {
       
       GenericRecord ofpFlowModRecord = new GenericData.Record(ofpFlowModSchema);
       
@@ -505,7 +509,7 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
       
    // TODO Improvs: I dislike this *.getMatches().getIterator();
 //      Iterator<Tuple<String, String>> matchIter = fmRef.getMatches().getIterator();
-      List<Tuple<String, String>> matchList = fmHandler.getMatches().getMatches();
+      List<Tuple<String, String>> matchList = fmRef.getMatches().getMatches();
       for (Tuple<String, String> match : matchList) {
          //Tuple<String, String> match = matchIter.next();
          String name = match.getName();
@@ -744,16 +748,16 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
       
       // TODO Improvs: I dislike this *.getInstructions().getIterator();
       //Iterator<Tuple<String, OFStructureInstruction>> instrIter = fmRef.getInstructions().getIterator();
-      List<Tuple<String, OFStructureInstructionHandler>> instrList = fmHandler.getInstructions().getInstructions();
+      List<Tuple<String, OFStructureInstructionRef>> instrList = fmRef.getInstructions().getInstructions();
       Schema instrHeaderSchema = null;
       Schema instrSchema = null;
       GenericRecord instrHeaderRecord = null;
       GenericRecord instrRecord = null;
-      for (Tuple<String, OFStructureInstructionHandler> tuple : instrList) {
+      for (Tuple<String, OFStructureInstructionRef> tuple : instrList) {
          boolean isActions = false;
          //Tuple<String, OFStructureInstruction> tuple = instrIter.next();
          String name = tuple.getName();
-         OFStructureInstructionHandler instruction = tuple.getValue();
+         OFStructureInstructionRef instruction = tuple.getValue();
          
          // TODO Improvs: Replace Switch with a structure... say, HashMap
          // TODO Improvs: How to control type compatibility between Schema types and incoming tlvs?
@@ -2446,12 +2450,12 @@ public boolean isConfig(byte[] in) {
  * @see org.flowforwarding.of.protocol.ofmessages.IOFMessageProvider#parseSwitchConfig(byte[])
  */
 @Override
-public OFMessageSwitchConfigHandler parseSwitchConfig(byte[] in) {
+public OFMessageSwitchConfigRef parseSwitchConfig(byte[] in) {
    GenericRecord record = getSwitchConfigRecord(in);
    
 // TODO Improvs: We plan to get all flags from Avro protocol type... soon... so let it be now just numbers
    short flags = getShort((GenericData.Fixed)record.get("flags"));
-   OFMessageSwitchConfigHandler configH = builder.buildSwitchConfig();
+   OFMessageSwitchConfigRef configH = builder.buildSwitchConfig();
    if (flags == 0) {
       configH.setConfigFlagFragNormal();
    } else {
@@ -2464,13 +2468,13 @@ public OFMessageSwitchConfigHandler parseSwitchConfig(byte[] in) {
 }
 
 @Override
-public OFMessageErrorHandler parseError(byte[] in) {
+public OFMessageErrorRef parseError(byte[] in) {
    GenericRecord record = getRecord(ofpErrorMessageSchema, in);
    
 // TODO Improvs: We plan to get all flags from Avro protocol type... soon... so let it be now just numbers
    short type = getShort((GenericData.Fixed)record.get("type"));
    short code = getShort((GenericData.Fixed)record.get("code"));
-   OFMessageErrorHandler errorH = builder.buildError();
+   OFMessageErrorRef errorH = builder.buildError();
    
    errorH.setCode(code);
    errorH.setType(type);
@@ -2497,7 +2501,7 @@ public boolean isPacketIn(byte[] in) {
  * @see org.flowforwarding.of.protocol.ofmessages.IOFMessageProvider#parsePacketIn(byte[])
  */
 @Override
-public OFMessagePacketInHandler parsePacketIn(byte[] in) {
+public OFMessagePacketInRef parsePacketIn(byte[] in) {
  
    return builder.buildPacketIn();
 }

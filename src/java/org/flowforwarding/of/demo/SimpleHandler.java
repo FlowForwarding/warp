@@ -1,17 +1,21 @@
+/**
+ * © 2013 FlowForwarding.Org
+ * All Rights Reserved.  Use is subject to license terms.
+ */
 package org.flowforwarding.of.demo;
 
 import org.flowforwarding.of.controller.session.OFSessionHandler;
-import org.flowforwarding.of.ofswitch.SwitchState.SwitchHandler;
+import org.flowforwarding.of.ofswitch.SwitchState.SwitchRef;
 import org.flowforwarding.of.protocol.ofmessages.IOFMessageProvider;
-import org.flowforwarding.of.protocol.ofmessages.OFMessageFlowMod.OFMessageFlowModHandler;
-import org.flowforwarding.of.protocol.ofmessages.OFMessagePacketIn.OFMessagePacketInHandler;
-import org.flowforwarding.of.protocol.ofmessages.OFMessageSwitchConfig.OFMessageSwitchConfigHandler;
-import org.flowforwarding.of.protocol.ofstructures.OFStructureInstruction.OFStructureInstructionHandler;
+import org.flowforwarding.of.protocol.ofmessages.OFMessageFlowMod.OFMessageFlowModRef;
+import org.flowforwarding.of.protocol.ofmessages.OFMessagePacketIn.OFMessagePacketInRef;
+import org.flowforwarding.of.protocol.ofmessages.OFMessageSwitchConfig.OFMessageSwitchConfigRef;
+import org.flowforwarding.of.protocol.ofstructures.OFStructureInstruction.OFStructureInstructionRef;
 
 public class SimpleHandler extends OFSessionHandler {
 
    @Override
-   protected void switchConfig(SwitchHandler swH, OFMessageSwitchConfigHandler configH) {
+   protected void switchConfig(SwitchRef swH, OFMessageSwitchConfigRef configH) {
       super.switchConfig(swH, configH);
       
       System.out.print("[OF-INFO] DPID: " + Long.toHexString(swH.getDpid()) + " Configuration: ");
@@ -35,7 +39,7 @@ public class SimpleHandler extends OFSessionHandler {
    }
 
    @Override
-   protected void handshaked(SwitchHandler swH) {
+   protected void handshaked(SwitchRef swH) {
       super.handshaked(swH);
       System.out.println("[OF-INFO] HANDSHAKED " + Long.toHexString(swH.getDpid()));
       
@@ -43,11 +47,11 @@ public class SimpleHandler extends OFSessionHandler {
    }
    
    @Override
-   protected void packetIn(SwitchHandler swH, OFMessagePacketInHandler packetIn) {
+   protected void packetIn(SwitchRef swH, OFMessagePacketInRef packetIn) {
       super.packetIn(swH, packetIn);
       IOFMessageProvider provider = swH.getProvider();
       
-      OFMessageFlowModHandler flowMod = provider.buildFlowModMsg();
+      OFMessageFlowModRef flowMod = provider.buildFlowModMsg();
       
       if (packetIn.existMatchInPort()) {
          flowMod.addMatchInPort(packetIn.getMatchInPort().getMatch());
@@ -57,7 +61,7 @@ public class SimpleHandler extends OFSessionHandler {
          flowMod.addMatchEthSrc(packetIn.getMatchEthSrc().getMatch());
       }
       
-      OFStructureInstructionHandler instruction = provider.buildInstructionApplyActions();
+      OFStructureInstructionRef instruction = provider.buildInstructionApplyActions();
       instruction.addActionOutput("2");
       flowMod.addInstruction("apply_actions", instruction);
 

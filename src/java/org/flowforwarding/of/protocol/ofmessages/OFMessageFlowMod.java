@@ -10,7 +10,7 @@ import java.util.List;
 
 import org.flowforwarding.of.protocol.ofstructures.MatchSet;
 import org.flowforwarding.of.protocol.ofstructures.OFStructureInstruction;
-import org.flowforwarding.of.protocol.ofstructures.OFStructureInstruction.OFStructureInstructionHandler;
+import org.flowforwarding.of.protocol.ofstructures.OFStructureInstruction.OFStructureInstructionRef;
 import org.flowforwarding.of.protocol.ofstructures.Tuple;
 import org.flowforwarding.of.protocol.supply.OFMAddField;
 import org.flowforwarding.of.protocol.supply.OFMAddInstruction;
@@ -59,7 +59,7 @@ public class OFMessageFlowMod extends OFMessage{
       parms.add(new Tuple<String, String>(name, value));
    }
 
-   public void addInstruction (String name, OFStructureInstructionHandler value) {
+   public void addInstruction (String name, OFStructureInstructionRef value) {
       instructions.add(name, value);
    }
    
@@ -77,7 +77,7 @@ public class OFMessageFlowMod extends OFMessage{
       matches.add(name, value);
    }
    
-   public static class OFMessageFlowModHandler extends OFMessageHandler <OFMessageFlowMod> {
+   public static class OFMessageFlowModRef extends OFMessageRef <OFMessageFlowMod> {
       
       protected OFMessageFlowMod flowMod = null;
       
@@ -87,7 +87,7 @@ public class OFMessageFlowMod extends OFMessage{
       protected OFMGetInstructions getInstructions = null;
       protected OFMGetMatches getMatches = null;
       
-      protected OFMessageFlowModHandler () {
+      protected OFMessageFlowModRef () {
          flowMod = new OFMessageFlowMod();
          
          addInstruction = new OFMAddInstruction(flowMod);
@@ -97,7 +97,7 @@ public class OFMessageFlowMod extends OFMessage{
          getMatches = new OFMGetMatches(flowMod);
       }
       
-      protected OFMessageFlowModHandler (OFMessageFlowMod fm) {
+      protected OFMessageFlowModRef (OFMessageFlowMod fm) {
          flowMod = fm;
          
          addInstruction = new OFMAddInstruction(flowMod);
@@ -107,28 +107,28 @@ public class OFMessageFlowMod extends OFMessage{
          getMatches = new OFMGetMatches(flowMod);
       }
       
-      public static OFMessageFlowModHandler create() {
+      public static OFMessageFlowModRef create() {
          
-         return new OFMessageFlowModHandler();
+         return new OFMessageFlowModRef();
       }
       
       public void addField (String name, String value) {
          addField.add(name, value);
       }
       
-      public void addInstruction (String name, OFStructureInstructionHandler instruction) {
+      public void addInstruction (String name, OFStructureInstructionRef instruction) {
          addInstruction.add(name, instruction);
       }
       
-      public void addInstructionApplyAction (OFStructureInstructionHandler instruction) {
+      public void addInstructionApplyAction (OFStructureInstructionRef instruction) {
          addInstruction.add("apply_action", instruction);
       }
       
-      public void addInstructionWriteAction (OFStructureInstructionHandler instruction) {
+      public void addInstructionWriteAction (OFStructureInstructionRef instruction) {
          addInstruction.add("write_action", instruction);
       }
       
-      public void addInstructionClearAction (OFStructureInstructionHandler instruction) {
+      public void addInstructionClearAction (OFStructureInstructionRef instruction) {
          addInstruction.add("clear_action", instruction);
       }
 

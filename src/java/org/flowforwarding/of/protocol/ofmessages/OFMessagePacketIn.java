@@ -38,12 +38,12 @@ public class OFMessagePacketIn extends OFMessage {
    }
 
    
-   public static class OFMessagePacketInHandler extends OFMessageHandler <OFMessagePacketIn> {
+   public static class OFMessagePacketInRef extends OFMessageRef <OFMessagePacketIn> {
       
       protected OFMGetMatch getMatch;
       protected OFMAddMatch addMatch;
 
-      protected OFMessagePacketInHandler () {
+      protected OFMessagePacketInRef () {
          message = new OFMessagePacketIn();
          getMatch = new OFMGetMatch(message);
          addMatch = new OFMAddMatch(message);
@@ -52,8 +52,8 @@ public class OFMessagePacketIn extends OFMessage {
       /**
        * @return
        */
-      public static OFMessagePacketInHandler create() {
-         return new OFMessagePacketInHandler();
+      public static OFMessagePacketInRef create() {
+         return new OFMessagePacketInRef();
       }
       
       public OFStructureMatch getMatch(String name) {

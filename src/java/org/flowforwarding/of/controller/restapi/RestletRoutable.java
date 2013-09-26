@@ -1,11 +1,15 @@
+/**
+ * © 2013 FlowForwarding.Org
+ * All Rights Reserved.  Use is subject to license terms.
+ */
 package org.flowforwarding.of.controller.restapi;
 
 import org.restlet.Context;
 import org.restlet.Restlet;
 
 /**
- * Register a set of REST resources with the central controller
- * @author readams
+ * @author Infoblox Inc.
+ *
  */
 public interface RestletRoutable {
     /**

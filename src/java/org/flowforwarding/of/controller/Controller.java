@@ -8,11 +8,10 @@ package org.flowforwarding.of.controller;
 import java.net.InetSocketAddress;
 import java.util.List;
 
-import org.flowforwarding.of.controller.session.EventGetSwitches;
 import org.flowforwarding.of.controller.session.OFActor;
 import org.flowforwarding.of.controller.session.SwitchNurse;
 import org.flowforwarding.of.controller.supply.OFCTellController;
-import org.flowforwarding.of.ofswitch.SwitchState.SwitchHandler;
+import org.flowforwarding.of.ofswitch.SwitchState.SwitchRef;
 
 import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
@@ -26,10 +25,8 @@ import akka.io.Tcp.Connected;
 
 
 /**
- * Class Controller
  * @author Infoblox Inc.
- * 
- * Handles incoming tcp connections. Launches and dispatches Switch nurses which are handling connections with switches
+ * @doc Handles incoming tcp connections. Launches and dispatches Switch nurses which are handling connections with switches
  * 
  */
 public class Controller extends UntypedActor{
@@ -129,8 +126,8 @@ public class Controller extends UntypedActor{
          return new ControllerRef (c);
       }
       
-      public List<SwitchHandler> getSwitches () {
-         tellController.tell(ofEventHandler, new EventGetSwitches());
+      public List<SwitchRef> getSwitches () {
+//         tellController.tell(ofEventHandler, new EventGetSwitches());
          
          return null;
       }

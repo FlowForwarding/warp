@@ -4,7 +4,7 @@
  */
 package org.flowforwarding.of.protocol.ofstructures;
 
-import org.flowforwarding.of.protocol.ofstructures.OFStructureInstruction.OFStructureInstructionHandler;
+import org.flowforwarding.of.protocol.ofstructures.OFStructureInstruction.OFStructureInstructionRef;
 
 /**
  * @author Infoblox Inc.
@@ -12,18 +12,18 @@ import org.flowforwarding.of.protocol.ofstructures.OFStructureInstruction.OFStru
  */
 public interface IOFStructureBuilder {
    
-   OFStructureInstructionHandler buildInstruction (String type);
+   OFStructureInstructionRef buildInstruction (String type);
    
-   OFStructureInstructionHandler buildInstructionGotoTable ();
+   OFStructureInstructionRef buildInstructionGotoTable ();
    
-   OFStructureInstructionHandler buildInstructionWriteMetadata ();
+   OFStructureInstructionRef buildInstructionWriteMetadata ();
    
-   OFStructureInstructionHandler buildInstructionWriteActions ();
+   OFStructureInstructionRef buildInstructionWriteActions ();
    
-   OFStructureInstructionHandler buildInstructionApplyActions ();
+   OFStructureInstructionRef buildInstructionApplyActions ();
    
-   OFStructureInstructionHandler buildInstructionClearActions ();
+   OFStructureInstructionRef buildInstructionClearActions ();
    
-   OFStructureInstructionHandler buildInstructionMeter ();
+   OFStructureInstructionRef buildInstructionMeter ();
 
 }

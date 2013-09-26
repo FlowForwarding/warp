@@ -1,3 +1,8 @@
+/**
+ * © 2013 FlowForwarding.Org
+ * All Rights Reserved.  Use is subject to license terms.
+ */
+
 package org.flowforwarding.of.controller.restapi;
 
 import java.io.IOException;
@@ -22,6 +27,10 @@ import org.restlet.resource.Get;
 import org.restlet.resource.Post;
 import org.restlet.resource.ServerResource;
 
+/**
+ * @author Infoblox Inc.
+ *
+ */
 public class RootRestApiResource  extends ServerResource {
    
    @Post

@@ -6,12 +6,8 @@
 package org.flowforwarding.of.controller;
 
 /**
- * Class Configuration
  * @author Infoblox Inc.
- * 
- *  Stores all configuration information about the Controller:
- *  <li> Tcp port number
- * 
+ * @doc Contains all configuration information about OpenFlow Controller
  */
 public class Configuration {
 

@@ -5,7 +5,7 @@
 package org.flowforwarding.of.protocol.offields.match;
 
 import org.flowforwarding.of.protocol.ofstructures.IOFStructure;
-import org.flowforwarding.of.protocol.ofstructures.OFStructureHandler;
+import org.flowforwarding.of.protocol.ofstructures.OFStructureRef;
 
 /**
  * @author Infoblox Inc.
@@ -38,9 +38,9 @@ public abstract class OFStructureMatch <Name, Value> implements IOFStructure {
       return value;
    }
    
-   public class OFStructureMatchHandler extends OFStructureHandler<OFStructureMatch<Name, Value>> {
+   public class OFStructureMatchRef extends OFStructureRef<OFStructureMatch<Name, Value>> {
       
-      protected OFStructureMatchHandler () {
+      protected OFStructureMatchRef () {
       }
       
    }

@@ -43,36 +43,36 @@ public class OFStructureInstruction implements IOFStructure{
       type = instrType;
    }
    
-   public static class OFStructureInstructionHandler extends OFStructureHandler<OFStructureInstruction>{
+   public static class OFStructureInstructionRef extends OFStructureRef<OFStructureInstruction>{
       
       protected OFMAddAction addAction = null;
       protected OFSGetActions getActions = null;
       
-      protected OFStructureInstructionHandler(InstructionTypes instrType) {
+      protected OFStructureInstructionRef(InstructionTypes instrType) {
          structure = new OFStructureInstruction(instrType);
          
          addAction = new OFMAddAction(structure);
          getActions = new OFSGetActions(structure);
       }
       
-      protected OFStructureInstructionHandler(OFStructureInstruction instruction) {
+      protected OFStructureInstructionRef(OFStructureInstruction instruction) {
          structure = instruction;
       }
       
-      public static OFStructureInstructionHandler create(String type) {
+      public static OFStructureInstructionRef create(String type) {
          switch (type) {
          case "goto_table":
-            return new OFStructureInstructionHandler(InstructionTypes.GOTO_TABLE);
+            return new OFStructureInstructionRef(InstructionTypes.GOTO_TABLE);
          case "write_metadata":
-            return new OFStructureInstructionHandler(InstructionTypes.WRITE_METADATA);
+            return new OFStructureInstructionRef(InstructionTypes.WRITE_METADATA);
          case "write_actions":
-            return new OFStructureInstructionHandler(InstructionTypes.WRITE_ACTIONS);
+            return new OFStructureInstructionRef(InstructionTypes.WRITE_ACTIONS);
          case "apply_actions":
-            return new OFStructureInstructionHandler(InstructionTypes.APPLY_ACTIONS);
+            return new OFStructureInstructionRef(InstructionTypes.APPLY_ACTIONS);
          case "clear_actions":
-            return new OFStructureInstructionHandler(InstructionTypes.CLEAR_ACTIONS);
+            return new OFStructureInstructionRef(InstructionTypes.CLEAR_ACTIONS);
          case "meter":
-            return new OFStructureInstructionHandler(InstructionTypes.METER);            
+            return new OFStructureInstructionRef(InstructionTypes.METER);            
             
          default: 
             return null;

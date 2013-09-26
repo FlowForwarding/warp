@@ -4,7 +4,7 @@
  */
 package org.flowforwarding.of.protocol.ofstructures;
 
-import org.flowforwarding.of.protocol.ofstructures.OFStructureInstruction.OFStructureInstructionHandler;
+import org.flowforwarding.of.protocol.ofstructures.OFStructureInstruction.OFStructureInstructionRef;
 
 /**
  * @author Infoblox Inc.
@@ -16,37 +16,37 @@ public class OFStructureBuilder13 implements IOFStructureBuilder {
     * @param
     */
    @Override
-   public OFStructureInstructionHandler buildInstruction (String type) {
-      return OFStructureInstructionHandler.create(type);
+   public OFStructureInstructionRef buildInstruction (String type) {
+      return OFStructureInstructionRef.create(type);
    }
    
    @Override
-   public OFStructureInstructionHandler buildInstructionGotoTable () {
-      return OFStructureInstructionHandler.create("goto_table");
+   public OFStructureInstructionRef buildInstructionGotoTable () {
+      return OFStructureInstructionRef.create("goto_table");
    }
    
    @Override
-   public OFStructureInstructionHandler buildInstructionWriteMetadata () {
-      return OFStructureInstructionHandler.create("write_metadata");
+   public OFStructureInstructionRef buildInstructionWriteMetadata () {
+      return OFStructureInstructionRef.create("write_metadata");
    }
    
    @Override
-   public OFStructureInstructionHandler buildInstructionWriteActions () {
-      return OFStructureInstructionHandler.create("write_actions");
+   public OFStructureInstructionRef buildInstructionWriteActions () {
+      return OFStructureInstructionRef.create("write_actions");
    }
    
    @Override
-   public OFStructureInstructionHandler buildInstructionApplyActions () {
-      return OFStructureInstructionHandler.create("apply_actions");
+   public OFStructureInstructionRef buildInstructionApplyActions () {
+      return OFStructureInstructionRef.create("apply_actions");
    }
    
    @Override
-   public OFStructureInstructionHandler buildInstructionClearActions () {
-      return OFStructureInstructionHandler.create("clear_actions");
+   public OFStructureInstructionRef buildInstructionClearActions () {
+      return OFStructureInstructionRef.create("clear_actions");
    }
    
    @Override
-   public OFStructureInstructionHandler buildInstructionMeter () {
-      return OFStructureInstructionHandler.create("meter");
+   public OFStructureInstructionRef buildInstructionMeter () {
+      return OFStructureInstructionRef.create("meter");
    }
 }

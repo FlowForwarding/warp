@@ -4,7 +4,7 @@
  */
 package org.flowforwarding.of.protocol.ofmessages;
 
-import org.flowforwarding.of.protocol.ofmessages.OFMessagePacketIn.OFMessagePacketInHandler;
+import org.flowforwarding.of.protocol.ofmessages.OFMessagePacketIn.OFMessagePacketInRef;
 
 /**
  * @author Infoblox Inc.
@@ -32,14 +32,14 @@ public class OFMessageError extends OFMessage{
       code = c;
    }
    
-   public static class OFMessageErrorHandler extends OFMessageHandler<OFMessageError> {
+   public static class OFMessageErrorRef extends OFMessageRef<OFMessageError> {
       
-      protected OFMessageErrorHandler () {
+      protected OFMessageErrorRef () {
          message = new OFMessageError();
       }
       
-      public static OFMessageErrorHandler create() {
-         return new OFMessageErrorHandler();
+      public static OFMessageErrorRef create() {
+         return new OFMessageErrorRef();
       }
 
       // TODO Improvs: rewrite with commands classes

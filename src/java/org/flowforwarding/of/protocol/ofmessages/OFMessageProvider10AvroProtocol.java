@@ -20,11 +20,11 @@ import org.apache.avro.io.Decoder;
 import org.apache.avro.io.DecoderFactory;
 import org.apache.avro.io.Encoder;
 import org.apache.avro.io.EncoderFactory;
-import org.flowforwarding.of.protocol.ofmessages.OFMessageError.OFMessageErrorHandler;
-import org.flowforwarding.of.protocol.ofmessages.OFMessageFlowMod.OFMessageFlowModHandler;
-import org.flowforwarding.of.protocol.ofmessages.OFMessagePacketIn.OFMessagePacketInHandler;
-import org.flowforwarding.of.protocol.ofmessages.OFMessageSwitchConfig.OFMessageSwitchConfigHandler;
-import org.flowforwarding.of.protocol.ofstructures.OFStructureInstruction.OFStructureInstructionHandler;
+import org.flowforwarding.of.protocol.ofmessages.OFMessageError.OFMessageErrorRef;
+import org.flowforwarding.of.protocol.ofmessages.OFMessageFlowMod.OFMessageFlowModRef;
+import org.flowforwarding.of.protocol.ofmessages.OFMessagePacketIn.OFMessagePacketInRef;
+import org.flowforwarding.of.protocol.ofmessages.OFMessageSwitchConfig.OFMessageSwitchConfigRef;
+import org.flowforwarding.of.protocol.ofstructures.OFStructureInstruction.OFStructureInstructionRef;
 
 /**
  * @author Infoblox Inc.
@@ -302,10 +302,10 @@ public class OFMessageProvider10AvroProtocol implements IOFMessageProvider{
    }
 
    /* (non-Javadoc)
-    * @see org.flowforwarding.of.protocol.ofmessages.IOFMessageProvider#encodeFlowMod(org.flowforwarding.of.protocol.ofmessages.OFMessageFlowMod.OFMessageFlowModHandler)
+    * @see org.flowforwarding.of.protocol.ofmessages.IOFMessageProvider#encodeFlowMod(org.flowforwarding.of.protocol.ofmessages.OFMessageFlowMod.OFMessageFlowModRef)
     */
    @Override
-   public byte[] encodeFlowMod(OFMessageFlowModHandler fmHandler) {
+   public byte[] encodeFlowMod(OFMessageFlowModRef fmRef) {
       // TODO Auto-generated method stub
       return null;
    }
@@ -314,7 +314,7 @@ public class OFMessageProvider10AvroProtocol implements IOFMessageProvider{
     * @see org.flowforwarding.of.protocol.ofmessages.IOFMessageProvider#buildFlowModMsg()
     */
    @Override
-   public OFMessageFlowModHandler buildFlowModMsg() {
+   public OFMessageFlowModRef buildFlowModMsg() {
       // TODO Auto-generated method stub
       return null;
    }
@@ -323,7 +323,7 @@ public class OFMessageProvider10AvroProtocol implements IOFMessageProvider{
     * @see org.flowforwarding.of.protocol.ofmessages.IOFMessageProvider#buildInstructionApplyActions()
     */
    @Override
-   public OFStructureInstructionHandler buildInstructionApplyActions() {
+   public OFStructureInstructionRef buildInstructionApplyActions() {
       // TODO Auto-generated method stub
       return null;
    }
@@ -332,7 +332,7 @@ public class OFMessageProvider10AvroProtocol implements IOFMessageProvider{
     * @see org.flowforwarding.of.protocol.ofmessages.IOFMessageProvider#buildInstructionWriteActions()
     */
    @Override
-   public OFStructureInstructionHandler buildInstructionWriteActions() {
+   public OFStructureInstructionRef buildInstructionWriteActions() {
       // TODO Auto-generated method stub
       return null;
    }
@@ -341,7 +341,7 @@ public class OFMessageProvider10AvroProtocol implements IOFMessageProvider{
     * @see org.flowforwarding.of.protocol.ofmessages.IOFMessageProvider#buildInstructionGotoTable()
     */
    @Override
-   public OFStructureInstructionHandler buildInstructionGotoTable() {
+   public OFStructureInstructionRef buildInstructionGotoTable() {
       // TODO Auto-generated method stub
       return null;
    }
@@ -350,7 +350,7 @@ public class OFMessageProvider10AvroProtocol implements IOFMessageProvider{
     * @see org.flowforwarding.of.protocol.ofmessages.IOFMessageProvider#buildInstructionClearActions()
     */
    @Override
-   public OFStructureInstructionHandler buildInstructionClearActions() {
+   public OFStructureInstructionRef buildInstructionClearActions() {
       // TODO Auto-generated method stub
       return null;
    }
@@ -359,7 +359,7 @@ public class OFMessageProvider10AvroProtocol implements IOFMessageProvider{
     * @see org.flowforwarding.of.protocol.ofmessages.IOFMessageProvider#buildInstructionMeter()
     */
    @Override
-   public OFStructureInstructionHandler buildInstructionMeter() {
+   public OFStructureInstructionRef buildInstructionMeter() {
       // TODO Auto-generated method stub
       return null;
    }
@@ -368,7 +368,7 @@ public class OFMessageProvider10AvroProtocol implements IOFMessageProvider{
     * @see org.flowforwarding.of.protocol.ofmessages.IOFMessageProvider#buildInstructionWriteMetadata()
     */
    @Override
-   public OFStructureInstructionHandler buildInstructionWriteMetadata() {
+   public OFStructureInstructionRef buildInstructionWriteMetadata() {
       // TODO Auto-generated method stub
       return null;
    }
@@ -390,12 +390,12 @@ public class OFMessageProvider10AvroProtocol implements IOFMessageProvider{
     * @see org.flowforwarding.of.protocol.ofmessages.IOFMessageProvider#parseSwitchConfig(byte[])
     */
    @Override
-   public OFMessageSwitchConfigHandler parseSwitchConfig(byte[] in) {
+   public OFMessageSwitchConfigRef parseSwitchConfig(byte[] in) {
       GenericRecord record = getRecord(ofpSwitchConfigSchema, in);
       
    // TODO Improvs: We plan to get all flags from Avro protocol type... soon... so let it be now just numbers
       short flags = getShort((GenericData.Fixed)record.get("flags"));
-      OFMessageSwitchConfigHandler configH = builder.buildSwitchConfig();
+      OFMessageSwitchConfigRef configH = builder.buildSwitchConfig();
       if (flags == 0) {
          configH.setConfigFlagFragNormal();
       } else {
@@ -425,7 +425,7 @@ public class OFMessageProvider10AvroProtocol implements IOFMessageProvider{
     * @see org.flowforwarding.of.protocol.ofmessages.IOFMessageProvider#parsePacketIn(byte[])
     */
    @Override
-   public OFMessagePacketInHandler parsePacketIn(byte[] in) {
+   public OFMessagePacketInRef parsePacketIn(byte[] in) {
       GenericRecord packetIn = getRecord(ofpPacketInSchema, in);
       
       return null;      
@@ -444,7 +444,7 @@ public class OFMessageProvider10AvroProtocol implements IOFMessageProvider{
     * @see org.flowforwarding.of.protocol.ofmessages.IOFMessageProvider#parseError(byte[])
     */
    @Override
-   public OFMessageErrorHandler parseError(byte[] in) {
+   public OFMessageErrorRef parseError(byte[] in) {
       // TODO Auto-generated method stub
       return null;
    }

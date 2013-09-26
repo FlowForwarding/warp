@@ -4,10 +4,10 @@
  */
 package org.flowforwarding.of.protocol.ofmessages;
 
-import org.flowforwarding.of.protocol.ofmessages.OFMessageError.OFMessageErrorHandler;
-import org.flowforwarding.of.protocol.ofmessages.OFMessageFlowMod.OFMessageFlowModHandler;
-import org.flowforwarding.of.protocol.ofmessages.OFMessagePacketIn.OFMessagePacketInHandler;
-import org.flowforwarding.of.protocol.ofmessages.OFMessageSwitchConfig.OFMessageSwitchConfigHandler;
+import org.flowforwarding.of.protocol.ofmessages.OFMessageError.OFMessageErrorRef;
+import org.flowforwarding.of.protocol.ofmessages.OFMessageFlowMod.OFMessageFlowModRef;
+import org.flowforwarding.of.protocol.ofmessages.OFMessagePacketIn.OFMessagePacketInRef;
+import org.flowforwarding.of.protocol.ofmessages.OFMessageSwitchConfig.OFMessageSwitchConfigRef;
 
 /**
  * @author Infoblox Inc.
@@ -15,13 +15,13 @@ import org.flowforwarding.of.protocol.ofmessages.OFMessageSwitchConfig.OFMessage
  */
 public interface IOFMessageBuilder {
    
-   public OFMessageHandler build (String msg);
+   public OFMessageRef build (String msg);
    
-   public OFMessageFlowModHandler buildFlowMod();
+   public OFMessageFlowModRef buildFlowMod();
    
-   public OFMessageSwitchConfigHandler buildSwitchConfig ();
+   public OFMessageSwitchConfigRef buildSwitchConfig ();
    
-   public OFMessagePacketInHandler buildPacketIn ();
+   public OFMessagePacketInRef buildPacketIn ();
    
-   public OFMessageErrorHandler buildError ();
+   public OFMessageErrorRef buildError ();
 }

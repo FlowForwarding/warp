@@ -43,6 +43,7 @@ import org.jboss.netty.util.Timer;
 
 /**
  * @author Infoblox Inc.
+ * @deprecated
  *
  */
 public class ControllerOld {

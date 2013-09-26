@@ -4,8 +4,8 @@
  */
 package org.flowforwarding.of.controller.session;
 
-import org.flowforwarding.of.ofswitch.SwitchState.SwitchHandler;
-import org.flowforwarding.of.protocol.ofmessages.OFMessageSwitchConfig.OFMessageSwitchConfigHandler;
+import org.flowforwarding.of.ofswitch.SwitchState.SwitchRef;
+import org.flowforwarding.of.protocol.ofmessages.OFMessageSwitchConfig.OFMessageSwitchConfigRef;
 
 /**
  * @author Infoblox Inc.
@@ -13,32 +13,32 @@ import org.flowforwarding.of.protocol.ofmessages.OFMessageSwitchConfig.OFMessage
  */
 public class OFEventSwitchConfig extends OFEvent {
 
-   protected SwitchHandler swHandler;
-   protected OFMessageSwitchConfigHandler configHandler;
+   protected SwitchRef switchRef;
+   protected OFMessageSwitchConfigRef configRef;
    
    /**
-    * @param SwitchHandler swH
+    * @param SwitchRef swH
     */
-   public OFEventSwitchConfig(SwitchHandler swH, OFMessageSwitchConfigHandler configH) {
-      swHandler = swH;
-      configHandler = configH;
+   public OFEventSwitchConfig(SwitchRef swR, OFMessageSwitchConfigRef configR) {
+      switchRef = swR;
+      configRef = configR;
    }
 
    /* (non-Javadoc)
     * @see org.flowforwarding.of.controller.session.OFEvent#getSwitchRef()
     */
    @Override
-   public SwitchHandler getSwitchHandler() {
+   public SwitchRef getSwitchRef() {
       // TODO Auto-generated method stub
-      return swHandler;
+      return switchRef;
    }
    
-   public OFMessageSwitchConfigHandler getConfigHandler() {
-      return configHandler;
+   public OFMessageSwitchConfigRef getConfigRef() {
+      return configRef;
    }
 
-   public void setConfigHandler(OFMessageSwitchConfigHandler configHandler) {
-      this.configHandler = configHandler;
+   public void setConfigRef(OFMessageSwitchConfigRef configR) {
+      this.configRef = configR;
    }
 
 }

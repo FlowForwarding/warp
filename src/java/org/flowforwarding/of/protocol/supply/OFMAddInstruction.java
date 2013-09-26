@@ -6,13 +6,13 @@ package org.flowforwarding.of.protocol.supply;
 
 import org.flowforwarding.of.protocol.ofmessages.OFMessageFlowMod;
 import org.flowforwarding.of.protocol.ofstructures.OFStructureInstruction;
-import org.flowforwarding.of.protocol.ofstructures.OFStructureInstruction.OFStructureInstructionHandler;
+import org.flowforwarding.of.protocol.ofstructures.OFStructureInstruction.OFStructureInstructionRef;
 
 /**
  * @author Infoblox Inc.
  *
  */
-public class OFMAddInstruction extends OFMAdd<OFMessageFlowMod, String, OFStructureInstructionHandler>{
+public class OFMAddInstruction extends OFMAdd<OFMessageFlowMod, String, OFStructureInstructionRef>{
    
    
    public OFMAddInstruction (OFMessageFlowMod flowMod) {
@@ -20,7 +20,7 @@ public class OFMAddInstruction extends OFMAdd<OFMessageFlowMod, String, OFStruct
    }
    
    @Override
-   public void add (String name, OFStructureInstructionHandler instruction) {
+   public void add (String name, OFStructureInstructionRef instruction) {
       receiver.addInstruction(name, instruction);
    }
 }

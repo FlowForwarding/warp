@@ -4,36 +4,42 @@
  */
 package org.flowforwarding.of.controller.session;
 
-import org.flowforwarding.of.ofswitch.SwitchState.SwitchHandler;
-import org.flowforwarding.of.protocol.ofmessages.OFMessagePacketIn.OFMessagePacketInHandler;
+import org.flowforwarding.of.ofswitch.SwitchState.SwitchRef;
+import org.flowforwarding.of.protocol.ofmessages.OFMessagePacketIn.OFMessagePacketInRef;
 
 /**
  * @author Infoblox Inc.
+ * @doc Event: incoming OpenFlow Packet-In message!
  *
  */
 public class OFEventPacketIn extends OFEvent {
 
-   protected SwitchHandler swHandler;
-   protected OFMessagePacketInHandler packetIn;
+   protected SwitchRef switchRef;
+   protected OFMessagePacketInRef packetIn;
    
    /**
-    * @param SwitchHandler swH
+    * @param SwitchRef swRef
+    * @param OFMessagePacketInRef pInRef
     */
-   public OFEventPacketIn(SwitchHandler swH, OFMessagePacketInHandler pIn) {
-      swHandler = swH;
-      packetIn = pIn;
+   public OFEventPacketIn(SwitchRef swRef, OFMessagePacketInRef pInRef) {
+      switchRef = swRef;
+      packetIn = pInRef;
    }
 
-   /* (non-Javadoc)
+   /**
+    * @return SwitchRef switchRef
     * @see org.flowforwarding.of.controller.session.OFEvent#getSwitchRef()
     */
    @Override
-   public SwitchHandler getSwitchHandler() {
+   public SwitchRef getSwitchRef() {
       // TODO Auto-generated method stub
-      return swHandler;
+      return switchRef;
    }
    
-   public OFMessagePacketInHandler getPacketIn() {
+   /**
+    * @return OFMessagePacketInRef packetIn
+    */
+   public OFMessagePacketInRef getPacketIn() {
       return packetIn;
    }
 }

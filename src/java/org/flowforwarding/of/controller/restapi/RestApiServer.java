@@ -1,3 +1,7 @@
+/**
+ * © 2013 FlowForwarding.Org
+ * All Rights Reserved.  Use is subject to license terms.
+ */
 package org.flowforwarding.of.controller.restapi;
 
 
@@ -28,6 +32,10 @@ import org.restlet.service.StatusService;
 //import net.floodlightcontroller.core.module.IFloodlightModule;
 //import net.floodlightcontroller.core.module.IFloodlightService;
 
+/**
+ * @author Infoblox Inc.
+ *
+ */
 public class RestApiServer  {
     //protected static Logger logger = LoggerFactory.getLogger(RestApiServer.class);
     protected List<RestletRoutable> restlets;

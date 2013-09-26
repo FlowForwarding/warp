@@ -1,21 +1,30 @@
+/**
+ * © 2013 FlowForwarding.Org
+ * All Rights Reserved.  Use is subject to license terms.
+ */
 package org.flowforwarding.of.controller.session;
 
 
 import java.util.HashMap;
 import java.util.Map;
 
-import org.flowforwarding.of.ofswitch.SwitchState.SwitchHandler;
+import org.flowforwarding.of.ofswitch.SwitchState.SwitchRef;
 import org.flowforwarding.of.protocol.ofmessages.OFMessageError;
-import org.flowforwarding.of.protocol.ofmessages.OFMessageError.OFMessageErrorHandler;
-import org.flowforwarding.of.protocol.ofmessages.OFMessageFlowMod.OFMessageFlowModHandler;
-import org.flowforwarding.of.protocol.ofmessages.OFMessagePacketIn.OFMessagePacketInHandler;
-import org.flowforwarding.of.protocol.ofmessages.OFMessageSwitchConfig.OFMessageSwitchConfigHandler;
+import org.flowforwarding.of.protocol.ofmessages.OFMessageError.OFMessageErrorRef;
+import org.flowforwarding.of.protocol.ofmessages.OFMessageFlowMod.OFMessageFlowModRef;
+import org.flowforwarding.of.protocol.ofmessages.OFMessagePacketIn.OFMessagePacketInRef;
+import org.flowforwarding.of.protocol.ofmessages.OFMessageSwitchConfig.OFMessageSwitchConfigRef;
 
 import akka.actor.ActorRef;
 
+/**
+ * @author Infoblox Inc.
+ * @doc OpenFlow protocol Session handler base class
+ *
+ */
 public abstract class OFSessionHandler extends OFActor{
    
-   Map<SwitchHandler, ActorRef> switches = new HashMap<> ();
+   Map<SwitchRef, ActorRef> switches = new HashMap<> ();
    
    @Override
    public void onReceive(Object msg) throws Exception {
@@ -23,45 +32,45 @@ public abstract class OFSessionHandler extends OFActor{
       // TODO Improvs: replace if-else with HashMap
       if (msg instanceof OFEventHandshaked) {
          
-         SwitchHandler swH = ((OFEventHandshaked) msg).getSwitchHandler();
-         switches.put(swH, getSender());
+         SwitchRef swR = ((OFEventHandshaked) msg).getSwitchRef();
+         switches.put(swR, getSender());
          
-         handshaked(swH);         
+         handshaked(swR);         
       } else if (msg instanceof OFEventIncoming) {
          
       } else if (msg instanceof OFEventPacketIn) {
-         SwitchHandler swH = ((OFEventPacketIn) msg).getSwitchHandler();
-         OFMessagePacketInHandler pIn = ((OFEventPacketIn) msg).getPacketIn();
-         packetIn(swH, pIn);
+         SwitchRef swR = ((OFEventPacketIn) msg).getSwitchRef();
+         OFMessagePacketInRef pIn = ((OFEventPacketIn) msg).getPacketIn();
+         packetIn(swR, pIn);
          
       } else if (msg instanceof OFEventSwitchConfig) {
-         SwitchHandler swH = ((OFEventSwitchConfig) msg).getSwitchHandler();
-         OFMessageSwitchConfigHandler configH = ((OFEventSwitchConfig) msg).getConfigHandler();
-         switchConfig(swH, configH);
+         SwitchRef swR = ((OFEventSwitchConfig) msg).getSwitchRef();
+         OFMessageSwitchConfigRef configH = ((OFEventSwitchConfig) msg).getConfigRef();
+         switchConfig(swR, configH);
          
-      } else if (msg instanceof EventGetSwitches) {
+ /*     } else if (msg instanceof EventGetSwitches) { */
          
       } else if (msg instanceof OFEventError) {
-         error(((OFEventError)msg).getSwitchHandler(), ((OFEventError)msg).getError());
+         error(((OFEventError)msg).getSwitchRef(), ((OFEventError)msg).getError());
       }
    }
    
    /*
     * User-defined Switch event handlers
     */
-   protected void handshaked(SwitchHandler swH) {}
-   protected void connected(SwitchHandler swH) {}
-   protected void packetIn(SwitchHandler swH, OFMessagePacketInHandler pIn) {}
-   protected void switchConfig(SwitchHandler swH, OFMessageSwitchConfigHandler configH) {}
-   protected void error(SwitchHandler swH, OFMessageErrorHandler error) {}
+   protected void handshaked(SwitchRef swR) {}
+   protected void connected(SwitchRef swR) {}
+   protected void packetIn(SwitchRef swR, OFMessagePacketInRef pIn) {}
+   protected void switchConfig(SwitchRef swR, OFMessageSwitchConfigRef configH) {}
+   protected void error(SwitchRef swR, OFMessageErrorRef error) {}
    
    
-   protected void sendSwitchConfigRequest (SwitchHandler swH) {
-      switches.get(swH).tell(new OFCommandSendSwConfigRequest(), getSelf());
+   protected void sendSwitchConfigRequest (SwitchRef swR) {
+      switches.get(swR).tell(new OFCommandSendSwConfigRequest(), getSelf());
    }
    
-   protected void sendFlowModMessage (SwitchHandler swH, OFMessageFlowModHandler flowMod) {
-      switches.get(swH).tell(new OFCommandSendSwConfigRequest(), getSelf());
+   protected void sendFlowModMessage (SwitchRef swR, OFMessageFlowModRef flowMod) {
+      switches.get(swR).tell(new OFCommandSendSwConfigRequest(), getSelf());
    }
    
    

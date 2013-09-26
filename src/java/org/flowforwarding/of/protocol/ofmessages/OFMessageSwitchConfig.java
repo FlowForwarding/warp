@@ -44,19 +44,19 @@ public class OFMessageSwitchConfig  extends OFMessage{
       configFlags = new HashMap<>();
    }
    
-   public static class OFMessageSwitchConfigHandler extends OFMessageHandler <OFMessageSwitchConfig> {
+   public static class OFMessageSwitchConfigRef extends OFMessageRef <OFMessageSwitchConfig> {
       
       protected OFMAddConfigFlag addFlag;
       protected OFMGetConfigFlag getFlag;
       
-      protected OFMessageSwitchConfigHandler() {
+      protected OFMessageSwitchConfigRef() {
          message = new OFMessageSwitchConfig();
          addFlag = new OFMAddConfigFlag(message);
          getFlag = new OFMGetConfigFlag(message);
       }
       
-      public static OFMessageSwitchConfigHandler create () {
-         return new OFMessageSwitchConfigHandler();
+      public static OFMessageSwitchConfigRef create () {
+         return new OFMessageSwitchConfigRef();
       }
       
       public void setConfigFlagFragNormal () {

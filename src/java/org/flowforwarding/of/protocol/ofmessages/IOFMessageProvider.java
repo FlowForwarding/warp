@@ -4,11 +4,11 @@ import java.io.ByteArrayOutputStream;
 import java.util.Map;
 
 import org.apache.avro.Schema;
-import org.flowforwarding.of.protocol.ofmessages.OFMessageError.OFMessageErrorHandler;
-import org.flowforwarding.of.protocol.ofmessages.OFMessageFlowMod.OFMessageFlowModHandler;
-import org.flowforwarding.of.protocol.ofmessages.OFMessagePacketIn.OFMessagePacketInHandler;
-import org.flowforwarding.of.protocol.ofmessages.OFMessageSwitchConfig.OFMessageSwitchConfigHandler;
-import org.flowforwarding.of.protocol.ofstructures.OFStructureInstruction.OFStructureInstructionHandler;
+import org.flowforwarding.of.protocol.ofmessages.OFMessageError.OFMessageErrorRef;
+import org.flowforwarding.of.protocol.ofmessages.OFMessageFlowMod.OFMessageFlowModRef;
+import org.flowforwarding.of.protocol.ofmessages.OFMessagePacketIn.OFMessagePacketInRef;
+import org.flowforwarding.of.protocol.ofmessages.OFMessageSwitchConfig.OFMessageSwitchConfigRef;
+import org.flowforwarding.of.protocol.ofstructures.OFStructureInstruction.OFStructureInstructionRef;
 
 public interface IOFMessageProvider {
 
@@ -124,40 +124,40 @@ public interface IOFMessageProvider {
    /**
     * 
     */
-   public byte[] encodeFlowMod (OFMessageFlowModHandler fmHandler);
+   public byte[] encodeFlowMod (OFMessageFlowModRef fmRef);
    
    /**
     * 
     */
-   public OFMessageSwitchConfigHandler parseSwitchConfig (byte[] in);
+   public OFMessageSwitchConfigRef parseSwitchConfig (byte[] in);
    
    /**
     * 
     */
-   public OFMessagePacketInHandler parsePacketIn (byte[] in);
+   public OFMessagePacketInRef parsePacketIn (byte[] in);
    
    /**
     * 
     */
-   public OFMessageFlowModHandler buildFlowModMsg ();
+   public OFMessageFlowModRef buildFlowModMsg ();
    
-   public OFStructureInstructionHandler buildInstructionApplyActions ();
+   public OFStructureInstructionRef buildInstructionApplyActions ();
    
-   public OFStructureInstructionHandler buildInstructionWriteActions ();
+   public OFStructureInstructionRef buildInstructionWriteActions ();
    
-   public OFStructureInstructionHandler buildInstructionGotoTable ();
+   public OFStructureInstructionRef buildInstructionGotoTable ();
    
-   public OFStructureInstructionHandler buildInstructionClearActions ();
+   public OFStructureInstructionRef buildInstructionClearActions ();
    
-   public OFStructureInstructionHandler buildInstructionMeter ();
+   public OFStructureInstructionRef buildInstructionMeter ();
    
-   public OFStructureInstructionHandler buildInstructionWriteMetadata ();
+   public OFStructureInstructionRef buildInstructionWriteMetadata ();
 
    /**
     * @param in
     * @return
     */
-   OFMessageErrorHandler parseError(byte[] in);
+   OFMessageErrorRef parseError(byte[] in);
 
    boolean isSwitchFeatures(byte[] in);
 }

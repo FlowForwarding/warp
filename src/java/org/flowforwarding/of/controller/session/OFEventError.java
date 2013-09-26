@@ -4,42 +4,51 @@
  */
 package org.flowforwarding.of.controller.session;
 
-import org.flowforwarding.of.ofswitch.SwitchState.SwitchHandler;
-import org.flowforwarding.of.protocol.ofmessages.OFMessageError.OFMessageErrorHandler;
+import org.flowforwarding.of.ofswitch.SwitchState.SwitchRef;
+import org.flowforwarding.of.protocol.ofmessages.OFMessageError.OFMessageErrorRef;
 
 /**
  * @author Infoblox Inc.
- *
+ * @doc OpenFlow Error event 
  */
 public class OFEventError extends OFEvent{
 
-   protected SwitchHandler switchH;
-   protected OFMessageErrorHandler error;
+   protected SwitchRef switchRef;
+   protected OFMessageErrorRef error;
    
-   public OFEventError (SwitchHandler swH, OFMessageErrorHandler er) {
-      switchH = swH;
-      error = er;
+   /**
+    * @param SwitchRef switchRef
+    * Switch issued an OpenFlow Error message
+    * @param OFMessageErrorRef ofErrorRef
+    * OpenFlow Error message itself
+    */
+   public OFEventError (SwitchRef switchRef, OFMessageErrorRef ofErrorRef) {
+      this.switchRef = switchRef;
+      error = ofErrorRef;
    }
    
    /* (non-Javadoc)
-    * @see org.flowforwarding.of.controller.session.Event#getSwitchHandler()
+    * @see org.flowforwarding.of.controller.session.Event#getSwitchRef()
+    */
+   /**
+    * @return SwitchRef switchRef  
     */
    @Override
-   public SwitchHandler getSwitchHandler() {
-      return switchH;
+   public SwitchRef getSwitchRef() {
+      return switchRef;
    }
    
    /**
-    * @return the error
+    * @return OFMessageErrorRef error
     */
-   public OFMessageErrorHandler getError() {
+   public OFMessageErrorRef getError() {
       return error;
    }
 
    /**
-    * @param error the error to set
+    * @param OFMessageErrorRef error
     */
-   public void setError(OFMessageErrorHandler error) {
+   public void setError(OFMessageErrorRef error) {
       this.error = error;
    }
 
