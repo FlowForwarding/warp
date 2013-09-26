@@ -22,7 +22,7 @@ import akka.util.ByteString;
 /**
  * 
  * @author Infoblox Inc.
- * @doc 
+ * @doc Handles connection Switch - Controller. Primarily analyzes incoming messages
  *
  */
 public class SwitchNurse extends UntypedActor {
