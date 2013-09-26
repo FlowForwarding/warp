@@ -7,7 +7,7 @@ package org.flowforwarding.of.controller.session;
 
 /**
  * @author Infoblox Inc.
- * @doc Event issued for sending OpenFlow Switch Config Request
+ * @doc.desc Event issued for sending OpenFlow Switch Config Request
  *
  */
 public class OFCommandSendSwConfigRequest {

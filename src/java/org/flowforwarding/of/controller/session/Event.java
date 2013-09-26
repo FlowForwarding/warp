@@ -9,7 +9,7 @@ import org.flowforwarding.of.ofswitch.SwitchState.SwitchRef;
 
 /**
  * @author Infoblox Inc.
- * @doc Interface for all types of Events 
+ * @doc.desc Interface for all types of Events 
  *
  */
 public interface Event {

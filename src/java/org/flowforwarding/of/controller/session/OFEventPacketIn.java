@@ -9,7 +9,7 @@ import org.flowforwarding.of.protocol.ofmessages.OFMessagePacketIn.OFMessagePack
 
 /**
  * @author Infoblox Inc.
- * @doc Event: incoming OpenFlow Packet-In message!
+ * @doc.desc Event: incoming OpenFlow Packet-In message!
  *
  */
 public class OFEventPacketIn extends OFEvent {
@@ -18,8 +18,10 @@ public class OFEventPacketIn extends OFEvent {
    protected OFMessagePacketInRef packetIn;
    
    /**
-    * @param SwitchRef swRef
-    * @param OFMessagePacketInRef pInRef
+    * @param swRef
+    * Reference to Switch
+    * @param pInRef
+    * Reference to Packet-In message
     */
    public OFEventPacketIn(SwitchRef swRef, OFMessagePacketInRef pInRef) {
       switchRef = swRef;

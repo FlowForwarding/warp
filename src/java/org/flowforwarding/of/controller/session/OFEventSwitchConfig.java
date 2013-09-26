@@ -17,14 +17,17 @@ public class OFEventSwitchConfig extends OFEvent {
    protected OFMessageSwitchConfigRef configRef;
    
    /**
-    * @param SwitchRef swH
+    * @param switchRef
+    * Reference to Switch
+    * @param configRef
+    * Reference to OpenFlow Switch Config
     */
-   public OFEventSwitchConfig(SwitchRef swR, OFMessageSwitchConfigRef configR) {
-      switchRef = swR;
-      configRef = configR;
+   public OFEventSwitchConfig(SwitchRef switchRef, OFMessageSwitchConfigRef configRef) {
+      this.switchRef = switchRef;
+      this.configRef = configRef;
    }
 
-   /* (non-Javadoc)
+   /**
     * @see org.flowforwarding.of.controller.session.OFEvent#getSwitchRef()
     */
    @Override
@@ -33,12 +36,21 @@ public class OFEventSwitchConfig extends OFEvent {
       return switchRef;
    }
    
+  /**
+   * 
+   * @return
+   */
    public OFMessageSwitchConfigRef getConfigRef() {
       return configRef;
    }
 
-   public void setConfigRef(OFMessageSwitchConfigRef configR) {
-      this.configRef = configR;
+   /**
+    * 
+    * @param configRef
+    * Reference to OpenFlowSwitch Config
+    */
+   public void setConfigRef(OFMessageSwitchConfigRef configRef) {
+      this.configRef = configRef;
    }
 
 }

@@ -6,7 +6,7 @@ package org.flowforwarding.of.controller.session;
 
 /**
  * @author Infoblox Inc.
- * @doc OpenFlow Event base class
+ * @doc.desc OpenFlow Event base class
  *
  */
 public abstract class OFEvent implements Event{

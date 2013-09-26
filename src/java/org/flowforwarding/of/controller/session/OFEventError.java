@@ -9,7 +9,7 @@ import org.flowforwarding.of.protocol.ofmessages.OFMessageError.OFMessageErrorRe
 
 /**
  * @author Infoblox Inc.
- * @doc OpenFlow Error event 
+ * @doc.desc OpenFlow Error event 
  */
 public class OFEventError extends OFEvent{
 
@@ -46,7 +46,8 @@ public class OFEventError extends OFEvent{
    }
 
    /**
-    * @param OFMessageErrorRef error
+    * @param error
+    * - Reference to OpenFlow error message
     */
    public void setError(OFMessageErrorRef error) {
       this.error = error;

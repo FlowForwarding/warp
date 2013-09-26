@@ -15,7 +15,8 @@ public class OFEventIncoming extends OFEvent {
    protected SwitchRef switchRef;
    
    /**
-    * @param SwitchRef switchRef
+    * @param switchRef
+    * Reference to Switch
     */
    public OFEventIncoming(SwitchRef swR) {
       switchRef = swR;

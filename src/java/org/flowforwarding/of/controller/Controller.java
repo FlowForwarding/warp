@@ -26,7 +26,7 @@ import akka.io.Tcp.Connected;
 
 /**
  * @author Infoblox Inc.
- * @doc Handles incoming tcp connections. Launches and dispatches Switch nurses which are handling connections with switches
+ * @doc.desc Handles incoming tcp connections. Launches and dispatches Switch nurses which are handling connections with switches
  * 
  */
 public class Controller extends UntypedActor{

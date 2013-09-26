@@ -94,8 +94,7 @@
         <mkdir dir="${basedir}/docs/api"/>
   <javadoc packagenames="org.flowforwarding.of.*"
   	       excludepackagenames="org.flowforwarding.of.controller.restapi,org.flowforwarding.of.controller.supply,
-  	       org.flowforwarding.of.controller.test, org.flowforwarding.of.demo, org.flowforwarding.of.ofswitch, org.flowforwarding.of.protocol.offields.*,
-  	       org.flowforwarding.of.protocol.ofmessages, org.flowforwarding.of.protocol.ofstructures, org.flowforwarding.of.protocol.supply,org.flowforwarding.of.types,
+  	       org.flowforwarding.of.controller.test, org.flowforwarding.of.demo, org.flowforwarding.of.protocol.supply,org.flowforwarding.of.types,
   	       org.flowforwarding.of.util"
            sourcepath="src/java"
            defaultexcludes="yes"
@@ -109,7 +108,7 @@
     <doctitle><![CDATA[<h1>Test</h1>]]></doctitle>
     <bottom><![CDATA[<i>Copyright &#169; 2013 FlowForwarding.Org. All Rights Reserved.</i>]]></bottom>
     <tag name="todo" scope="all" description="To do:"/>
-    <tag name="doc" scope="all" description="Description"/>
+    <tag name="doc.desc" scope="all" description="Description"/>
     <link href="http://docs.oracle.com/javase/7/docs/api/"/>
   </javadoc>
 </target>

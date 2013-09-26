@@ -8,7 +8,7 @@ import akka.actor.UntypedActor;
 
 /**
  * @author Infoblox Inc.
- * @doc OpenFlow Akka actor class
+ * @doc.desc OpenFlow Akka actor class
  *
  */
 public abstract class OFActor extends UntypedActor {

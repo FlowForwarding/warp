@@ -19,7 +19,7 @@ import akka.actor.ActorRef;
 
 /**
  * @author Infoblox Inc.
- * @doc OpenFlow protocol Session handler base class
+ * @doc.desc OpenFlow protocol Session handler base class
  *
  */
 public abstract class OFSessionHandler extends OFActor{
@@ -65,14 +65,23 @@ public abstract class OFSessionHandler extends OFActor{
    protected void error(SwitchRef swR, OFMessageErrorRef error) {}
    
    
+   /**
+    * 
+    * @param swR
+    * Reference to Switch
+    */
    protected void sendSwitchConfigRequest (SwitchRef swR) {
       switches.get(swR).tell(new OFCommandSendSwConfigRequest(), getSelf());
    }
    
+   /**
+    * 
+    * @param swR
+    * Reference to switch
+    * @param flowMod
+    * Reference to OF Flow Mod 
+    */
    protected void sendFlowModMessage (SwitchRef swR, OFMessageFlowModRef flowMod) {
       switches.get(swR).tell(new OFCommandSendSwConfigRequest(), getSelf());
    }
-   
-   
-   
 }

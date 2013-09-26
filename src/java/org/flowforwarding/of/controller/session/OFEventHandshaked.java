@@ -8,7 +8,7 @@ import org.flowforwarding.of.ofswitch.SwitchState.SwitchRef;
 
 /**
  * @author Infoblox Inc.
- * @doc Issued after Controller and Switch perform Handshake procedure 
+ * @doc.desc Issued after Controller and Switch perform Handshake procedure 
  */
 public class OFEventHandshaked extends OFEvent {
    
@@ -22,14 +22,16 @@ public class OFEventHandshaked extends OFEvent {
    }
 
    /**
-    * @param SwitchRef swRef
+    * @param swRef
+    * Reference to Switch
     */
    public void setSwitchRef(SwitchRef swRef) {
       this.switchRef = swRef;
    }
    
    /**
-    * @param SwitchRef swRef
+    * @param swRef
+    * Reference to Switch 
     */
    public OFEventHandshaked(SwitchRef swRef) {
       super();

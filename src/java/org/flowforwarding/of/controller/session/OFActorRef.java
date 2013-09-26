@@ -9,7 +9,7 @@ import akka.actor.ActorRef;
 
 /**
  * @author Infoblox Inc.
- * @doc OpenFlow reference to Akka actor class 
+ * @doc.desc OpenFlow reference to Akka actor class 
  *
  */
 public class OFActorRef extends ActorRef{
