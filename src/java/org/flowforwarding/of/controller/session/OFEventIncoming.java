@@ -18,12 +18,12 @@ public class OFEventIncoming extends OFEvent {
     * @param switchRef
     * Reference to Switch
     */
-   public OFEventIncoming(SwitchRef swR) {
-      switchRef = swR;
+   public OFEventIncoming(SwitchRef switchRef) {
+      this.switchRef = switchRef;
    }
 
    /**
-    * @return SwitchRef switchRef
+    * @return switchRef
     * @see org.flowforwarding.of.controller.session.OFEvent#getSwitchRef()
     */
    @Override

@@ -155,7 +155,7 @@ public interface IOFMessageProvider {
 
    /**
     * @param in
-    * @return
+    * @return A Reference to parsed Error Message object
     */
    OFMessageErrorRef parseError(byte[] in);
 

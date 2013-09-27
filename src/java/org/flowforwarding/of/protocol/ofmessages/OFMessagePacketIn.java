@@ -50,7 +50,7 @@ public class OFMessagePacketIn extends OFMessage {
       }
       
       /**
-       * @return
+       * @return New Refereence to empty OpenFlow Packet-In object 
        */
       public static OFMessagePacketInRef create() {
          return new OFMessagePacketInRef();

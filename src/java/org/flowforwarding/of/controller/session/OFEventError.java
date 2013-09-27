@@ -17,9 +17,9 @@ public class OFEventError extends OFEvent{
    protected OFMessageErrorRef error;
    
    /**
-    * @param SwitchRef switchRef
+    * @param switchRef
     * Switch issued an OpenFlow Error message
-    * @param OFMessageErrorRef ofErrorRef
+    * @param ofErrorRef
     * OpenFlow Error message itself
     */
    public OFEventError (SwitchRef switchRef, OFMessageErrorRef ofErrorRef) {
@@ -47,7 +47,7 @@ public class OFEventError extends OFEvent{
 
    /**
     * @param error
-    * - Reference to OpenFlow error message
+    * Reference to OpenFlow error message
     */
    public void setError(OFMessageErrorRef error) {
       this.error = error;

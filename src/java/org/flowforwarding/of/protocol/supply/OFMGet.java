@@ -13,7 +13,7 @@ public abstract class OFMGet <Receiver, Field>{
    protected Receiver receiver = null;
    
    /**
-    * @param
+    * 
     */
    Field get() {
       return null;
