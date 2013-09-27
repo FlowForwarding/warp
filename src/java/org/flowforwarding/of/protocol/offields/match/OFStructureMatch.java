@@ -23,7 +23,7 @@ public abstract class OFStructureMatch <Name, Value> implements IOFStructure {
    
    
    /**
-    * @return
+    * @return Match name
     */
    public Name getName() {
       // TODO Auto-generated method stub
@@ -31,7 +31,7 @@ public abstract class OFStructureMatch <Name, Value> implements IOFStructure {
    }
 
    /**
-    * @return
+    * @return Match value
     */
    public Value getMatch() {
       // TODO Auto-generated method stub

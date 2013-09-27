@@ -38,7 +38,7 @@ public class OFEventSwitchConfig extends OFEvent {
    
   /**
    * 
-   * @return
+   * @return OFMessageSwitchConfigRef configRef
    */
    public OFMessageSwitchConfigRef getConfigRef() {
       return configRef;

@@ -16,32 +16,32 @@ public interface IOFMessageProvider {
    
    /**
     * @param byteArrayOutputStream
-    * @return
+    * @return Output stream, containg encoded OpenFlow Hello message, or null
     */
    ByteArrayOutputStream getHello(ByteArrayOutputStream byteArrayOutputStream);
 
    /**
     * @param byteArrayOutputStream
-    * @return
+    * @return Output stream, containg encoded OpenFlow Switch Feature Request message, or null
     */
    ByteArrayOutputStream getSwitchFeaturesRequest(ByteArrayOutputStream byteArrayOutputStream);
 
    /**
     * @param byteArrayOutputStream
-    * @return
+    * @return Output stream, containg encoded OpenFlow Set Swicth Config message, or null
     */
    ByteArrayOutputStream getSetSwitchConfig(ByteArrayOutputStream byteArrayOutputStream);
 
    /**
     * @param byteArrayOutputStream
-    * @return
+    * @return Output stream, containg encoded OpenFlow Get Swicth Config message, or null
     */
    ByteArrayOutputStream getSwitchConfigRequest(ByteArrayOutputStream byteArrayOutputStream);
 
    /**
     * @param entries
     * @param byteArrayOutputStream
-    * @return
+    * @return Output stream, containg encoded OpenFlow Flow Modification message, or null
     */
    ByteArrayOutputStream getFlowMod(Map<String, Object> entries,
          ByteArrayOutputStream byteArrayOutputStream);
@@ -58,7 +58,7 @@ public interface IOFMessageProvider {
    byte[] encodeHelloMessage();
    
    /**
-    * @return
+    * @return byte array containing encoded Switc Feature Request message
     */
    byte[] encodeSwitchFeaturesRequest();
 
@@ -70,74 +70,74 @@ public interface IOFMessageProvider {
 
    /**
     * @param array
-    * @return
+    * @return Long value of Switch DPID
     */
    Long getDPID(byte[] array);
    
    /**
-    * 
+    * @return <b>true</b> if byte array contains an OpenFlow message 
     */
    boolean isMessage (Schema header, byte[] in);
    
    /**
     * Verify whether a binary message is an OpenFlow Hello message
     * @param in Should contain an OpenFlow message
-    * @return true if this is a Hello message
+    * @return <b>true</b> if byte array contains an OpenFlow Hello message
     * 
     */
    boolean isHello(byte [] in);
    
    /**
     * @param in
-    * @return
+    * @return <b>true</b> if byte array contains an OpenFlow Switch Configuration message
     */
    boolean isConfig (byte [] in);
    
    /**
     * @param in
-    * @return
+    * @return <b>true</b> if byte array contains an OpenFlow packet-In massage
     */
    boolean isPacketIn (byte [] in);
    
    /**
     * @param in
-    * @return
+    * @return <b>true</b> if byte array contains an OpenFlow Error message
     */
    boolean isError (byte [] in);
    
    /**
     * @param in
-    * @return
+    * @return <b>true</b> if byte array contains an OpenFlow Echo Request message
     */
    boolean isEchoRequest (byte [] in);
 
    /**
-    * 
+    * @return a byte array contains an OpenFlow Echo Request message
     */
    byte [] encodeEchoRequest();
    
    /**
-    * 
+    * @return a byte array contains an OpenFlow Echo Reply message
     */
    byte [] encodeEchoReply();
    
    /**
-    * 
+    * @return a byte array contains an OpenFlow Flow Modification message
     */
    public byte[] encodeFlowMod (OFMessageFlowModRef fmRef);
    
    /**
-    * 
+    * @return a Reference to parsed OpenFlow Switch Configuration message
     */
    public OFMessageSwitchConfigRef parseSwitchConfig (byte[] in);
    
    /**
-    * 
+    * @return a Reference to parsed OpenFlow Packet-In message 
     */
    public OFMessagePacketInRef parsePacketIn (byte[] in);
    
    /**
-    * 
+    * @return a Reference to inintialized Flow Modification object  
     */
    public OFMessageFlowModRef buildFlowModMsg ();
    
