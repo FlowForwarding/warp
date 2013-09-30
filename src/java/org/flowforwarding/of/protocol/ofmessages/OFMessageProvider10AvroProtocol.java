@@ -184,7 +184,7 @@ public class OFMessageProvider10AvroProtocol implements IOFMessageProvider{
 
    
    /**
-    * @return
+    * @return binary array containing OpenFlow Hello message, or null
     */
    @Override
    public byte[] encodeHelloMessage() {
@@ -192,7 +192,7 @@ public class OFMessageProvider10AvroProtocol implements IOFMessageProvider{
    }
    
    /**
-    * @return
+    * @return binary array containing OpenFlow Switch Feature Request message, or null
     */
    @Override
    public byte[] encodeSwitchFeaturesRequest() {
@@ -200,21 +200,22 @@ public class OFMessageProvider10AvroProtocol implements IOFMessageProvider{
    }
    
    /**
-    * @return
+    * @return binary array containing OpenFlow Echo Request message, or null
     */
    public byte[] encodeEchoRequest() {
       return encodeMessage(echoRequestHeaderSchema, ofpEchoRequestSchema);
    }
    
    /**
-    * @return
+    * @return binary array containing OpenFlow Echo Reply message, or null
     */
    public byte[] encodeEchoReply() {
       return encodeMessage(echoReplyHeaderSchema, ofpEchoReplySchema);
    }
    
 
-   /* (non-Javadoc)
+   /**
+    * @return Short OpenFlow versions the Switch supports 
     * @see org.flowforwarding.of.protocol.ofmessages.IOFMessageProvider#getVersion()
     */
    @Override
@@ -223,7 +224,7 @@ public class OFMessageProvider10AvroProtocol implements IOFMessageProvider{
       return null;
    }
 
-   /* (non-Javadoc)
+   /**
     * @see org.flowforwarding.of.protocol.ofmessages.IOFMessageProvider#getHello(java.io.ByteArrayOutputStream)
     */
    @Override
@@ -233,7 +234,7 @@ public class OFMessageProvider10AvroProtocol implements IOFMessageProvider{
       return null;
    }
 
-   /* (non-Javadoc)
+   /**
     * @see org.flowforwarding.of.protocol.ofmessages.IOFMessageProvider#getSwitchFeaturesRequest(java.io.ByteArrayOutputStream)
     */
    @Override
@@ -243,7 +244,7 @@ public class OFMessageProvider10AvroProtocol implements IOFMessageProvider{
       return null;
    }
 
-   /* (non-Javadoc)
+   /**
     * @see org.flowforwarding.of.protocol.ofmessages.IOFMessageProvider#getSetSwitchConfig(java.io.ByteArrayOutputStream)
     */
    @Override
@@ -253,7 +254,7 @@ public class OFMessageProvider10AvroProtocol implements IOFMessageProvider{
       return null;
    }
 
-   /* (non-Javadoc)
+   /**
     * @see org.flowforwarding.of.protocol.ofmessages.IOFMessageProvider#getSwitchConfigRequest(java.io.ByteArrayOutputStream)
     */
    @Override
@@ -263,7 +264,7 @@ public class OFMessageProvider10AvroProtocol implements IOFMessageProvider{
       return null;
    }
 
-   /* (non-Javadoc)
+   /**
     * @see org.flowforwarding.of.protocol.ofmessages.IOFMessageProvider#getFlowMod(java.util.Map, java.io.ByteArrayOutputStream)
     */
    @Override
@@ -273,7 +274,7 @@ public class OFMessageProvider10AvroProtocol implements IOFMessageProvider{
       return null;
    }
 
-   /* (non-Javadoc)
+   /**
     * @see org.flowforwarding.of.protocol.ofmessages.IOFMessageProvider#encodeSwitchConfigRequest()
     */
    @Override
@@ -281,7 +282,7 @@ public class OFMessageProvider10AvroProtocol implements IOFMessageProvider{
       return encodeMessage(getConfigRequestHeaderSchema, ofpGetConfigRequestSchema);
    }
 
-   /* (non-Javadoc)
+   /**
     * @see org.flowforwarding.of.protocol.ofmessages.IOFMessageProvider#getDPID(byte[])
     */
    public Long getDPID(byte[] buffer) {
@@ -292,7 +293,7 @@ public class OFMessageProvider10AvroProtocol implements IOFMessageProvider{
       return getLong(dpid);
    }
 
-   /* (non-Javadoc)
+   /**
     * @see org.flowforwarding.of.protocol.ofmessages.IOFMessageProvider#isHello(byte[])
     */
    @Override
@@ -301,7 +302,7 @@ public class OFMessageProvider10AvroProtocol implements IOFMessageProvider{
       return false;
    }
 
-   /* (non-Javadoc)
+   /**
     * @see org.flowforwarding.of.protocol.ofmessages.IOFMessageProvider#encodeFlowMod(org.flowforwarding.of.protocol.ofmessages.OFMessageFlowMod.OFMessageFlowModRef)
     */
    @Override
@@ -310,7 +311,7 @@ public class OFMessageProvider10AvroProtocol implements IOFMessageProvider{
       return null;
    }
 
-   /* (non-Javadoc)
+   /**
     * @see org.flowforwarding.of.protocol.ofmessages.IOFMessageProvider#buildFlowModMsg()
     */
    @Override
@@ -319,7 +320,7 @@ public class OFMessageProvider10AvroProtocol implements IOFMessageProvider{
       return null;
    }
 
-   /* (non-Javadoc)
+   /**
     * @see org.flowforwarding.of.protocol.ofmessages.IOFMessageProvider#buildInstructionApplyActions()
     */
    @Override
@@ -328,7 +329,7 @@ public class OFMessageProvider10AvroProtocol implements IOFMessageProvider{
       return null;
    }
 
-   /* (non-Javadoc)
+   /**
     * @see org.flowforwarding.of.protocol.ofmessages.IOFMessageProvider#buildInstructionWriteActions()
     */
    @Override
@@ -337,7 +338,7 @@ public class OFMessageProvider10AvroProtocol implements IOFMessageProvider{
       return null;
    }
 
-   /* (non-Javadoc)
+   /**
     * @see org.flowforwarding.of.protocol.ofmessages.IOFMessageProvider#buildInstructionGotoTable()
     */
    @Override
@@ -346,7 +347,7 @@ public class OFMessageProvider10AvroProtocol implements IOFMessageProvider{
       return null;
    }
 
-   /* (non-Javadoc)
+   /**
     * @see org.flowforwarding.of.protocol.ofmessages.IOFMessageProvider#buildInstructionClearActions()
     */
    @Override
@@ -355,7 +356,7 @@ public class OFMessageProvider10AvroProtocol implements IOFMessageProvider{
       return null;
    }
 
-   /* (non-Javadoc)
+   /**
     * @see org.flowforwarding.of.protocol.ofmessages.IOFMessageProvider#buildInstructionMeter()
     */
    @Override
@@ -364,7 +365,7 @@ public class OFMessageProvider10AvroProtocol implements IOFMessageProvider{
       return null;
    }
 
-   /* (non-Javadoc)
+   /**
     * @see org.flowforwarding.of.protocol.ofmessages.IOFMessageProvider#buildInstructionWriteMetadata()
     */
    @Override
@@ -373,7 +374,7 @@ public class OFMessageProvider10AvroProtocol implements IOFMessageProvider{
       return null;
    }
 
-   /* (non-Javadoc)
+   /**
     * @see org.flowforwarding.of.protocol.ofmessages.IOFMessageProvider#isConfig(byte[])
     */
    @Override
@@ -386,7 +387,7 @@ public class OFMessageProvider10AvroProtocol implements IOFMessageProvider{
       else 
          return false;
    }
-   /* (non-Javadoc)
+   /**
     * @see org.flowforwarding.of.protocol.ofmessages.IOFMessageProvider#parseSwitchConfig(byte[])
     */
    @Override
@@ -406,7 +407,7 @@ public class OFMessageProvider10AvroProtocol implements IOFMessageProvider{
       
       return configH;
    }
-   /* (non-Javadoc)
+   /**
     * @see org.flowforwarding.of.protocol.ofmessages.IOFMessageProvider#isPacketIn(byte[])
     */
    @Override
@@ -421,7 +422,7 @@ public class OFMessageProvider10AvroProtocol implements IOFMessageProvider{
          return false;   
    }
 
-   /* (non-Javadoc)
+   /**
     * @see org.flowforwarding.of.protocol.ofmessages.IOFMessageProvider#parsePacketIn(byte[])
     */
    @Override
@@ -431,7 +432,7 @@ public class OFMessageProvider10AvroProtocol implements IOFMessageProvider{
       return null;      
    }
 
-   /* (non-Javadoc)
+   /**
     * @see org.flowforwarding.of.protocol.ofmessages.IOFMessageProvider#isError(byte[])
     */
    @Override
@@ -440,7 +441,7 @@ public class OFMessageProvider10AvroProtocol implements IOFMessageProvider{
       return false;
    }
 
-   /* (non-Javadoc)
+   /**
     * @see org.flowforwarding.of.protocol.ofmessages.IOFMessageProvider#parseError(byte[])
     */
    @Override
