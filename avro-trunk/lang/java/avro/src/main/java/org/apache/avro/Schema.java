@@ -958,18 +958,87 @@ public abstract class Schema extends JsonProperties {
   public interface IOperation {
     JsonNode result();
   };
-
+  
+  protected interface IOperationBuilder {
+     Operation build(JsonNode ops);
+  };
+  
   public class Operation implements IOperation {
     protected String name;
     protected List<IOperation> operands = null;
     protected JsonNode result = null;
+    
+    protected Map<String, IOperationBuilder> operations = null;
+    
+    protected class OperationOrBuilder implements IOperationBuilder{
+       public Operation build(JsonNode ops) {
+          return new OperationOr (ops);
+       }
+     }
+    
+    protected class OperationXorBuilder implements IOperationBuilder{
+       public Operation build(JsonNode ops) {
+          return new OperationXor (ops);
+       }
+    }
+    
+    protected class OperationAndBuilder implements IOperationBuilder{
+       public Operation build(JsonNode ops) {
+          return new OperationAnd (ops);
+       }
+    }
+    
+    protected class OperationShiftBuilder implements IOperationBuilder{
+       public Operation build(JsonNode ops) {
+          return new OperationShift(ops);
+       }
+    }
+    
+    protected class OperationBitsBuilder implements IOperationBuilder{
+       public Operation build(JsonNode ops) {
+          return new OperationBits(ops);
+       }
+    }
+    
+    protected void init () {
+      if (operations == null) {
+        operations = new HashMap<String, IOperationBuilder>();
+        operations.put("or", new OperationOrBuilder());
+        operations.put("xor", new OperationXorBuilder());
+        operations.put("and", new OperationAndBuilder());
+        operations.put("shift", new OperationShiftBuilder());
+        operations.put("set_bits", new OperationBitsBuilder());
+      }
+   }
+    /*
+          String opName = operand.getFieldNames().next();
+          if (opName.equalsIgnoreCase("or")) 
+            this.operands.add(new OperationOr(operand.getElements().next()));
+          else if (opName.equalsIgnoreCase("and"))
+            this.operands.add(new OperationAnd(operand.getElements().next()));
+          else if (opName.equalsIgnoreCase("xor"))
+            this.operands.add(new OperationXor(operand.getElements().next()));
+          else if (opName.equalsIgnoreCase("shift"))
+            this.operands.add(new OperationShift(operand.getElements().next()));
+          else if (opName.equalsIgnoreCase("set_bits"))
+            this.operands.add(new OperationBits(operand.getElements().next()));
 
+
+    */
+    
+    
     public Operation (String n, List<IOperation> ops) {
+      if (operations == null) 
+        init();
       this.name = n;
       this.operands = ops;
     }
     
     public Operation (JsonNode n) {
+
+      if (operations == null) 
+        init();
+      
       if (n.isInt()) {
         this.name = "nop";
         this.result = n;
@@ -1082,7 +1151,8 @@ public abstract class Schema extends JsonProperties {
           this.operands.add(new OperationValue((IntNode) operand));
         } else {
           String opName = operand.getFieldNames().next();
-          if (opName.equalsIgnoreCase("or")) 
+          operands.add(operations.get(opName).build(operand.getElements().next()));
+/*          if (opName.equalsIgnoreCase("or")) 
             this.operands.add(new OperationOr(operand.getElements().next()));
           else if (opName.equalsIgnoreCase("and"))
             this.operands.add(new OperationAnd(operand.getElements().next()));
@@ -1091,7 +1161,8 @@ public abstract class Schema extends JsonProperties {
           else if (opName.equalsIgnoreCase("shift"))
             this.operands.add(new OperationShift(operand.getElements().next()));
           else if (opName.equalsIgnoreCase("set_bits"))
-            this.operands.add(new OperationBits(operand.getElements().next()));
+            this.operands.add(new OperationBits(operand.getElements().next()));*/
+          
         }
       }
     }
@@ -1127,7 +1198,8 @@ public abstract class Schema extends JsonProperties {
           this.operands.add(new OperationValue((IntNode) operand));
         } else {
           String opName = operand.getFieldNames().next();
-          if (opName.equalsIgnoreCase("or")) 
+          operands.add(operations.get(opName).build(operand.getElements().next()));
+/*          if (opName.equalsIgnoreCase("or")) 
             this.operands.add(new OperationOr(operand.getElements().next()));
           else if (opName.equalsIgnoreCase("and"))
             this.operands.add(new OperationAnd(operand.getElements().next()));
@@ -1136,7 +1208,7 @@ public abstract class Schema extends JsonProperties {
           else if (opName.equalsIgnoreCase("shift"))
             this.operands.add(new OperationShift(operand.getElements().next()));
           else if (opName.equalsIgnoreCase("set_bits"))
-            this.operands.add(new OperationBits(operand.getElements().next()));
+            this.operands.add(new OperationBits(operand.getElements().next()));*/
         }
       }
     }
@@ -1172,7 +1244,8 @@ public abstract class Schema extends JsonProperties {
           this.operands.add(new OperationValue((IntNode) operand));
         } else {
           String opName = operand.getFieldNames().next();
-          if (opName.equalsIgnoreCase("or")) 
+          operands.add(operations.get(opName).build(operand.getElements().next()));
+/*          if (opName.equalsIgnoreCase("or")) 
             this.operands.add(new OperationOr(operand.getElements().next()));
           else if (opName.equalsIgnoreCase("and"))
             this.operands.add(new OperationAnd(operand.getElements().next()));
@@ -1181,7 +1254,7 @@ public abstract class Schema extends JsonProperties {
           else if (opName.equalsIgnoreCase("shift"))
             this.operands.add(new OperationShift(operand.getElements().next()));
           else if (opName.equalsIgnoreCase("set_bits"))
-            this.operands.add(new OperationBits(operand.getElements().next()));
+            this.operands.add(new OperationBits(operand.getElements().next()));*/
         }
       }
     }
@@ -1217,7 +1290,8 @@ public abstract class Schema extends JsonProperties {
           this.operands.add(new OperationValue((IntNode) operand));
         } else {
           String opName = operand.getFieldNames().next();
-          if (opName.equalsIgnoreCase("or")) 
+          operands.add(operations.get(opName).build(operand.getElements().next()));
+/*          if (opName.equalsIgnoreCase("or")) 
             this.operands.add(new OperationOr(operand.getElements().next()));
           else if (opName.equalsIgnoreCase("and"))
             this.operands.add(new OperationAnd(operand.getElements().next()));
@@ -1226,7 +1300,7 @@ public abstract class Schema extends JsonProperties {
           else if (opName.equalsIgnoreCase("shift"))
             this.operands.add(new OperationShift(operand.getElements().next()));
           else if (opName.equalsIgnoreCase("set_bits"))
-            this.operands.add(new OperationBits(operand.getElements().next()));
+            this.operands.add(new OperationBits(operand.getElements().next()));*/
         }
       }
     }
@@ -1259,7 +1333,8 @@ public abstract class Schema extends JsonProperties {
           this.operands.add(new OperationValue((IntNode) operand));
         } else {
           String opName = operand.getFieldNames().next();
-          if (opName.equalsIgnoreCase("or")) 
+          operands.add(operations.get(opName).build(operand.getElements().next()));
+/*          if (opName.equalsIgnoreCase("or")) 
             this.operands.add(new OperationOr(operand.getElements().next()));
           else if (opName.equalsIgnoreCase("and"))
             this.operands.add(new OperationAnd(operand.getElements().next()));
@@ -1268,7 +1343,7 @@ public abstract class Schema extends JsonProperties {
           else if (opName.equalsIgnoreCase("shift"))
             this.operands.add(new OperationShift(operand.getElements().next()));
           else if (opName.equalsIgnoreCase("set_bits"))
-            this.operands.add(new OperationBits(operand.getElements().next()));
+            this.operands.add(new OperationBits(operand.getElements().next()));*/
         }
       }
     }
@@ -1317,7 +1392,7 @@ public abstract class Schema extends JsonProperties {
             this.defaultValue = new OperationShift(operands);
           else if (opName.equalsIgnoreCase("set_bits"))
             this.defaultValue = new OperationBits(operands);
-          else if (opName.equalsIgnoreCase("orrr"))
+          else if (opName.equalsIgnoreCase("or"))
             this.defaultValue = new OperationOr(operands);
         }
         
