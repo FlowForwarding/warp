@@ -2,6 +2,8 @@
     <project basedir="." default="build" name="of_controller">
     <property environment="env"/>
     <property name="controller.root" value="${basedir}"/>
+    <property name="javadocs.root" value="${basedir}/build/javadocs"/>    	
+    <property name="library.root" value="${basedir}/build/lib"/>
     <property name="avro.location" value="avro-trunk/lang/java/avro"/>
     <property name="debuglevel" value="source,lines,vars"/>
     <property name="target" value="1.7"/>
@@ -21,21 +23,10 @@
         <mkdir dir="build"/>
         <mkdir dir="build/classes"/>
         <mkdir dir="build/classes/main"/>
-        <copy includeemptydirs="false" todir="build">
-            <fileset dir="src/main/java">
-                <exclude name="**/*.java"/>
-            </fileset>
-        </copy>
-        <copy includeemptydirs="false" todir="build">
+    	<mkdir dir="build/classes/main/resources"/>
+        <copy includeemptydirs="false" todir="build/classes/main/resources">
             <fileset dir="src/main/resources">
                 <exclude name="**/*.java"/>
-            </fileset>
-        </copy>
-        <copy includeemptydirs="false" todir="build">
-            <fileset dir="src">
-                <exclude name="**/*.java"/>
-                <exclude name="java/"/>
-                <exclude name="resources/"/>
             </fileset>
         </copy>
     </target>
@@ -74,14 +65,14 @@
         </java>
     </target>
     <target depends="build-project" name="create_run_jar">
-    	<mkdir dir="${basedir}/target"/>
-    	<jar destfile="target/of_lib.jar" filesetmanifest="mergewithoutmain">
+    	<mkdir dir="${library.root}"/>
+    	<jar destfile="${library.root}/of_lib.jar" filesetmanifest="mergewithoutmain">
     		<manifest>
     			<attribute name="Main-Class" value="org.flowforwarding.of.controller.ControllerOld"/>
     			<attribute name="Class-Path" value="."/>
             </manifest>
     		<fileset dir="build/classes/main"/>
-    		<fileset dir="build/main/resources"/>
+    		<fileset dir="build/classes/main/resources"/>
             <zipfileset excludes="META-INF/*.SF" src="${controller.root}/lib/jackson-all-1.9.11.jar"/>
             <zipfileset excludes="META-INF/*.SF" src="${controller.root}/lib/netty-3.6.3.Final.jar"/>
             <zipfileset excludes="META-INF/*.SF" src="${controller.root}/lib/org.restlet.jar"/>
@@ -94,14 +85,14 @@
     </target>
 
  <target name="javadoc" description="Create Javadocs for the FlowForwarding OF Controller ...">
-        <mkdir dir="${basedir}/docs/api"/>
+        <mkdir dir="${javadocs.root}"/>
   <javadoc packagenames="org.flowforwarding.of.*"
   	       excludepackagenames="org.flowforwarding.of.controller.restapi,org.flowforwarding.of.controller.supply,
   	       org.flowforwarding.of.controller.test, org.flowforwarding.of.demo, org.flowforwarding.of.protocol.supply,org.flowforwarding.of.types,
   	       org.flowforwarding.of.util"
            sourcepath="src/main/java"
            defaultexcludes="yes"
-           destdir="docs/api"
+           destdir="${javadocs.root}"
            author="true"
            version="true"
            use="true"
