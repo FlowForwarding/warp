@@ -7,7 +7,8 @@
     <property name="target" value="1.7"/>
     <property name="source" value="1.7"/>
     <path id="of_controller.classpath">
-        <pathelement location="bin"/>
+        <pathelement location="build/bin"/>
+    	<pathelement location="build/classes/main"/>
         <pathelement location="${controller.root}/lib/jackson-all-1.9.11.jar"/>
         <pathelement location="${controller.root}/lib/netty-3.6.3.Final.jar"/>
         <pathelement location="${controller.root}/lib/org.restlet.jar"/>
@@ -18,18 +19,20 @@
         <pathelement location="${avro.location}/target/avro-1.7.4-SNAPSHOT.jar"/>
     </path>
     <target name="init">
-        <mkdir dir="bin"/>
-        <copy includeemptydirs="false" todir="bin">
+        <mkdir dir="build"/>
+        <mkdir dir="build/classes"/>
+        <mkdir dir="build/classes/main"/>
+        <copy includeemptydirs="false" todir="build">
             <fileset dir="src/main/java">
                 <exclude name="**/*.java"/>
             </fileset>
         </copy>
-        <copy includeemptydirs="false" todir="bin">
+        <copy includeemptydirs="false" todir="build">
             <fileset dir="src/main/resources">
                 <exclude name="**/*.java"/>
             </fileset>
         </copy>
-        <copy includeemptydirs="false" todir="bin">
+        <copy includeemptydirs="false" todir="build">
             <fileset dir="src">
                 <exclude name="**/*.java"/>
                 <exclude name="java/"/>
@@ -38,7 +41,7 @@
         </copy>
     </target>
     <target name="clean">
-        <delete dir="${basedir}/bin"/>
+        <delete dir="${basedir}/build"/>
         <delete dir="${basedir}/docs/api"/>
     </target>
     <target depends="clean" name="cleanall"/>
@@ -46,7 +49,7 @@
     <target name="build-subprojects"/>
     <target depends="init" name="build-project">
         <echo message="${ant.project.name}: ${ant.file}"/>
-        <javac debug="true" debuglevel="${debuglevel}" destdir="bin" includeantruntime="false" source="${source}" target="${target}">
+        <javac debug="true" debuglevel="${debuglevel}" destdir="build/classes/main" includeantruntime="false" source="${source}" target="${target}">
             <src path="src/main/java"/>
             <src path="src/main/resources"/>
             <src path="src"/>
@@ -78,7 +81,7 @@
     			<attribute name="Main-Class" value="org.flowforwarding.of.controller.ControllerOld"/>
     			<attribute name="Class-Path" value="."/>
             </manifest>
-    		<fileset dir="bin"/>
+    		<fileset dir="build"/>
             <zipfileset excludes="META-INF/*.SF" src="${controller.root}/lib/jackson-all-1.9.11.jar"/>
             <zipfileset excludes="META-INF/*.SF" src="${controller.root}/lib/netty-3.6.3.Final.jar"/>
             <zipfileset excludes="META-INF/*.SF" src="${controller.root}/lib/org.restlet.jar"/>
