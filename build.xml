@@ -7,8 +7,7 @@
     <property name="target" value="1.7"/>
     <property name="source" value="1.7"/>
     <path id="of_controller.classpath">
-        <pathelement location="build/bin"/>
-    	<pathelement location="build/classes/main"/>
+    	<pathelement location="${controller.root}/build/classes/main"/>
         <pathelement location="${controller.root}/lib/jackson-all-1.9.11.jar"/>
         <pathelement location="${controller.root}/lib/netty-3.6.3.Final.jar"/>
         <pathelement location="${controller.root}/lib/org.restlet.jar"/>
@@ -81,7 +80,8 @@
     			<attribute name="Main-Class" value="org.flowforwarding.of.controller.ControllerOld"/>
     			<attribute name="Class-Path" value="."/>
             </manifest>
-    		<fileset dir="build"/>
+    		<fileset dir="build/classes/main"/>
+    		<fileset dir="build/main/resources"/>
             <zipfileset excludes="META-INF/*.SF" src="${controller.root}/lib/jackson-all-1.9.11.jar"/>
             <zipfileset excludes="META-INF/*.SF" src="${controller.root}/lib/netty-3.6.3.Final.jar"/>
             <zipfileset excludes="META-INF/*.SF" src="${controller.root}/lib/org.restlet.jar"/>
