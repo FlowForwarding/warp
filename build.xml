@@ -20,12 +20,12 @@
     <target name="init">
         <mkdir dir="bin"/>
         <copy includeemptydirs="false" todir="bin">
-            <fileset dir="src/java">
+            <fileset dir="src/main/java">
                 <exclude name="**/*.java"/>
             </fileset>
         </copy>
         <copy includeemptydirs="false" todir="bin">
-            <fileset dir="src/resources">
+            <fileset dir="src/main/resources">
                 <exclude name="**/*.java"/>
             </fileset>
         </copy>
@@ -47,8 +47,8 @@
     <target depends="init" name="build-project">
         <echo message="${ant.project.name}: ${ant.file}"/>
         <javac debug="true" debuglevel="${debuglevel}" destdir="bin" includeantruntime="false" source="${source}" target="${target}">
-            <src path="src/java"/>
-            <src path="src/resources"/>
+            <src path="src/main/java"/>
+            <src path="src/main/resources"/>
             <src path="src"/>
             <exclude name="java/"/>
             <exclude name="resources/"/>
@@ -96,7 +96,7 @@
   	       excludepackagenames="org.flowforwarding.of.controller.restapi,org.flowforwarding.of.controller.supply,
   	       org.flowforwarding.of.controller.test, org.flowforwarding.of.demo, org.flowforwarding.of.protocol.supply,org.flowforwarding.of.types,
   	       org.flowforwarding.of.util"
-           sourcepath="src/java"
+           sourcepath="src/main/java"
            defaultexcludes="yes"
            destdir="docs/api"
            author="true"

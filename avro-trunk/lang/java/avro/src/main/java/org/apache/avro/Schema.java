@@ -1028,17 +1028,14 @@ public abstract class Schema extends JsonProperties {
     
     
     public Operation (String n, List<IOperation> ops) {
-      if (operations == null) 
-        init();
+      init();
       this.name = n;
       this.operands = ops;
     }
     
     public Operation (JsonNode n) {
+      init();
 
-      if (operations == null) 
-        init();
-      
       if (n.isInt()) {
         this.name = "nop";
         this.result = n;
@@ -1058,6 +1055,7 @@ public abstract class Schema extends JsonProperties {
     }
 
     public Operation () {
+      init();
       this.name = "nop";
       this.operands = new ArrayList<IOperation> ();
     }
