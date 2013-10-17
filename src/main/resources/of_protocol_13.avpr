@@ -97,26 +97,6 @@
     ]
    },
    
-   {"name":"ofp_group_mod_command",
-    "type":"enum",
-    "items":"uint_16",
-    "list":[
-     {"name":"OFPGC_ADD", "default":[0,0]},
-     {"name":"OFPGC_MODIFY", "default":[0,1]},
-     {"name":"OFPGC_DELETE", "default":[0,2]}
-    ]
-   },
-   
-   {"name":"ofp_group_type",
-    "type":"enum",
-    "items":"uint_8",
-    "list":[
-     {"name":"OFPGT_ALL", "default":[0,0]},
-     {"name":"OFPGT_SELECT", "default":[0,1]},
-     {"name":"OFPGT_INDIRECT", "default":[0,2]},
-     {"name":"OFPGT_FF", "default":[0,3]}
-    ]
-   },
 
    {"name":"ofp_header",
     "type":"record",
@@ -1293,6 +1273,27 @@
     "type":"record",
     "fields":[ 
       {"name":"set", "type":{"type":"array", "items":"ofp_bucket"}}
+    ]
+   },
+
+   {"name":"ofp_group_mod_command",
+    "type":"enum",
+    "items":"uint_16",
+    "list":[
+     {"name":"OFPGC_ADD", "default":[0,0]},
+     {"name":"OFPGC_MODIFY", "default":[0,1]},
+     {"name":"OFPGC_DELETE", "default":[0,2]}
+    ]
+   },
+   
+   {"name":"ofp_group_type",
+    "type":"enum",
+    "items":"uint_8",
+    "list":[
+     {"name":"OFPGT_ALL", "default":[0,0]},
+     {"name":"OFPGT_SELECT", "default":[0,1]},
+     {"name":"OFPGT_INDIRECT", "default":[0,2]},
+     {"name":"OFPGT_FF", "default":[0,3]}
     ]
    },
       
