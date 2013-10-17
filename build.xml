@@ -50,17 +50,17 @@
     </target>
     <target description="Build all projects which reference this project. Useful to propagate changes." name="build-refprojects"/>
     <target name="Controller">
-        <java classname="org.flowforwarding.of.controller.ControllerOld" failonerror="true" fork="yes">
+        <java classname="org.flowforwarding.warp.controller.ControllerOld" failonerror="true" fork="yes">
             <classpath refid="of_controller.classpath"/>
         </java>
     </target>
     <target name="RestServerApplication">
-        <java classname="org.flowforwarding.of.controller.rest.RestServerApplication" failonerror="true" fork="yes">
+        <java classname="org.flowforwarding.warp.controller.rest.RestServerApplication" failonerror="true" fork="yes">
             <classpath refid="of_controller.classpath"/>
         </java>
     </target>
     <target name="AvroMineTest">
-        <java classname="org.flowforwarding.of.controller.test.AvroMineTest" failonerror="true" fork="yes">
+        <java classname="org.flowforwarding.warp.controller.test.AvroMineTest" failonerror="true" fork="yes">
             <classpath refid="of_controller.classpath"/>
         </java>
     </target>
@@ -68,7 +68,7 @@
     	<mkdir dir="${library.root}"/>
     	<jar destfile="${library.root}/of_lib.jar" filesetmanifest="mergewithoutmain">
     		<manifest>
-    			<attribute name="Main-Class" value="org.flowforwarding.of.controller.ControllerOld"/>
+    			<attribute name="Main-Class" value="org.flowforwarding.warp.controller.ControllerOld"/>
     			<attribute name="Class-Path" value="."/>
             </manifest>
     		<fileset dir="build/classes/main"/>
@@ -86,10 +86,10 @@
 
  <target name="javadoc" description="Create Javadocs for the FlowForwarding OF Controller ...">
         <mkdir dir="${javadocs.root}"/>
-  <javadoc packagenames="org.flowforwarding.of.*"
-  	       excludepackagenames="org.flowforwarding.of.controller.restapi,org.flowforwarding.of.controller.supply,
-  	       org.flowforwarding.of.controller.test, org.flowforwarding.of.demo, org.flowforwarding.of.protocol.supply,org.flowforwarding.of.types,
-  	       org.flowforwarding.of.util"
+  <javadoc packagenames="org.flowforwarding.warp.*"
+  	       excludepackagenames="org.flowforwarding.warp.controller.restapi,org.flowforwarding.warp.controller.supply,
+  	       org.flowforwarding.warp.controller.test, org.flowforwarding.warp.demo, org.flowforwarding.warp.protocol.supply,org.flowforwarding.warp.types,
+  	       org.flowforwarding.warp.util"
            sourcepath="src/main/java"
            defaultexcludes="yes"
            destdir="${javadocs.root}"
