@@ -67,6 +67,7 @@
     </target>
     <target depends="build-project" name="create_run_jar">
     	<mkdir dir="${library.root}"/>
+    	<mkdir dir="${basedir}/dist"/>
     	<jar destfile="${library.root}/of_lib.jar" filesetmanifest="mergewithoutmain">
     		<manifest>
     			<attribute name="Main-Class" value="org.flowforwarding.warp.controller.ControllerOld"/>
