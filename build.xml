@@ -12,13 +12,13 @@
     <property name="source" value="1.7"/>
     <path id="of_controller.classpath">
     	<pathelement location="${controller.root}/build/classes/main"/>
-        <pathelement location="${controller.root}/lib/jackson-all-1.9.11.jar"/>
-        <pathelement location="${controller.root}/lib/netty-3.6.3.Final.jar"/>
-        <pathelement location="${controller.root}/lib/org.restlet.jar"/>
-        <pathelement location="${controller.root}/lib/org.restlet.ext.jackson.jar"/>
-        <pathelement location="${controller.root}/lib/scala-library.jar"/>
-        <pathelement location="${controller.root}/lib/config-1.0.2.jar"/>
-        <pathelement location="${controller.root}/lib/akka-actor_2.10-2.2.0.jar"/>
+        <pathelement location="${controller.root}/deps/lib/jackson-all-1.9.11.jar"/>
+        <pathelement location="${controller.root}/deps/lib/netty-3.6.3.Final.jar"/>
+        <pathelement location="${controller.root}/deps/lib/org.restlet.jar"/>
+        <pathelement location="${controller.root}/deps/lib/org.restlet.ext.jackson.jar"/>
+        <pathelement location="${controller.root}/deps/lib/scala-library.jar"/>
+        <pathelement location="${controller.root}/deps/lib/config-1.0.2.jar"/>
+        <pathelement location="${controller.root}/deps/lib/akka-actor_2.10-2.2.0.jar"/>
         <pathelement location="${avro.location}/target/avro-1.7.4-SNAPSHOT.jar"/>
     </path>
     <target name="init">
@@ -74,13 +74,13 @@
             </manifest>
     		<fileset dir="build/classes/main"/>
     		<fileset dir="build/classes/main/resources"/>
-            <zipfileset excludes="META-INF/*.SF" src="${controller.root}/lib/jackson-all-1.9.11.jar"/>
-            <zipfileset excludes="META-INF/*.SF" src="${controller.root}/lib/netty-3.6.3.Final.jar"/>
-            <zipfileset excludes="META-INF/*.SF" src="${controller.root}/lib/org.restlet.jar"/>
-            <zipfileset excludes="META-INF/*.SF" src="${controller.root}/lib/org.restlet.ext.jackson.jar"/>
-            <zipfileset excludes="META-INF/*.SF" src="${controller.root}/lib/scala-library.jar"/>
-            <zipfileset excludes="META-INF/*.SF" src="${controller.root}/lib/config-1.0.2.jar"/>
-            <zipfileset excludes="META-INF/*.SF" src="${controller.root}/lib/akka-actor_2.10-2.2.0.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="${controller.root}/deps/lib/jackson-all-1.9.11.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="${controller.root}/deps/lib/netty-3.6.3.Final.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="${controller.root}/deps/lib/org.restlet.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="${controller.root}/deps/lib/org.restlet.ext.jackson.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="${controller.root}/deps/lib/scala-library.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="${controller.root}/deps/lib/config-1.0.2.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="${controller.root}/deps/lib/akka-actor_2.10-2.2.0.jar"/>
             <zipfileset excludes="META-INF/*.SF" src="${javasrc.root}/avro-trunk/lang/java/avro/target/avro-1.7.4-SNAPSHOT.jar"/>
         </jar>
     </target>
