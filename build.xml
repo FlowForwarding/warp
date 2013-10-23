@@ -2,9 +2,11 @@
     <project basedir="." default="build" name="of_controller">
     <property environment="env"/>
     <property name="controller.root" value="${basedir}"/>
+    <property name="src.root" value="${basedir}/src/main"/>
+    <property name="javasrc.root" value="${src.root}/java"/>
     <property name="javadocs.root" value="${basedir}/build/javadocs"/>    	
     <property name="library.root" value="${basedir}/build/lib"/>
-    <property name="avro.location" value="avro-trunk/lang/java/avro"/>
+    <property name="avro.location" value="${javasrc.root}/avro-trunk/lang/java/avro"/>
     <property name="debuglevel" value="source,lines,vars"/>
     <property name="target" value="1.7"/>
     <property name="source" value="1.7"/>
@@ -25,7 +27,7 @@
         <mkdir dir="build/classes/main"/>
     	<mkdir dir="build/classes/main/resources"/>
         <copy includeemptydirs="false" todir="build/classes/main/resources">
-            <fileset dir="src/main/resources">
+            <fileset dir="${src.root}/resources">
                 <exclude name="**/*.java"/>
             </fileset>
         </copy>
@@ -40,11 +42,10 @@
     <target depends="init" name="build-project">
         <echo message="${ant.project.name}: ${ant.file}"/>
         <javac debug="true" debuglevel="${debuglevel}" destdir="build/classes/main" includeantruntime="false" source="${source}" target="${target}">
-            <src path="src/main/java"/>
-            <src path="src/main/resources"/>
-            <src path="src"/>
-            <exclude name="java/"/>
+            <src path="${javasrc.root}"/>
+            <src path="${src.root}/resources"/>
             <exclude name="resources/"/>
+            <exclude name="avro-trunk/"/>
             <classpath refid="of_controller.classpath"/>
         </javac>
     </target>
@@ -80,7 +81,7 @@
             <zipfileset excludes="META-INF/*.SF" src="${controller.root}/lib/scala-library.jar"/>
             <zipfileset excludes="META-INF/*.SF" src="${controller.root}/lib/config-1.0.2.jar"/>
             <zipfileset excludes="META-INF/*.SF" src="${controller.root}/lib/akka-actor_2.10-2.2.0.jar"/>
-            <zipfileset excludes="META-INF/*.SF" src="avro-trunk/lang/java/avro/target/avro-1.7.4-SNAPSHOT.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="${javasrc.root}/avro-trunk/lang/java/avro/target/avro-1.7.4-SNAPSHOT.jar"/>
         </jar>
     </target>
 
@@ -90,7 +91,7 @@
   	       excludepackagenames="org.flowforwarding.warp.controller.restapi,org.flowforwarding.warp.controller.supply,
   	       org.flowforwarding.warp.controller.test, org.flowforwarding.warp.demo, org.flowforwarding.warp.protocol.supply,org.flowforwarding.warp.types,
   	       org.flowforwarding.warp.util"
-           sourcepath="src/main/java"
+           sourcepath="${javasrc.root}"
            defaultexcludes="yes"
            destdir="${javadocs.root}"
            author="true"
