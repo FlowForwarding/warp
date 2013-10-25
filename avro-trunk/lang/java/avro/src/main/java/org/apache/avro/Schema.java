@@ -246,6 +246,10 @@ public abstract class Schema extends JsonProperties {
   public boolean hasEnumSymbol(String symbol) {
     throw new AvroRuntimeException("Not an enum: "+this);
   }
+  
+  public JsonNode getEnumItem(String symbol) {
+    throw new AvroRuntimeException("Not an enum: "+this);
+  }
 
   /** If this is a record, enum or fixed, returns its name, otherwise the name
    * of the primitive type. */

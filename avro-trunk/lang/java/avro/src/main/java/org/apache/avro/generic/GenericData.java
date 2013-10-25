@@ -101,7 +101,15 @@ public class GenericData {
       Schema.Field field = schema.getField(key);
       if (field == null)
         throw new AvroRuntimeException("Not a valid schema field: "+key);
-
+      
+      values[field.pos()] = value;
+    }
+    
+    public void put(String key, GenericData.EnumSymbol value) {
+      Schema.Field field = schema.getField(key);
+      if (field == null)
+        throw new AvroRuntimeException("Not a valid schema field: "+key);
+    
       values[field.pos()] = value;
     }
     @Override public void put(int i, Object v) { values[i] = v; }
@@ -299,10 +307,13 @@ public class GenericData {
   public static class EnumSymbol implements GenericEnumSymbol {
     private Schema schema;
     private String symbol;
+    private Object value;
 
     public EnumSymbol(Schema schema, String symbol) {
       this.schema = schema;
       this.symbol = symbol;
+      
+      this.value = schema.getEnumItem(symbol);
     }
 
     @Override public Schema getSchema() { return schema; }

@@ -41,16 +41,39 @@ public class AvroMineTest {
   public static void main(String[] args) {
      
      try {
-        protocol_13 = org.apache.avro.Protocol.parse(new File("src/resources/of_protocol_131.avpr"));
-        protocol_test = org.apache.avro.Protocol.parse(new File("src/resources/test.avpr"));
+        protocol_13 = org.apache.avro.Protocol.parse(new File("src/main/resources/of_protocol_13.avpr"));
+//        protocol_test = org.apache.avro.Protocol.parse(new File("src/resources/test.avpr"));
    } catch (IOException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();
    }
      
-     byte [] buf = TestFixedEncoding(protocol_test);
+ //    byte [] buf = TestFixedEncoding(protocol_test);
+     testBucket();
   }
   
+  protected static void testBucket () {
+     Schema ofpGroupModCommandSchema = protocol_13.getType("ofp_group_mod_command");
+     Schema groupModBodySchema = protocol_13.getType("group_mod_body");
+     GenericData.EnumSymbol ofpgcDelete= new GenericData.EnumSymbol(ofpGroupModCommandSchema, "OFPGC_DELETE");
+     
+     GenericRecordBuilder builder = new GenericRecordBuilder(groupModBodySchema);
+     GenericRecord groupModBodyRecord = builder.build();
+     groupModBodyRecord.put("command", ofpgcDelete);
+     
+     ByteArrayOutputStream out = new ByteArrayOutputStream();
+     
+     DatumWriter<GenericRecord> writer = new GenericDatumWriter<GenericRecord>(groupModBodySchema);
+     Encoder encoder = EncoderFactory.get().binaryNonEncoder(out, null);
+     
+     try {
+        writer.write(groupModBodyRecord, encoder);
+        encoder.flush();
+     } catch (IOException e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+     }
+  }
   
   protected static byte [] TestFixedEncoding (Protocol protocol) {
      

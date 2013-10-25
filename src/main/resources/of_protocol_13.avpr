@@ -1257,15 +1257,22 @@
     ]
    },
    
+   {"name":"bucket_body",
+    "type":"record",
+    "fields":[
+     {"name":"len", "type":"uint_16", "default":[0,16]},
+     {"name":"weight", "type":"uint_16", "default":[0,0]},
+     {"name":"watch_port", "type":"uint_32", "default":[0,0,0,0]},
+     {"name":"watch_group", "type":"uint_32", "default":[0,0,0,0]},
+     {"name":"pad", "type":"pad_4", "default":[0,0,0,0]}
+     ]
+   },
+
    {"name":"ofp_bucket",
     "type":"record",
     "fields":[
-     {"name":"len", "type":"uint_16"},
-     {"name":"weight", "type":"uint_16"},
-     {"name":"watch_port", "type":"uint_32"},
-     {"name":"watch_group", "type":"uint_32"},
-     {"name":"pad", "type":"pad_4"},
-     {"name":"actions", "type":"action_set"}
+     {"name":"body", "type":"bucket_body"},
+     {"name":"actions", "type":["action_set", "null"]}
     ]
    },   
    
@@ -1285,6 +1292,13 @@
      {"name":"OFPGC_DELETE", "default":[0,2]}
     ]
    },
+
+   {"name":"group_mod_command",
+    "type":"enum",
+    "symbols":["OFPGC_ADD", "OFPGC_MODIFY"]
+   },
+
+
    
    {"name":"ofp_group_type",
     "type":"enum",
@@ -1296,14 +1310,24 @@
      {"name":"OFPGT_FF", "default":[0,3]}
     ]
    },
+
+   {"name":"ofp_group",
+    "type":"enum",
+    "items":"uint_32",
+    "list":[
+     {"name":"OFPG_MAX", "default":[255,255,255,0]},
+     {"name":"OFPG_ALL", "default":[255,255,255,252]},
+     {"name":"OFPG_ANY", "default":[255,255,255,255]}     
+    ]
+   },
       
    {"name":"group_mod_body",
     "type":"record",
     "fields":[
-     {"name":"command", "type":"ofp_group_mod_command"},
-     {"name":"type", "type":"ofp_group_type"},
+     {"name":"command", "type":"ofp_group_mod_command", "default":"OFPGC_ADD"},
+     {"name":"type", "type":"ofp_group_type", "default":"OFPGT_ALL"},
      {"name":"pad", "type":"pad_1", "default":[0]},
-     {"name":"group_id", "type":"uint_32"}
+     {"name":"group_id", "type":"ofp_group", "default":"OFPG_ANY"}
     ]
    },
    
