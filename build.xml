@@ -2,21 +2,23 @@
     <project basedir="." default="build" name="of_controller">
     <property environment="env"/>
     <property name="controller.root" value="${basedir}"/>
+    <property name="src.root" value="${basedir}/src/main"/>
+    <property name="javasrc.root" value="${src.root}/java"/>
     <property name="javadocs.root" value="${basedir}/build/javadocs"/>    	
     <property name="library.root" value="${basedir}/build/lib"/>
-    <property name="avro.location" value="avro-trunk/lang/java/avro"/>
+    <property name="avro.location" value="${javasrc.root}/avro-trunk/lang/java/avro"/>
     <property name="debuglevel" value="source,lines,vars"/>
     <property name="target" value="1.7"/>
     <property name="source" value="1.7"/>
     <path id="of_controller.classpath">
     	<pathelement location="${controller.root}/build/classes/main"/>
-        <pathelement location="${controller.root}/lib/jackson-all-1.9.11.jar"/>
-        <pathelement location="${controller.root}/lib/netty-3.6.3.Final.jar"/>
-        <pathelement location="${controller.root}/lib/org.restlet.jar"/>
-        <pathelement location="${controller.root}/lib/org.restlet.ext.jackson.jar"/>
-        <pathelement location="${controller.root}/lib/scala-library.jar"/>
-        <pathelement location="${controller.root}/lib/config-1.0.2.jar"/>
-        <pathelement location="${controller.root}/lib/akka-actor_2.10-2.2.0.jar"/>
+        <pathelement location="${controller.root}/deps/lib/jackson-all-1.9.11.jar"/>
+        <pathelement location="${controller.root}/deps/lib/netty-3.6.3.Final.jar"/>
+        <pathelement location="${controller.root}/deps/lib/org.restlet.jar"/>
+        <pathelement location="${controller.root}/deps/lib/org.restlet.ext.jackson.jar"/>
+        <pathelement location="${controller.root}/deps/lib/scala-library.jar"/>
+        <pathelement location="${controller.root}/deps/lib/config-1.0.2.jar"/>
+        <pathelement location="${controller.root}/deps/lib/akka-actor_2.10-2.2.0.jar"/>
         <pathelement location="${avro.location}/target/avro-1.7.4-SNAPSHOT.jar"/>
     </path>
     <target name="init">
@@ -25,7 +27,7 @@
         <mkdir dir="build/classes/main"/>
     	<mkdir dir="build/classes/main/resources"/>
         <copy includeemptydirs="false" todir="build/classes/main/resources">
-            <fileset dir="src/main/resources">
+            <fileset dir="${src.root}/resources">
                 <exclude name="**/*.java"/>
             </fileset>
         </copy>
@@ -40,11 +42,10 @@
     <target depends="init" name="build-project">
         <echo message="${ant.project.name}: ${ant.file}"/>
         <javac debug="true" debuglevel="${debuglevel}" destdir="build/classes/main" includeantruntime="false" source="${source}" target="${target}">
-            <src path="src/main/java"/>
-            <src path="src/main/resources"/>
-            <src path="src"/>
-            <exclude name="java/"/>
+            <src path="${javasrc.root}"/>
+            <src path="${src.root}/resources"/>
             <exclude name="resources/"/>
+            <exclude name="avro-trunk/"/>
             <classpath refid="of_controller.classpath"/>
         </javac>
     </target>
@@ -66,6 +67,7 @@
     </target>
     <target depends="build-project" name="create_run_jar">
     	<mkdir dir="${library.root}"/>
+    	<mkdir dir="${basedir}/dist"/>
     	<jar destfile="${library.root}/of_lib.jar" filesetmanifest="mergewithoutmain">
     		<manifest>
     			<attribute name="Main-Class" value="org.flowforwarding.warp.controller.ControllerOld"/>
@@ -73,14 +75,14 @@
             </manifest>
     		<fileset dir="build/classes/main"/>
     		<fileset dir="build/classes/main/resources"/>
-            <zipfileset excludes="META-INF/*.SF" src="${controller.root}/lib/jackson-all-1.9.11.jar"/>
-            <zipfileset excludes="META-INF/*.SF" src="${controller.root}/lib/netty-3.6.3.Final.jar"/>
-            <zipfileset excludes="META-INF/*.SF" src="${controller.root}/lib/org.restlet.jar"/>
-            <zipfileset excludes="META-INF/*.SF" src="${controller.root}/lib/org.restlet.ext.jackson.jar"/>
-            <zipfileset excludes="META-INF/*.SF" src="${controller.root}/lib/scala-library.jar"/>
-            <zipfileset excludes="META-INF/*.SF" src="${controller.root}/lib/config-1.0.2.jar"/>
-            <zipfileset excludes="META-INF/*.SF" src="${controller.root}/lib/akka-actor_2.10-2.2.0.jar"/>
-            <zipfileset excludes="META-INF/*.SF" src="avro-trunk/lang/java/avro/target/avro-1.7.4-SNAPSHOT.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="${controller.root}/deps/lib/jackson-all-1.9.11.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="${controller.root}/deps/lib/netty-3.6.3.Final.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="${controller.root}/deps/lib/org.restlet.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="${controller.root}/deps/lib/org.restlet.ext.jackson.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="${controller.root}/deps/lib/scala-library.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="${controller.root}/deps/lib/config-1.0.2.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="${controller.root}/deps/lib/akka-actor_2.10-2.2.0.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="${javasrc.root}/avro-trunk/lang/java/avro/target/avro-1.7.4-SNAPSHOT.jar"/>
         </jar>
     </target>
 
@@ -90,7 +92,7 @@
   	       excludepackagenames="org.flowforwarding.warp.controller.restapi,org.flowforwarding.warp.controller.supply,
   	       org.flowforwarding.warp.controller.test, org.flowforwarding.warp.demo, org.flowforwarding.warp.protocol.supply,org.flowforwarding.warp.types,
   	       org.flowforwarding.warp.util"
-           sourcepath="src/main/java"
+           sourcepath="${javasrc.root}"
            defaultexcludes="yes"
            destdir="${javadocs.root}"
            author="true"
