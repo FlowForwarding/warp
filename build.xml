@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-    <project basedir="." default="build" name="of_controller">
+    <project basedir="." default="build" name="warp">
     <property environment="env"/>
     <property name="controller.root" value="${basedir}"/>
     <property name="src.root" value="${basedir}/src/main"/>
@@ -10,7 +10,7 @@
     <property name="debuglevel" value="source,lines,vars"/>
     <property name="target" value="1.7"/>
     <property name="source" value="1.7"/>
-    <path id="of_controller.classpath">
+    <path id="warp.classpath">
     	<pathelement location="${controller.root}/build/classes/main"/>
         <pathelement location="${controller.root}/deps/lib/jackson-all-1.9.11.jar"/>
         <pathelement location="${controller.root}/deps/lib/netty-3.6.3.Final.jar"/>
@@ -46,29 +46,29 @@
             <src path="${src.root}/resources"/>
             <exclude name="resources/"/>
             <exclude name="avro-trunk/"/>
-            <classpath refid="of_controller.classpath"/>
+            <classpath refid="warp.classpath"/>
         </javac>
     </target>
     <target description="Build all projects which reference this project. Useful to propagate changes." name="build-refprojects"/>
     <target name="Controller">
         <java classname="org.flowforwarding.warp.controller.ControllerOld" failonerror="true" fork="yes">
-            <classpath refid="of_controller.classpath"/>
+            <classpath refid="warp.classpath"/>
         </java>
     </target>
     <target name="RestServerApplication">
         <java classname="org.flowforwarding.warp.controller.rest.RestServerApplication" failonerror="true" fork="yes">
-            <classpath refid="of_controller.classpath"/>
+            <classpath refid="warp.classpath"/>
         </java>
     </target>
     <target name="AvroMineTest">
         <java classname="org.flowforwarding.warp.controller.test.AvroMineTest" failonerror="true" fork="yes">
-            <classpath refid="of_controller.classpath"/>
+            <classpath refid="warp.classpath"/>
         </java>
     </target>
     <target depends="build-project" name="create_run_jar">
     	<mkdir dir="${library.root}"/>
     	<mkdir dir="${basedir}/dist"/>
-    	<jar destfile="${library.root}/of_lib.jar" filesetmanifest="mergewithoutmain">
+    	<jar destfile="${library.root}/warp.jar" filesetmanifest="mergewithoutmain">
     		<manifest>
     			<attribute name="Main-Class" value="org.flowforwarding.warp.controller.ControllerOld"/>
     			<attribute name="Class-Path" value="."/>
@@ -100,7 +100,7 @@
            use="true"
   	       Public="true"
            windowtitle="FlowFowarding OF Controller API">
-    <classpath refid="of_controller.classpath"/>
+    <classpath refid="warp.classpath"/>
     <doctitle><![CDATA[<h1>Test</h1>]]></doctitle>
     <bottom><![CDATA[<i>Copyright &#169; 2013 FlowForwarding.Org. All Rights Reserved.</i>]]></bottom>
     <tag name="todo" scope="all" description="To do:"/>
