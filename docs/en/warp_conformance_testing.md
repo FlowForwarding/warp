@@ -1,531 +1,106 @@
-# FFController Conformance testing
+##REST API
+###Starting the Controller
+####Controller
+```bash
+$ java -jar build/lib/warp.jar
+Starting the internal [HTTP/1.1] server on port 8080
+```
+####LINC Switch
+```bash
+(linc@localhost)1> 23:30:23.416 [info] Connected to controller localhost:6633/0 using OFP v4
+23:30:23.419 [debug] Received message from the controller: {ofp_message,4,features_request,0,{ofp_features_request}}
+23:30:23.419 [debug] Sent message to controller: {ofp_message,4,features_request,0,{ofp_features_reply,<<0,12,41,189,55,56>>,0,0,255,0,[flow_stats,table_stats,port_stats,group_stats,queue_stats]}}
+23:30:23.423 [debug] Received message from the controller: {ofp_message,4,set_config,0,{ofp_set_config,[],no_buffer}}
+23:30:23.463 [debug] Received message from the controller: {ofp_message,4,get_config_request,0,{ofp_get_config_request}}
+23:30:23.463 [debug] Sent message to controller: {ofp_message,4,get_config_request,0,{ofp_get_config_reply,[],no_buffer}}
+23:30:43.444 [debug] Received message from the controller: {ofp_message,4,echo_request,0,{ofp_echo_request,<<>>}}
+23:30:43.444 [debug] Sent message to controller: {ofp_message,4,echo_request,0,{ofp_echo_reply,<<>>}}
+23:31:03.542 [debug] Received message from the controller: {ofp_message,4,echo_request,0,{ofp_echo_request,<<>>}}
+23:31:03.542 [debug] Sent message to controller: {ofp_message,4,echo_request,0,{ofp_echo_reply,<<>>}}
 
-Matches
-IN_PORT
-REST API command
-
-curl -d '{"switch":"00:90:FB:37:71:96:00:00", "name":"fm-02", "priority":"32", "ingress-port":"123","active":"true", "actions":"output=1"}' http://localhost:8080/ff/of/controller/restapi
-
-Switch output (LINC)
-
-xx:xx:xx.xxx [debug] Received message from the controller: {ofp_message,4,flow_mod,0,{ofp_flow_mod,<<0,0,0,0,0,0,0,0>>,<<0,0,0,0,0,0,0,0>>,0,add,0,0,32,no_buffer,0,0,[],{ofp_match,[{ofp_field,openflow_basic,in_port,false,<<0,0,0,123>>,undefined}]},[{ofp_instruction_write_actions,4,[{ofp_action_output,16,1,65535}]}]}}
-
-Flow installed (LINC)
+```
+###Installing Flow
+#### Command
+```bash
+$ curl -d '{"switch":"00:0C:29:BD:37:38:00:00", "name":"flow-mod-1", "priority":"32768", "ingress-port":"2", "active":"true", "apply-actions":"output=3"}' http://localhost:8080/ff/of/controller/restapi
+OK
+```
+#### Controller
+```bash
+Outgoing flow_mod
+2013-09-15	23:33:20	127.0.0.1	-	-	8080	POST	/ff/of/controller/restapi	-	200	2	142	74	http://localhost:8080	curl/7.19.7 (x86_64-redhat-linux-gnu) libcurl/7.19.7 NSS/3.13.1.0 zlib/1.2.3 libidn/1.18 libssh2/1.2.2	-
+```
+#### LINC Switch
+```bash
+[debug] Received message from the controller: {ofp_message,4,flow_mod,0,{ofp_flow_mod,<<0,0,0,0,0,0,0,0>>,<<0,0,0,0,0,0,0,0>>,0,add,0,0,32768,0,0,0,[],{ofp_match,[{ofp_field,openflow_basic,in_port,false,<<0,0,0,2>>,undefined}]},[{ofp_instruction_apply_actions,2,[{ofp_action_output,16,3,no_buffer}]}]}}
 
 (linc@localhost)1> linc_us4_flow:get_flow_table(0,0).
-
-[{flow_entry,{32,#Ref<0.0.0.1339>},
-
-           32,
-
-           {ofp_match,[{ofp_field,openflow_basic,in_port,false,
-
-                                  <<0,0,0,123>>,
-
-                                  undefined}]},
-
-           <<0,0,0,0,0,0,0,0>>,
-
-           [],
-
-           {1369,501100,297695},
-
-           {infinity,0,0},
-
-           {infinity,0,0},
-
-           [{ofp_instruction_write_actions,4,
-
-                                           [{ofp_action_output,16,1,65535}]}]}]
-
-Passed
-
-Yes
-IN_PHY_PORT
-REST API command
-
-curl -d '{"switch":"00:0C:29:85:78:80:00:00", "name":"fm-02", "priority":"32", "in-phy-port":"1", "actions":"output=2"}' http://localhost:8080/ff/of/controller/restapi
-
-ETH_SRC
-REST API command
-
-curl -d '{"switch":"00:0C:29:85:78:80:00:00", "name":"fm-02", "priority":"32", "src-mac":"11:22:33:44:55:66", "actions":"output=1"}' http://localhost:8080/ff/of/controller/restapi
-
-Switch output (LINC)
-
-[debug] Received message from the controller: {ofp_message,4,flow_mod,0,{ofp_flow_mod,<<0,0,0,0,0,0,0,0>>,<<0,0,0,0,0,0,0,0>>,0,add,0,0,32,no_buffer,0,0,[],{ofp_match,[{ofp_field,openflow_basic,eth_src,false,<<17,34,51,68,85,102>>,undefined}]},[{ofp_instruction_write_actions,4,[{ofp_action_output,16,1,65535}]}]}}
-
-Flow installed (LINC)
-
-(linc@localhost)3> ets:tab2list(linc:lookup(0, flow_table_0)).
-
-[{flow_entry,{32,#Ref<0.0.0.1482>},
-
-            32,
-
-            {ofp_match,[{ofp_field,openflow_basic,eth_src,false,
-
-                                   <<17,34,51,68,85,102>>,
-
-                                   undefined}]},
-
-            <<0,0,0,0,0,0,0,0>>,
-
-            [],
-
-            {1373,300531,32295},
-
-            {infinity,0,0},
-
-            {infinity,0,0},
-
-            [{ofp_instruction_write_actions,4,
-
-                                            [{ofp_action_output,16,1,65535}]}]}]
-
-Passed
-
-Yes
-ETH_DST
-REST API command
-
-curl -d '{"switch":"00:0C:29:85:78:80:00:00", "name":"fm-02", "priority":"32", "dst-mac":"66:55:44:33:22:11", "actions":"output=1"}' http://localhost:8080/ff/of/controller/restapi
-
-Switch output (LINC)
-
-[debug] Received message from the controller: {ofp_message,4,flow_mod,0,{ofp_flow_mod,<<0,0,0,0,0,0,0,0>>,<<0,0,0,0,0,0,0,0>>,0,add,0,0,32,no_buffer,0,0,[],{ofp_match,[{ofp_field,openflow_basic,eth_dst,false,<<102,85,68,51,34,17>>,undefined}]},[{ofp_instruction_write_actions,4,[{ofp_action_output,16,1,65535}]}]}}
-
-(linc@localhost)4> ets:tab2list(linc:lookup(0, flow_table_0)).
-
-Flow installed (LINC)
-
-ets:tab2list(linc:lookup(0, flow_table_0)).
-
-{flow_entry,{32,#Ref<0.0.0.5652>},
-
-            32,
-
-            {ofp_match,[{ofp_field,openflow_basic,eth_dst,false,
-
-                                   <<102,85,68,51,34,17>>,
-
-                                   undefined}]},
-
-            <<0,0,0,0,0,0,0,0>>,
-
-            [],
-
-            {1373,303537,379641},
-
-            {infinity,0,0},
-
-            {infinity,0,0},
-
-            [{ofp_instruction_write_actions,4,
-
-                                            [{ofp_action_output,16,1,65535}]}]}]
-
-Passed
-
-Yes
-ETH_TYPE
-REST API command
-
-curl -d '{"switch":"00:0C:29:85:78:80:00:00", "name":"fm-02", "priority":"32", "ether-type":"0x800", "actions":"output=1"}' http://localhost:8080/ff/of/controller/restapi
-
-Switch output (LINC):
-
-[debug] Received message from the controller: {ofp_message,4,flow_mod,0,{ofp_flow_mod,<<0,0,0,0,0,0,0,0>>,<<0,0,0,0,0,0,0,0>>,0,add,0,0,32,no_buffer,0,0,[],{ofp_match,[{ofp_field,openflow_basic,eth_type,false,<<8,0>>,undefined}]},[{ofp_instruction_write_actions,4,[{ofp_action_output,16,1,65535}]}]}}
-
-Flow installed (LINC):
-
-(linc@localhost)1> ets:tab2list(linc:lookup(0, flow_table_0)).
-
-[{flow_entry,{32,#Ref<0.0.0.414>},
-
-            32,
-
-            {ofp_match,[{ofp_field,openflow_basic,eth_type,false,
-
-                                   <<8,0>>,
-
-                                   undefined}]},
-
-            <<0,0,0,0,0,0,0,0>>,
-
-            [],
-
-            {1373,303974,880280},
-
-            {infinity,0,0},
-
-            {infinity,0,0},
-
-            [{ofp_instruction_write_actions,4,
-
-                                            [{ofp_action_output,16,1,65535}]}]}]
-
-Passed
-
-Yes
-VLAN_VID
-REST API command
-
-curl -d '{"switch":"00:0C:29:85:78:80:00:00", "name":"fm-02", "priority":"32","vlan-vid":"127", "actions":"output=1"}' http://localhost:8080/ff/of/controller/restapi
-Switch output (LINC):
-
-[debug] Received message from the controller: {ofp_message,4,flow_mod,0,{ofp_flow_mod,<<0,0,0,0,0,0,0,0>>,<<0,0,0,0,0,0,0,0>>,0,add,0,0,32,no_buffer,0,0,[],{ofp_match,[{ofp_field,openflow_basic,vlan_vid,false,<<0,127>>,undefined}]},[{ofp_instruction_write_actions,4,[{ofp_action_output,16,1,65535}]}]}}
-Flow installed (LINC):
-
-ets:tab2list(linc:lookup(0, flow_table_0)).
-
-[{flow_entry,{32,#Ref<0.0.0.444>},
-
-            32,
-
-            {ofp_match,[{ofp_field,openflow_basic,vlan_vid,false,
-
-                                   <<0,127>>,
-
-                                   undefined}]},
-
-            <<0,0,0,0,0,0,0,0>>,
-
-            [],
-
-            {1373,372866,589946},
-
-            {infinity,0,0},
-
-            {infinity,0,0},
-
-            [{ofp_instruction_write_actions,4,
-
-                                            [{ofp_action_output,16,1,65535}]}]}]
-
-VLAN_PCP
-REST API command
-
-curl -d '{"switch":"00:0C:29:85:78:80:00:00", "name":"fm-02", "priority":"32", "vlan-vid":"127", "vlan-priority":"1", "actions":"output=1"}' http://localhost:8080/ff/of/controller/restapi
-Switch output (LINC):
-
-[debug] Received message from the controller: {ofp_message,4,flow_mod,0,{ofp_flow_mod,<<0,0,0,0,0,0,0,0>>,<<0,0,0,0,0,0,0,0>>,0,add,0,0,32,no_buffer,0,0,[],{ofp_match,[{ofp_field,openflow_basic,vlan_pcp,false,<<1>>,undefined},{ofp_field,openflow_basic,vlan_vid,false,<<0,127>>,undefined}]},[{ofp_instruction_write_actions,4,[{ofp_action_output,16,1,65535}]}]}}
-Flow installed (LINC):
-
-ets:tab2list(linc:lookup(0, flow_table_0)).
-
+[{flow_entry,{32768,#Ref<0.0.0.1804>},
+             32768,
+             {ofp_match,[{ofp_field,openflow_basic,in_port,false,
+                                    <<0,0,0,2>>,
+                                    undefined}]},
+             <<0,0,0,0,0,0,0,0>>,
+             [],
+             {1379,277200,837219},
+             {infinity,0,0},
+             {infinity,0,0},
+             [{ofp_instruction_apply_actions,2,
+                                             [{ofp_action_output,16,3,no_buffer}]}]}]
+```
+### Deleting Flow
+#### Command
+```bash
+$ curl -X DELETE -d '{"switch":"00:0C:29:BD:37:38:00:00", "name":"flow-mod-1", "priority":"32768", "ingress-port":"2", "active":"true", "apply-actions":"output=3"}' http://localhost:8080/ff/of/controller/restapi
+DELETED
+```
+#### LINC Switch
+```bash
+Received message from the controller: {ofp_message,4,flow_mod,0,{ofp_flow_mod,<<0,0,0,0,0,0,0,0>>,<<0,0,0,0,0,0,0,0>>,0,delete,0,0,32768,0,any,any,[],{ofp_match,[{ofp_field,openflow_basic,in_port,false,<<0,0,0,2>>,undefined}]},[{ofp_instruction_apply_actions,2,[{ofp_action_output,16,3,no_buffer}]}]}}
+
+(linc@localhost)2> linc_us4_flow:get_flow_table(0,0).
 []
-
-Not passed
-
-BAD_MATCH, BAD_PREREQ,
-
-VLAN_VID must be the first.
-IP_PROTO
-REST API command
-
-curl -d '{"switch":"00:0C:29:85:78:80:00:00", "name":"fm-02", "priority":"32", "protocol":"3", "ether-type":"0x86dd", "actions":"output=1"}' http://localhost:8080/ff/of/controller/restapi
-Switch output (LINC):
-
-[debug] Received message from the controller: {ofp_message,4,flow_mod,0,{ofp_flow_mod,<<0,0,0,0,0,0,0,0>>,<<0,0,0,0,0,0,0,0>>,0,add,0,0,32,no_buffer,0,0,[],{ofp_match,[{ofp_field,openflow_basic,eth_type,false,<<134,221>>,undefined},{ofp_field,openflow_basic,ip_proto,false,<<3>>,undefined}]},[{ofp_instruction_write_actions,4,[{ofp_action_output,16,1,65535}]}]}}
-
-Flow installed (LINC):
-
-linc_us4_flow:get_flow_table(0,0).
-
-[{flow_entry,{32,#Ref<0.0.0.4972>},
-
-            32,
-
-            {ofp_match,[{ofp_field,openflow_basic,eth_type,false,
-
-                                   <<134,221>>,
-
-                                   undefined},
-
-                        {ofp_field,openflow_basic,ip_proto,false,<<3>>,undefined}]},
-
-            <<0,0,0,0,0,0,0,0>>,
-
-            [],
-
-            {1373,993212,248167},
-
-            {infinity,0,0},
-
-            {infinity,0,0},
-
-            [{ofp_instruction_write_actions,4,
-
-                                            [{ofp_action_output,16,1,65535}]}]}
-Passed
-
-Yes
-IPV4_SRC
-REST API command
-
-curl -d '{"switch":"00:0C:29:85:78:80:00:00", "name":"fm-02", "priority":"32", "src-ip":"127.0.0.0", "ether-type":"0x800", "actions":"output=1"}' http://localhost:8080/ff/of/controller/restapi
-Switch output (LINC):
-
-[debug] Received message from the controller: {ofp_message,4,flow_mod,0,{ofp_flow_mod,<<0,0,0,0,0,0,0,0>>,<<0,0,0,0,0,0,0,0>>,0,add,0,0,32,no_buffer,0,0,[],{ofp_match,[{ofp_field,openflow_basic,eth_type,false,<<8,0>>,undefined},{ofp_field,openflow_basic,ipv4_src,false,<<127,0,0,0>>,undefined}]},[{ofp_instruction_write_actions,4,[{ofp_action_output,16,1,65535}]}]}}
-Flow installed (LINC):
-
-ets:tab2list(linc:lookup(0, flow_table_0)).
-
-[{flow_entry,{32,#Ref<0.0.0.6130>},
-
-            32,
-
-            {ofp_match,[{ofp_field,openflow_basic,eth_type,false,
-
-                                   <<8,0>>,
-
-                                   undefined},
-
-                        {ofp_field,openflow_basic,ipv4_src,false,
-
-                                   <<127,0,0,0>>,
-
-                                   undefined}]},
-
-            <<0,0,0,0,0,0,0,0>>,
-
-            [],
-
-            {1373,386407,577174},
-
-            {infinity,0,0},
-
-            {infinity,0,0},
-
-            [{ofp_instruction_write_actions,4,
-
-                                            [{ofp_action_output,16,1,65535}]}]}]
-Passed
-
-Yes
-
-IPV4_DST
-REST API command
-
-curl -d '{"switch":"00:0C:29:85:78:80:00:00", "name":"fm-02", "priority":"32", "dst-ip":"127.0.0.0", "ether-type":"0x800", "actions":"output=1"}' http://localhost:8080/ff/of/controller/restapi
-Switch output (LINC):
-
-[debug] Received message from the controller: {ofp_message,4,flow_mod,0,{ofp_flow_mod,<<0,0,0,0,0,0,0,0>>,<<0,0,0,0,0,0,0,0>>,0,add,0,0,32,no_buffer,0,0,[],{ofp_match,[{ofp_field,openflow_basic,eth_type,false,<<8,0>>,undefined},{ofp_field,openflow_basic,ipv4_dst,false,<<127,0,0,0>>,undefined}]},[{ofp_instruction_write_actions,4,[{ofp_action_output,16,1,65535}]}]}}
-Flow installed (LINC):
-
-ets:tab2list(linc:lookup(0, flow_table_0)).
-
-[{flow_entry,{32,#Ref<0.0.0.6130>},
-
-            32,
-
-            {ofp_match,[{ofp_field,openflow_basic,eth_type,false,
-
-                                   <<8,0>>,
-
-                                   undefined},
-
-                        {ofp_field,openflow_basic,ipv4_dst,false,
-
-                                   <<127,0,0,0>>,
-
-                                   undefined}]},
-
-            <<0,0,0,0,0,0,0,0>>,
-
-            [],
-
-            {1373,386407,577174},
-
-            {infinity,0,0},
-
-            {infinity,0,0},
-
-            [{ofp_instruction_write_actions,4,
-
-                                            [{ofp_action_output,16,1,65535}]}]}]
-Passed
-
-Yes
-
-TCP_SRC
-REST API command
-
-curl -d '{"switch":"00:0C:29:85:78:80:00:00", "name":"fm-02", "priority":"32", "src-port":"21", "protocol":"6", "ether-type":"0x86dd", "actions":"output=1"}' http://localhost:8080/ff/of/controller/restapi
-Switch output (LINC):
-
-[debug] Received message from the controller: {ofp_message,4,flow_mod,0,{ofp_flow_mod,<<0,0,0,0,0,0,0,0>>,<<0,0,0,0,0,0,0,0>>,0,add,0,0,32,no_buffer,0,0,[],{ofp_match,[{ofp_field,openflow_basic,eth_type,false,<<134,221>>,undefined},{ofp_field,openflow_basic,ip_proto,false,<<6>>,undefined},{ofp_field,openflow_basic,tcp_src,false,<<0,21>>,undefined}]},[{ofp_instruction_write_actions,4,[{ofp_action_output,16,1,65535}]}]}}
-
-Flow installed (LINC):
-
-linc_us4_flow:get_flow_table(0,0).
-
-[{flow_entry,{32,#Ref<0.0.0.8912>},
-
-            32,
-
-            {ofp_match,[{ofp_field,openflow_basic,eth_type,false,
-
-                                   <<134,221>>,
-
-                                   undefined},
-
-                        {ofp_field,openflow_basic,ip_proto,false,<<6>>,undefined},
-
-                        {ofp_field,openflow_basic,tcp_src,false,
-
-                                   <<0,21>>,
-
-                                   undefined}]},
-
-            <<0,0,0,0,0,0,0,0>>,
-
-            [],
-
-            {1373,996108,804906},
-
-            {infinity,0,0},
-
-            {infinity,0,0},
-
-            [{ofp_instruction_write_actions,4,
-
-                                            [{ofp_action_output,16,1,65535}]}]}
-Passed
-
-Yes
-
-TCP_DST
-REST API command
-
-curl -d '{"switch":"00:0C:29:85:78:80:00:00", "name":"fm-02", "priority":"32", "dst-port":"22", "protocol":"6", "ether-type":"0x86dd", "actions":"output=1"}' http://localhost:8080/ff/of/controller/restapi
-Switch output (LINC):
-
-[debug] Received message from the controller: {ofp_message,4,flow_mod,0,{ofp_flow_mod,<<0,0,0,0,0,0,0,0>>,<<0,0,0,0,0,0,0,0>>,0,add,0,0,32,no_buffer,0,0,[],{ofp_match,[{ofp_field,openflow_basic,eth_type,false,<<134,221>>,undefined},{ofp_field,openflow_basic,ip_proto,false,<<6>>,undefined},{ofp_field,openflow_basic,tcp_dst,false,<<0,22>>,undefined}]},[{ofp_instruction_write_actions,4,[{ofp_action_output,16,1,65535}]}]}}
-Flow installed (LINC):
-
-linc_us4_flow:get_flow_table(0,0).
-
-[{flow_entry,{32,#Ref<0.0.0.9189>},
-
-            32,
-
-            {ofp_match,[{ofp_field,openflow_basic,eth_type,false,
-
-                                   <<134,221>>,
-
-                                   undefined},
-
-                        {ofp_field,openflow_basic,ip_proto,false,<<6>>,undefined},
-
-                        {ofp_field,openflow_basic,tcp_dst,false,
-
-                                   <<0,22>>,
-
-                                   undefined}]},
-
-            <<0,0,0,0,0,0,0,0>>,
-
-            [],
-
-            {1373,996332,169186},
-
-            {infinity,0,0},
-
-            {infinity,0,0},
-
-            [{ofp_instruction_write_actions,4,
-
-                                            [{ofp_action_output,16,1,65535}]}]}
-Passed
-
-Yes
-IPV6_SRC
-REST API command
-
-curl -d '{"switch":"00:0C:29:85:78:80:00:00", "name":"fm-02", "priority":"32", "ipv6-src":"0011:1122:2233:3344:4455:5566:6677:7788", "ether-type":"0x86dd", "actions":"output=1"}' http://localhost:8080/ff/of/controller/restapi
-Switch output (LINC):
-
-[debug] Received message from the controller: {ofp_message,4,flow_mod,0,{ofp_flow_mod,<<0,0,0,0,0,0,0,0>>,<<0,0,0,0,0,0,0,0>>,0,add,0,0,32,no_buffer,0,0,[],{ofp_match,[{ofp_field,openflow_basic,eth_type,false,<<134,221>>,undefined},{ofp_field,openflow_basic,ipv6_src,false,<<17,0,34,17,51,34,68,51,85,68,102,85,119,102,136,119>>,undefined}]},[{ofp_instruction_write_actions,4,[{ofp_action_output,16,1,65535}]}]}}
-Flow installed (LINC):
-
-linc_us4_flow:get_flow_table(0,0).
-
-[{flow_entry,{32,#Ref<0.0.0.552>},
-
-            32,
-
-            {ofp_match,[{ofp_field,openflow_basic,eth_type,false,
-
-                                   <<134,221>>,
-
-                                   undefined},
-
-                        {ofp_field,openflow_basic,ipv6_src,false,
-
-                                   <<17,0,34,17,51,34,68,51,85,68,102,85,119,102,136,...>>,
-
-                                   undefined}]},
-
-            <<0,0,0,0,0,0,0,0>>,
-
-            [],
-
-            {1373,989833,272545},
-
-            {infinity,0,0},
-
-            {infinity,0,0},
-
-            [{ofp_instruction_write_actions,4,
-
-                                            [{ofp_action_output,16,1,65535}]}]}]
-
-Passed
-
-Yes
-
-IPV6_DST
-REST API command
-
-curl -d '{"switch":"00:0C:29:85:78:80:00:00", "name":"fm-02", "priority":"32", "ipv6-dst":"0011:1122:2233:3344:4455:5566:6677:7788", "ether-type":"0x86dd", "actions":"output=1"}' http://localhost:8080/ff/of/controller/restapi
-Switch output (LINC):
-
-[debug] Received message from the controller: {ofp_message,4,flow_mod,0,{ofp_flow_mod,<<0,0,0,0,0,0,0,0>>,<<0,0,0,0,0,0,0,0>>,0,add,0,0,32,no_buffer,0,0,[],{ofp_match,[{ofp_field,openflow_basic,eth_type,false,<<134,221>>,undefined},{ofp_field,openflow_basic,ipv6_dst,false,<<17,0,34,17,51,34,68,51,85,68,102,85,119,102,136,119>>,undefined}]},[{ofp_instruction_write_actions,4,[{ofp_action_output,16,1,65535}]}]}}
-Flow installed (LINC):
-
-linc_us4_flow:get_flow_table(0,0).
-
-[{flow_entry,{32,#Ref<0.0.0.552>},
-
-            32,
-
-            {ofp_match,[{ofp_field,openflow_basic,eth_type,false,
-
-                                   <<134,221>>,
-
-                                   undefined},
-
-                        {ofp_field,openflow_basic,ipv6_dst,false,
-
-                                   <<17,0,34,17,51,34,68,51,85,68,102,85,119,102,136,...>>,
-
-                                   undefined}]},
-
-            <<0,0,0,0,0,0,0,0>>,
-
-            [],
-
-            {1373,989833,272545},
-
-            {infinity,0,0},
-
-            {infinity,0,0},
-
-            [{ofp_instruction_write_actions,4,
-
-                                            [{ofp_action_output,16,1,65535}]}]}]
-
-Passed
-Yes
+```
+##OF Java API Demo
+###Starting the Controller
+```bash
+$ java -cp target/of_lib.jar org.flowforwarding.of.demo.Launcher
+[INFO] Getting Switch connection 
+[INFO] Getting Switch connection 
+[INFO] Getting Switch connection 
+
+[OF-INFO] DPID: 1000c29bd3738 Feature Reply is received from the Switch 
+[OF-INFO] Connected to Switch 1000c29bd3738
+[OF-INFO] HANDSHAKED 1000c29bd3738
+[OF-INFO] DPID: 2000c29bd3738 Feature Reply is received from the Switch 
+[OF-INFO] Connected to Switch 2000c29bd3738
+[OF-INFO] HANDSHAKED 2000c29bd3738
+[OF-INFO] DPID: 2000c29bd3738 Switch Config is received from the Switch 
+[OF-INFO] DPID: 1000c29bd3738 Switch Config is received from the Switch 
+[OF-INFO] DPID: c29bd3738 Feature Reply is received from the Switch 
+[OF-INFO] Connected to Switch c29bd3738
+[OF-INFO] HANDSHAKED c29bd3738
+[OF-INFO] DPID: c29bd3738 Switch Config is received from the Switch 
+[OF-INFO] DPID: c29bd3738 Configuration: Normal
+[OF-INFO] DPID: 1000c29bd3738 Configuration: Normal
+[OF-INFO] DPID: 2000c29bd3738 Configuration: Normal
+```
+### LINC Switch
+```bash
+23:46:39.486 [info] Connected to controller localhost:6633/0 using OFP v4
+23:46:39.486 [info] Connected to controller localhost:6633/0 using OFP v4
+23:46:39.487 [debug] Received message from the controller: {ofp_message,4,features_request,0,{ofp_features_request}}
+23:46:39.487 [debug] Sent message to controller: {ofp_message,4,features_request,0,{ofp_features_reply,<<0,12,41,189,55,56>>,1,0,255,0,[flow_stats,table_stats,port_stats,group_stats,queue_stats]}}
+23:46:39.493 [info] Connected to controller localhost:6633/0 using OFP v4
+23:46:39.496 [debug] Received message from the controller: {ofp_message,4,features_request,0,{ofp_features_request}}
+23:46:39.496 [debug] Sent message to controller: {ofp_message,4,features_request,0,{ofp_features_reply,<<0,12,41,189,55,56>>,2,0,255,0,[flow_stats,table_stats,port_stats,group_stats,queue_stats]}}
+23:46:39.499 [debug] Received message from the controller: {ofp_message,4,get_config_request,0,{ofp_get_config_request}}
+23:46:39.499 [debug] Sent message to controller: {ofp_message,4,get_config_request,0,{ofp_get_config_reply,[],no_buffer}}
+23:46:39.504 [debug] Received message from the controller: {ofp_message,4,get_config_request,0,{ofp_get_config_request}}
+23:46:39.504 [debug] Sent message to controller: {ofp_message,4,get_config_request,0,{ofp_get_config_reply,[],no_buffer}}
+23:46:39.505 [debug] Received message from the controller: {ofp_message,4,features_request,0,{ofp_features_request}}
+23:46:39.505 [debug] Sent message to controller: {ofp_message,4,features_request,0,{ofp_features_reply,<<0,12,41,189,55,56>>,0,0,255,0,[flow_stats,table_stats,port_stats,group_stats,queue_stats]}}
+23:46:39.506 [debug] Received message from the controller: {ofp_message,4,get_config_request,0,{ofp_get_config_request}}
+23:46:39.507 [debug] Sent message to controller: {ofp_message,4,get_config_request,0,{ofp_get_config_reply,[],no_buffer}}
+
+```
