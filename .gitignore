@@ -1,0 +1,3 @@
+*.class
+build/classes
+build/lib
