@@ -23,10 +23,10 @@ This OF Controller implementation is based on [Apache AVRO] (https://avro.apache
  ```
 
 >4. Running the OpenFlow Switch and Warp Controller<br/>
-   Warp Controller [User's Guide] (https://github.com/shivarammysore/warp/wiki/Warp-User's-Guide)<br/>
-   Warp Controller [testing against OpenFlow 1.3 LINC Switch] (https://github.com/shivarammysore/warp/wiki/Warp-testing-against-OpenFlow-1.3-LINC-Switch)
+   Warp Controller [User's Guide] (https://github.com/FlowForwarding/warp/wiki/Warp-User's-Guide)<br/>
+   Warp Controller [testing against OpenFlow 1.3 LINC Switch] (https://github.com/FlowForwarding/warp/wiki/Warp-testing-against-OpenFlow-1.3-LINC-Switch)
 
-   For Developers, interested in [using the API] (https://github.com/shivarammysore/warp/wiki/Warp-Java-API-Cookbook)
+   For Developers, interested in [using the API] (https://github.com/FlowForwarding/warp/wiki/Warp-Java-API-Cookbook)
 
 >5. Additional Documentation (docs directory):
      (1) Using Apache Avro to implement an OpenFlow protocol library: UsingApacheAVROtoimplementOFProtocol.pdf
