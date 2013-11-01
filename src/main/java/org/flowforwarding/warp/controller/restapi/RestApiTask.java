@@ -40,7 +40,6 @@ public class RestApiTask extends RecursiveTask <Map<String, Object>>
   // private Map<String, Map<String, OFFlowMod>> entries;
    private Map<String, Object> entries;
    
-   public static final String TABLE_NAME = "controller_staticflowtableentry";
    public static final String NAME = "name";
    public static final String SWITCH = "switch_id";
    public static final String ACTIVE = "active";
@@ -60,9 +59,7 @@ public class RestApiTask extends RecursiveTask <Map<String, Object>>
    public static final String IP_DSCP = "ip_dscp";                        //8
    public static final String IP_ECN = "ip_ecn";                          //9
    public static final String NW_PROTO = "nw_proto";                      //10
-   public static final String NW_SRC = "nw_src"; // includes CIDR-style
-                                                        // netmask, e.g.
-                                                        // "128.8.128.0/24"
+   public static final String NW_SRC = "nw_src";                          //11
    public static final String NW_DST = "nw_dst";                          //12
    public static final String TP_SRC = "tp_src";                          //13
    public static final String TP_DST = "tp_dst";                          //14
@@ -97,6 +94,11 @@ public class RestApiTask extends RecursiveTask <Map<String, Object>>
    public static final String WRITE_METADATA = "write_metadata";
    public static final String GOTO_TABLE = "goto_table";
    public static final String METER = "meter";
+   
+   public static final String OF_MESSAGE = "message";
+   public static final String OF_MESSAGE_FLOW_MOD = "flow_mod";
+   public static final String OF_MESSAGE_GROUP_MOD = "group_mod";
+   
    public static final String APPLY_ACTIONS = "apply_actions";
    public static final String WRITE_ACTIONS = "write_actions";
    public static final String CLEAR_ACTIONS = "clear_actions";
@@ -258,9 +260,6 @@ public class RestApiTask extends RecursiveTask <Map<String, Object>>
       return entry;
   }
  
-
-
-  
   private static byte[] get_mac_addr(Matcher n, String subaction/*, Logger log*/) {
      byte[] macaddr = new byte[6];
      

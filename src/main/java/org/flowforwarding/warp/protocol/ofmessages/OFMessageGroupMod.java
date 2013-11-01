@@ -19,11 +19,9 @@ public class OFMessageGroupMod extends OFMessage{
 
    protected List<Tuple<String, String>> parms = new ArrayList<>();
    protected Iterator<Tuple<String, String>> iter = parms.iterator();
-   protected InstructionSet instructions;
    
    protected OFMessageGroupMod() {
       // TODO Improvs: create() instead of Constructor?
-      instructions = new InstructionSet();
    }
    
    public List<Tuple<String, String>> getParms() {
@@ -34,14 +32,6 @@ public class OFMessageGroupMod extends OFMessage{
       this.parms = parms;
    }
 
-   public InstructionSet getInstructions() {
-      return instructions;
-   }
-
-   public void setInstructions(InstructionSet instructions) {
-      this.instructions = instructions;
-   }
-
    public Iterator<Tuple<String, String>> getIterator () {
       return iter;
    }
@@ -50,10 +40,6 @@ public class OFMessageGroupMod extends OFMessage{
       parms.add(new Tuple<String, String>(name, value));
    }
 
-   public void addInstruction (String name, OFStructureInstructionRef value) {
-      instructions.add(name, value);
-   }
-   
    public static class OFMessageGroupModRef extends OFMessageRef <OFMessageGroupMod> {
       
       protected OFMessageGroupMod groupMod = null;
