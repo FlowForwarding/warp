@@ -1,7 +1,7 @@
 #Quick Start Guide: Warp OpenFlow controller
 ====================================
 
-This OF Controller implementation is based on [Apache AVRO] (https://avro.apache.org/) library
+This OpenFlow Controller implementation is based on [Apache AVRO] (https://avro.apache.org/) library
 
 >1. Setup a WARP_ROOT environment variable where the project is placed, e.g.:
 ```bash
