@@ -1499,6 +1499,8 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
                  ofpActionRecord = decode_pop_vlan(subaction.trim());
               }  else if (action.equals("push_mpls")) {
                  ofpActionRecord = decode_push_mpls(subaction.trim());
+              }  else if (action.equals("set_queue")) {
+                 ofpActionRecord = decode_set_queue(subaction.trim());
               }
 /*              else if (action.equals("enqueue")) {
                   subaction_struct = decode_enqueue(subaction);
@@ -1599,6 +1601,40 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
       
       return ofpActionBaseRecord;
   }
+   
+   private GenericRecord decode_set_queue (String subaction) {
+      
+      Matcher n;      
+      
+      Schema ofpActionSchema = protocol.getType("of13.ofp_action");
+      GenericRecord ofpActionBaseRecord = new GenericData.Record(ofpActionSchema);
+        
+    
+      Schema ofpActionSetQueueSchema = protocol.getType("of13.ofp_action_set_queue");
+      GenericRecordBuilder actionBuilder = new GenericRecordBuilder(ofpActionSetQueueSchema);
+      GenericRecord ofpActionOutRecord = actionBuilder.build();
+      
+      n = Pattern.compile("set_queue=(?:((?:0x)?\\d+))").matcher(subaction);
+      
+      if (n.matches()) {
+
+         int queue;
+         if (n.group(1) != null) {
+             try {
+                 queue = getInt(n.group(1));
+                 ofpActionOutRecord.put("queue_id", getUint32Fixed(queue));
+             }
+             catch (NumberFormatException e) {
+                 return null;
+             }
+         }
+      } else {
+         return null;
+      }
+      ofpActionBaseRecord.put("action", ofpActionOutRecord);
+      
+      return ofpActionBaseRecord;
+   }
    
    private GenericRecord decode_set_field_eth_dst(String subaction) {
 

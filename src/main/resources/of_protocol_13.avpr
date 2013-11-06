@@ -1021,6 +1021,22 @@
       {"name":"pad", "type":"pad_2"}
     ]
    },
+
+   {"name":"action_set_queue_header",
+    "type":"record",
+    "fields":[
+      {"name":"type", "type":"ofp_action_type", "default":"OFPAT_SET_QUEUE"},
+      {"name":"length", "type":"action_length", "default":"AL_SET_QUEUE"}
+    ]
+   },
+
+   {"name":"ofp_action_set_queue",
+    "type":"record",
+    "fields":[
+      {"name":"header", "type":"action_set_queue_header"},
+      {"name":"queue_id", "type":"uint_32"}
+    ]
+   },
    
    {"name":"ofp_action",
     "type":"record",
