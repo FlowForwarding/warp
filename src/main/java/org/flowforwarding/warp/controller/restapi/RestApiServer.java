@@ -34,9 +34,16 @@ public class RestApiServer  {
     protected List<RestletRoutable> restlets;
     protected int restPort = 8080;
     
+    @Deprecated
     public RestApiServer(ForkJoinPool pool, ObserverTask<Integer, RestApiTask> observerTask) {
        this.restlets = new ArrayList<RestletRoutable>();
        RestletRoutable routable = new RootRestApiRoutable(pool, observerTask);
+       restlets.add(routable);
+    }
+    
+    public RestApiServer() {
+       this.restlets = new ArrayList<RestletRoutable>();
+       RestletRoutable routable = new RootRestApiRoutable();
        restlets.add(routable);
     }
     

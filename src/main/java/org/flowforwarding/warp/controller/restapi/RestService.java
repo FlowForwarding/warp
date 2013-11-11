@@ -7,7 +7,10 @@ import org.flowforwarding.warp.demo.SimpleHandler;
 public class RestService {
 
    public static void main(String[] args) {
-      ControllerRef cRef = Controller.launch(SimpleHandler.class);      
+      ControllerRef cRef = Controller.launch(SimpleHandler.class); 
+      
+      RestApiServer restApi =  new RestApiServer();
+      restApi.run();
    }
 
 }

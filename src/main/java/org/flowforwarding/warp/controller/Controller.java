@@ -8,6 +8,8 @@ package org.flowforwarding.warp.controller;
 import java.net.InetSocketAddress;
 import java.util.List;
 
+import org.flowforwarding.warp.controller.restapi.RestApiServer;
+import org.flowforwarding.warp.controller.restapi.RestApiTask;
 import org.flowforwarding.warp.controller.session.OFActor;
 import org.flowforwarding.warp.controller.session.SwitchNurse;
 import org.flowforwarding.warp.controller.supply.OFCTellController;
@@ -31,9 +33,11 @@ import akka.io.Tcp.Connected;
  */
 public class Controller extends UntypedActor{
    
+   //TODO Improvs We should make it as plugins of something.
    final ActorRef manager;
    static ActorRef controller;
    static ActorRef ofEventHandler;
+   static ActorRef restApi;
    
    private Controller(ActorRef manager) {
       this.manager = manager;
@@ -55,6 +59,7 @@ public class Controller extends UntypedActor{
       if (msg instanceof Bound) {
          manager.tell(msg, getSelf());
          ofEventHandler = getContext().actorOf(Props.create(ofEventHandlerClass));
+//         restApi = getContext().actorOf(Props.create(RestApiServer.class));
       } else if (msg instanceof CommandFailed) {
          getContext().stop(getSelf());
       } else if (msg instanceof Connected) {

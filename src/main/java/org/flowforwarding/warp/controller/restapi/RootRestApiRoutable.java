@@ -26,26 +26,35 @@ public class RootRestApiRoutable implements RestletRoutable {
    protected ForkJoinPool pool;
    protected ObserverTask<Integer, RestApiTask> observerTask;
    
+   @Deprecated
    public RootRestApiRoutable(ForkJoinPool pl, ObserverTask<Integer, RestApiTask> task) {
  //     this.entries = new HashMap<String, Map<String, OFFlowMod>>();
       this.entries = new HashMap<String, Map<String, Object>>();
       this.pool = pl;
       this.observerTask = task;
    }
+   
+   public RootRestApiRoutable() {
+ //     this.entries = new HashMap<String, Map<String, OFFlowMod>>();
+      this.entries = null;
+      this.pool = null;
+      this.observerTask = null;
+   }
 
    @Override
    public Restlet getRestlet(Context context) {
        Map<String, Object> attributes = new HashMap<String, Object>();
        
-       attributes.put("entries", entries);
-       attributes.put("pool", pool);
-       attributes.put("observerTask", observerTask);
-       
+       if (entries != null) 
+          attributes.put("entries", entries);
+       if (pool != null)
+          attributes.put("pool", pool);
+       if (observerTask != null)
+          attributes.put("observerTask", observerTask);
+              
        context.setAttributes(attributes);
        Router router = new Router(context);
        router.attach("/restapi", RootRestApiResource.class);
-       /*router.attach("/clear/{switch}/json", ClearStaticFlowEntriesResource.class);
-       router.attach("/list/{switch}/json", ListStaticFlowEntriesResource.class);*/
        return router;
    }
 
@@ -54,7 +63,6 @@ public class RootRestApiRoutable implements RestletRoutable {
     */
    @Override
    public String basePath() {
-//       return "/wm/staticflowentrypusher";
        return "/ff/of/controller";
    }
 
