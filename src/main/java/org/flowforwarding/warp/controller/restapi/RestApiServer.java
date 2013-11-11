@@ -24,13 +24,6 @@ import org.restlet.routing.Filter;
 import org.restlet.routing.Router;
 import org.restlet.routing.Template;
 import org.restlet.service.StatusService;
-//import org.slf4j.Logger;
-//import org.slf4j.LoggerFactory;
-
-//import net.floodlightcontroller.core.module.FloodlightModuleContext;
-//import net.floodlightcontroller.core.module.FloodlightModuleException;
-//import net.floodlightcontroller.core.module.IFloodlightModule;
-//import net.floodlightcontroller.core.module.IFloodlightService;
 
 /**
  * @author Infoblox Inc.
@@ -82,7 +75,6 @@ public class RestApiServer  {
             return slashFilter;
         }
         
-//        public void run(FloodlightModuleContext fmlContext, int restPort) {
         public void run(int restPort) {
             setStatusService(new StatusService() {
                 @Override
@@ -93,44 +85,18 @@ public class RestApiServer  {
                 }                
             });
             
-            
-            // Add everything in the module context to the rest
-/*            for (Class<? extends IFloodlightService> s : fmlContext.getAllServices()) {
-                if (logger.isTraceEnabled()) {
-                    logger.trace("Adding {} for service {} into context",
-                                 s.getCanonicalName(), fmlContext.getServiceImpl(s));
-                }
-                context.getAttributes().put(s.getCanonicalName(), 
-                                            fmlContext.getServiceImpl(s));
-            }
-*/            
-            // Start listening for REST requests
             try {
                 final Component component = new Component();
                 component.getServers().add(Protocol.HTTP, restPort);
                 component.getClients().add(Protocol.CLAP);
                 component.getDefaultHost().attach(this);
                 component.start();
-
-//                ChannelBuffer buf = ChannelBuffers.buffer(helloMsg.getLengthU());
-//                helloMsg.writeTo(buf);
-   
-              
-/*OFMessageProvider provider = new OFMessageProvider();
-                
-                BigEndianHeapChannelBuffer x = new BigEndianHeapChannelBuffer(provider.getHello(new ByteArrayOutputStream()).toByteArray());
-                channel.write(x);
-                x.clear();*/
                 
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
         }
     }
-    
-    // ***************
-    // IRestApiService
-    // ***************
     
     // @Override
     public void addRestletRoutable(RestletRoutable routable) {
@@ -139,72 +105,8 @@ public class RestApiServer  {
 
     // @Override
     public void run() {
-/*        if (logger.isDebugEnabled()) {
-            StringBuffer sb = new StringBuffer();
-            sb.append("REST API routables: ");
-            for (RestletRoutable routable : restlets) {
-                sb.append(routable.getClass().getSimpleName());
-                sb.append(" (");
-                sb.append(routable.basePath());
-                sb.append("), ");
-            }
-            logger.debug(sb.toString());
-        }*/
         
         RestApplication restApp = new RestApplication();
-        //restApp.run(fmlContext, restPort);
         restApp.run(restPort);
     }
-    
-    // *****************
-    // IFloodlightModule
-    // *****************
-/*    
-    @Override
-    public Collection<Class<? extends IFloodlightService>> getModuleServices() {
-        Collection<Class<? extends IFloodlightService>> services =
-                new ArrayList<Class<? extends IFloodlightService>>(1);
-        services.add(IRestApiService.class);
-        return services;
-    }
-
-    @Override
-    public Map<Class<? extends IFloodlightService>, IFloodlightService>
-            getServiceImpls() {
-        Map<Class<? extends IFloodlightService>,
-        IFloodlightService> m = 
-            new HashMap<Class<? extends IFloodlightService>,
-                        IFloodlightService>();
-        m.put(IRestApiService.class, this);
-        return m;
-    }
-
-    @Override
-    public Collection<Class<? extends IFloodlightService>> getModuleDependencies() {
-        // We don't have any
-        return null;
-    }
-
-    @Override
-    public void init(FloodlightModuleContext context)
-            throws FloodlightModuleException {
-        // This has to be done here since we don't know what order the
-        // startUp methods will be called
-        this.restlets = new ArrayList<RestletRoutable>();
-        this.fmlContext = context;
-        
-        // read our config options
-        Map<String, String> configOptions = context.getConfigParams(this);
-        String port = configOptions.get("port");
-        if (port != null) {
-            restPort = Integer.parseInt(port);
-        }
-        logger.debug("REST port set to {}", restPort);
-    }
-
-    @Override
-    public void startUp(FloodlightModuleContext Context) {
-        // no-op
-    }
-    */
 }

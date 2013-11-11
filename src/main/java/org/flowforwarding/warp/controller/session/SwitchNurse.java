@@ -94,19 +94,6 @@ public class SwitchNurse extends UntypedActor {
                System.out.println("[OF-INFO] DPID: " + Long.toHexString(swRef.getDpid().longValue()) +" Switch Config is received from the Switch ");
                ofSessionHandler.tell(new OFEventSwitchConfig(swRef, provider.parseSwitchConfig(in.toArray())), getSelf());
                
-               OFMessageFlowModRef flowModRef = provider.buildFlowModMsg();
-               flowModRef.addField("priority", "32000");
-               flowModRef.addMatchInPort(swRef.getDpid().toString().substring(0, 3));
-
-               OFStructureInstructionRef instruction = provider.buildInstructionApplyActions();
-               instruction.addActionOutput("2");
-               flowModRef.addInstruction("apply_actions", instruction);
-
-               instruction = provider.buildInstructionGotoTable();
-               flowModRef.addInstruction("goto_table", instruction);
-               
-               getSender().tell(TcpMessage.write(ByteString.fromArray(provider.encodeFlowMod(flowModRef))), getSelf());
-               
             } else if (provider.isPacketIn(in.toArray())) {
                System.out.println("[OF-INFO] DPID: " + Long.toHexString(swRef.getDpid().longValue()) +" Packet-In is received from the Switch");
                ofSessionHandler.tell(new OFEventPacketIn(swRef, provider.parsePacketIn(in.toArray())), getSelf());
@@ -119,19 +106,6 @@ public class SwitchNurse extends UntypedActor {
             }
             
             //ofSessionHandler.tell(new OFEventIncoming(swRef), getSelf());
-            
-            OFMessageFlowModRef flowModRef = provider.buildFlowModMsg();
-            flowModRef.addField("priority", "32000");
-            flowModRef.addMatchInPort(swRef.getDpid().toString().substring(0, 3));
-
-            OFStructureInstructionRef instruction = provider.buildInstructionApplyActions();
-            instruction.addActionOutput("2");
-            flowModRef.addInstruction("apply_actions", instruction);
-
-            instruction = provider.buildInstructionGotoTable();
-            flowModRef.addInstruction("goto_table", instruction);
-            
-            getSender().tell(TcpMessage.write(ByteString.fromArray(provider.encodeFlowMod(flowModRef))), getSelf());
             
             break;
          default:
