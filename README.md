@@ -28,7 +28,7 @@ This OpenFlow Controller implementation is based on [Apache AVRO] (https://avro.
 
    For Developers, interested in [using the API] (https://github.com/FlowForwarding/warp/wiki/Warp-Java-API-Cookbook)
 
->5. Additional Documentation (docs directory):
+>5. Additional Documentation (docs directory):<br/>
      (1) Using Apache Avro to implement an OpenFlow protocol library: UsingApacheAVROtoimplementOFProtocol.pdf
      (2) Details of Architecture and Implementation: Architecture_and_Implementation_Details.txt
      (3) 'ant javadoc' target builds API documentation and is placed in docs/api directory
