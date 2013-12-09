@@ -111,10 +111,13 @@ public class RestApiTask extends RecursiveTask <Map<String, Object>>
       
       try {
          
-         if (this.entries.containsKey("DELETE"))
-            values = jsonToStorageEntry(jsonRequest, true);
-         else 
+         if (this.entries.containsKey("DELETE")) {
+            values = jsonToStorageEntry(jsonRequest, true); 
+            this.entries.remove("DELETE");
+         }
+         else {
             values = jsonToStorageEntry(jsonRequest, false);
+         }
 
       } catch (IOException e) {
          // TODO Auto-generated catch block
