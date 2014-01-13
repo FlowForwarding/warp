@@ -104,7 +104,6 @@ public class RestApiTask extends RecursiveTask <Map<String, Object>>
    public static final String CLEAR_ACTIONS = "clear_actions";
    
    @Override
-   //protected Map<String, Map<String, OFFlowMod>> compute() {
    protected Map<String, Object> compute() {
    
       Map<String, Object> values = null;

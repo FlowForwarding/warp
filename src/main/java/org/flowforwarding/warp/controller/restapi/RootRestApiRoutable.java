@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ForkJoinPool;
 
+import org.flowforwarding.warp.controller.Controller.ControllerRef;
 import org.flowforwarding.warp.controller.ControllerOld.ObserverTask;
 import org.restlet.Context;
 import org.restlet.Restlet;
@@ -25,6 +26,7 @@ public class RootRestApiRoutable implements RestletRoutable {
    protected Map<String, Map<String, Object>> entries;
    protected ForkJoinPool pool;
    protected ObserverTask<Integer, RestApiTask> observerTask;
+   protected ControllerRef controllerRef;
    
    @Deprecated
    public RootRestApiRoutable(ForkJoinPool pl, ObserverTask<Integer, RestApiTask> task) {
@@ -34,11 +36,12 @@ public class RootRestApiRoutable implements RestletRoutable {
       this.observerTask = task;
    }
    
-   public RootRestApiRoutable() {
+   public RootRestApiRoutable(ControllerRef cRef, ForkJoinPool pool) {
  //     this.entries = new HashMap<String, Map<String, OFFlowMod>>();
       this.entries = null;
-      this.pool = null;
+      this.pool = pool;
       this.observerTask = null;
+      this.controllerRef = cRef;
    }
 
    @Override
@@ -51,6 +54,8 @@ public class RootRestApiRoutable implements RestletRoutable {
           attributes.put("pool", pool);
        if (observerTask != null)
           attributes.put("observerTask", observerTask);
+       if (controllerRef != null)
+          attributes.put("controllerRef", controllerRef);
               
        context.setAttributes(attributes);
        Router router = new Router(context);

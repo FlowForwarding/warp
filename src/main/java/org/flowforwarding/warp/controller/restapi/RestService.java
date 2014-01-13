@@ -9,7 +9,7 @@ public class RestService {
    public static void main(String[] args) {
       ControllerRef cRef = Controller.launch(SimpleHandler.class); 
       
-      RestApiServer restApi =  new RestApiServer();
+      RestApiServer restApi =  new RestApiServer(cRef);
       restApi.run();
    }
 

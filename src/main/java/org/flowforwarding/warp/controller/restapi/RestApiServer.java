@@ -8,6 +8,8 @@ package org.flowforwarding.warp.controller.restapi;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ForkJoinPool;
+
+import org.flowforwarding.warp.controller.Controller.ControllerRef;
 import org.flowforwarding.warp.controller.ControllerOld.ObserverTask;
 import org.restlet.Application;
 import org.restlet.Component;
@@ -33,6 +35,7 @@ public class RestApiServer  {
     //protected static Logger logger = LoggerFactory.getLogger(RestApiServer.class);
     protected List<RestletRoutable> restlets;
     protected int restPort = 8080;
+    protected ForkJoinPool pool = null;
     
     @Deprecated
     public RestApiServer(ForkJoinPool pool, ObserverTask<Integer, RestApiTask> observerTask) {
@@ -41,9 +44,10 @@ public class RestApiServer  {
        restlets.add(routable);
     }
     
-    public RestApiServer() {
+    public RestApiServer(ControllerRef cRef) {
        this.restlets = new ArrayList<RestletRoutable>();
-       RestletRoutable routable = new RootRestApiRoutable();
+       this.pool = new ForkJoinPool();
+       RestletRoutable routable = new RootRestApiRoutable(cRef, this.pool);
        restlets.add(routable);
     }
     
