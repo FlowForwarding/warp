@@ -10,7 +10,10 @@ package org.flowforwarding.warp.protocol.ofmessages;
  */
 public class OFMessageProviderFactoryAvroProtocol implements IOFMessageProviderFactory{
 
-   /* (non-Javadoc)
+   /**
+    * @author Infoblox Inc.
+    * @doc.desc Gets the Message Provider based on Version number
+    * @param  version String containing version value 
     * @see org.flowforwarding.warp.controller.protocol.OFMessageProviderFactory#getMessageProvider(java.lang.String)
     */
    
@@ -25,6 +28,12 @@ public class OFMessageProviderFactoryAvroProtocol implements IOFMessageProviderF
    /* (non-Javadoc)
     * @see org.flowforwarding.warp.controller.protocol.OFMessageProviderFactory#getMessageProvider(byte[])
     */
+  /**
+   * @author Infoblox Inc.
+   * @doc.desc Gets the Message Provider based on Byte array containing Hello message
+   * @param  version Byte array with Hello message 
+   * @see org.flowforwarding.warp.controller.protocol.OFMessageProviderFactory#getMessageProvider(java.lang.String)
+   */
    @Override
    public IOFMessageProvider getMessageProvider(byte[] hello) {
       IOFMessageProvider provider;     
