@@ -25,14 +25,11 @@ public class OFMessageProviderFactoryAvroProtocol implements IOFMessageProviderF
       return new OFMessageProvider13AvroProtocol();
    }
 
-   /* (non-Javadoc)
-    * @see org.flowforwarding.warp.controller.protocol.OFMessageProviderFactory#getMessageProvider(byte[])
-    */
   /**
    * @author Infoblox Inc.
    * @doc.desc Gets the Message Provider based on Byte array containing Hello message
    * @param  version Byte array with Hello message 
-   * @see org.flowforwarding.warp.controller.protocol.OFMessageProviderFactory#getMessageProvider(java.lang.String)
+   * @see org.flowforwarding.warp.controller.protocol.OFMessageProviderFactory#getMessageProvider(byte[])
    */
    @Override
    public IOFMessageProvider getMessageProvider(byte[] hello) {
