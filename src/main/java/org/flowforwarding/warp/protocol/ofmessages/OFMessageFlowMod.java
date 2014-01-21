@@ -141,6 +141,14 @@ public class OFMessageFlowMod extends OFMessage{
          addMatch.add("ingress_port", value);
       }
       
+      public void addMatchInPhyPort(String value) {
+         addMatch.add("in_phy_port", value);
+      }
+      
+      public void addMatchMetadata(String value) {
+         addMatch.add("metadata", value);
+      }
+      
       public void addMatchEthDst(String value) {
          addMatch.add("eth_dst", value);
       }
@@ -148,6 +156,117 @@ public class OFMessageFlowMod extends OFMessage{
       public void addMatchEthSrc(String value) {
          addMatch.add("eth_src", value);
       }
+      
+      public void addMatchEthType (String value) {
+         addMatch.add("eth_type", value);
+      }
+      
+      public void addMatchVlanVid (String value) {
+         addMatch.add("vlan_vid", value);
+      }
+      
+      public void addMatchVlanPcp (String value) {
+         addMatch.add("vlan_pcp", value);
+      }
+
+      public void addMatchIpDscp (String value) {
+         addMatch.add("ip_dscp", value);
+      }
+      
+      public void addMatchIpEcn (String value) {
+         addMatch.add("ip_ecn", value);
+      }
+      
+      public void addMatchIpProto (String value) {
+         addMatch.add("ip_proto", value);
+      }
+      
+      public void addMatchIPv4Src (String value) {
+         addMatch.add("ipv4_src", value);
+      }
+      
+      public void addMatchTcpSrc (String value) {
+         addMatch.add("tcp_src", value);
+      }
+      
+      public void addMatchTcpDst (String value) {
+         addMatch.add("tcp_dst", value);
+      }
+      
+      public void addMatchUdpSrc (String value) {
+         addMatch.add("udp_src", value);
+      }
+      
+      public void addMatchUdpDst (String value) {
+         addMatch.add("udp_dst", value);
+      }
+      
+      public void addMatchSctpSrc (String value) {
+         addMatch.add("sctp_src", value);
+      }
+      
+      public void addMatchSctpDst (String value) {
+         addMatch.add("sctp_dst", value);
+      }
+      
+      public void addMatchIcmpv4Type (String value) {
+         addMatch.add("icmpv4_type", value);
+      }
+
+      public void addMatchIcmpv4Code (String value) {
+         addMatch.add("icmpv4_code", value);
+      }
+
+      public void addMatchArpOp (String value) {
+         addMatch.add("arp_op", value);
+      }
+
+      public void addMatchArpSpa (String value) {
+         addMatch.add("arp_spa", value);
+      }
+
+      public void addMatchArpTpa (String value) {
+         addMatch.add("arp_tpa", value);
+      }
+      
+      public void addMatchArpSha (String value) {
+         addMatch.add("arp_sha", value);
+      }
+      
+      public void addMatchArpTha (String value) {
+         addMatch.add("arp_tha", value);
+      }
+
+      public void addMatchIpv6Src (String value) {
+         addMatch.add("ipv6_src", value);
+      }
+      
+      public void addMatchIpv6Dst (String value) {
+         addMatch.add("ipv6_dst", value);
+      }
+      
+      public void addMatchIpv6Flabel (String value) {
+         addMatch.add("ipv6_flabel", value);
+      }
+
+      public void addMatchIcmpv6Type (String value) {
+         addMatch.add("icmpv6_type", value);
+      }
+      
+      public void addMatchIcmpv6Code (String value) {
+         addMatch.add("icmpv6_code", value);
+      }
+
+/*      ipv6_nd_target
+      ipv6_nd_sll
+      ipv6_nd_tll
+      mpls_label
+      mpls_tc
+      mpls_bos
+      pbb_isid
+      tunnel_id
+      ipv6_exthdr*/
+      
       
       public InstructionSet getInstructions() {
          return getInstructions.get();

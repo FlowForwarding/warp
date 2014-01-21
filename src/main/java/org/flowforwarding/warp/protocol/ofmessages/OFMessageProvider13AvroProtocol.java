@@ -546,6 +546,11 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
             short vid = U16.t(Integer.valueOf(match.getValue()));
             matches.add(getMatch("of13.oxm_tlv_vlan_vid", getUint32Fixed(vid)));
             break;            
+         
+         case "vlan_pcp":
+            short pcp = U16.t(Integer.valueOf(match.getValue()));
+            matches.add(getMatch("of13.oxm_tlv_vlan_vid", getUint32Fixed(pcp)));
+            break;            
 
          case "ip_dscp":
             byte tmp = U8.t(Short.valueOf(match.getValue()));
