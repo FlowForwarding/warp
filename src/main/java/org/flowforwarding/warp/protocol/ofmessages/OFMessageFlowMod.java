@@ -185,6 +185,10 @@ public class OFMessageFlowMod extends OFMessage{
          addMatch.add("ipv4_src", value);
       }
       
+      public void addMatchIPv4Dst (String value) {
+         addMatch.add("ipv4_dst", value);
+      }
+      
       public void addMatchTcpSrc (String value) {
          addMatch.add("tcp_src", value);
       }
@@ -256,17 +260,42 @@ public class OFMessageFlowMod extends OFMessage{
       public void addMatchIcmpv6Code (String value) {
          addMatch.add("icmpv6_code", value);
       }
-
-/*      ipv6_nd_target
-      ipv6_nd_sll
-      ipv6_nd_tll
-      mpls_label
-      mpls_tc
-      mpls_bos
-      pbb_isid
-      tunnel_id
-      ipv6_exthdr*/
       
+      public void addMatchIpv6NdTarget (String value) {
+         addMatch.add("ipv6_nd_target", value);
+      }
+
+      public void addMatchIpv6NdSll (String value) {
+         addMatch.add("ipv6_nd_sll", value);
+      }
+
+      public void addMatchIpv6NdTll (String value) {
+         addMatch.add("ipv6_nd_tll", value);
+      }
+      
+      public void addMatchMplsLabel (String value) {
+         addMatch.add("mpls_label", value);
+      }
+      
+      public void addMatchMplsTc (String value) {
+         addMatch.add("mpls_tc", value);
+      }
+      
+      public void addMatchMplsBos (String value) {
+         addMatch.add("mpls_bos", value);
+      }
+
+      public void addMatchPbbIsid (String value) {
+         addMatch.add("pbb_isid", value);
+      }
+      
+      public void addMatchTunnelId (String value) {
+         addMatch.add("tunnel_id", value);
+      }
+
+      public void addMatchIpv6Exthdr (String value) {
+         addMatch.add("ipv6_exthdr", value);
+      }
       
       public InstructionSet getInstructions() {
          return getInstructions.get();
