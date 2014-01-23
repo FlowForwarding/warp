@@ -47,9 +47,9 @@ public class SimpleHandler extends OFSessionHandler {
    }
    
    @Override
-   protected void packetIn(SwitchRef swH, OFMessagePacketInRef packetIn) {
-      super.packetIn(swH, packetIn);
-      IOFMessageProvider provider = swH.getProvider();
+   protected void packetIn(SwitchRef swRef, OFMessagePacketInRef packetIn) {
+      super.packetIn(swRef, packetIn);
+      IOFMessageProvider provider = swRef.getProvider();
       
       OFMessageFlowModRef flowMod = provider.buildFlowModMsg();
       
@@ -65,6 +65,6 @@ public class SimpleHandler extends OFSessionHandler {
       instruction.addActionOutput("2");
       flowMod.addInstruction("apply_actions", instruction);
 
-      sendFlowModMessage(swH, flowMod);
+      sendFlowModMessage(swRef, flowMod);
    }
 }
