@@ -25,6 +25,7 @@ import org.apache.avro.AvroRuntimeException;
 import org.apache.avro.Schema;
 import org.apache.avro.Schema.Field;
 import org.apache.avro.Schema.Type;
+import org.apache.avro.generic.GenericRecordBuilder;
 import org.apache.avro.generic.GenericData.Record;
 import org.codehaus.jackson.node.TextNode;
 import org.codehaus.jackson.node.NullNode;

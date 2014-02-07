@@ -48,8 +48,8 @@ public abstract class OFSessionHandler extends OFActor{
          OFMessageSwitchConfigRef configH = ((OFEventSwitchConfig) msg).getConfigRef();
          switchConfig(swR, configH);
          
- /*     } else if (msg instanceof EventGetSwitches) { */
-         
+      } else if (msg instanceof EventGetSwitches) {
+         System.out.println("[OF-INFO]: Get Switches");         
       } else if (msg instanceof OFEventError) {
          error(((OFEventError)msg).getSwitchRef(), ((OFEventError)msg).getError());
       }

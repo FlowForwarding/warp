@@ -19,9 +19,11 @@ package org.apache.avro.io;
 
 import org.apache.avro.Schema;
 import org.apache.avro.Schema.Parser;
-import org.apache.avro.generic.GenericRecord;
 import org.apache.avro.generic.GenericDatumReader;
-
+import org.apache.avro.generic.GenericRecord;
+import org.apache.avro.io.DatumReader;
+import org.apache.avro.io.Decoder;
+import org.apache.avro.io.DecoderFactory;
 import org.junit.Test;
 import org.junit.Assert;
 

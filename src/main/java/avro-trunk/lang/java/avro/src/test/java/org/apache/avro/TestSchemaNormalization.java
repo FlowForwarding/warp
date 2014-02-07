@@ -24,15 +24,17 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Formatter;
 
+import org.apache.avro.Schema;
+import org.apache.avro.SchemaNormalization;
+import org.apache.avro.util.CaseFinder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 import org.junit.experimental.runners.Enclosed;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-
-import org.apache.avro.util.CaseFinder;
 
 
 @RunWith(Enclosed.class)

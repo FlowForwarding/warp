@@ -58,10 +58,11 @@ public class SwitchNurse extends UntypedActor {
          case STARTED:
             ByteString in = ((Received) msg).data();
             provider = factory.getMessageProvider(in.toArray());
-            
             if (provider != null) {
                
                provider.init();
+               provider.parseMessages(in.toArray());
+               
                swRef.setVersion(provider.getVersion());
                
                getSender().tell(TcpMessage.write(ByteString.fromArray(provider.encodeHelloMessage())), getSelf());
@@ -93,7 +94,6 @@ public class SwitchNurse extends UntypedActor {
             if (provider.isConfig(in.toArray())) {
                System.out.println("[OF-INFO] DPID: " + Long.toHexString(swRef.getDpid().longValue()) +" Switch Config is received from the Switch ");
                ofSessionHandler.tell(new OFEventSwitchConfig(swRef, provider.parseSwitchConfig(in.toArray())), getSelf());
-               
             } else if (provider.isPacketIn(in.toArray())) {
                System.out.println("[OF-INFO] DPID: " + Long.toHexString(swRef.getDpid().longValue()) +" Packet-In is received from the Switch");
                ofSessionHandler.tell(new OFEventPacketIn(swRef, provider.parsePacketIn(in.toArray())), getSelf());
@@ -104,7 +104,6 @@ public class SwitchNurse extends UntypedActor {
                System.out.println("[OF-INFO] DPID: " + Long.toHexString(swRef.getDpid().longValue()) + " Echo request is received from the Switch ");
                getSender().tell(TcpMessage.write(ByteString.fromArray(provider.encodeEchoReply())), getSelf());
             }
-            
             //ofSessionHandler.tell(new OFEventIncoming(swRef), getSelf());
             
             break;
@@ -119,6 +118,21 @@ public class SwitchNurse extends UntypedActor {
          ofSessionHandler = (ActorRef) msg;
       } else if (msg instanceof OFCommandSendSwConfigRequest) {
          tcpChannel.tell(TcpMessage.write(ByteString.fromArray(provider.encodeSwitchConfigRequest())), getSelf());
+      } else if (msg instanceof TellToSendFlowMod) {
+         System.out.println("[OF-INFO]: Send Flow Mod");
+         
+         OFMessageFlowModRef flowModRef = provider.buildFlowModMsg();
+         flowModRef.addField("priority", "32000");
+         flowModRef.addMatchInPort(swRef.getDpid().toString().substring(0, 3));
+
+         OFStructureInstructionRef instruction = provider.buildInstructionApplyActions();
+         instruction.addActionOutput("2");
+         flowModRef.addInstruction("apply_actions", instruction);
+
+         instruction = provider.buildInstructionGotoTable();
+         flowModRef.addInstruction("goto_table", instruction);
+         
+         tcpChannel.tell(TcpMessage.write(ByteString.fromArray(provider.encodeFlowMod(flowModRef))), getSelf());
       }
    }
 

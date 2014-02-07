@@ -24,6 +24,7 @@ import java.util.Set;
 import org.apache.avro.Schema;
 import org.apache.avro.Schema.Field;
 import org.apache.avro.Schema.Type;
+import org.apache.avro.data.RecordBuilderBase;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;

@@ -1,11 +1,13 @@
 package org.flowforwarding.warp.protocol.ofmessages;
 
 import java.io.ByteArrayOutputStream;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.avro.Schema;
 import org.flowforwarding.warp.protocol.ofmessages.OFMessageError.OFMessageErrorRef;
 import org.flowforwarding.warp.protocol.ofmessages.OFMessageFlowMod.OFMessageFlowModRef;
+import org.flowforwarding.warp.protocol.ofmessages.OFMessageHello.OFMessageHelloRef;
 import org.flowforwarding.warp.protocol.ofmessages.OFMessagePacketIn.OFMessagePacketInRef;
 import org.flowforwarding.warp.protocol.ofmessages.OFMessageSwitchConfig.OFMessageSwitchConfigRef;
 import org.flowforwarding.warp.protocol.ofstructures.OFStructureInstruction.OFStructureInstructionRef;
@@ -160,4 +162,7 @@ public interface IOFMessageProvider {
    OFMessageErrorRef parseError(byte[] in);
 
    boolean isSwitchFeatures(byte[] in);
+   
+   public List<OFMessageRef> parseMessages (byte[] in);
+   public OFMessageHelloRef parseHelloMessage (byte[] in);
 }

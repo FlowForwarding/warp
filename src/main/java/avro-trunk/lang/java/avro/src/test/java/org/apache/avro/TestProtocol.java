@@ -17,7 +17,9 @@
  */
 package org.apache.avro;
 
+import org.apache.avro.Protocol;
 import org.junit.Test;
+
 import static org.junit.Assert.assertFalse;
 
 public class TestProtocol {

@@ -8,10 +8,13 @@ package org.flowforwarding.warp.controller;
 import java.net.InetSocketAddress;
 import java.util.List;
 
+import org.flowforwarding.warp.controller.session.EventGetSwitches;
 import org.flowforwarding.warp.controller.session.OFActor;
 import org.flowforwarding.warp.controller.session.SwitchNurse;
+import org.flowforwarding.warp.controller.session.TellToSendFlowMod;
 import org.flowforwarding.warp.controller.supply.OFCTellController;
 import org.flowforwarding.warp.ofswitch.SwitchState.SwitchRef;
+import org.flowforwarding.warp.protocol.ofmessages.OFMessageFlowMod.OFMessageFlowModRef;
 
 import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
@@ -35,6 +38,7 @@ public class Controller extends UntypedActor{
    final ActorRef manager;
    static ActorRef controller;
    static ActorRef ofEventHandler;
+   static ActorRef handler;
    static ActorRef restApi;
    
    private Controller(ActorRef manager) {
@@ -66,7 +70,7 @@ public class Controller extends UntypedActor{
          System.out.println("[INFO] Getting Switch connection \n");
          
          //final ActorRef ofEventHandler = getContext().actorOf(Props.create(ofEventHandlerClass));
-         final ActorRef handler = getContext().actorOf(Props.create(SwitchNurse.class));
+         handler = getContext().actorOf(Props.create(SwitchNurse.class));
          getSender().tell(TcpMessage.register(handler), getSelf());
          
          handler.tell(ofEventHandler, controller);
@@ -130,9 +134,17 @@ public class Controller extends UntypedActor{
       }
       
       public List<SwitchRef> getSwitches () {
-//         tellController.tell(ofEventHandler, new EventGetSwitches());
+         tellController.tell(ofEventHandler, new EventGetSwitches());
          
          return null;
+      }
+      
+      public SwitchRef getSwitch (String dpid) {
+         return null;
+      }
+      
+      public void sendFlowMod (SwitchRef swRef, OFMessageFlowModRef fmRef) {
+         tellController.tell(handler, new TellToSendFlowMod());
       }
    }
 }

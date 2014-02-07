@@ -26,8 +26,8 @@ import java.nio.ByteBuffer;
 
 import org.apache.avro.AvroRuntimeException;
 import org.apache.avro.Schema;
-import org.apache.avro.specific.SpecificDatumReader;
 import org.apache.avro.io.Decoder;
+import org.apache.avro.specific.SpecificDatumReader;
 
 /**
  * {@link org.apache.avro.io.DatumReader DatumReader} for existing classes via

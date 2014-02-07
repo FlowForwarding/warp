@@ -27,9 +27,9 @@ import java.util.Iterator;
 import java.util.Map;
 
 import org.apache.avro.Schema;
+import org.apache.avro.io.BinaryDecoder;
 import org.apache.avro.io.DatumReader;
 import org.apache.avro.io.DecoderFactory;
-import org.apache.avro.io.BinaryDecoder;
 
 /** Read files written by Avro version 1.2. */
 public class DataFileReader12<D> implements FileReader<D>, Closeable {

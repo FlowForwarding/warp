@@ -20,6 +20,14 @@ package org.apache.avro.data;
 import java.io.IOException;
 import java.util.Iterator;
 
+import org.apache.avro.AvroRuntimeException;
+import org.apache.avro.Schema;
+import org.apache.avro.io.DatumReader;
+import org.apache.avro.io.DatumWriter;
+import org.apache.avro.io.Decoder;
+import org.apache.avro.io.DecoderFactory;
+import org.apache.avro.io.Encoder;
+import org.apache.avro.io.ResolvingDecoder;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.JsonNodeFactory;
 import org.codehaus.jackson.node.LongNode;
@@ -29,15 +37,6 @@ import org.codehaus.jackson.node.BooleanNode;
 import org.codehaus.jackson.node.NullNode;
 import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
-
-import org.apache.avro.Schema;
-import org.apache.avro.AvroRuntimeException;
-import org.apache.avro.io.DatumReader;
-import org.apache.avro.io.DatumWriter;
-import org.apache.avro.io.Encoder;
-import org.apache.avro.io.Decoder;
-import org.apache.avro.io.DecoderFactory;
-import org.apache.avro.io.ResolvingDecoder;
 
 /** Utilities for reading and writing arbitrary Json data in Avro format. */
 public class Json {

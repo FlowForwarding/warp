@@ -6,6 +6,7 @@ package org.flowforwarding.warp.protocol.ofmessages;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.avro.Protocol;
@@ -22,6 +23,7 @@ import org.apache.avro.io.Encoder;
 import org.apache.avro.io.EncoderFactory;
 import org.flowforwarding.warp.protocol.ofmessages.OFMessageError.OFMessageErrorRef;
 import org.flowforwarding.warp.protocol.ofmessages.OFMessageFlowMod.OFMessageFlowModRef;
+import org.flowforwarding.warp.protocol.ofmessages.OFMessageHello.OFMessageHelloRef;
 import org.flowforwarding.warp.protocol.ofmessages.OFMessagePacketIn.OFMessagePacketInRef;
 import org.flowforwarding.warp.protocol.ofmessages.OFMessageSwitchConfig.OFMessageSwitchConfigRef;
 import org.flowforwarding.warp.protocol.ofstructures.OFStructureInstruction.OFStructureInstructionRef;
@@ -484,6 +486,18 @@ public class OFMessageProvider10AvroProtocol implements IOFMessageProvider{
          return true;
       else
          return false;
+   }
+
+   @Override
+   public List<OFMessageRef> parseMessages(byte[] in) {
+      // TODO Auto-generated method stub
+      return null;
+   }
+
+   @Override
+   public OFMessageHelloRef parseHelloMessage(byte[] in) {
+      // TODO Auto-generated method stub
+      return null;
    }
    
    

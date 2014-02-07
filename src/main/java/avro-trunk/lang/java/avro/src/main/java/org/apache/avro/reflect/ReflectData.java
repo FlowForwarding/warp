@@ -42,13 +42,13 @@ import org.apache.avro.AvroTypeException;
 import org.apache.avro.Protocol;
 import org.apache.avro.Schema;
 import org.apache.avro.Protocol.Message;
-import org.apache.avro.generic.IndexedRecord;
-import org.apache.avro.generic.GenericFixed;
 import org.apache.avro.generic.GenericContainer;
-import org.apache.avro.specific.SpecificData;
-import org.apache.avro.specific.FixedSize;
+import org.apache.avro.generic.GenericFixed;
+import org.apache.avro.generic.IndexedRecord;
 import org.apache.avro.io.BinaryData;
 import org.apache.avro.io.DatumReader;
+import org.apache.avro.specific.FixedSize;
+import org.apache.avro.specific.SpecificData;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.NullNode;
 

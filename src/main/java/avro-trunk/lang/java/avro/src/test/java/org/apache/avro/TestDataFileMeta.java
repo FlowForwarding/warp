@@ -27,6 +27,8 @@ import java.io.IOException;
 
 import junit.framework.Assert;
 
+import org.apache.avro.AvroRuntimeException;
+import org.apache.avro.Schema;
 import org.apache.avro.Schema.Type;
 import org.apache.avro.file.DataFileStream;
 import org.apache.avro.file.DataFileWriter;

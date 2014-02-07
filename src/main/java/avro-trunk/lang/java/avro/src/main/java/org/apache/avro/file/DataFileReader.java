@@ -23,10 +23,11 @@ import java.io.InputStream;
 import java.io.File;
 import java.util.Arrays;
 
-import org.apache.avro.io.DecoderFactory;
 import org.apache.avro.io.DatumReader;
-import static org.apache.avro.file.DataFileConstants.SYNC_SIZE;
+import org.apache.avro.io.DecoderFactory;
+
 import static org.apache.avro.file.DataFileConstants.MAGIC;
+import static org.apache.avro.file.DataFileConstants.SYNC_SIZE;
 
 /** Random access to files written with {@link DataFileWriter}.
  * @see DataFileWriter

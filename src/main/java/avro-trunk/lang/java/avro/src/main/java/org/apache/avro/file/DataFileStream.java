@@ -34,10 +34,10 @@ import java.util.NoSuchElementException;
 
 import org.apache.avro.AvroRuntimeException;
 import org.apache.avro.Schema;
-import org.apache.avro.io.BinaryEncoder;
-import org.apache.avro.io.DecoderFactory;
 import org.apache.avro.io.BinaryDecoder;
+import org.apache.avro.io.BinaryEncoder;
 import org.apache.avro.io.DatumReader;
+import org.apache.avro.io.DecoderFactory;
 
 /** Streaming access to files written by {@link DataFileWriter}.  Use {@link
  * DataFileReader} for file-based input.

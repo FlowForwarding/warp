@@ -118,10 +118,9 @@ public class SwitchState {
       /**
        * @return OpenFlow protocol version supported by Switch 
        */
-      public Short getVersion(Short version) {
+      public Short getVersion() {
          return swState.version;
       }
-      
    }
 
    

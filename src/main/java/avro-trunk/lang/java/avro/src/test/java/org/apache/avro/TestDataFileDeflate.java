@@ -24,6 +24,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
+import org.apache.avro.Schema;
 import org.apache.avro.Schema.Type;
 import org.apache.avro.file.CodecFactory;
 import org.apache.avro.file.DataFileStream;

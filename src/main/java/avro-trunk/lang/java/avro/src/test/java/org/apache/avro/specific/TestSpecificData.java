@@ -19,16 +19,18 @@
 package org.apache.avro.specific;
 
 import java.io.IOException;
+
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
-import org.apache.avro.FooBarSpecificRecord;
 
+import org.apache.avro.FooBarSpecificRecord;
 import org.apache.avro.Schema;
-import org.apache.avro.Schema.Type;
 import org.apache.avro.TypeEnum;
+import org.apache.avro.Schema.Type;
+import org.apache.avro.specific.SpecificData;
 import org.codehaus.jackson.JsonFactory;
 import org.codehaus.jackson.JsonParser;
 import org.codehaus.jackson.map.ObjectMapper;

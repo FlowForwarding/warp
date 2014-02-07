@@ -23,8 +23,8 @@ import java.util.Iterator;
 import java.util.Collection;
 
 import org.apache.avro.Schema;
-import org.apache.avro.specific.SpecificDatumWriter;
 import org.apache.avro.io.Encoder;
+import org.apache.avro.specific.SpecificDatumWriter;
 
 /**
  * {@link org.apache.avro.io.DatumWriter DatumWriter} for existing classes

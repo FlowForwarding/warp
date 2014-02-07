@@ -4,9 +4,14 @@
  */
 package org.flowforwarding.warp.protocol.ofmessages;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.ArrayList;
@@ -23,6 +28,7 @@ import org.apache.avro.generic.GenericData;
 import org.apache.avro.Protocol;
 import org.flowforwarding.warp.protocol.ofmessages.OFMessageError.OFMessageErrorRef;
 import org.flowforwarding.warp.protocol.ofmessages.OFMessageFlowMod.OFMessageFlowModRef;
+import org.flowforwarding.warp.protocol.ofmessages.OFMessageHello.OFMessageHelloRef;
 import org.flowforwarding.warp.protocol.ofmessages.OFMessagePacketIn.OFMessagePacketInRef;
 import org.flowforwarding.warp.protocol.ofmessages.OFMessageSwitchConfig.OFMessageSwitchConfigRef;
 import org.flowforwarding.warp.protocol.ofstructures.IOFStructureBuilder;
@@ -156,7 +162,32 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
    public void init () {
       try {
          //protocol = org.apache.avro.Protocol.parse(new File(schemaSrc));
-         protocol = org.apache.avro.Protocol.parse(getClass().getClassLoader().getResourceAsStream(schemaSrc));
+         System.out.println(getClass().getClassLoader().getResourceAsStream(schemaSrc).toString());
+//         protocol = org.apache.avro.Protocol.parse(getClass().getClassLoader().getResourceAsStream(schemaSrc));
+         InputStream str = Thread.currentThread().getContextClassLoader().getResourceAsStream(schemaSrc);
+/*         BufferedReader br = new BufferedReader(new InputStreamReader(str));
+         String line;
+         while ((line = br.readLine()) != null){
+            System.out.println(line);
+         }
+         br.close();*/
+         
+//         str = Thread.currentThread().getContextClassLoader().getResourceAsStream(schemaSrc);
+         /*System.out.println(Protocol.VERSION);
+         try{
+            Class.forName("org.apache.avro.Protocol");
+         } catch(ClassNotFoundException cnfe){
+            cnfe.printStackTrace();
+         }
+         Method [] mtds  = Protocol.class.getMethods();
+         for (Method m : mtds){
+            System.out.print(m.getName() + "\t");
+            for (Type t : m.getGenericParameterTypes()){
+               System.out.print(t.getClass().getCanonicalName() + "\t");
+            }
+            System.out.println();
+         }*/
+         protocol = Protocol.parse(str);
          builder = new OFMessageBuilder13();
          structureBuilder = new OFStructureBuilder13();
          
@@ -2596,8 +2627,33 @@ public boolean isMessage (Schema headerSchema, byte[] in) {
       return true;
    else 
       return false;
+ }
+
+@Override
+public List<OFMessageRef> parseMessages(byte[] in) {
+   GenericRecord header = getRecord(ofpHeaderSchema, in);
+   
+   Byte type = getByte((GenericData.Fixed)header.get("type"));
+   Short length = getShort((GenericData.Fixed)header.get("length"));
+   
+   List<OFMessageRef> messageList = new ArrayList<OFMessageRef> ();
+
+   
+   // TODO Improvs: We plan to get all types from Avro protocol type... soon... so let it be now just numbers
+   switch (type) {
+   case 0:
+      System.out.println("[OF-INFO]: HELLO message");
+      messageList.add(parseHelloMessage(in));
+      break;
+   default:
+      break;
+   }
+   return messageList;
 }
 
+@Override
+public OFMessageHelloRef parseHelloMessage(byte[] in) {
 
-  
+   return OFMessageHelloRef.create();
+}
 }

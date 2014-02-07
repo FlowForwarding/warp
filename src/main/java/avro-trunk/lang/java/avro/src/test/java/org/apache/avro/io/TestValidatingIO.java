@@ -20,7 +20,15 @@ package org.apache.avro.io;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.fail;
+
 import org.apache.avro.Schema;
+import org.apache.avro.io.Decoder;
+import org.apache.avro.io.DecoderFactory;
+import org.apache.avro.io.Encoder;
+import org.apache.avro.io.EncoderFactory;
+import org.apache.avro.io.JsonDecoder;
+import org.apache.avro.io.ResolvingDecoder;
+import org.apache.avro.io.ValidatingDecoder;
 import org.apache.avro.util.Utf8;
 import org.junit.Test;
 import org.junit.runner.RunWith;

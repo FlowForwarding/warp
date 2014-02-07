@@ -21,6 +21,7 @@ import java.io.UnsupportedEncodingException;
 
 import junit.framework.Assert;
 
+import org.apache.avro.util.Utf8;
 import org.junit.Test;
 
 import static junit.framework.Assert.assertSame;

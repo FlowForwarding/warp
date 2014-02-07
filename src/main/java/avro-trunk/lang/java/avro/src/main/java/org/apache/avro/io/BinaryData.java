@@ -19,9 +19,9 @@ package org.apache.avro.io;
 
 import java.io.IOException;
 
+import org.apache.avro.AvroRuntimeException;
 import org.apache.avro.Schema;
 import org.apache.avro.Schema.Field;
-import org.apache.avro.AvroRuntimeException;
 import org.apache.avro.generic.GenericDatumReader;
 
 /** Utilities for binary-encoded data. */

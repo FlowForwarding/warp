@@ -72,7 +72,7 @@
     		<manifest>
     			<attribute name="Main-Class" value="org.flowforwarding.warp.controller.ControllerOld"/>
     			<attribute name="Class-Path" value="."/>
-            </manifest>
+    		</manifest>
     		<fileset dir="build/classes/main"/>
     		<fileset dir="build/classes/main/resources"/>
             <zipfileset excludes="META-INF/*.SF" src="${controller.root}/deps/lib/jackson-all-1.9.11.jar"/>

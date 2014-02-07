@@ -19,6 +19,8 @@
 package org.apache.avro.file;
 
 
+import org.apache.avro.file.Codec;
+import org.apache.avro.file.SnappyCodec;
 import org.apache.avro.file.codec.CustomCodec;
 import org.junit.Test;
 

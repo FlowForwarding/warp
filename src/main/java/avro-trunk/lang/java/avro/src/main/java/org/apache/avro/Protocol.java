@@ -17,9 +17,11 @@
  */
 package org.apache.avro;
 
+//import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.InputStream;
+//import java.io.InputStreamReader;
 import java.io.StringWriter;
 import java.io.IOException;
 import java.security.MessageDigest;
@@ -363,6 +365,13 @@ public class Protocol extends JsonProperties {
 
   /** Read a protocol from a Json stream. */
   public static Protocol parse(InputStream stream) throws IOException {
+/*     System.out.println ("=========================================================================================================================");
+     BufferedReader br = new BufferedReader(new InputStreamReader(stream));
+     String line;
+     while ((line = br.readLine()) != null){
+        System.out.println(line);
+     }
+     br.close();*/      
     return parse(Schema.FACTORY.createJsonParser(stream));
   }
 

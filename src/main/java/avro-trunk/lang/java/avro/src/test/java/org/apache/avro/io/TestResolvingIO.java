@@ -24,6 +24,10 @@ import java.util.Arrays;
 import java.util.Collection;
 
 import org.apache.avro.Schema;
+import org.apache.avro.io.Decoder;
+import org.apache.avro.io.DecoderFactory;
+import org.apache.avro.io.JsonDecoder;
+import org.apache.avro.io.ResolvingDecoder;
 import org.apache.avro.io.TestValidatingIO.Encoding;
 import org.junit.Test;
 import org.junit.runners.Parameterized;

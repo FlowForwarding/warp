@@ -23,9 +23,9 @@ import java.nio.ByteBuffer;
 
 import org.apache.avro.AvroTypeException;
 import org.apache.avro.Schema;
-import org.apache.avro.io.parsing.ValidatingGrammarGenerator;
 import org.apache.avro.io.parsing.Parser;
 import org.apache.avro.io.parsing.Symbol;
+import org.apache.avro.io.parsing.ValidatingGrammarGenerator;
 import org.apache.avro.util.Utf8;
 
 /**

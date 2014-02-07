@@ -21,6 +21,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
 
+import org.apache.avro.io.Decoder;
+import org.apache.avro.io.Encoder;
 import org.apache.avro.util.Utf8;
 
 /**
