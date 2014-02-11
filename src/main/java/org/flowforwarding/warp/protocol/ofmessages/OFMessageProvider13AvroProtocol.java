@@ -2631,13 +2631,15 @@ public boolean isMessage (Schema headerSchema, byte[] in) {
 
 @Override
 public List<OFMessageRef> parseMessages(byte[] in) {
+   System.out.println("[OF-INFO]: parseMessages - Entering ");
    GenericRecord header = getRecord(ofpHeaderSchema, in);
    
    Byte type = getByte((GenericData.Fixed)header.get("type"));
    Short length = getShort((GenericData.Fixed)header.get("length"));
    
+   System.out.println("[OF-INFO]: Message type - " + type);
+   
    List<OFMessageRef> messageList = new ArrayList<OFMessageRef> ();
-
    
    // TODO Improvs: We plan to get all types from Avro protocol type... soon... so let it be now just numbers
    switch (type) {
