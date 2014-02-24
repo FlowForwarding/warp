@@ -11,6 +11,7 @@ import java.io.IOException;
 import org.apache.avro.Protocol;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
+import org.apache.avro.generic.GenericData.Fixed;
 import org.apache.avro.generic.GenericDatumReader;
 import org.apache.avro.generic.GenericDatumWriter;
 import org.apache.avro.generic.GenericRecord;
@@ -49,7 +50,17 @@ public class AvroMineTest {
    }
      
  //    byte [] buf = TestFixedEncoding(protocol_test);
-     testBucket();
+ //    testBucket();
+     testSize();
+  }
+  
+  protected static void testSize () {
+     Schema ofpHelloHeaderSchema = protocol_13.getType("ofp_hello_header");
+     
+     GenericRecordBuilder builder = new GenericRecordBuilder(ofpHelloHeaderSchema);
+     GenericRecord helloRecord = builder.build();
+     
+     Fixed version = (Fixed)helloRecord.get("version");
   }
   
   protected static void testBucket () {
