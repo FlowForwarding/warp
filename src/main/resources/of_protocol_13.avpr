@@ -1314,8 +1314,6 @@
     "symbols":["OFPGC_ADD", "OFPGC_MODIFY"]
    },
 
-
-   
    {"name":"ofp_group_type",
     "type":"enum",
     "items":"uint_8",
@@ -1355,17 +1353,34 @@
      {"name":"buckets", "type":"bucket_set"}          
     ]
    },
+
+
    
    {"name":"port_mod_header",
     "type":"record",
     "fields":[ 
       {"name":"version", "type":"uint_8", "default":[4]},
-      {"name":"type", "type":"ofp_type", "default":"OFPT_FLOW_MOD"},
+      {"name":"type", "type":"ofp_type", "default":"OFPT_PORT_MOD"},
       {"name":"length", "type":"ofp_length", "default":"OFPL_FLOW_MOD_LEN"},
       {"name":"xid", "type":"uint_32", "default":[0,0,0,0]}
     ]
    },
-   
+
+   {"name":"ofp_port_mod",
+    "type":"record",
+    "fields":[
+     {"name":"header", "type":"port_mod_header"},
+     {"name":"port_no", "type":"uint_32"},
+     {"name":"pad", "type":"pad_4"},
+
+     {"name":"pad2", "type":"pad_2"},
+     {"name":"config", "type":"OFPPC_*"},
+     {"name":"mask", "type":"OFPPC_*"},
+     {"name":"advertise", "type":"OFPPC_*"},
+     {"name":"pad3", "type":"pad_3"}
+    ]
+   },
+
    {"name":"ofp_multipart_type",
     "type":"enum",
     "items":"uint_16",
@@ -1477,6 +1492,36 @@
     ]
    },
    
+   {"name":"ofp_port_reason",
+    "type":"enum",
+    "items":"uint_8",
+    "list":[
+     {"name":"OFPPR_ADD", "default":[0]},
+     {"name":"OFPPR_DELETE", "default":[1]},
+     {"name":"OFPPR_MODIFY", "default":[2]}
+    ]
+
+   },
+
+   {"name":"port_status_header",
+    "type":"record",
+    "fields":[ 
+      {"name":"version", "type":"uint_8", "default":[4]},
+      {"name":"type", "type":"ofp_type", "default":"OFPT_PORT_STATUS"},
+      {"name":"length", "type":"ofp_length", "default":"OFPL_PORT_STATUS_LEN"},
+      {"name":"xid", "type":"uint_32", "default":[0,0,0,0]}
+    ] 
+   },
+
+   {"name":"ofp_port_status",
+    "type":"record",
+    "fields":[
+     {"name":"header", "type":"port_status_header"},
+     {"name":"reason", "type":"ofp_port_reason"},
+     {"name":"pad", "type":"pad_7"}
+    ]
+   },
+
    {"name":"ofp_error_type", 
     "type":"enum",
     "items":"uint_16",
@@ -1727,26 +1772,6 @@
                              "ofp_table_features_failed_code" 
                             ]
                            }
-    ]
-   },
-   
-   {"name":"error_msg_header",
-    "type":"record",
-    "fields":[ 
-     {"name":"version", "type":"uint_8", "default":[4]},
-     {"name":"type", "type":"ofp_type", "default":"OFPT_ERROR"},
-     {"name":"length", "type":"ofp_length", "default":"OFPL_ERROR_LEN"},
-     {"name":"xid", "type":"uint_32", "default":[0,0,0,0]}
-    ]
-   },
-   
-   {"name":"ofp_error_msg",
-    "type":"record",
-    "fields":[
-     {"name":"header", "type":"error_msg_header"},
-     {"name":"type", "type":"uint_16"},
-     {"name":"code", "type":"uint_16"},
-     {"name":"data", "type":{"type":"array", "items":"uint_8"}}
     ]
    }
  ]
