@@ -1,14 +1,13 @@
-package org.flowforwarding.warp.protocol.offields;
+package org.flowforwarding.warp.protocol.ofitems;
 
 import org.apache.avro.generic.GenericContainer;
 
 public class OFField implements IOFItem{
    
    protected String name;
-   protected String value;
+   protected String parent;
    protected byte size;
 
-   
    public byte getSize() {
       return size;
    }
@@ -21,12 +20,13 @@ public class OFField implements IOFItem{
    public void setName(String name) {
       this.name = name;
    }
-   public String getValue() {
-      return value;
+   public String getParent() {
+      return parent;
    }
-   public void setValue(String value) {
-      this.value = value;
+   public void setParent(String parent) {
+      this.parent = parent;
    }
+
 
    @Override
    public GenericContainer get() {
