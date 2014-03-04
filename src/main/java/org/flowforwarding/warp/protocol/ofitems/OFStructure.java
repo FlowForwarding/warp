@@ -29,5 +29,9 @@ public class OFStructure implements IOFItem{
    public void setName(String name) {
       this.name = name;
    }
+   
+   public void addItem (IOFItem item) {
+      items.add(item);
+   }
 
 }

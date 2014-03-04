@@ -8,6 +8,7 @@
    {"name":"uint_48", "type":"fixed", "size":6},
    {"name":"uint_64", "type":"fixed", "size":8},
    {"name":"uint_128", "type":"fixed", "size":16},
+   {"name":"pad_7", "type":"fixed", "size":7},
    {"name":"pad_6", "type":"fixed", "size":6},
    {"name":"pad_4", "type":"fixed", "size":4},
    {"name":"pad_3", "type":"fixed", "size":3},
@@ -1366,6 +1367,11 @@
     ]
    },
 
+   {"name":"OFPPC",
+    "type":"record",
+    "fields":[]
+   },
+   
    {"name":"ofp_port_mod",
     "type":"record",
     "fields":[
@@ -1374,9 +1380,9 @@
      {"name":"pad", "type":"pad_4"},
 
      {"name":"pad2", "type":"pad_2"},
-     {"name":"config", "type":"OFPPC_*"},
-     {"name":"mask", "type":"OFPPC_*"},
-     {"name":"advertise", "type":"OFPPC_*"},
+     {"name":"config", "type":"OFPPC"},
+     {"name":"mask", "type":"OFPPC"},
+     {"name":"advertise", "type":"OFPPC"},
      {"name":"pad3", "type":"pad_3"}
     ]
    },

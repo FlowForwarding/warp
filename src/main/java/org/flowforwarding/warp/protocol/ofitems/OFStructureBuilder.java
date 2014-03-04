@@ -10,6 +10,8 @@ public class OFStructureBuilder implements IOFItemBuilder{
 
    @Override
    public IOFItem build() {
+   // TODO Improvs: Should it be a static??
+   // TODO Improvs: Close OFField constructor, build via reference??
       return null;
    }
 

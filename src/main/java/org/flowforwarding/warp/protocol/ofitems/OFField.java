@@ -6,12 +6,27 @@ public class OFField implements IOFItem{
    
    protected String name;
    protected String parent;
-   protected byte size;
 
-   public byte getSize() {
+   protected int size;
+   protected byte[] value;
+   
+   @Override
+   public GenericContainer get() {
+      
+      return null;
+   }
+   
+   public OFField (String nm, int sz) {
+      name = nm;
+      size = sz;
+      
+      value = new byte[size];
+   }
+   
+   public int getSize() {
       return size;
    }
-   public void setSize(byte size) {
+   public void setSize(int size) {
       this.size = size;
    }
    public String getName() {
@@ -27,10 +42,16 @@ public class OFField implements IOFItem{
       this.parent = parent;
    }
 
-
-   @Override
-   public GenericContainer get() {
-      
-      return null;
+   /**
+    * @return the value
+    */
+   public byte[] getValue() {
+      return value;
+   }
+   /**
+    * @param value the value to set
+    */
+   public void setValue(byte[] value) {
+      this.value = value;
    }
 }

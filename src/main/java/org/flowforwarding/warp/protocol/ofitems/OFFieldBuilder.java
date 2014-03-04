@@ -3,15 +3,13 @@ package org.flowforwarding.warp.protocol.ofitems;
 public class OFFieldBuilder implements IOFItemBuilder{
 
    protected String name;
-   protected String parent;   
+   protected int size;
    
    @Override
    public IOFItem build() {
    // TODO Improvs: Should it be a static??
    // TODO Improvs: Close OFField constructor, build via reference??
-
-      OFField field = new OFField();
-      field.setName(name);
+      OFField field = new OFField(name, size);
       
       return field;
    }
@@ -25,17 +23,16 @@ public class OFFieldBuilder implements IOFItemBuilder{
    }
 
    /**
-    * @return the parent
+    * @return the size
     */
-   public String getParent() {
-      return parent;
+   public int getSize() {
+      return size;
    }
 
    /**
-    * @param parent the parent to set
+    * @param size the size to set
     */
-   public void setParent(String parent) {
-      this.parent = parent;
+   public void setSize(int size) {
+      this.size = size;
    }
-
 }
