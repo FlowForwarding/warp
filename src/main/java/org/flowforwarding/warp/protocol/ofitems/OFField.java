@@ -1,5 +1,6 @@
 package org.flowforwarding.warp.protocol.ofitems;
 
+import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericContainer;
 
 public class OFField implements IOFItem{
@@ -8,7 +9,8 @@ public class OFField implements IOFItem{
    protected String parent;
 
    protected int size;
-   protected byte[] value;
+   protected byte[] value = null;
+   protected Schema schema;
    
    @Override
    public GenericContainer get() {
@@ -16,30 +18,23 @@ public class OFField implements IOFItem{
       return null;
    }
    
-   public OFField (String nm, int sz) {
+   public OFField (String nm, Schema sch) {
       name = nm;
-      size = sz;
-      
-      value = new byte[size];
+      schema = sch;
+  // TODO Improv: catch possible exception. It will be thrown in case Schema is NOT Fixed
+      size = sch.getFixedSize();
    }
    
    public int getSize() {
       return size;
    }
-   public void setSize(int size) {
-      this.size = size;
-   }
+
    public String getName() {
       return name;
    }
-   public void setName(String name) {
-      this.name = name;
-   }
+
    public String getParent() {
       return parent;
-   }
-   public void setParent(String parent) {
-      this.parent = parent;
    }
 
    /**
@@ -53,5 +48,19 @@ public class OFField implements IOFItem{
     */
    public void setValue(byte[] value) {
       this.value = value;
+   }
+
+   /**
+    * @return the schema
+    */
+   public Schema getSchema() {
+      return schema;
+   }
+
+   /**
+    * @param schema the schema to set
+    */
+   public void setSchema(Schema schema) {
+      this.schema = schema;
    }
 }
