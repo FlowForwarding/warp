@@ -2,6 +2,7 @@ package org.flowforwarding.warp.protocol.ofitems;
 
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericContainer;
+import org.apache.avro.generic.GenericData;
 
 public class OFField implements IOFItem{
    
@@ -14,8 +15,8 @@ public class OFField implements IOFItem{
    
    @Override
    public GenericContainer get() {
-      
-      return null;
+      // TODO Improve: catch possible exception. It will be thrown in case inconsistence between value and schema
+      return new GenericData.Fixed(schema, value);
    }
    
    public OFField (String nm, Schema sch) {
