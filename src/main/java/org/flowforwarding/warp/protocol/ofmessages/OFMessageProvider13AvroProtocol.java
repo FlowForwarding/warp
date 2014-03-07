@@ -15,6 +15,8 @@ import java.lang.reflect.Type;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -23,9 +25,14 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.avro.Schema;
+import org.apache.avro.Schema.Field;
 import org.apache.avro.generic.GenericArray;
 import org.apache.avro.generic.GenericData;
 import org.apache.avro.Protocol;
+import org.flowforwarding.warp.protocol.ofitems.IOFItem;
+import org.flowforwarding.warp.protocol.ofitems.IOFItemBuilder;
+import org.flowforwarding.warp.protocol.ofitems.OFItemFixedBuilder;
+import org.flowforwarding.warp.protocol.ofitems.OFItemRecordBuilder;
 import org.flowforwarding.warp.protocol.ofmessages.OFMessageError.OFMessageErrorRef;
 import org.flowforwarding.warp.protocol.ofmessages.OFMessageFlowMod.OFMessageFlowModRef;
 import org.flowforwarding.warp.protocol.ofmessages.OFMessageHello.OFMessageHelloRef;
@@ -129,7 +136,8 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
    private Protocol protocol = null;
    protected IOFMessageBuilder builder = null;
    protected IOFStructureBuilder structureBuilder = null;
-   
+
+   protected Map<String, IOFItemBuilder> builders = new HashMap<>();
    
    final class MatchEntry<K, V> implements Map.Entry<K, V> {
        private final K key;
@@ -158,6 +166,20 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
        }
    }
    
+   protected static OFItemRecordBuilder makeRecordBuilder (String name, Schema schema) {
+      
+      OFItemRecordBuilder b = new OFItemRecordBuilder(name, schema);
+      ArrayList<Field> fields = (ArrayList<Field>) schema.getFields();
+      for (Field field : fields) {
+         if (field.schema().getType().getName().equalsIgnoreCase("fixed")) {
+            b.addItemBuilder(field.name(), new OFItemFixedBuilder(field.name(), field.schema()));
+         } else if (field.schema().getType().getName().equalsIgnoreCase("record")) {
+            b.addItemBuilder(field.name(), makeRecordBuilder(field.name(), field.schema()));
+         }
+      }
+      
+      return b;
+   }
    
    public void init () {
       try {
@@ -191,7 +213,20 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
          builder = new OFMessageBuilder13();
          structureBuilder = new OFStructureBuilder13();
          
+         Collection<Schema> types = protocol.getTypes();
          
+         for (Schema schema : types) {
+            if (schema.getType().getName().equalsIgnoreCase("fixed")) {
+               builders.put(schema.getName(), new OFItemFixedBuilder(schema.getName(), schema));
+            } else if (schema.getType().getName().equalsIgnoreCase("record")) {
+               builders.put(schema.getName(), makeRecordBuilder(schema.getName(), schema));
+            }
+         }
+         
+/*         IOFItemBuilder helloBuilder = builders.get("ofp_hello");
+         IOFItem hello = helloBuilder.build();
+         
+         GenericRecord helloRecord = (GenericRecord) hello.get();*/
          } catch (IOException e) {
          // TODO Auto-generated catch block
            e.printStackTrace();
@@ -317,8 +352,32 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
       return out;
     }
    
-   public byte[] encodeHelloMessage() {
+/*   public byte[] encodeHelloMessage() {
       return encodeMessage(helloHeaderSchema, ofpHelloSchema);
+   }*/
+   
+   public byte[] encodeHelloMessage() {
+      
+      IOFItemBuilder helloBuilder = builders.get("ofp_hello");
+      IOFItem hello = helloBuilder.build();
+      GenericRecord helloRecord = (GenericRecord) hello.get();
+      
+      ByteArrayOutputStream out = new ByteArrayOutputStream();
+      
+      DatumWriter<GenericRecord> writer = new GenericDatumWriter<GenericRecord>(hello.getSchema());
+      Encoder encoder = EncoderFactory.get().binaryNonEncoder(out, null);
+      
+      try {
+         writer.write(helloRecord, encoder);
+         encoder.flush();
+      } catch (IOException e) {
+         // TODO Auto-generated catch block
+         e.printStackTrace();
+      }
+      
+      return out.toByteArray();
+
+      //return encodeMessage(helloHeaderSchema, ofpHelloSchema);
    }
    
    public byte[] encodeEchoRequest() {

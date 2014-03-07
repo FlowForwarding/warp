@@ -20,7 +20,6 @@ public class OFItemFixedBuilder implements IOFItemBuilder{
    public OFItemFixedBuilder(String nm, Schema sch) {
       name = nm;
       schema = sch;
-      System.out.println(" BUILDER, FIXED -- Name: " + name + ", Schema: " + sch.getName() + ", Type: " + sch.getType() + ", Size: " + sch.getFixedSize());
    }
 
    /**

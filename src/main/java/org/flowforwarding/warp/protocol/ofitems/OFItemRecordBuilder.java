@@ -14,8 +14,6 @@ public class OFItemRecordBuilder implements IOFItemBuilder{
    public OFItemRecordBuilder (String nm, Schema sch) {
       name = nm;
       schema = sch;
-
-      System.out.println("BUILDER, RECORD -- Name: " + name + ", Schema: " + sch.getName() + ", Type: " + sch.getType());
    }
    
    @Override
@@ -38,7 +36,6 @@ public class OFItemRecordBuilder implements IOFItemBuilder{
    }
 
    public void addItemBuilder (String nm, IOFItemBuilder builder) {
-      System.out.println("   BUILDER " + name + ". New Item Was added: NAME - " + nm);
       itemBuilders.put(nm, builder);
    }
 
