@@ -35,6 +35,7 @@ import org.flowforwarding.warp.protocol.ofitems.OFItemFixedBuilder;
 import org.flowforwarding.warp.protocol.ofitems.OFItemRecordBuilder;
 import org.flowforwarding.warp.protocol.ofmessages.OFMessageError.OFMessageErrorRef;
 import org.flowforwarding.warp.protocol.ofmessages.OFMessageFlowMod.OFMessageFlowModRef;
+import org.flowforwarding.warp.protocol.ofmessages.OFMessageGroupMod.OFMessageGroupModRef;
 import org.flowforwarding.warp.protocol.ofmessages.OFMessageHello.OFMessageHelloRef;
 import org.flowforwarding.warp.protocol.ofmessages.OFMessagePacketIn.OFMessagePacketInRef;
 import org.flowforwarding.warp.protocol.ofmessages.OFMessageSwitchConfig.OFMessageSwitchConfigRef;
@@ -355,8 +356,8 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
 /*   public byte[] encodeHelloMessage() {
       return encodeMessage(helloHeaderSchema, ofpHelloSchema);
    }*/
-   
-   public byte[] encodeHelloMessage() {
+
+    public byte[] encodeHelloMessage() {
       
       IOFItemBuilder helloBuilder = builders.get("ofp_hello");
       IOFItem hello = helloBuilder.build();
@@ -577,8 +578,12 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
      
       return out.toByteArray();
    }
-   
-   public byte[] encodeFlowMod (OFMessageFlowModRef fmRef) {
+
+    public byte[] encodeGroupMod(OFMessageGroupModRef fmRef) {
+        return new byte[0];
+    }
+
+    public byte[] encodeFlowMod (OFMessageFlowModRef fmRef) {
       
       GenericRecord ofpFlowModRecord = new GenericData.Record(ofpFlowModSchema);
       
@@ -2557,7 +2562,7 @@ public boolean isHello(byte[] in) {
  */
 @Override
 public Short getVersion() {
-   return null;
+   return 4;
 }
 
 /* (non-Javadoc)

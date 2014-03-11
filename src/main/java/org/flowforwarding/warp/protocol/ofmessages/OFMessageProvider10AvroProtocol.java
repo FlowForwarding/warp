@@ -23,6 +23,7 @@ import org.apache.avro.io.Encoder;
 import org.apache.avro.io.EncoderFactory;
 import org.flowforwarding.warp.protocol.ofmessages.OFMessageError.OFMessageErrorRef;
 import org.flowforwarding.warp.protocol.ofmessages.OFMessageFlowMod.OFMessageFlowModRef;
+import org.flowforwarding.warp.protocol.ofmessages.OFMessageGroupMod.OFMessageGroupModRef;
 import org.flowforwarding.warp.protocol.ofmessages.OFMessageHello.OFMessageHelloRef;
 import org.flowforwarding.warp.protocol.ofmessages.OFMessagePacketIn.OFMessagePacketInRef;
 import org.flowforwarding.warp.protocol.ofmessages.OFMessageSwitchConfig.OFMessageSwitchConfigRef;
@@ -223,7 +224,7 @@ public class OFMessageProvider10AvroProtocol implements IOFMessageProvider{
    @Override
    public Short getVersion() {
       // TODO Auto-generated method stub
-      return null;
+      return 1;
    }
 
    /**
@@ -302,6 +303,15 @@ public class OFMessageProvider10AvroProtocol implements IOFMessageProvider{
    public boolean isHello(byte[] in) {
       // TODO Auto-generated method stub
       return false;
+   }
+
+   /**
+    * @see org.flowforwarding.warp.protocol.ofmessages.IOFMessageProvider#encodeGroupMod(org.flowforwarding.warp.protocol.ofmessages.OFMessageGroupMod.OFMessageGroupModRef)
+    */
+   @Override
+   public byte[] encodeGroupMod(OFMessageGroupModRef gmRef) {
+       // TODO Auto-generated method stub
+       return null;
    }
 
    /**
