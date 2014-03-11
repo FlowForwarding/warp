@@ -2,14 +2,13 @@
  * © 2013 FlowForwarding.Org
  * All Rights Reserved.  Use is subject to license terms.
  */
-package org.flowforwarding.warp.controller.session;
+package org.flowforwarding.warp.jcontroller.session;
 
 
 import java.util.HashMap;
 import java.util.Map;
 
 import org.flowforwarding.warp.ofswitch.SwitchState.SwitchRef;
-import org.flowforwarding.warp.protocol.ofmessages.OFMessageError;
 import org.flowforwarding.warp.protocol.ofmessages.OFMessageError.OFMessageErrorRef;
 import org.flowforwarding.warp.protocol.ofmessages.OFMessageFlowMod.OFMessageFlowModRef;
 import org.flowforwarding.warp.protocol.ofmessages.OFMessagePacketIn.OFMessagePacketInRef;
@@ -43,9 +42,9 @@ public abstract class OFSessionHandler extends OFActor{
          OFMessagePacketInRef pIn = ((OFEventPacketIn) msg).getPacketIn();
          packetIn(swR, pIn);
          
-      } else if (msg instanceof OFEventSwitchConfig) {
-         SwitchRef swR = ((OFEventSwitchConfig) msg).getSwitchRef();
-         OFMessageSwitchConfigRef configH = ((OFEventSwitchConfig) msg).getConfigRef();
+      } else if (msg instanceof org.flowforwarding.warp.jcontroller.session.OFEventSwitchConfig) {
+         SwitchRef swR = ((org.flowforwarding.warp.jcontroller.session.OFEventSwitchConfig) msg).getSwitchRef();
+         OFMessageSwitchConfigRef configH = ((org.flowforwarding.warp.jcontroller.session.OFEventSwitchConfig) msg).getConfigRef();
          switchConfig(swR, configH);
          
       } else if (msg instanceof EventGetSwitches) {
@@ -71,7 +70,7 @@ public abstract class OFSessionHandler extends OFActor{
     * Reference to Switch
     */
    protected void sendSwitchConfigRequest (SwitchRef swR) {
-      switches.get(swR).tell(new OFCommandSendSwConfigRequest(), getSelf());
+      switches.get(swR).tell(new org.flowforwarding.warp.jcontroller.session.OFCommandSendSwConfigRequest(), getSelf());
    }
    
    /**
@@ -82,6 +81,6 @@ public abstract class OFSessionHandler extends OFActor{
     * Reference to OF Flow Mod 
     */
    protected void sendFlowModMessage (SwitchRef swR, OFMessageFlowModRef flowMod) {
-      switches.get(swR).tell(new OFCommandSendSwConfigRequest(), getSelf());
+      switches.get(swR).tell(new org.flowforwarding.warp.jcontroller.session.OFCommandSendSwConfigRequest(), getSelf());
    }
 }

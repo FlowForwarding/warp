@@ -3,16 +3,14 @@
  * All Rights Reserved.  Use is subject to license terms.
  */
 
-package org.flowforwarding.warp.controller;
+package org.flowforwarding.warp.jcontroller;
 
 import java.net.InetSocketAddress;
 import java.util.List;
 
-import org.flowforwarding.warp.controller.session.EventGetSwitches;
-import org.flowforwarding.warp.controller.session.OFActor;
-import org.flowforwarding.warp.controller.session.SwitchNurse;
-import org.flowforwarding.warp.controller.session.TellToSendFlowMod;
-import org.flowforwarding.warp.controller.supply.OFCTellController;
+import org.flowforwarding.warp.jcontroller.session.SwitchNurse;
+import org.flowforwarding.warp.jcontroller.session.TellToSendFlowMod;
+import org.flowforwarding.warp.jcontroller.supply.OFCTellController;
 import org.flowforwarding.warp.ofswitch.SwitchState.SwitchRef;
 import org.flowforwarding.warp.protocol.ofmessages.OFMessageFlowMod.OFMessageFlowModRef;
 
@@ -83,9 +81,9 @@ public class Controller extends UntypedActor{
    * The {@link Configuration} of Controller. 
    *   
    * @param handler
-   * The user-defined OpenFlow events handler, e.g. {@link org.flowforwarding.warp.controller.session.OFSessionHandler}
+   * The user-defined OpenFlow events handler, e.g. {@link org.flowforwarding.warp.jcontroller.session.OFSessionHandler}
    */
-   public static ControllerRef launch (Configuration config, Class<? extends OFActor> handler) {
+   public static ControllerRef launch (Configuration config, Class<? extends org.flowforwarding.warp.jcontroller.session.OFActor> handler) {
       
       configuration = config;
       ofEventHandlerClass = handler;
@@ -102,10 +100,10 @@ public class Controller extends UntypedActor{
    * Launches default-configuration Controller (tcp port = 6633)
    *   
    * @param handler
-   * The user-defined OpenFlow events handler, e.g. {@link org.flowforwarding.warp.controller.session.OFSessionHandler}
+   * The user-defined OpenFlow events handler, e.g. {@link org.flowforwarding.warp.jcontroller.session.OFSessionHandler}
    */
    
-   public static ControllerRef launch (Class<? extends OFActor> handler) {
+   public static ControllerRef launch (Class<? extends org.flowforwarding.warp.jcontroller.session.OFActor> handler) {
       
       configuration = new Configuration();
       ofEventHandlerClass = handler;
@@ -134,7 +132,7 @@ public class Controller extends UntypedActor{
       }
       
       public List<SwitchRef> getSwitches () {
-         tellController.tell(ofEventHandler, new EventGetSwitches());
+         tellController.tell(ofEventHandler, new org.flowforwarding.warp.jcontroller.session.EventGetSwitches());
          
          return null;
       }

@@ -2,15 +2,15 @@
  * © 2013 FlowForwarding.Org
  * All Rights Reserved.  Use is subject to license terms.
  */
-package org.flowforwarding.warp.controller.restapi;
+package org.flowforwarding.warp.jcontroller.restapi;
 
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ForkJoinPool;
 
-import org.flowforwarding.warp.controller.Controller.ControllerRef;
-import org.flowforwarding.warp.controller.ControllerOld.ObserverTask;
+import org.flowforwarding.warp.jcontroller.Controller.ControllerRef;
+import org.flowforwarding.warp.jcontroller.ControllerOld.ObserverTask;
 import org.restlet.Application;
 import org.restlet.Component;
 import org.restlet.Context;
@@ -33,21 +33,21 @@ import org.restlet.service.StatusService;
  */
 public class RestApiServer  {
     //protected static Logger logger = LoggerFactory.getLogger(RestApiServer.class);
-    protected List<RestletRoutable> restlets;
+    protected List<org.flowforwarding.warp.jcontroller.restapi.RestletRoutable> restlets;
     protected int restPort = 8080;
     protected ForkJoinPool pool = null;
     
     @Deprecated
     public RestApiServer(ForkJoinPool pool, ObserverTask<Integer, RestApiTask> observerTask) {
-       this.restlets = new ArrayList<RestletRoutable>();
-       RestletRoutable routable = new RootRestApiRoutable(pool, observerTask);
+       this.restlets = new ArrayList<org.flowforwarding.warp.jcontroller.restapi.RestletRoutable>();
+       org.flowforwarding.warp.jcontroller.restapi.RestletRoutable routable = new org.flowforwarding.warp.jcontroller.restapi.RootRestApiRoutable(pool, observerTask);
        restlets.add(routable);
     }
     
     public RestApiServer(ControllerRef cRef) {
-       this.restlets = new ArrayList<RestletRoutable>();
+       this.restlets = new ArrayList<org.flowforwarding.warp.jcontroller.restapi.RestletRoutable>();
        this.pool = new ForkJoinPool();
-       RestletRoutable routable = new RootRestApiRoutable(cRef, this.pool);
+       org.flowforwarding.warp.jcontroller.restapi.RestletRoutable routable = new org.flowforwarding.warp.jcontroller.restapi.RootRestApiRoutable(cRef, this.pool);
        restlets.add(routable);
     }
     
@@ -63,7 +63,7 @@ public class RestApiServer  {
         public Restlet createInboundRoot() {
             Router baseRouter = new Router(context);
             baseRouter.setDefaultMatchingMode(Template.MODE_STARTS_WITH);
-            for (RestletRoutable rr : restlets) {
+            for (org.flowforwarding.warp.jcontroller.restapi.RestletRoutable rr : restlets) {
                 baseRouter.attach(rr.basePath(), rr.getRestlet(context));
             }
 
@@ -110,7 +110,7 @@ public class RestApiServer  {
     }
     
     // @Override
-    public void addRestletRoutable(RestletRoutable routable) {
+    public void addRestletRoutable(org.flowforwarding.warp.jcontroller.restapi.RestletRoutable routable) {
         restlets.add(routable);
     }
 

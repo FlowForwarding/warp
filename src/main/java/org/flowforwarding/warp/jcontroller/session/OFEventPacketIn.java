@@ -2,7 +2,7 @@
  * © 2013 FlowForwarding.Org
  * All Rights Reserved.  Use is subject to license terms.
  */
-package org.flowforwarding.warp.controller.session;
+package org.flowforwarding.warp.jcontroller.session;
 
 import org.flowforwarding.warp.ofswitch.SwitchState.SwitchRef;
 import org.flowforwarding.warp.protocol.ofmessages.OFMessagePacketIn.OFMessagePacketInRef;
@@ -30,7 +30,7 @@ public class OFEventPacketIn extends OFEvent {
 
    /**
     * @return SwitchRef switchRef
-    * @see org.flowforwarding.warp.controller.session.OFEvent#getSwitchRef()
+    * @see OFEvent#getSwitchRef()
     */
    @Override
    public SwitchRef getSwitchRef() {

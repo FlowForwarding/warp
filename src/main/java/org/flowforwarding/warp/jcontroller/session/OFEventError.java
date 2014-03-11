@@ -2,7 +2,7 @@
  * © 2013 FlowForwarding.Org
  * All Rights Reserved.  Use is subject to license terms.
  */
-package org.flowforwarding.warp.controller.session;
+package org.flowforwarding.warp.jcontroller.session;
 
 import org.flowforwarding.warp.ofswitch.SwitchState.SwitchRef;
 import org.flowforwarding.warp.protocol.ofmessages.OFMessageError.OFMessageErrorRef;
@@ -11,7 +11,7 @@ import org.flowforwarding.warp.protocol.ofmessages.OFMessageError.OFMessageError
  * @author Infoblox Inc.
  * @doc.desc OpenFlow Error event 
  */
-public class OFEventError extends OFEvent{
+public class OFEventError extends OFEvent {
 
    protected SwitchRef switchRef;
    protected OFMessageErrorRef error;
@@ -28,7 +28,7 @@ public class OFEventError extends OFEvent{
    }
    
    /* (non-Javadoc)
-    * @see org.flowforwarding.warp.controller.session.Event#getSwitchRef()
+    * @see Event#getSwitchRef()
     */
    /**
     * @return SwitchRef switchRef  

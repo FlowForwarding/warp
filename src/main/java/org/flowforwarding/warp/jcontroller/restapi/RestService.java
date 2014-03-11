@@ -1,7 +1,7 @@
-package org.flowforwarding.warp.controller.restapi;
+package org.flowforwarding.warp.jcontroller.restapi;
 
-import org.flowforwarding.warp.controller.Controller;
-import org.flowforwarding.warp.controller.Controller.ControllerRef;
+import org.flowforwarding.warp.jcontroller.Controller;
+import org.flowforwarding.warp.jcontroller.Controller.ControllerRef;
 import org.flowforwarding.warp.demo.SimpleHandler;
 
 public class RestService {

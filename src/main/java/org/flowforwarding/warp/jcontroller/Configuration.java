@@ -3,7 +3,7 @@
  * All Rights Reserved.  Use is subject to license terms.
  */
 
-package org.flowforwarding.warp.controller;
+package org.flowforwarding.warp.jcontroller;
 
 /**
  * @author Infoblox Inc.

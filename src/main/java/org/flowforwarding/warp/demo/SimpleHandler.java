@@ -4,7 +4,7 @@
  */
 package org.flowforwarding.warp.demo;
 
-import org.flowforwarding.warp.controller.session.OFSessionHandler;
+import org.flowforwarding.warp.jcontroller.session.OFSessionHandler;
 import org.flowforwarding.warp.ofswitch.SwitchState.SwitchRef;
 import org.flowforwarding.warp.protocol.ofmessages.IOFMessageProvider;
 import org.flowforwarding.warp.protocol.ofmessages.OFMessageFlowMod.OFMessageFlowModRef;

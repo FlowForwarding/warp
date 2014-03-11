@@ -3,14 +3,14 @@
  * All Rights Reserved.  Use is subject to license terms.
  */
 
-package org.flowforwarding.warp.controller.restapi;
+package org.flowforwarding.warp.jcontroller.restapi;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ForkJoinPool;
 
-import org.flowforwarding.warp.controller.Controller.ControllerRef;
-import org.flowforwarding.warp.controller.ControllerOld.ObserverTask;
+import org.flowforwarding.warp.jcontroller.Controller.ControllerRef;
+import org.flowforwarding.warp.jcontroller.ControllerOld.ObserverTask;
 import org.restlet.Context;
 import org.restlet.Restlet;
 import org.restlet.routing.Router;
@@ -25,11 +25,11 @@ public class RootRestApiRoutable implements RestletRoutable {
   // protected Map<String, Map<String, OFFlowMod>> entries;
    protected Map<String, Map<String, Object>> entries;
    protected ForkJoinPool pool;
-   protected ObserverTask<Integer, RestApiTask> observerTask;
+   protected ObserverTask<Integer, org.flowforwarding.warp.jcontroller.restapi.RestApiTask> observerTask;
    protected ControllerRef controllerRef;
    
    @Deprecated
-   public RootRestApiRoutable(ForkJoinPool pl, ObserverTask<Integer, RestApiTask> task) {
+   public RootRestApiRoutable(ForkJoinPool pl, ObserverTask<Integer, org.flowforwarding.warp.jcontroller.restapi.RestApiTask> task) {
  //     this.entries = new HashMap<String, Map<String, OFFlowMod>>();
       this.entries = new HashMap<String, Map<String, Object>>();
       this.pool = pl;

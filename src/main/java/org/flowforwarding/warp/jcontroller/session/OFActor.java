@@ -2,7 +2,7 @@
  * © 2013 FlowForwarding.Org
  * All Rights Reserved.  Use is subject to license terms.
  */
-package org.flowforwarding.warp.controller.session;
+package org.flowforwarding.warp.jcontroller.session;
 
 import akka.actor.UntypedActor;
 

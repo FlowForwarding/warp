@@ -2,7 +2,7 @@
  * © 2013 FlowForwarding.Org
  * All Rights Reserved.  Use is subject to license terms.
  */
-package org.flowforwarding.warp.controller;
+package org.flowforwarding.warp.jcontroller;
 
 import java.io.ByteArrayOutputStream;
 import java.net.InetSocketAddress;
@@ -15,19 +15,12 @@ import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.RecursiveTask;
 import java.util.concurrent.atomic.AtomicLong;
 
-import org.flowforwarding.warp.controller.ControllerOld.ChannelHandler;
-import org.flowforwarding.warp.controller.ControllerOld.ObserverTask;
-import org.flowforwarding.warp.controller.ControllerOld.Occured;
-import org.flowforwarding.warp.controller.ControllerOld.State;
-import org.flowforwarding.warp.controller.restapi.RestApiServer;
-import org.flowforwarding.warp.controller.restapi.RestApiTask;
 import org.flowforwarding.warp.protocol.ofmessages.IOFMessageProvider;
 import org.flowforwarding.warp.protocol.ofmessages.IOFMessageProviderFactory;
 import org.flowforwarding.warp.protocol.ofmessages.OFMessageProviderFactoryAvroProtocol;
 import org.jboss.netty.bootstrap.ServerBootstrap;
 import org.jboss.netty.buffer.BigEndianHeapChannelBuffer;
 import org.jboss.netty.buffer.ChannelBuffer;
-import org.jboss.netty.buffer.ChannelBuffers;
 import org.jboss.netty.channel.Channel;
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.ChannelPipeline;
@@ -67,7 +60,7 @@ public class ControllerOld {
    //protected Map<String, Map<String, OFFlowMod>> entries;
    protected Map<String, Object> entries;
    protected ForkJoinPool pool;
-   protected ObserverTask<Integer, RestApiTask> observerTask;
+   protected ObserverTask<Integer, org.flowforwarding.warp.jcontroller.restapi.RestApiTask> observerTask;
    protected ChannelHandler handlerTask;
    protected Channel channel;
    
@@ -131,7 +124,7 @@ public class ControllerOld {
             if (Occured.getInstance().isOccured()) {
                System.out.println("Outgoing flow_mod");
   //             System.out.println(entries.toString());
-               entries = ((RestApiTask)this.event).join();
+               entries = ((org.flowforwarding.warp.jcontroller.restapi.RestApiTask)this.event).join();
   //             System.out.println(entries.toString());
                handlerTask.write();
                Occured.getInstance().switchOff();
@@ -162,7 +155,7 @@ public class ControllerOld {
       //this.entries = new ConcurrentHashMap<String, Map<String, OFFlowMod>>();
       this.entries = new ConcurrentHashMap<String, Object>();
       this.pool = new ForkJoinPool();
-      this.observerTask = new ObserverTask<Integer, RestApiTask>();
+      this.observerTask = new ObserverTask<Integer, org.flowforwarding.warp.jcontroller.restapi.RestApiTask>();
       
       Timer timer = new HashedWheelTimer();
       
@@ -184,7 +177,7 @@ public class ControllerOld {
       
       bootstrap.bind(new InetSocketAddress(6633));
       
-      RestApiServer restApi =  new RestApiServer(pool, observerTask);
+      org.flowforwarding.warp.jcontroller.restapi.RestApiServer restApi =  new org.flowforwarding.warp.jcontroller.restapi.RestApiServer(pool, observerTask);
       restApi.run();
    }
    

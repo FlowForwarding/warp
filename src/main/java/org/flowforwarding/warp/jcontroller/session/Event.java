@@ -3,7 +3,7 @@
  * All Rights Reserved.  Use is subject to license terms.
  */
 
-package org.flowforwarding.warp.controller.session;
+package org.flowforwarding.warp.jcontroller.session;
 
 import org.flowforwarding.warp.ofswitch.SwitchState.SwitchRef;
 

@@ -2,7 +2,7 @@
  * © 2013 FlowForwarding.Org
  * All Rights Reserved.  Use is subject to license terms.
  */
-package org.flowforwarding.warp.controller.restapi;
+package org.flowforwarding.warp.jcontroller.restapi;
 
 import java.io.IOException;
 import java.util.HashMap;
