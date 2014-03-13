@@ -25,7 +25,16 @@ public class OFMessageProviderFactoryAvroProtocol implements IOFMessageProviderF
       return new OFMessageProvider13AvroProtocol();
    }
 
-  /**
+    @Override
+    public IOFMessageProvider getMessageProvider(Short version) {
+        switch (version) {
+            case 1: return new OFMessageProvider10AvroProtocol();
+            case 4: return new OFMessageProvider13AvroProtocol();
+            default: return null;
+        }
+    }
+
+    /**
    * @author Infoblox Inc.
    * @doc.desc Gets the Message Provider based on Byte array containing Hello message
    * @param  version Byte array with Hello message 
@@ -33,21 +42,8 @@ public class OFMessageProviderFactoryAvroProtocol implements IOFMessageProviderF
    */
    @Override
    public IOFMessageProvider getMessageProvider(byte[] hello) {
-      IOFMessageProvider provider;     
-      byte probVersion = hello[0];
-      
-      switch (probVersion) {
-      case 1:
-         provider = new OFMessageProvider10AvroProtocol(); 
-         break;
-      case 4:
-         provider = new OFMessageProvider13AvroProtocol();
-         break;
-      default:
-         provider = null;
-      }
-   // TODO Improvs: Getting provider, let's check whether this is a Hello message?
-      return provider; 
+       // TODO Improvs: Getting provider, let's check whether this is a Hello message?
+       return getMessageProvider(new Short(hello[0]));
    }
 
 }

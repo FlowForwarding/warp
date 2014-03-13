@@ -7,7 +7,8 @@ package org.flowforwarding.warp.protocol.ofmessages;
 public interface IOFMessageProviderFactory {
    
    public IOFMessageProvider getMessageProvider (String version);
-   
-   public IOFMessageProvider getMessageProvider (byte [] hello);
 
+   public IOFMessageProvider getMessageProvider (Short version);
+
+   public IOFMessageProvider getMessageProvider (byte [] hello);
 }

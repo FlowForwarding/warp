@@ -4,8 +4,8 @@
  */
 package org.flowforwarding.warp.demo;
 
-import org.flowforwarding.warp.controller.Controller;
-import org.flowforwarding.warp.controller.Controller.ControllerRef;
+import org.flowforwarding.warp.jcontroller.Controller;
+import org.flowforwarding.warp.jcontroller.Controller.ControllerRef;
 
 public class Launcher {
 

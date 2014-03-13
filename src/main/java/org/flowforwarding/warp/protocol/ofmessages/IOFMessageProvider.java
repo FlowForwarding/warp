@@ -7,6 +7,7 @@ import java.util.Map;
 import org.apache.avro.Schema;
 import org.flowforwarding.warp.protocol.ofmessages.OFMessageError.OFMessageErrorRef;
 import org.flowforwarding.warp.protocol.ofmessages.OFMessageFlowMod.OFMessageFlowModRef;
+import org.flowforwarding.warp.protocol.ofmessages.OFMessageGroupMod.OFMessageGroupModRef;
 import org.flowforwarding.warp.protocol.ofmessages.OFMessageHello.OFMessageHelloRef;
 import org.flowforwarding.warp.protocol.ofmessages.OFMessagePacketIn.OFMessagePacketInRef;
 import org.flowforwarding.warp.protocol.ofmessages.OFMessageSwitchConfig.OFMessageSwitchConfigRef;
@@ -127,6 +128,11 @@ public interface IOFMessageProvider {
     * @return a byte array contains an OpenFlow Flow Modification message
     */
    public byte[] encodeFlowMod (OFMessageFlowModRef fmRef);
+
+    /**
+     * @return a byte array contains an OpenFlow Group Modification message
+     */
+   public byte[] encodeGroupMod (OFMessageGroupModRef fmRef);
    
    /**
     * @return a Reference to parsed OpenFlow Switch Configuration message
