@@ -36,8 +36,8 @@ abstract class OFSessionHandler[T <: OFMessage](driverFactory: MessageDriverFact
   def handshaked(versionCode: Short, dpid: Long) { }
   def connected(versionCode: Short) { }
 
-  protected def getHandshakeMessage(msg: T): Seq[T]
-  protected def onReceivedMessage(dpid: Long, msg: T): Seq[T]
+  protected def getHandshakeMessage(versionCode: Short, msg: T): Seq[T]
+  protected def onReceivedMessage(versionCode: Short, dpid: Long, msg: T): Seq[T]
 
   def sequence[A](s: Seq[Try[A]]): Try[Seq[A]] = Try(s map { _.get })
 
@@ -54,7 +54,9 @@ abstract class OFSessionHandler[T <: OFMessage](driverFactory: MessageDriverFact
       val cRef = sender
       val hRef = self
       driverFactory.get(data) flatMap {
-        d => handleIncoming(d, data, getHandshakeMessage).toOption.map((d, _))
+        d =>
+          val processHandshaked = (getHandshakeMessage _).curried(version)
+          handleIncoming(d, data, processHandshaked).toOption.map((d, _))
       } match {
         case Some((d, hs)) =>
           sender ? AcceptVersion(hRef, d.versionCode, hs) map { reply =>
@@ -69,7 +71,7 @@ abstract class OFSessionHandler[T <: OFMessage](driverFactory: MessageDriverFact
       }
     case ReceivedMessage(sw, data) =>
       val info = swInfo(sw)
-      val processReceived = (onReceivedMessage _).curried(info.dpid)
+      val processReceived = (onReceivedMessage _).curried(info.driver.versionCode)(info.dpid)
       handleIncoming(info.driver, data, processReceived) foreach { info.tcpChannel ! SendToSwitch(_) }
   }
 }
