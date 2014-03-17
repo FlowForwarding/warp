@@ -64,23 +64,24 @@ case class IOFMessageProviderFactoryAdapter(factory: IOFMessageProviderFactory) 
 
 abstract class OFJDriverSessionHandler(pFactory: IOFMessageProviderFactory) extends OFSessionHandler(IOFMessageProviderFactoryAdapter(pFactory)){
 
-  var provider: IOFMessageProvider = null
+  private val providers = scala.collection.mutable.Map[Short, IOFMessageProvider]()
 
   override def connected(versionCode: Short) {
-    provider = pFactory.getMessageProvider(versionCode)
+    if(!providers.contains(versionCode))
+      providers(versionCode) = pFactory.getMessageProvider(versionCode)
   }
 
   implicit def refsToMessages(refs: Seq[OFMessageRef[_]]) = refs map JDriverMessage.apply
 
-  protected def getHandshakeMessage(msg: JDriverMessage): Seq[JDriverMessage] = {
+  protected def getHandshakeMessage(version: Short, msg: JDriverMessage): Seq[JDriverMessage] = {
     refsToMessages(Seq(OFMessageHelloRef.create, OFMessageSwitchFeaturesRequestRef.create))
   }
 
-  protected def onReceivedMessage(dpid: Long, msg: JDriverMessage): Seq[JDriverMessage] = {
+  protected def onReceivedMessage(version: Short, dpid: Long, msg: JDriverMessage): Seq[JDriverMessage] = {
     msg.ref match{
-      case p: OFMessagePacketInRef     => packetIn(provider, dpid, p)
-      case c: OFMessageSwitchConfigRef => switchConfig(provider, dpid, c)
-      case e: OFMessageErrorRef        => error(provider, dpid, e)
+      case p: OFMessagePacketInRef     => packetIn(providers(version), dpid, p)
+      case c: OFMessageSwitchConfigRef => switchConfig(providers(version), dpid, c)
+      case e: OFMessageErrorRef        => error(providers(version), dpid, e)
     }
   }
 
