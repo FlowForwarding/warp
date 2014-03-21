@@ -185,7 +185,7 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
    public void init () {
       try {
          //protocol = org.apache.avro.Protocol.parse(new File(schemaSrc));
-         System.out.println(getClass().getClassLoader().getResourceAsStream(schemaSrc).toString());
+//         System.out.println(getClass().getClassLoader().getResourceAsStream(schemaSrc).toString());
 //         protocol = org.apache.avro.Protocol.parse(getClass().getClassLoader().getResourceAsStream(schemaSrc));
          InputStream str = Thread.currentThread().getContextClassLoader().getResourceAsStream(schemaSrc);
 /*         BufferedReader br = new BufferedReader(new InputStreamReader(str));
