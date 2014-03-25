@@ -1704,15 +1704,18 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
    
    private GenericRecord decode_set_queue (String subaction) {
       
-      Matcher n;      
+      Matcher n;
       
       Schema ofpActionSchema = protocol.getType("of13.ofp_action");
-      GenericRecord ofpActionBaseRecord = new GenericData.Record(ofpActionSchema);
-        
-    
+      GenericRecord ofpActionRecord = new GenericData.Record(ofpActionSchema);
+      
+      Schema ofpActionSetQueueHeaderSchema = protocol.getType("of13.action_set_queue_header");
+
+      GenericRecordBuilder headerBuilder = new GenericRecordBuilder(ofpActionSetQueueHeaderSchema);
+      GenericRecord actionSetQueueHeaderRecord = headerBuilder.build();
+      
       Schema ofpActionSetQueueSchema = protocol.getType("of13.ofp_action_set_queue");
-      GenericRecordBuilder actionBuilder = new GenericRecordBuilder(ofpActionSetQueueSchema);
-      GenericRecord ofpActionOutRecord = actionBuilder.build();
+      GenericRecord ofpActionSetQueueRecord = new GenericData.Record(ofpActionSetQueueSchema);
       
       n = Pattern.compile("set_queue=(?:((?:0x)?\\d+))").matcher(subaction);
       
@@ -1722,7 +1725,7 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
          if (n.group(1) != null) {
              try {
                  queue = getInt(n.group(1));
-                 ofpActionOutRecord.put("queue_id", getUint32Fixed(queue));
+                 ofpActionSetQueueRecord.put("queue_id", getUint32Fixed(queue));
              }
              catch (NumberFormatException e) {
                  return null;
@@ -1730,12 +1733,15 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
          }
       } else {
          return null;
-      }
-      ofpActionBaseRecord.put("action", ofpActionOutRecord);
+      }   
       
-      return ofpActionBaseRecord;
+      ofpActionSetQueueRecord.put("header", actionSetQueueHeaderRecord);
+      ofpActionRecord.put("action", ofpActionSetQueueRecord);
+
+      return ofpActionRecord;
+
    }
-   
+      
    private GenericRecord decode_set_field_eth_dst(String subaction) {
 
       Matcher n;      

@@ -836,7 +836,7 @@
     "type":"record",
     "fields":[
       {"name":"match", "type":["oxm_tlv_ingress_port", 
-				                "oxm_tlv_in_phy_port",
+                        "oxm_tlv_in_phy_port",
                                  "oxm_tlv_metadata",  
                                  "oxm_tlv_eth_dst", 
                                  "oxm_tlv_eth_src",
@@ -1042,7 +1042,7 @@
    {"name":"ofp_action",
     "type":"record",
     "fields":[
-      {"name":"action", "type":["ofp_action_output", "ofp_action_set_field", "ofp_action_pop_vlan", "ofp_action_push_mpls"]}
+      {"name":"action", "type":["ofp_action_output", "ofp_action_set_field", "ofp_action_pop_vlan", "ofp_action_push_mpls", "ofp_action_set_queue"]}
     ]
    },  
    
@@ -1308,11 +1308,6 @@
      {"name":"OFPGC_MODIFY", "default":[0,1]},
      {"name":"OFPGC_DELETE", "default":[0,2]}
     ]
-   },
-
-   {"name":"group_mod_command",
-    "type":"enum",
-    "symbols":["OFPGC_ADD", "OFPGC_MODIFY"]
    },
 
    {"name":"ofp_group_type",
