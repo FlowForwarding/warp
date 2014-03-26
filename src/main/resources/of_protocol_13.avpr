@@ -836,7 +836,7 @@
     "type":"record",
     "fields":[
       {"name":"match", "type":["oxm_tlv_ingress_port", 
-				                "oxm_tlv_in_phy_port",
+                        "oxm_tlv_in_phy_port",
                                  "oxm_tlv_metadata",  
                                  "oxm_tlv_eth_dst", 
                                  "oxm_tlv_eth_src",

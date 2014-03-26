@@ -32,7 +32,7 @@ $ curl -d '{"switch":"00:0C:29:C9:8E:AE:00:00", "name":"flow-mod-1", "priority":
 
 $ curl -d '{"switch":"00:0C:29:AC:93:43:00:00", "name":"flow-mod-1", "priority":"32768", "ether-type":"0x0800", "active":"true"}' http://localhost:8080/ff/of/controller/restapi
 
-$ curl -d '{"switch":"00:0C:29:AC:93:43:00:00", "name":"flow-mod-1", "priority":"32768", "ether-type":"0x0800", "dst-ip":"10.10.10.10","active":"true"}' http://localhost:8080/ff/of/controller/restapi
+$ curl -d '{"switch":"00:0C:29:AC:93:43:00:00", "name":"flow-mod-1", "priority":"32768", "ether-type":"0x0800", "protocol": "6", "dst-ip":"10.10.10.10","active":"true"}' http://localhost:8080/ff/of/controller/restapi
 
 $ curl -d '{"switch":"00:90:FB:37:71:6E:00:00", "name":"flow-mod-1", "priority":"10", "ingress-port":"5","active":"true", "write-actions":"output=6"}' http://localhost:8080/ff/of/controller/restapi
 
