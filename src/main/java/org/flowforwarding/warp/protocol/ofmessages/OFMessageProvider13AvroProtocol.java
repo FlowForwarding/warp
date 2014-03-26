@@ -31,6 +31,8 @@ import org.apache.avro.generic.GenericData;
 import org.apache.avro.Protocol;
 import org.flowforwarding.warp.protocol.ofitems.IOFItem;
 import org.flowforwarding.warp.protocol.ofitems.IOFItemBuilder;
+import org.flowforwarding.warp.protocol.ofitems.OFItemEnum;
+import org.flowforwarding.warp.protocol.ofitems.OFItemEnumBuilder;
 import org.flowforwarding.warp.protocol.ofitems.OFItemFixedBuilder;
 import org.flowforwarding.warp.protocol.ofitems.OFItemRecordBuilder;
 import org.flowforwarding.warp.protocol.ofmessages.OFMessageError.OFMessageErrorRef;
@@ -44,6 +46,7 @@ import org.flowforwarding.warp.protocol.ofstructures.OFStructureBuilder13;
 import org.flowforwarding.warp.protocol.ofstructures.OFStructureInstruction;
 import org.flowforwarding.warp.protocol.ofstructures.OFStructureInstruction.OFStructureInstructionRef;
 import org.flowforwarding.warp.protocol.ofstructures.Tuple;
+import org.apache.avro.generic.GenericData.Fixed;
 import org.apache.avro.generic.GenericDatumReader;
 import org.apache.avro.generic.GenericDatumWriter;
 import org.apache.avro.generic.GenericFixed;
@@ -221,6 +224,8 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
                builders.put(schema.getName(), new OFItemFixedBuilder(schema.getName(), schema));
             } else if (schema.getType().getName().equalsIgnoreCase("record")) {
                builders.put(schema.getName(), makeRecordBuilder(schema.getName(), schema));
+            } else if (schema.getType().getName().equalsIgnoreCase("enum")) {
+               builders.put(schema.getName(), new OFItemEnumBuilder(schema.getName(), schema));
             }
          }
          
@@ -1704,15 +1709,18 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
    
    private GenericRecord decode_set_queue (String subaction) {
       
-      Matcher n;      
+      Matcher n;
       
       Schema ofpActionSchema = protocol.getType("of13.ofp_action");
-      GenericRecord ofpActionBaseRecord = new GenericData.Record(ofpActionSchema);
-        
-    
+      GenericRecord ofpActionRecord = new GenericData.Record(ofpActionSchema);
+      
+      Schema ofpActionSetQueueHeaderSchema = protocol.getType("of13.action_set_queue_header");
+
+      GenericRecordBuilder headerBuilder = new GenericRecordBuilder(ofpActionSetQueueHeaderSchema);
+      GenericRecord actionSetQueueHeaderRecord = headerBuilder.build();
+      
       Schema ofpActionSetQueueSchema = protocol.getType("of13.ofp_action_set_queue");
-      GenericRecordBuilder actionBuilder = new GenericRecordBuilder(ofpActionSetQueueSchema);
-      GenericRecord ofpActionOutRecord = actionBuilder.build();
+      GenericRecord ofpActionSetQueueRecord = new GenericData.Record(ofpActionSetQueueSchema);
       
       n = Pattern.compile("set_queue=(?:((?:0x)?\\d+))").matcher(subaction);
       
@@ -1722,7 +1730,7 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
          if (n.group(1) != null) {
              try {
                  queue = getInt(n.group(1));
-                 ofpActionOutRecord.put("queue_id", getUint32Fixed(queue));
+                 ofpActionSetQueueRecord.put("queue_id", getUint32Fixed(queue));
              }
              catch (NumberFormatException e) {
                  return null;
@@ -1730,10 +1738,13 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
          }
       } else {
          return null;
-      }
-      ofpActionBaseRecord.put("action", ofpActionOutRecord);
+      }   
       
-      return ofpActionBaseRecord;
+      ofpActionSetQueueRecord.put("header", actionSetQueueHeaderRecord);
+      ofpActionRecord.put("action", ofpActionSetQueueRecord);
+
+      return ofpActionRecord;
+
    }
    
    private GenericRecord decode_set_field_eth_dst(String subaction) {
@@ -2570,13 +2581,14 @@ public Short getVersion() {
  */
 @Override
 public boolean isConfig(byte[] in) {
-   GenericRecord record = getSwitchConfigRecord(in);
-   GenericRecord header = new GenericData.Record(switchConfigHeaderSchema);
+   GenericRecord header = getRecord(this.ofpHeaderSchema, in);
+   Fixed msgType = (Fixed)header.get("type");
    
-   header = (GenericRecord) record.get("header");
-   // TODO Improvs: We plan to get all types from Avro protocol type... soon... so let it be now just 8
-   Byte type = getByte((GenericData.Fixed)header.get("type")); 
-   if (type.byteValue() == 8 )  // OFPT_GET_CONFIG_REPLY
+   // TODO Improv: get rid of this Type Cast: (OFItemEnumBuilder) builders
+   OFItemEnumBuilder builder = (OFItemEnumBuilder) builders.get("ofp_type");
+   OFItemEnum enumItem = (OFItemEnum) builder.build(msgType);
+   
+   if (enumItem.getName().equalsIgnoreCase("OFPT_GET_CONFIG_REPLY"))  // OFPT_GET_CONFIG_REPLY
       return true;
    else 
       return false;
@@ -2647,11 +2659,14 @@ public OFMessagePacketInRef parsePacketIn(byte[] in) {
  */
 @Override
 public boolean isError(byte[] in) {
-   GenericRecord header = getRecord(errorMessageHeaderSchema, in);
-
-   // TODO Improvs: We plan to get all types from Avro protocol type... soon... so let it be now just 1
-   Byte type = getByte((GenericData.Fixed)header.get("type")); 
-   if (type.byteValue() == 1 )  // ERROR
+   GenericRecord header = getRecord(this.ofpHeaderSchema, in);
+   Fixed msgType = (Fixed)header.get("type");
+   
+   // TODO Improv: get rid of this Type Cast: (OFItemEnumBuilder) builders
+   OFItemEnumBuilder builder = (OFItemEnumBuilder) builders.get("ofp_type");
+   OFItemEnum enumItem = (OFItemEnum) builder.build(msgType);
+   
+   if (enumItem.getName().equalsIgnoreCase("OFPT_ERROR"))
       return true;
    else 
       return false;
@@ -2659,25 +2674,31 @@ public boolean isError(byte[] in) {
 
    @Override
    public boolean isSwitchFeatures(byte[] in) {
-      GenericRecord header = getRecord(switchFeaturesHeaderSchema, in);
+      GenericRecord header = getRecord(this.ofpHeaderSchema, in);
+      Fixed msgType = (Fixed)header.get("type");
       
-      // TODO Improvs: We plan to get all types from Avro protocol type... soon... so let it be now just 6
-      Byte type = getByte((GenericData.Fixed)header.get("type"));
-      if (type.byteValue() == 6 )  // FEATURES_REPLY
+      // TODO Improv: get rid of this Type Cast: (OFItemEnumBuilder) builders
+      OFItemEnumBuilder builder = (OFItemEnumBuilder) builders.get("ofp_type");
+      OFItemEnum enumItem = (OFItemEnum) builder.build(msgType);
+      
+      if (enumItem.getName().equalsIgnoreCase("OFPT_FEATURES_REPLY"))
          return true;
-      else
-         return false;
+      else 
+         return false;   
    }
    
    @Override
    public boolean isEchoRequest(byte[] in) {
-      GenericRecord header = getRecord(echoRequestHeaderSchema, in);
+      GenericRecord header = getRecord(this.ofpHeaderSchema, in);
+      Fixed msgType = (Fixed)header.get("type");
       
-      // TODO Improvs: We plan to get all types from Avro protocol type... soon... so let it be now just 6
-      Byte type = getByte((GenericData.Fixed)header.get("type"));
-      if (type.byteValue() == 2 )  // ECHO_REQUEST
+      // TODO Improv: get rid of this Type Cast: (OFItemEnumBuilder) builders
+      OFItemEnumBuilder builder = (OFItemEnumBuilder) builders.get("ofp_type");
+      OFItemEnum enumItem = (OFItemEnum) builder.build(msgType);
+      
+      if (enumItem.getName().equalsIgnoreCase("OFPT_ECHO_REQUEST"))
          return true;
-      else
+      else 
          return false;
    }
    

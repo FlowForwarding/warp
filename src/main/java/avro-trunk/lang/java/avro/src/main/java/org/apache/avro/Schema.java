@@ -250,7 +250,11 @@ public abstract class Schema extends JsonProperties {
   public JsonNode getEnumItem(String symbol) {
     throw new AvroRuntimeException("Not an enum: "+this);
   }
-
+  
+  public Schema getEnumItemsSchema() {
+     throw new AvroRuntimeException("Not an enum: "+this);
+   }
+  
   /** If this is a record, enum or fixed, returns its name, otherwise the name
    * of the primitive type. */
   public String getName() { return type.name; }
