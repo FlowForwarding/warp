@@ -131,8 +131,6 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
    private GenericRecord delayedUdpSrc = null;
    private GenericRecord delayedUdpDst = null;
 
-   
-
    private boolean isEtherType = false;
    private boolean isIpProto = false;
    
@@ -187,32 +185,8 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
    
    public void init () {
       try {
-         //protocol = org.apache.avro.Protocol.parse(new File(schemaSrc));
-//         System.out.println(getClass().getClassLoader().getResourceAsStream(schemaSrc).toString());
-//         protocol = org.apache.avro.Protocol.parse(getClass().getClassLoader().getResourceAsStream(schemaSrc));
          InputStream str = Thread.currentThread().getContextClassLoader().getResourceAsStream(schemaSrc);
-/*         BufferedReader br = new BufferedReader(new InputStreamReader(str));
-         String line;
-         while ((line = br.readLine()) != null){
-            System.out.println(line);
-         }
-         br.close();*/
-         
-//         str = Thread.currentThread().getContextClassLoader().getResourceAsStream(schemaSrc);
-         /*System.out.println(Protocol.VERSION);
-         try{
-            Class.forName("org.apache.avro.Protocol");
-         } catch(ClassNotFoundException cnfe){
-            cnfe.printStackTrace();
-         }
-         Method [] mtds  = Protocol.class.getMethods();
-         for (Method m : mtds){
-            System.out.print(m.getName() + "\t");
-            for (Type t : m.getGenericParameterTypes()){
-               System.out.print(t.getClass().getCanonicalName() + "\t");
-            }
-            System.out.println();
-         }*/
+
          protocol = Protocol.parse(str);
          builder = new OFMessageBuilder13();
          structureBuilder = new OFStructureBuilder13();
@@ -997,6 +971,7 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
        */
       GenericRecord ofpFlowModRecord = new GenericData.Record(ofpFlowModSchema);
       boolean isDelete = false;
+      reset();
       
       /*
        * Create FlowMod Body
@@ -1188,7 +1163,7 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
                matches.add(this.delayedIpv6Dst);
          if (this.delayedIpProto != null)
                matches.add(this.delayedIpProto);
-            
+
          this.isEtherType = true;
 
         /*
@@ -1336,7 +1311,7 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
             if (this.delayedUdpSrc != null)
                matches.add(this.delayedUdpSrc);
             if (this.delayedUdpDst != null)
-               matches.add(this.delayedUdpDst);
+               matches.add(this.delayedUdpDst); 
 /*            if (this.delayedIpv6Src != null)
                matches.add(this.delayedIpv6Src);
             if (this.delayedIpv6Dst != null)
@@ -2558,6 +2533,21 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
      }
      
      return (short)buf.size();
+  }
+  
+  private void reset () {
+     delayedIpv4Src = null;
+     delayedIpv4Dst = null;
+     delayedIpv6Src = null;
+     delayedIpv6Dst = null;
+     delayedIpProto = null;
+     delayedTcpSrc = null;
+     delayedTcpDst = null;
+     delayedUdpSrc = null;
+     delayedUdpDst = null;
+     isEtherType = false;
+     isIpProto = false;
+     isVlanVid = false;
   }
 
 /* (non-Javadoc)
