@@ -121,6 +121,12 @@ public class ControllerOld {
       @Override
       protected V compute() {
          while (! this.exitState) {
+            try {
+               Thread.sleep(500);
+            } catch (InterruptedException e) {
+               // TODO Auto-generated catch block
+               e.printStackTrace();
+            }
             if (Occured.getInstance().isOccured()) {
                System.out.println("Outgoing flow_mod");
   //             System.out.println(entries.toString());
