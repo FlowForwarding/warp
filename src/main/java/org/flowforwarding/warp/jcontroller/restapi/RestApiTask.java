@@ -19,7 +19,7 @@ import org.codehaus.jackson.map.MappingJsonFactory;
  * @author Infoblox Inc.
  *
  */
-public class RestApiTask extends RecursiveTask <Map<String, Object>>
+public class RestApiTask extends RecursiveTask <Map<String, Map<String, Object>>>
 {
    
    /**
@@ -29,16 +29,16 @@ public class RestApiTask extends RecursiveTask <Map<String, Object>>
 
    
    public RestApiTask(String jsonRequest,
-          Map<String, Object> entries) {
-           // Map<String, Map<String, OFFlowMod>> entries) {
+          //Map<String, Object> entries) {
+           Map<String, Map<String, Object>> entries) {
       super();
       this.jsonRequest = jsonRequest;
       this.entries = entries;
    }
 
    private String jsonRequest;
-  // private Map<String, Map<String, OFFlowMod>> entries;
-   private Map<String, Object> entries;
+   private Map<String, Map<String, Object>> entries;
+   //private Map<String, Object> entries;
    
    public static final String NAME = "name";
    public static final String SWITCH = "switch_id";
@@ -104,18 +104,18 @@ public class RestApiTask extends RecursiveTask <Map<String, Object>>
    public static final String CLEAR_ACTIONS = "clear_actions";
    
    @Override
-   protected Map<String, Object> compute() {
+   protected Map<String, Map<String, Object>> compute() {
    
-      Map<String, Object> values = null;
+      Map<String, Map<String, Object>> values = new HashMap<> ();
       
       try {
          
          if (this.entries.containsKey("DELETE")) {
-            values = jsonToStorageEntry(jsonRequest, true); 
+            values.put(jsonRequest, jsonToStorageEntry(jsonRequest, true)); 
             this.entries.remove("DELETE");
          }
          else {
-            values = jsonToStorageEntry(jsonRequest, false);
+            values.put(jsonRequest, jsonToStorageEntry(jsonRequest, false));
          }
 
       } catch (IOException e) {

@@ -47,22 +47,25 @@ public class RootRestApiResource  extends ServerResource {
    
    protected void processRequest (String jsonRequest, boolean isDelete) {
       
-      //Map<String, Map<String, OFFlowMod>> entries = (Map<String, Map<String, OFFlowMod>>)getContext().getAttributes().get("entries");
-
-      //TODO REMOVE.
-      Map<String, Object> entries = (Map<String, Object>)getContext().getAttributes().get("entries");
+      Map<String, Map<String, Object>> entries = (Map<String, Map<String, Object>>)getContext().getAttributes().get("entries");
+      //Map<String, Object> entries = (Map<String, Object>)getContext().getAttributes().get("entries");
       ForkJoinPool pool = (ForkJoinPool) getContext().getAttributes().get("pool");
       ObserverTask<Integer, RestApiTask> observerTask = (ObserverTask<Integer, RestApiTask>) getContext().getAttributes().get("observerTask");
       ControllerRef controllerRef =  (ControllerRef)getContext().getAttributes().get("controllerRef");
-      ForkJoinTask<Map<String, Object>> task2; 
+      ForkJoinTask<Map<String, Map<String, Object>>> task2; 
       
 
       if (entries == null)
-         entries = new HashMap<String, Object>();
+         entries = new HashMap<>();
+         
       
-      if (isDelete) entries.put("DELETE", "YES");
+      if (isDelete) {
+         Map <String, Object> delete = new HashMap();
+         delete.put("DELETE", "YES");
+         entries.put(jsonRequest, delete);
+      }
       
-      RecursiveTask <Map<String, Object>> task = new RestApiTask(jsonRequest, entries);
+      RecursiveTask <Map<String, Map<String, Object>>> task = new RestApiTask(jsonRequest, entries);
       if (observerTask !=null)
          observerTask.update((RestApiTask) task);
       

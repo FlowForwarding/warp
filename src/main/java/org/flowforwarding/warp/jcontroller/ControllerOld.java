@@ -57,8 +57,8 @@ public class ControllerOld {
    
    private State state = State.STARTED;
    
-   //protected Map<String, Map<String, OFFlowMod>> entries;
-   protected Map<String, Object> entries;
+   protected Map<String, Map<String, Object>> entries;
+   //protected Map<String, Object> entries;
    protected ForkJoinPool pool;
    protected ObserverTask<Integer, org.flowforwarding.warp.jcontroller.restapi.RestApiTask> observerTask;
    protected ChannelHandler handlerTask;
@@ -158,8 +158,8 @@ public class ControllerOld {
       
       provider.init();
       
-      //this.entries = new ConcurrentHashMap<String, Map<String, OFFlowMod>>();
-      this.entries = new ConcurrentHashMap<String, Object>();
+      this.entries = new ConcurrentHashMap<String, Map<String, Object>>();
+      //this.entries = new ConcurrentHashMap<String, Object>();
       this.pool = new ForkJoinPool();
       this.observerTask = new ObserverTask<Integer, org.flowforwarding.warp.jcontroller.restapi.RestApiTask>();
       
@@ -289,10 +289,11 @@ public class ControllerOld {
       public void write() {
          //System.out.println(">>>> write: entering");
          Set<String> dpids = entries.keySet();
-         Iterator<String> it = dpids.iterator();
          
-         BigEndianHeapChannelBuffer b = new BigEndianHeapChannelBuffer(provider.getFlowMod(entries, new ByteArrayOutputStream()).toByteArray());
-         channel.write(b);
+         for (String dpid : dpids) {
+            BigEndianHeapChannelBuffer b = new BigEndianHeapChannelBuffer(provider.getFlowMod(entries.get(dpid), new ByteArrayOutputStream()).toByteArray());
+            channel.write(b);
+         }
         
 //         while (it.hasNext()) {
            // System.out.println(">>>> write: 1");
