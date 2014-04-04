@@ -62,7 +62,7 @@ import org.apache.avro.specific.SpecificFixed;
 import org.flowforwarding.warp.util.U16;
 import org.flowforwarding.warp.util.U8;
 
-public class OFMessageProvider13AvroProtocol implements IOFMessageProvider{
+public class OFMessageProvider13AvroProtocol implements IOFMessageProvider {
    
    private final String schemaSrc = "of_protocol_13.avpr";
    

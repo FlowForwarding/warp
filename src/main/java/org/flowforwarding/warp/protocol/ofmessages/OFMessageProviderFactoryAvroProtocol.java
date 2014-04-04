@@ -45,5 +45,10 @@ public class OFMessageProviderFactoryAvroProtocol implements IOFMessageProviderF
        // TODO Improvs: Getting provider, let's check whether this is a Hello message?
        return getMessageProvider(new Short(hello[0]));
    }
+   
+   @Override
+   public IOFMessageProvider getMessageProvider() {
+      return new OFMessageProviderAvroProtocol();
+  }
 
 }

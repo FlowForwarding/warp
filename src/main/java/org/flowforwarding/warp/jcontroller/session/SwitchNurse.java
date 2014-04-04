@@ -43,6 +43,7 @@ public class SwitchNurse extends UntypedActor {
    
    IOFMessageProviderFactory factory = new OFMessageProviderFactoryAvroProtocol();
    IOFMessageProvider provider = null;
+   IOFMessageProvider providerNew = null;
    
    @Override
    public void preStart() throws Exception {
@@ -58,9 +59,12 @@ public class SwitchNurse extends UntypedActor {
          case STARTED:
             ByteString in = ((Received) msg).data();
             provider = factory.getMessageProvider(in.toArray());
-            if (provider != null) {
+            providerNew = factory.getMessageProvider();
+            
+            if ((provider != null) && (providerNew != null)) {
                
                provider.init();
+               providerNew.init();
                provider.parseMessages(in.toArray());
                
                swRef.setVersion(provider.getVersion());
