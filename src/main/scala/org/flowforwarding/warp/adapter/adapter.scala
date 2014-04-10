@@ -1,41 +1,65 @@
 package org.flowforwarding.warp.protocol.adapter
 
 import scala.util.Try
-
-import org.flowforwarding.warp.controller.session.{OFSessionHandler, MessageDriverFactory, OFMessage, MessageDriver}
-
+import org.flowforwarding.warp.controller.session._
+import org.flowforwarding.warp.controller.api.dynamic._
 import org.flowforwarding.warp.protocol.ofmessages.{OFMessageRef, IOFMessageProviderFactory, IOFMessageProvider}
-import org.flowforwarding.warp.protocol.ofmessages.OFMessageHello.OFMessageHelloRef
-import org.flowforwarding.warp.protocol.ofmessages.OFMessageSwitchConfigRequest.OFMessageSwitchConfigRequestRef
-import org.flowforwarding.warp.protocol.ofmessages.OFMessageSwitchFeaturesRequest.OFMessageSwitchFeaturesRequestRef
-import org.flowforwarding.warp.protocol.ofmessages.OFMessageEchoReply.OFMessageEchoReplyRef
-import org.flowforwarding.warp.protocol.ofmessages.OFMessageEchoRequest.OFMessageEchoRequestRef
 import org.flowforwarding.warp.protocol.ofmessages.OFMessageFlowMod.OFMessageFlowModRef
 import org.flowforwarding.warp.protocol.ofmessages.OFMessageGroupMod.OFMessageGroupModRef
-import org.flowforwarding.warp.protocol.ofmessages.OFMessagePacketIn.OFMessagePacketInRef
-import org.flowforwarding.warp.protocol.ofmessages.OFMessageSwitchConfig.OFMessageSwitchConfigRef
-import org.flowforwarding.warp.protocol.ofmessages.OFMessageError.OFMessageErrorRef
+import org.flowforwarding.warp.protocol.ofmessages.OFMessageEchoRequest.OFMessageEchoRequestRef
+import org.flowforwarding.warp.protocol.ofmessages.OFMessageEchoReply.OFMessageEchoReplyRef
+import org.flowforwarding.warp.protocol.ofmessages.OFMessageSwitchFeaturesRequest.OFMessageSwitchFeaturesRequestRef
+import org.flowforwarding.warp.protocol.ofmessages.OFMessageSwitchConfigRequest.OFMessageSwitchConfigRequestRef
+import org.flowforwarding.warp.protocol.ofmessages.OFMessageHello.OFMessageHelloRef
 
 
-case class JDriverMessage(ref: OFMessageRef[_]) extends OFMessage
+case class JDriverMessage(ref: OFMessageRef[_]) extends DynamicStructure[JDriverMessage]{
+  def primitiveField(name: String): Long = ???
 
-case class IOFMessageProviderAdapter(provider: IOFMessageProvider) extends MessageDriver[JDriverMessage]{
+  def structureField(name: String): JDriverMessage = ???
+
+  def primitivesSequence(name: String): Array[Long] = ???
+
+  def structuresSequence(name: String): Array[JDriverMessage] = ???
+
+  def isTypeOf(typeName: String): Boolean = ???
+}
+
+class JDriverMessageBuilder extends DynamicStructureBuilder[JDriverMessageBuilder, JDriverMessage]{
+  def setMember(memberName: String, value: Long): JDriverMessageBuilder = ???
+
+  def setMember[T](memberName: String, values: Array[T]): JDriverMessageBuilder = ???
+
+  def setMember(memberName: String, value: JDriverMessage): JDriverMessageBuilder = ???
+
+  def build: JDriverMessage = ???
+}
+
+case class IOFMessageProviderAdapter(provider: IOFMessageProvider) extends DynamicDriver[JDriverMessageBuilder, JDriverMessage]{
   provider.init()
+
+  def getBuilder(msgType: String): JDriverMessageBuilder = ???
+
+  def getHelloMessage(supportedVersions: Array[Short]): Array[Byte] = ???
+
+  def rejectVersionError(reason: String): Array[Byte] = ???
+
+  def getFeaturesRequest: Array[Byte] = ???
 
   def decodeMessage(in: Array[Byte]): Try[JDriverMessage] = Try {
     val res = if (provider.isHello(in))
-                provider.parseHelloMessage(in)
-              else if (provider.isPacketIn(in))
-                provider.parsePacketIn(in)
-              else if(provider.isConfig(in))
-                provider.parseSwitchConfig(in)
-              else if (provider.isError(in))
-                provider.parseError(in)
-              //else if (provider.isEchoRequest(in))
-              //  provider.parseEchoRequest(in)
-              //else if (provider.isSwitchFeatures(in))
-              //  provider.parseSwitchFeatures(in)
-              else throw new RuntimeException("Unrecognized message")
+      provider.parseHelloMessage(in)
+    else if (provider.isPacketIn(in))
+      provider.parsePacketIn(in)
+    else if(provider.isConfig(in))
+      provider.parseSwitchConfig(in)
+    else if (provider.isError(in))
+      provider.parseError(in)
+    //else if (provider.isEchoRequest(in))
+    //  provider.parseEchoRequest(in)
+    //else if (provider.isSwitchFeatures(in))
+    //  provider.parseSwitchFeatures(in)
+    else throw new RuntimeException("Unrecognized message")
     JDriverMessage(res)
   }
 
@@ -57,35 +81,9 @@ case class IOFMessageProviderAdapter(provider: IOFMessageProvider) extends Messa
   val versionCode: Short = provider.getVersion
 }
 
-case class IOFMessageProviderFactoryAdapter(factory: IOFMessageProviderFactory) extends MessageDriverFactory[JDriverMessage]{
-  def get(versionCode: Short): Option[MessageDriver[JDriverMessage]] =
-    Try(factory.getMessageProvider(versionCode)).map(IOFMessageProviderAdapter.apply).toOption
-}
+case class IOFMessageProviderFactoryAdapter(factory: IOFMessageProviderFactory) extends MessageDriverFactory[JDriverMessage, IOFMessageProviderAdapter]{
+  def get(versionCode: Short): IOFMessageProviderAdapter =
+    IOFMessageProviderAdapter(factory.getMessageProvider(versionCode))
 
-abstract class OFJDriverSessionHandler(pFactory: IOFMessageProviderFactory) extends OFSessionHandler(IOFMessageProviderFactoryAdapter(pFactory)){
-
-  private val providers = scala.collection.mutable.Map[Short, IOFMessageProvider]()
-
-  override def connected(versionCode: Short) {
-    if(!providers.contains(versionCode))
-      providers(versionCode) = pFactory.getMessageProvider(versionCode)
-  }
-
-  implicit def refsToMessages(refs: Seq[OFMessageRef[_]]) = refs map JDriverMessage.apply
-
-  protected def getHandshakeMessage(version: Short, msg: JDriverMessage): Seq[JDriverMessage] = {
-    refsToMessages(Seq(OFMessageHelloRef.create, OFMessageSwitchFeaturesRequestRef.create))
-  }
-
-  protected def onReceivedMessage(version: Short, dpid: Long, msg: JDriverMessage): Seq[JDriverMessage] = {
-    msg.ref match{
-      case p: OFMessagePacketInRef     => packetIn(providers(version), dpid, p)
-      case c: OFMessageSwitchConfigRef => switchConfig(providers(version), dpid, c)
-      case e: OFMessageErrorRef        => error(providers(version), dpid, e)
-    }
-  }
-
-  def packetIn(provider: IOFMessageProvider, dpid: Long, pIn: OFMessagePacketInRef): Seq[OFMessageRef[_]]
-  def switchConfig(provider: IOFMessageProvider, dpid: Long, config: OFMessageSwitchConfigRef): Seq[OFMessageRef[_]]
-  def error(provider: IOFMessageProvider, dpid: Long, error: OFMessageErrorRef): Seq[OFMessageRef[_]]
+  def supportedVersions: Array[Short] = Array(4.toShort) // ???
 }
