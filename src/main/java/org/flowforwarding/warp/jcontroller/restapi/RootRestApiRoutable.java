@@ -10,7 +10,7 @@ import java.util.Map;
 import java.util.concurrent.ForkJoinPool;
 
 import org.flowforwarding.warp.jcontroller.Controller.ControllerRef;
-import org.flowforwarding.warp.jcontroller.ControllerOld.ObserverTask;
+import org.flowforwarding.warp.jcontroller.JController.ObserverTask;
 import org.restlet.Context;
 import org.restlet.Restlet;
 import org.restlet.routing.Router;

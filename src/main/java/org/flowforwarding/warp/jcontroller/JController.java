@@ -29,17 +29,23 @@ import org.jboss.netty.channel.ChannelStateEvent;
 import org.jboss.netty.channel.Channels;
 import org.jboss.netty.channel.MessageEvent;
 import org.jboss.netty.channel.socket.nio.NioServerSocketChannelFactory;
+import org.jboss.netty.handler.logging.LoggingHandler;
 import org.jboss.netty.handler.timeout.IdleState;
 import org.jboss.netty.handler.timeout.IdleStateHandler;
+import org.jboss.netty.logging.InternalLogLevel;
+import org.jboss.netty.logging.InternalLoggerFactory;
+import org.jboss.netty.logging.Slf4JLoggerFactory;
 import org.jboss.netty.util.HashedWheelTimer;
 import org.jboss.netty.util.Timer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Infoblox Inc.
  * @deprecated
  *
  */
-public class ControllerOld {
+public class JController {
 
    /**
     * @param args
@@ -70,15 +76,11 @@ public class ControllerOld {
       private static volatile Occured instance;
       
       public static void switchOff() {
-        // System.out.println(">>> switchOff1 - " + occured);
          occured = false;
-       //  System.out.println(">>> switchOff2 - " + occured);
       }
       
       public static void switchOn() {
-        // System.out.println(">>> switchOn1 - " + occured);
          occured = true;
-        // System.out.println(">>> switchOn2 - " + occured);
       }
       
       public static Occured getInstance() {
@@ -95,9 +97,6 @@ public class ControllerOld {
   }
       
       public static boolean isOccured () {
-//         System.out.println(">>> isOccured1 - " + occured);
-       //  if (occured) 
-       //     System.out.println(">>> isOccured1 - " + occured);
          return occured;
       }
    }
@@ -108,13 +107,13 @@ public class ControllerOld {
        * 
        */
       private static final long serialVersionUID = 1882619201643785938L;
+      private final Logger log =  LoggerFactory.getLogger(ChannelHandler.class);
       private boolean exitState = false;
       private Event event = null;
       
       public void update (Event event) {
-         
+         log.info("REST Service EVENT");
          Occured.getInstance().switchOn();
-  //       Occured.switchOn();
          this.event = event;
       }
 
@@ -122,16 +121,14 @@ public class ControllerOld {
       protected V compute() {
          while (! this.exitState) {
             try {
-               Thread.sleep(500);
+               Thread.sleep(250);
             } catch (InterruptedException e) {
                // TODO Auto-generated catch block
                e.printStackTrace();
             }
             if (Occured.getInstance().isOccured()) {
-               System.out.println("Outgoing flow_mod");
-  //             System.out.println(entries.toString());
+               log.info("REST Service INCOMING request");
                entries = ((org.flowforwarding.warp.jcontroller.restapi.RestApiTask)this.event).join();
-  //             System.out.println(entries.toString());
                handlerTask.write();
                Occured.getInstance().switchOff();
             }
@@ -145,7 +142,7 @@ public class ControllerOld {
     * @param args
     */
    public static void main(String[] args) {
-     new ControllerOld().run();
+     new JController().run();
 /*      try {
          new RestServerApplication().startServer();
       } catch (Exception e) {
@@ -157,6 +154,8 @@ public class ControllerOld {
    public void run () {
       
       provider.init();
+      
+      InternalLoggerFactory.setDefaultFactory(new Slf4JLoggerFactory());
       
       this.entries = new ConcurrentHashMap<String, Map<String, Object>>();
       //this.entries = new ConcurrentHashMap<String, Object>();
@@ -177,7 +176,9 @@ public class ControllerOld {
 
       bootstrap.setPipelineFactory(new ChannelPipelineFactory() {
                        public ChannelPipeline getPipeline() throws Exception {
-                           return Channels.pipeline(handlerTask);
+                           return Channels.pipeline(new LoggingHandler(InternalLogLevel.INFO),
+                                                    handlerTask,
+                                                    new LoggingHandler(InternalLogLevel.INFO));
                        }
                    });
       
@@ -189,6 +190,8 @@ public class ControllerOld {
    
    public class ChannelHandler extends IdleStateHandler{
 //   public class ChannelHandler extends IdleStateAwareChannelHandler{
+      
+      private final Logger log =  LoggerFactory.getLogger(ChannelHandler.class);
       
       @Override
       protected void channelIdle(ChannelHandlerContext ctx, IdleState state,
@@ -242,19 +245,23 @@ public class ControllerOld {
              helloMsg.writeTo(buf);
              e.getChannel().write(buf);
              buf.clear();*/
-             
+            
+            log.info("OUTGOING Message: HELLO");
             BigEndianHeapChannelBuffer x = new BigEndianHeapChannelBuffer(provider.getHello(new ByteArrayOutputStream()).toByteArray());
             e.getChannel().write(x);
             x.clear();
             state = State.CONNECTED;
+            log.info("OUTGOING Message: FEATURES_REQUEST");
             BigEndianHeapChannelBuffer y = new BigEndianHeapChannelBuffer(provider.getSwitchFeaturesRequest(new ByteArrayOutputStream()).toByteArray());
             e.getChannel().write(y);
             state = State.HANDSHAKED;
             break;
          case HANDSHAKED:
+            log.info("OUTGOING Message: SET_CONFIG");
             BigEndianHeapChannelBuffer z = new BigEndianHeapChannelBuffer(provider.getSetSwitchConfig(new ByteArrayOutputStream()).toByteArray());
             e.getChannel().write(z);
             z.clear();
+            log.info("OUTGOING Message: GET_CONFIG_REQUEST");
             BigEndianHeapChannelBuffer a = new BigEndianHeapChannelBuffer(provider.getSwitchConfigRequest(new ByteArrayOutputStream()).toByteArray());
             e.getChannel().write(a);
             state = State.CONFIG_READY;
@@ -291,6 +298,7 @@ public class ControllerOld {
          Set<String> dpids = entries.keySet();
          
          for (String dpid : dpids) {
+            log.info("OUTGOING Message: FLOW_MOD");
             BigEndianHeapChannelBuffer b = new BigEndianHeapChannelBuffer(provider.getFlowMod(entries.get(dpid), new ByteArrayOutputStream()).toByteArray());
             channel.write(b);
          }

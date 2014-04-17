@@ -13,7 +13,7 @@ import java.util.concurrent.ForkJoinTask;
 import java.util.concurrent.RecursiveTask;
 
 import org.flowforwarding.warp.jcontroller.Controller.ControllerRef;
-import org.flowforwarding.warp.jcontroller.ControllerOld.ObserverTask;
+import org.flowforwarding.warp.jcontroller.JController.ObserverTask;
 import org.restlet.resource.Delete;
 import org.restlet.resource.Get;
 import org.restlet.resource.Post;

@@ -19,6 +19,8 @@
         <pathelement location="${controller.root}/deps/lib/scala-library.jar"/>
         <pathelement location="${controller.root}/deps/lib/config-1.0.2.jar"/>
         <pathelement location="${controller.root}/deps/lib/akka-actor_2.10-2.2.0.jar"/>
+        <pathelement location="${controller.root}/deps/lib/slf4j-api-1.7.7.jar"/>
+        <pathelement location="${controller.root}/slf4j-simple-1.7.7.jar"/>
         <pathelement location="${avro.location}/target/avro-1.7.4-SNAPSHOT.jar"/>
     </path>
     <target name="init">
@@ -51,7 +53,7 @@
     </target>
     <target description="Build all projects which reference this project. Useful to propagate changes." name="build-refprojects"/>
     <target name="Controller">
-        <java classname="org.flowforwarding.warp.jcontroller.ControllerOld" failonerror="true" fork="yes">
+        <java classname="org.flowforwarding.warp.jcontroller.JController" failonerror="true" fork="yes">
             <classpath refid="warp.classpath"/>
         </java>
     </target>
@@ -70,7 +72,7 @@
     	<mkdir dir="${basedir}/dist"/>
     	<jar destfile="${library.root}/warp.jar" filesetmanifest="mergewithoutmain">
     		<manifest>
-    			<attribute name="Main-Class" value="org.flowforwarding.warp.jcontroller.ControllerOld"/>
+    			<attribute name="Main-Class" value="org.flowforwarding.warp.jcontroller.JController"/>
     			<attribute name="Class-Path" value="."/>
     		</manifest>
     		<fileset dir="build/classes/main"/>
@@ -82,6 +84,8 @@
             <zipfileset excludes="META-INF/*.SF" src="${controller.root}/deps/lib/scala-library.jar"/>
             <zipfileset excludes="META-INF/*.SF" src="${controller.root}/deps/lib/config-1.0.2.jar"/>
             <zipfileset excludes="META-INF/*.SF" src="${controller.root}/deps/lib/akka-actor_2.10-2.2.0.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="${controller.root}/deps/lib/slf4j-api-1.7.7.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="${controller.root}/deps/lib/slf4j-simple-1.7.7.jar"/>
             <zipfileset excludes="META-INF/*.SF" src="${javasrc.root}/avro-trunk/lang/java/avro/target/avro-1.7.4-SNAPSHOT.jar"/>
         </jar>
     </target>

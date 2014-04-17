@@ -14,6 +14,9 @@ import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.JsonParser;
 import org.codehaus.jackson.JsonToken;
 import org.codehaus.jackson.map.MappingJsonFactory;
+import org.flowforwarding.warp.jcontroller.JController.ChannelHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Infoblox Inc.
@@ -26,6 +29,7 @@ public class RestApiTask extends RecursiveTask <Map<String, Map<String, Object>>
     * 
     */
    private static final long serialVersionUID = 2872160241865695301L;
+   private static final Logger log =  LoggerFactory.getLogger(RestApiTask.class);
 
    
    public RestApiTask(String jsonRequest,
@@ -105,16 +109,18 @@ public class RestApiTask extends RecursiveTask <Map<String, Map<String, Object>>
    
    @Override
    protected Map<String, Map<String, Object>> compute() {
-   
+      
       Map<String, Map<String, Object>> values = new HashMap<> ();
       
       try {
          
          if (this.entries.containsKey("DELETE")) {
+            log.info("Incoming JSON request: DELETE " + jsonRequest);
             values.put(jsonRequest, jsonToStorageEntry(jsonRequest, true)); 
             this.entries.remove("DELETE");
          }
          else {
+            log.info("Incoming JSON request: ADD " + jsonRequest);
             values.put(jsonRequest, jsonToStorageEntry(jsonRequest, false));
          }
 
