@@ -14,9 +14,9 @@
  * limitations under the License.
  */
  
-package org.flowforwarding.warp.demo
+package org.flowforwarding.warp.demo;
 
-import org.flowforwarding.warp.controller.session.SessionHandlerLauncher
+import org.flowforwarding.warp.controller.session.SessionHandlerLauncher;
 
 import org.flowforwarding.warp.protocol.adapter.OFJDriverSessionHandler
 import org.flowforwarding.warp.protocol.ofmessages.{OFMessageProviderFactoryAvroProtocol, OFMessageRef, IOFMessageProvider, IOFMessageProviderFactory}

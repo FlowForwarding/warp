@@ -176,9 +176,7 @@ public class JController {
 
       bootstrap.setPipelineFactory(new ChannelPipelineFactory() {
                        public ChannelPipeline getPipeline() throws Exception {
-                           return Channels.pipeline(new LoggingHandler(InternalLogLevel.INFO),
-                                                    handlerTask,
-                                                    new LoggingHandler(InternalLogLevel.INFO));
+                           return Channels.pipeline(handlerTask);
                        }
                    });
       

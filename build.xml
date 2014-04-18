@@ -20,7 +20,8 @@
         <pathelement location="${controller.root}/deps/lib/config-1.0.2.jar"/>
         <pathelement location="${controller.root}/deps/lib/akka-actor_2.10-2.2.0.jar"/>
         <pathelement location="${controller.root}/deps/lib/slf4j-api-1.7.7.jar"/>
-        <pathelement location="${controller.root}/slf4j-simple-1.7.7.jar"/>
+        <pathelement location="${controller.root}/deps/lib/logback-classic-1.1.2.jar"/>
+        <pathelement location="${controller.root}/deps/lib/logback-core-1.1.2.jar"/>
         <pathelement location="${avro.location}/target/avro-1.7.4-SNAPSHOT.jar"/>
     </path>
     <target name="init">
@@ -85,7 +86,8 @@
             <zipfileset excludes="META-INF/*.SF" src="${controller.root}/deps/lib/config-1.0.2.jar"/>
             <zipfileset excludes="META-INF/*.SF" src="${controller.root}/deps/lib/akka-actor_2.10-2.2.0.jar"/>
             <zipfileset excludes="META-INF/*.SF" src="${controller.root}/deps/lib/slf4j-api-1.7.7.jar"/>
-            <zipfileset excludes="META-INF/*.SF" src="${controller.root}/deps/lib/slf4j-simple-1.7.7.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="${controller.root}/deps/lib/logback-classic-1.1.2.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="${controller.root}/deps/lib/logback-core-1.1.2.jar"/>
             <zipfileset excludes="META-INF/*.SF" src="${javasrc.root}/avro-trunk/lang/java/avro/target/avro-1.7.4-SNAPSHOT.jar"/>
         </jar>
     </target>
