@@ -1,14 +1,20 @@
-package org.flowforwarding.warp.protocol.ofitems;
-
-import java.util.Map;
+/**
+ * © 2013 FlowForwarding.Org
+ * All Rights Reserved.  Use is subject to license terms.
+ */
+package org.flowforwarding.warp.protocol.internals.avro;
 
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericContainer;
-import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.GenericData.Fixed;
-import org.codehaus.jackson.JsonNode;
+import org.flowforwarding.warp.protocol.internals.IProtocolAtom;
 
-public class OFItemEnum implements IOFItem{
+/**
+ * @author Infoblox Inc.
+ *
+ */
+public class AvroEnum implements IProtocolAtom <String, GenericContainer> {
+
    protected String name;
    protected Schema schema;
    
@@ -22,7 +28,7 @@ public class OFItemEnum implements IOFItem{
 
    }
    
-   public OFItemEnum (String nm, Schema sch, Fixed v) {
+   public AvroEnum (String nm, Schema sch, Fixed v) {
       name = nm;
       schema = sch;
       value = v;
@@ -32,15 +38,17 @@ public class OFItemEnum implements IOFItem{
       return name;
    }
 
-   @Override
    public Schema getSchema() {
       return schema;
    }
 
-   /**
-    * @return the value
-    */
    public Fixed getValue() {
       return value;
    }
+
+   @Override
+   public void set(String value) {
+      // TODO Improve: throw Exception??!
+   }
+
 }

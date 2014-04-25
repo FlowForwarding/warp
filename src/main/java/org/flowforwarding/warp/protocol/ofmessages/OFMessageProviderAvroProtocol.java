@@ -16,10 +16,10 @@ import java.util.Map;
 import org.apache.avro.Protocol;
 import org.apache.avro.Schema;
 import org.apache.avro.Schema.Field;
-import org.flowforwarding.warp.protocol.ofitems.IOFItemBuilder;
-import org.flowforwarding.warp.protocol.ofitems.OFItemEnumBuilder;
-import org.flowforwarding.warp.protocol.ofitems.OFItemFixedBuilder;
-import org.flowforwarding.warp.protocol.ofitems.OFItemRecordBuilder;
+import org.flowforwarding.warp.protocol.internals.avro.AvroEnumBuilder;
+import org.flowforwarding.warp.protocol.internals.avro.AvroFixedBuilder;
+import org.flowforwarding.warp.protocol.internals.avro.AvroItemBuilder;
+import org.flowforwarding.warp.protocol.internals.avro.AvroRecordBuilder;
 import org.flowforwarding.warp.protocol.ofmessages.OFMessageError.OFMessageErrorRef;
 import org.flowforwarding.warp.protocol.ofmessages.OFMessageFlowMod.OFMessageFlowModRef;
 import org.flowforwarding.warp.protocol.ofmessages.OFMessageGroupMod.OFMessageGroupModRef;
@@ -37,7 +37,7 @@ public class OFMessageProviderAvroProtocol implements IOFMessageProvider {
    private final String schemaSrc = "of_protocol_13.avpr";
    private Protocol protocol = null;
    
-   protected Map<String, IOFItemBuilder> builders = new HashMap<>();
+   protected Map<String, AvroItemBuilder> builders = new HashMap<>();
    
    public void init () {
       InputStream str = Thread.currentThread().getContextClassLoader().getResourceAsStream(schemaSrc);
@@ -52,24 +52,24 @@ public class OFMessageProviderAvroProtocol implements IOFMessageProvider {
       
       for (Schema schema : types) {
          if (schema.getType().getName().equalsIgnoreCase("fixed")) {
-            builders.put(schema.getName(), new OFItemFixedBuilder(schema.getName(), schema));
+            builders.put(schema.getName(), new AvroFixedBuilder(schema.getName(), schema));
          } else if (schema.getType().getName().equalsIgnoreCase("record")) {
             builders.put(schema.getName(), makeRecordBuilder(schema.getName(), schema));
          } else if (schema.getType().getName().equalsIgnoreCase("enum")) {
-            builders.put(schema.getName(), new OFItemEnumBuilder(schema.getName(), schema));
+            builders.put(schema.getName(), new AvroEnumBuilder(schema.getName(), schema));
          }
       }
       
       return;
    }
    
-   protected static OFItemRecordBuilder makeRecordBuilder (String name, Schema schema) {
+   protected static AvroItemBuilder makeRecordBuilder (String name, Schema schema) {
       
-      OFItemRecordBuilder b = new OFItemRecordBuilder(name, schema);
+      AvroRecordBuilder b = new AvroRecordBuilder(name, schema);
       ArrayList<Field> fields = (ArrayList<Field>) schema.getFields();
       for (Field field : fields) {
          if (field.schema().getType().getName().equalsIgnoreCase("fixed")) {
-            b.addItemBuilder(field.name(), new OFItemFixedBuilder(field.name(), field.schema()));
+            b.addItemBuilder(field.name(), new AvroFixedBuilder(field.name(), field.schema()));
          } else if (field.schema().getType().getName().equalsIgnoreCase("record")) {
             b.addItemBuilder(field.name(), makeRecordBuilder(field.name(), field.schema()));
          }

@@ -1,18 +1,23 @@
-package org.flowforwarding.warp.protocol.ofitems;
+/**
+ * © 2013 FlowForwarding.Org
+ * All Rights Reserved.  Use is subject to license terms.
+ */
+package org.flowforwarding.warp.protocol.internals.avro;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.avro.Schema;
-import org.apache.avro.Schema.*;
 import org.apache.avro.generic.GenericData.Fixed;
 import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.node.ArrayNode;
 
-public class OFItemEnumBuilder implements IOFItemBuilder{
-
+/**
+ * @author Infoblox Inc.
+ *
+ */
+public class AvroEnumBuilder extends AvroItemBuilder{
+   
    protected String name;
    protected Schema schema;
    protected Schema itemsType;
@@ -21,26 +26,26 @@ public class OFItemEnumBuilder implements IOFItemBuilder{
    protected Map <String, Fixed> values = null;
 
    @Override
-   public IOFItem build() {
+   public AvroEnum build() {
    // TODO Improvs: Should it be a static??
    // TODO Improvs: Close OFItemEnum constructor, build via reference or any kind of 'friend' class??
-      OFItemEnum enm = new OFItemEnum(name, schema, null);
+      AvroEnum enm = new AvroEnum(name, schema, null);
 
       return enm;
    }
    
 // TODO Improvs: Should it be declared in the IOFItemBuilder?
-   public IOFItem build(Fixed in) {
+   public AvroEnum build(Fixed in) {
    // TODO Improvs: Should it be a static??
    // TODO Improvs: Close OFItemEnum constructor, build via reference or any kind of 'friend' class??
       String itemName = keys.get(in);
       
-      OFItemEnum enm = new OFItemEnum(itemName, this.itemsType, in);
+      AvroEnum enm = new AvroEnum(itemName, this.itemsType, in);
 
       return enm;
    }
    
-   public OFItemEnumBuilder(String nm, Schema sch) {
+   public AvroEnumBuilder(String nm, Schema sch) {
       name = nm;
       schema = sch;
       
@@ -77,4 +82,5 @@ public class OFItemEnumBuilder implements IOFItemBuilder{
    public String getName() {
       return name;
    }
+
 }

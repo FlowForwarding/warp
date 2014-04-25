@@ -29,12 +29,12 @@ import org.apache.avro.Schema.Field;
 import org.apache.avro.generic.GenericArray;
 import org.apache.avro.generic.GenericData;
 import org.apache.avro.Protocol;
-import org.flowforwarding.warp.protocol.ofitems.IOFItem;
-import org.flowforwarding.warp.protocol.ofitems.IOFItemBuilder;
-import org.flowforwarding.warp.protocol.ofitems.OFItemEnum;
-import org.flowforwarding.warp.protocol.ofitems.OFItemEnumBuilder;
-import org.flowforwarding.warp.protocol.ofitems.OFItemFixedBuilder;
-import org.flowforwarding.warp.protocol.ofitems.OFItemRecordBuilder;
+import org.flowforwarding.warp.protocol.internals.avro.AvroEnum;
+import org.flowforwarding.warp.protocol.internals.avro.AvroEnumBuilder;
+import org.flowforwarding.warp.protocol.internals.avro.AvroFixedBuilder;
+import org.flowforwarding.warp.protocol.internals.avro.AvroItemBuilder;
+import org.flowforwarding.warp.protocol.internals.avro.AvroRecord;
+import org.flowforwarding.warp.protocol.internals.avro.AvroRecordBuilder;
 import org.flowforwarding.warp.protocol.ofmessages.OFMessageError.OFMessageErrorRef;
 import org.flowforwarding.warp.protocol.ofmessages.OFMessageFlowMod.OFMessageFlowModRef;
 import org.flowforwarding.warp.protocol.ofmessages.OFMessageGroupMod.OFMessageGroupModRef;
@@ -139,7 +139,7 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider {
    protected IOFMessageBuilder builder = null;
    protected IOFStructureBuilder structureBuilder = null;
 
-   protected Map<String, IOFItemBuilder> builders = new HashMap<>();
+   protected Map<String, AvroItemBuilder> builders = new HashMap<>();
    
    final class MatchEntry<K, V> implements Map.Entry<K, V> {
        private final K key;
@@ -168,13 +168,13 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider {
        }
    }
    
-   protected static OFItemRecordBuilder makeRecordBuilder (String name, Schema schema) {
+   protected static AvroRecordBuilder makeRecordBuilder (String name, Schema schema) {
       
-      OFItemRecordBuilder b = new OFItemRecordBuilder(name, schema);
+      AvroRecordBuilder b = new AvroRecordBuilder(name, schema);
       ArrayList<Field> fields = (ArrayList<Field>) schema.getFields();
       for (Field field : fields) {
          if (field.schema().getType().getName().equalsIgnoreCase("fixed")) {
-            b.addItemBuilder(field.name(), new OFItemFixedBuilder(field.name(), field.schema()));
+            b.addItemBuilder(field.name(), new AvroFixedBuilder(field.name(), field.schema()));
          } else if (field.schema().getType().getName().equalsIgnoreCase("record")) {
             b.addItemBuilder(field.name(), makeRecordBuilder(field.name(), field.schema()));
          }
@@ -195,11 +195,11 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider {
          
          for (Schema schema : types) {
             if (schema.getType().getName().equalsIgnoreCase("fixed")) {
-               builders.put(schema.getName(), new OFItemFixedBuilder(schema.getName(), schema));
+               builders.put(schema.getName(), new AvroFixedBuilder(schema.getName(), schema));
             } else if (schema.getType().getName().equalsIgnoreCase("record")) {
                builders.put(schema.getName(), makeRecordBuilder(schema.getName(), schema));
             } else if (schema.getType().getName().equalsIgnoreCase("enum")) {
-               builders.put(schema.getName(), new OFItemEnumBuilder(schema.getName(), schema));
+               builders.put(schema.getName(), new AvroEnumBuilder(schema.getName(), schema));
             }
          }
          
@@ -338,26 +338,9 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider {
 
     public byte[] encodeHelloMessage() {
       
-      IOFItemBuilder helloBuilder = builders.get("ofp_hello");
-      IOFItem hello = helloBuilder.build();
-      GenericRecord helloRecord = (GenericRecord) hello.get();
-      
-      ByteArrayOutputStream out = new ByteArrayOutputStream();
-      
-      DatumWriter<GenericRecord> writer = new GenericDatumWriter<GenericRecord>(hello.getSchema());
-      Encoder encoder = EncoderFactory.get().binaryNonEncoder(out, null);
-      
-      try {
-         writer.write(helloRecord, encoder);
-         encoder.flush();
-      } catch (IOException e) {
-         // TODO Auto-generated catch block
-         e.printStackTrace();
-      }
-      
-      return out.toByteArray();
-
-      //return encodeMessage(helloHeaderSchema, ofpHelloSchema);
+      AvroItemBuilder helloBuilder = builders.get("ofp_hello");
+      AvroRecord hello = (AvroRecord) helloBuilder.build();
+      return hello.encode();
    }
    
    public byte[] encodeEchoRequest() {
@@ -2575,8 +2558,8 @@ public boolean isConfig(byte[] in) {
    Fixed msgType = (Fixed)header.get("type");
    
    // TODO Improv: get rid of this Type Cast: (OFItemEnumBuilder) builders
-   OFItemEnumBuilder builder = (OFItemEnumBuilder) builders.get("ofp_type");
-   OFItemEnum enumItem = (OFItemEnum) builder.build(msgType);
+   AvroEnumBuilder builder = (AvroEnumBuilder) builders.get("ofp_type");
+   AvroEnum enumItem = (AvroEnum) builder.build(msgType);
    
    if (enumItem.getName().equalsIgnoreCase("OFPT_GET_CONFIG_REPLY"))  // OFPT_GET_CONFIG_REPLY
       return true;
@@ -2653,8 +2636,8 @@ public boolean isError(byte[] in) {
    Fixed msgType = (Fixed)header.get("type");
    
    // TODO Improv: get rid of this Type Cast: (OFItemEnumBuilder) builders
-   OFItemEnumBuilder builder = (OFItemEnumBuilder) builders.get("ofp_type");
-   OFItemEnum enumItem = (OFItemEnum) builder.build(msgType);
+   AvroEnumBuilder builder = (AvroEnumBuilder) builders.get("ofp_type");
+   AvroEnum enumItem = (AvroEnum) builder.build(msgType);
    
    if (enumItem.getName().equalsIgnoreCase("OFPT_ERROR"))
       return true;
@@ -2668,8 +2651,8 @@ public boolean isError(byte[] in) {
       Fixed msgType = (Fixed)header.get("type");
       
       // TODO Improv: get rid of this Type Cast: (OFItemEnumBuilder) builders
-      OFItemEnumBuilder builder = (OFItemEnumBuilder) builders.get("ofp_type");
-      OFItemEnum enumItem = (OFItemEnum) builder.build(msgType);
+      AvroEnumBuilder builder = (AvroEnumBuilder) builders.get("ofp_type");
+      AvroEnum enumItem = (AvroEnum) builder.build(msgType);
       
       if (enumItem.getName().equalsIgnoreCase("OFPT_FEATURES_REPLY"))
          return true;
@@ -2683,8 +2666,8 @@ public boolean isError(byte[] in) {
       Fixed msgType = (Fixed)header.get("type");
       
       // TODO Improv: get rid of this Type Cast: (OFItemEnumBuilder) builders
-      OFItemEnumBuilder builder = (OFItemEnumBuilder) builders.get("ofp_type");
-      OFItemEnum enumItem = (OFItemEnum) builder.build(msgType);
+      AvroEnumBuilder builder = (AvroEnumBuilder) builders.get("ofp_type");
+      AvroEnum enumItem = (AvroEnum) builder.build(msgType);
       
       if (enumItem.getName().equalsIgnoreCase("OFPT_ECHO_REQUEST"))
          return true;
