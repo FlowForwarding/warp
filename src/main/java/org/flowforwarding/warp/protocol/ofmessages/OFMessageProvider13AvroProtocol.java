@@ -33,6 +33,7 @@ import org.flowforwarding.warp.protocol.internals.avro.AvroEnum;
 import org.flowforwarding.warp.protocol.internals.avro.AvroEnumBuilder;
 import org.flowforwarding.warp.protocol.internals.avro.AvroFixedBuilder;
 import org.flowforwarding.warp.protocol.internals.avro.AvroItemBuilder;
+import org.flowforwarding.warp.protocol.internals.avro.AvroProtocol;
 import org.flowforwarding.warp.protocol.internals.avro.AvroRecord;
 import org.flowforwarding.warp.protocol.internals.avro.AvroRecordBuilder;
 import org.flowforwarding.warp.protocol.ofmessages.OFMessageError.OFMessageErrorRef;
@@ -139,8 +140,6 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider {
    protected IOFMessageBuilder builder = null;
    protected IOFStructureBuilder structureBuilder = null;
 
-   protected Map<String, AvroItemBuilder> builders = new HashMap<>();
-   
    final class MatchEntry<K, V> implements Map.Entry<K, V> {
        private final K key;
        private V value;
@@ -168,45 +167,16 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider {
        }
    }
    
-   protected static AvroRecordBuilder makeRecordBuilder (String name, Schema schema) {
-      
-      AvroRecordBuilder b = new AvroRecordBuilder(name, schema);
-      ArrayList<Field> fields = (ArrayList<Field>) schema.getFields();
-      for (Field field : fields) {
-         if (field.schema().getType().getName().equalsIgnoreCase("fixed")) {
-            b.addItemBuilder(field.name(), new AvroFixedBuilder(field.name(), field.schema()));
-         } else if (field.schema().getType().getName().equalsIgnoreCase("record")) {
-            b.addItemBuilder(field.name(), makeRecordBuilder(field.name(), field.schema()));
-         }
-      }
-      
-      return b;
-   }
-   
    public void init () {
       try {
          InputStream str = Thread.currentThread().getContextClassLoader().getResourceAsStream(schemaSrc);
+         AvroProtocol avroProtocol = new AvroProtocol();
+         avroProtocol.init(schemaSrc);
 
          protocol = Protocol.parse(str);
          builder = new OFMessageBuilder13();
          structureBuilder = new OFStructureBuilder13();
-         
-         Collection<Schema> types = protocol.getTypes();
-         
-         for (Schema schema : types) {
-            if (schema.getType().getName().equalsIgnoreCase("fixed")) {
-               builders.put(schema.getName(), new AvroFixedBuilder(schema.getName(), schema));
-            } else if (schema.getType().getName().equalsIgnoreCase("record")) {
-               builders.put(schema.getName(), makeRecordBuilder(schema.getName(), schema));
-            } else if (schema.getType().getName().equalsIgnoreCase("enum")) {
-               builders.put(schema.getName(), new AvroEnumBuilder(schema.getName(), schema));
-            }
-         }
-         
-/*         IOFItemBuilder helloBuilder = builders.get("ofp_hello");
-         IOFItem hello = helloBuilder.build();
-         
-         GenericRecord helloRecord = (GenericRecord) hello.get();*/
+
          } catch (IOException e) {
          // TODO Auto-generated catch block
            e.printStackTrace();
