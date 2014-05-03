@@ -6,11 +6,18 @@ package org.flowforwarding.warp.protocol.internals.avro;
 
 import org.apache.avro.generic.GenericContainer;
 import org.flowforwarding.warp.protocol.internals.IProtocolBuilder;
+import org.flowforwarding.warp.protocol.internals.avro.AvroRecord.AvroRecordBuilder;
 
 /**
  * @author Infoblox Inc.
  *
  */
 public abstract class AvroItemBuilder implements IProtocolBuilder<String, GenericContainer>{
+
+   /**
+    * @param in
+    * @return
+    */
+   public abstract AvroItemBuilder Value(byte[] in);
 
 }

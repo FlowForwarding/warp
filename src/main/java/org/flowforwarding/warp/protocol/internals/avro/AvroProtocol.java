@@ -17,6 +17,9 @@ import org.apache.avro.Schema.Field;
 import org.apache.avro.generic.GenericContainer;
 import org.flowforwarding.warp.protocol.internals.IProtocolContainer;
 import org.flowforwarding.warp.protocol.internals.IProtocolStructure;
+import org.flowforwarding.warp.protocol.internals.avro.AvroFixedField.*;
+import org.flowforwarding.warp.protocol.internals.avro.AvroRecord.*;
+import org.flowforwarding.warp.protocol.internals.avro.AvroEnum.*;
 
 /**
  * @author Infoblox Inc.
@@ -28,18 +31,12 @@ public class AvroProtocol implements IProtocolContainer<String, GenericContainer
    Protocol protocol;
    protected Map<String, AvroItemBuilder> builders = new HashMap<>();
    
+   private AvroProtocol (String src) {
+      this.avprSrc = src;
+   }
+   
    @Override
    public void init() {
-      // TODO Auto-generated method stub
-   }
-
-   /* (non-Javadoc)
-    * @see org.flowforwarding.warp.protocol.internals.IProtocolContainer#init(java.lang.String)
-    */
-   @Override
-   public void init(String src) {
-      this.avprSrc = src;
-
       InputStream str = Thread.currentThread().getContextClassLoader().getResourceAsStream(this.avprSrc);
       try {
          protocol = Protocol.parse(str);
@@ -64,14 +61,16 @@ public class AvroProtocol implements IProtocolContainer<String, GenericContainer
       
    }
 
-   /* (non-Javadoc)
-    * @see org.flowforwarding.warp.protocol.internals.IProtocolContainer#getStructure(java.lang.String)
-    */
    @Override
    public IProtocolStructure<String, GenericContainer> getStructure(
          String structureName) {
-      // TODO Auto-generated method stub
-      return null;
+      return (IProtocolStructure<String, GenericContainer>) builders.get(structureName).build();
+   }
+   
+   @Override
+   public IProtocolStructure<String, GenericContainer> getStructure(
+         String structureName, byte[] in) {
+      return (IProtocolStructure<String, GenericContainer>) builders.get(structureName).Value(in).build();
    }
    
    protected static AvroRecordBuilder makeRecordBuilder (String name, Schema schema) {
@@ -88,5 +87,20 @@ public class AvroProtocol implements IProtocolContainer<String, GenericContainer
       
       return b;
    }
-
+   
+   private static class Holder {
+      private static final Map<String, AvroProtocol> PROTOCOLS = new HashMap<>();
+   }
+   
+   public static AvroProtocol getInstance (String src) {
+      if (Holder.PROTOCOLS.containsKey(src)) 
+         return Holder.PROTOCOLS.get(src);
+      else {
+         AvroProtocol newProtocol = new AvroProtocol(src);
+         newProtocol.init();
+         Holder.PROTOCOLS.put(src, newProtocol);
+         
+         return newProtocol;
+      }
+   }
 }

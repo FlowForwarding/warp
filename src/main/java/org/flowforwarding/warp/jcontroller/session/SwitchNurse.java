@@ -11,6 +11,8 @@ import org.flowforwarding.warp.protocol.ofmessages.IOFMessageProviderFactory;
 import org.flowforwarding.warp.protocol.ofmessages.OFMessageFlowMod.OFMessageFlowModRef;
 import org.flowforwarding.warp.protocol.ofmessages.OFMessageProviderFactoryAvroProtocol;
 import org.flowforwarding.warp.protocol.ofstructures.OFStructureInstruction.OFStructureInstructionRef;
+import org.flowforwarding.warp.protocol.common.OFMessageRef;
+import org.flowforwarding.warp.protocol.common.OFMessageRef.OFMessageBuilder;
 
 import akka.actor.ActorRef;
 import akka.actor.UntypedActor;
@@ -26,6 +28,8 @@ import akka.util.ByteString;
  *
  */
 public class SwitchNurse extends UntypedActor {
+   
+   private final String schemaSrc = "of_protocol_13.avpr";
    
    private enum State {
       STARTED,
@@ -43,7 +47,9 @@ public class SwitchNurse extends UntypedActor {
    
    IOFMessageProviderFactory factory = new OFMessageProviderFactoryAvroProtocol();
    IOFMessageProvider provider = null;
-   IOFMessageProvider providerNew = null;
+   OFMessageBuilder builder = null;
+   
+   
    
    @Override
    public void preStart() throws Exception {
@@ -59,19 +65,19 @@ public class SwitchNurse extends UntypedActor {
          case STARTED:
             ByteString in = ((Received) msg).data();
             provider = factory.getMessageProvider(in.toArray());
-            providerNew = factory.getMessageProvider();
+            builder = new OFMessageBuilder("avro","of_protocol_13.avpr");
+            OFMessageRef testMessage = builder.Type("ofp_header").Value(in.toArray()).build();
             
-            if ((provider != null) && (providerNew != null)) {
+            if (provider != null) {
                
                provider.init();
-               providerNew.init();
                provider.parseMessages(in.toArray());
                
                swRef.setVersion(provider.getVersion());
                
-               getSender().tell(TcpMessage.write(ByteString.fromArray(provider.encodeHelloMessage())), getSelf());
+               getSender().tell(TcpMessage.write(ByteString.fromArray(builder.Type("ofp_hello").build().encode())), getSelf());
                this.state = State.CONNECTED;
-               getSender().tell(TcpMessage.write(ByteString.fromArray(provider.encodeSwitchFeaturesRequest())), getSelf());    
+               getSender().tell(TcpMessage.write(ByteString.fromArray(builder.Type("ofp_switch_features_request").build().encode())), getSelf());
                
                tcpChannel = getSender();
             }

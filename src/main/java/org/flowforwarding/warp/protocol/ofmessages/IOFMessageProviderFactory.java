@@ -11,9 +11,4 @@ public interface IOFMessageProviderFactory {
    public IOFMessageProvider getMessageProvider (Short version);
 
    public IOFMessageProvider getMessageProvider (byte [] hello);
-
-   /**
-    * @return
-    */
-   IOFMessageProvider getMessageProvider();
 }
