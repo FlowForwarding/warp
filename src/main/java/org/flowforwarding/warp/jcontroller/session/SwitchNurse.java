@@ -66,7 +66,7 @@ public class SwitchNurse extends UntypedActor {
             ByteString in = ((Received) msg).data();
             provider = factory.getMessageProvider(in.toArray());
             builder = new OFMessageBuilder("avro","of_protocol_13.avpr");
-            OFMessageRef testMessage = builder.Type("ofp_header").Value(in.toArray()).build();
+            OFMessageRef testMessage = builder.Value(in.toArray()).Type("ofp_header").build();
             
             if (provider != null) {
                
