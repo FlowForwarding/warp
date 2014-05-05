@@ -58,19 +58,12 @@ public class AvroProtocol implements IProtocolContainer<String, GenericContainer
          e.printStackTrace();
       }
       
-      
    }
 
    @Override
    public IProtocolStructure<String, GenericContainer> getStructure(
-         String structureName) {
-      return (IProtocolStructure<String, GenericContainer>) builders.get(structureName).build();
-   }
-   
-   @Override
-   public IProtocolStructure<String, GenericContainer> getStructure(
-         String structureName, byte[] in) {
-      return (IProtocolStructure<String, GenericContainer>) builders.get(structureName).Value(in).build();
+         String structureName, byte[]... in) {
+      return (IProtocolStructure<String, GenericContainer>) builders.get(structureName).Value(in[0]).build();
    }
    
    protected static AvroRecordBuilder makeRecordBuilder (String name, Schema schema) {

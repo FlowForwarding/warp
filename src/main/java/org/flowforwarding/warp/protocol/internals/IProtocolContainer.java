@@ -12,12 +12,5 @@ import org.apache.avro.generic.GenericContainer;
  */
 public interface IProtocolContainer <External, Internal>{
    public void init();
-   public IProtocolStructure <External, Internal> getStructure(String structureName);
-   /**
-    * @param structureName
-    * @param in
-    * @return
-    */
-   IProtocolStructure<String, GenericContainer> getStructure(
-         String structureName, byte[] in);
+   public IProtocolStructure <External, Internal> getStructure(String structureName, byte []... in);
 }
