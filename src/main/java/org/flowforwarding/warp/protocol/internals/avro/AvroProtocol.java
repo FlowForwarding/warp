@@ -15,6 +15,8 @@ import org.apache.avro.Protocol;
 import org.apache.avro.Schema;
 import org.apache.avro.Schema.Field;
 import org.apache.avro.generic.GenericContainer;
+import org.apache.avro.generic.GenericData.Fixed;
+import org.apache.avro.generic.GenericRecord;
 import org.flowforwarding.warp.protocol.internals.IProtocolAtom;
 import org.flowforwarding.warp.protocol.internals.IProtocolContainer;
 import org.flowforwarding.warp.protocol.internals.IProtocolStructure;
@@ -62,8 +64,7 @@ public class AvroProtocol implements IProtocolContainer<String, GenericContainer
    }
 
    @Override
-   public IProtocolStructure<String, GenericContainer> getStructure(
-         String structureName, byte[]... in) {
+   public IProtocolStructure<String, GenericContainer> getStructure(String structureName, byte[]... in) {
       return (IProtocolStructure<String, GenericContainer>) builders.get(structureName).Value(in[0]).build();
    }
    

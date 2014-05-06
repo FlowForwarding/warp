@@ -61,6 +61,14 @@ public class AvroRecord implements IProtocolStructure <String, GenericContainer>
    }
 
    @Override
+   public GenericContainer get(String name) {
+      if (recordValue != null) {
+         return (GenericContainer) recordValue.get(name);
+      } else
+         return null;
+   }
+   
+   @Override
    public GenericContainer get() {
       
       GenericRecordBuilder builder = new GenericRecordBuilder(schema);
@@ -88,7 +96,11 @@ public class AvroRecord implements IProtocolStructure <String, GenericContainer>
    public Schema getSchema() {
       return schema;
    }
-
+   
+   public GenericRecord getRecord() {
+      return recordValue;
+   }
+   
    /* (non-Javadoc)
     * @see org.flowforwarding.warp.protocol.internals.IProtocolStructure#encode()
     */
