@@ -31,6 +31,7 @@ import org.flowforwarding.warp.protocol.internals.avro.AvroEnum.*;
 public class AvroProtocol implements IProtocolContainer<String, GenericContainer>{
 
    private String avprSrc;
+   private byte version;
    Protocol protocol;
    protected Map<String, AvroItemBuilder> builders = new HashMap<>();
    
@@ -56,6 +57,10 @@ public class AvroProtocol implements IProtocolContainer<String, GenericContainer
             }
          }
          
+         // TODO Improvs: Quick solution to get version.
+         version = ((Fixed)((GenericRecord) builders.get("ofp_header").build().get()).get("version")).bytes()[0];
+         
+         
       } catch (IOException e) {
          // TODO Auto-generated catch block
          e.printStackTrace();
@@ -64,14 +69,23 @@ public class AvroProtocol implements IProtocolContainer<String, GenericContainer
    }
 
    @Override
-   public IProtocolStructure<String, GenericContainer> getStructure(String structureName, byte[]... in) {
+   public IProtocolStructure<String, GenericContainer> structure(String structureName, byte[]... in) {
       return (IProtocolStructure<String, GenericContainer>) builders.get(structureName).Value(in[0]).build();
    }
    
    @Override
-   public IProtocolAtom<String, GenericContainer> getAtom(String atomName,
-         byte[]... in) {
+   public IProtocolAtom<String, GenericContainer> atom(String atomName, byte[]... in) {
       return (IProtocolAtom<String, GenericContainer>) builders.get(atomName).Value(in[0]).build();
+   }
+   
+   @Override
+   public IProtocolAtom<String, GenericContainer> atom(String atomName, GenericContainer... in) {
+      return (IProtocolAtom<String, GenericContainer>) builders.get(atomName).Value(in[0]).build();
+   }
+   
+   @Override
+   public byte version() {
+      return version;
    }
    
    protected static AvroRecordBuilder makeRecordBuilder (String name, Schema schema) {
@@ -91,6 +105,19 @@ public class AvroProtocol implements IProtocolContainer<String, GenericContainer
    
    private static class Holder {
       private static final Map<String, AvroProtocol> PROTOCOLS = new HashMap<>();
+   }
+   
+   public static AvroProtocol getInstance (byte version) {
+      switch (version) {
+      case 0x5:
+         return getInstance("of_protocol_14.avpr");
+      case 0x4:
+         return getInstance("of_protocol_13.avpr");
+      case 0x3:
+         return getInstance("of_protocol_12.avpr");         
+      default:
+         return null;   
+      }
    }
    
    public static AvroProtocol getInstance (String src) {

@@ -127,7 +127,7 @@ public class AvroRecord implements IProtocolStructure <String, GenericContainer>
       protected final String name;
       protected final Schema schema;
       protected Map<String, IProtocolBuilder<String, GenericContainer>> builders = new HashMap<>();
-      protected GenericRecord recordValue;
+      protected GenericRecord value;
       protected byte[] binValue;
       
       public AvroRecordBuilder (String nm, Schema sch) {
@@ -138,6 +138,12 @@ public class AvroRecord implements IProtocolStructure <String, GenericContainer>
       @Override
       public AvroRecordBuilder Value (byte[] in) {
          binValue = in;
+         return this;
+      }
+      
+      @Override
+      public AvroItemBuilder Value(GenericContainer in) {
+         value = (GenericRecord) in;
          return this;
       }
       
@@ -161,6 +167,5 @@ public class AvroRecord implements IProtocolStructure <String, GenericContainer>
       public Schema getSchema() {
          return schema;
       }
-      
    }
 }

@@ -4,12 +4,16 @@
  */
 package org.flowforwarding.warp.protocol.internals;
 
+import org.apache.avro.generic.GenericContainer;
+
 /**
  * @author Infoblox Inc.
  *
  */
 public interface IProtocolContainer <External, Internal>{
    public void init();
-   public IProtocolStructure <External, Internal> getStructure(String structureName, byte []... in);
-   public IProtocolAtom <External, Internal> getAtom(String atomName, byte []... in);
+   public IProtocolStructure <External, Internal> structure(String structureName, byte []... in);
+   public IProtocolAtom <External, Internal> atom(String atomName, byte []... in);
+   public IProtocolAtom<External, Internal> atom(String atomName, Internal... in);
+   byte version();
 }

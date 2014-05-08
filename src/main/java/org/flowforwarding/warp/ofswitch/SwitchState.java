@@ -24,7 +24,7 @@ public class SwitchState {
    
    protected Long dpid = null;
    protected ByteArrayOutputStream lastIncomingMessage = null;
-   protected Short version = 4;
+   protected byte version = 4;
    protected IOFMessageProvider provider = null;
    protected IOFMessageProviderFactory factory = null;
    
@@ -111,14 +111,14 @@ public class SwitchState {
       /**
        * @param version
        */
-      public void setVersion(Short version) {
+      public void setVersion(byte version) {
          swState.version = version;
       }
       
       /**
        * @return OpenFlow protocol version supported by Switch 
        */
-      public Short getVersion() {
+      public byte getVersion() {
          return swState.version;
       }
    }

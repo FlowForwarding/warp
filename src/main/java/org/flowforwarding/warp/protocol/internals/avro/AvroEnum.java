@@ -29,7 +29,7 @@ public class AvroEnum implements IProtocolAtom <String, GenericContainer> {
    protected final Schema schema;
    
    // TODO Improv: Fixed? array? We should think about it.
-   protected Fixed fixedValue;
+   protected GenericContainer value;
    
    @Override
    public GenericContainer get() {
@@ -41,7 +41,14 @@ public class AvroEnum implements IProtocolAtom <String, GenericContainer> {
    private AvroEnum (AvroEnumBuilder builder) {
       schema = builder.schema;
       
-      if (builder.binValue != null) {
+      if (builder.value != null) {
+         value = builder.value;
+         name = builder.keys.get(value);
+         builder.value = null;
+      } else {
+         name = null;
+      }
+/*      if (builder.binValue != null) {
          fixedValue = new GenericData.Fixed(schema);
          GenericDatumReader<Fixed> reader = new GenericDatumReader<>(schema);
          Decoder decoder = DecoderFactory.get().binaryDecoder(builder.binValue, null);
@@ -52,9 +59,7 @@ public class AvroEnum implements IProtocolAtom <String, GenericContainer> {
             // TODO Auto-generated catch block
             e.printStackTrace();
          }
-      }
-      
-      name = builder.keys.get(fixedValue);
+      }*/
    }
    
    public String getName() {
@@ -65,8 +70,8 @@ public class AvroEnum implements IProtocolAtom <String, GenericContainer> {
       return schema;
    }
 
-   public Fixed getValue() {
-      return fixedValue;
+   public GenericContainer getValue() {
+      return value;
    }
 
    @Override
@@ -79,9 +84,10 @@ public class AvroEnum implements IProtocolAtom <String, GenericContainer> {
       protected Schema schema;
       protected Schema itemsType;
       protected byte[] binValue;
+      protected GenericContainer value;
       
-      protected Map <Fixed, String> keys = null;  
-      protected Map <String, Fixed> values = null;
+      protected Map <GenericContainer, String> keys = null;  
+      protected Map <String, GenericContainer> values = null;
 
       @Override
       public AvroEnum build() {
@@ -91,6 +97,13 @@ public class AvroEnum implements IProtocolAtom <String, GenericContainer> {
       @Override
       public AvroEnumBuilder Value (byte[] in) {
          this.binValue = in;
+         
+         return this;
+      }
+      
+      @Override
+      public AvroEnumBuilder Value (GenericContainer in) {
+         this.value = in;
          
          return this;
       }
@@ -124,7 +137,6 @@ public class AvroEnum implements IProtocolAtom <String, GenericContainer> {
                values.put(n, rec);
             }         
          }
-
       }
 
       /**

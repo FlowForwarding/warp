@@ -65,19 +65,18 @@ public class SwitchNurse extends UntypedActor {
          case STARTED:
             ByteString in = ((Received) msg).data();
             provider = factory.getMessageProvider(in.toArray());
-            builder = new OFMessageBuilder("avro","of_protocol_13.avpr");
-            OFMessageRef testMessage = builder.Value(in.toArray()).Type("ofp_header").build();
             
-            if (provider != null) {
-               
-               provider.init();
-               provider.parseMessages(in.toArray());
-               
-               swRef.setVersion(provider.getVersion());
-               
-               getSender().tell(TcpMessage.write(ByteString.fromArray(builder.Type("ofp_hello").build().encode())), getSelf());
+            builder = new OFMessageBuilder("avro", in.toArray());
+            OFMessageRef inMsg = builder.value(in.toArray()).build();
+            
+            if ((provider != null) && (inMsg != null)) {
+               swRef.setVersion(builder.version());
+               getSender().tell(TcpMessage.write(ByteString.fromArray(builder.type("ofp_hello").build().encode())), getSelf());
                this.state = State.CONNECTED;
-               getSender().tell(TcpMessage.write(ByteString.fromArray(builder.Type("ofp_switch_features_request").build().encode())), getSelf());
+               getSender().tell(TcpMessage.write(ByteString.fromArray(builder.type("ofp_switch_features_request").build().encode())), getSelf());
+
+               // TODO REMOVE THIS:
+               provider.init();
                
                tcpChannel = getSender();
             }

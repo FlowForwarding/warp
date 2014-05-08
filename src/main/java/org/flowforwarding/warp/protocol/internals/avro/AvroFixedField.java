@@ -86,6 +86,7 @@ public class AvroFixedField implements IProtocolAtom <String, GenericContainer>{
       protected final String name;
       protected final Schema schema;
       protected byte [] binValue = null;
+      protected GenericContainer value = null;
       
       @Override
       public IProtocolItem<String, GenericContainer> build() {
@@ -102,7 +103,12 @@ public class AvroFixedField implements IProtocolAtom <String, GenericContainer>{
          this.binValue = in;
          return this;
       }
-
+      @Override
+      public AvroItemBuilder Value(GenericContainer in) {
+         this.value = in;
+         return this;
+      }
+      
       public String getName() {
          return name;
       }

@@ -4,6 +4,7 @@
  */
 package org.flowforwarding.warp.protocol.common;
 
+import org.apache.avro.generic.GenericContainer;
 import org.apache.avro.generic.GenericData.Fixed;
 import org.flowforwarding.warp.protocol.internals.IProtocolAtom;
 import org.flowforwarding.warp.protocol.internals.IProtocolContainer;
@@ -17,17 +18,25 @@ import org.flowforwarding.warp.protocol.internals.avro.AvroRecord;
  */
 public class OFMessageRef {
    
-   private String ofType; 
-   private IProtocolStructure<?, ?> internal;
+   private String ofType = "";
+   private int version;
+   private IProtocolStructure<String, GenericContainer> internal;
    
    private OFMessageRef(OFMessageBuilder builder) {
       if (builder.binValue == null) {
-         internal = builder.container.getStructure(builder.msgType, builder.binValue);
+         internal = builder.container.structure(builder.msgType, builder.binValue);
       } else {
-         internal = builder.container.getStructure("ofp_header", builder.binValue);
-         IProtocolAtom<?, ?> atom = builder.container.getAtom("ofp_type", ((Fixed)internal.get("type")).bytes());
-//         String type = builder.container.getAtom("ofp_type", ((Fixed)internal.get("type")).bytes()).getName();
-         System.out.println("");
+         internal = builder.container.structure("ofp_header", builder.binValue);
+         ofType = builder.container.atom("ofp_type", internal.get("type")).getName();
+         
+         switch (ofType) {
+         case "OFPT_HELLO": 
+            internal = builder.container.structure("ofp_hello", builder.binValue);
+            
+            break;
+         default:
+            break;
+         }
       }
    }
    
@@ -41,34 +50,56 @@ public class OFMessageRef {
    
    public static class OFMessageBuilder{
       
-      private final String source;
-      private final IProtocolContainer<?, ?> container;
+      private final IProtocolContainer<String, GenericContainer> container;
       private String msgType;
       private byte[] binValue;
+      private final byte version;
       
       public OFMessageBuilder (String containerType, String src) {
          
          if (containerType.equalsIgnoreCase("avro")) {
             container = AvroProtocol.getInstance(src);
+            version = container.version();
          } else {
             container = null;
+            version = (byte) 0xff;
          }
-         this.source = src;
       }
       
-      public OFMessageBuilder Type(String type) {
+      public OFMessageBuilder (String containerType, byte[] in) {
+         
+         if (containerType.equalsIgnoreCase("avro")) {
+            container = AvroProtocol.getInstance(in[0]);
+            version = container.version();
+         } else {
+            container = null;
+            version = (byte) 0xff;
+         }
+      }
+      
+      public OFMessageBuilder type(String type) {
          this.msgType = type;
          return this;
       }
       
-      public OFMessageBuilder Value(byte[] in) {
+      public OFMessageBuilder value(byte[] in) {
          this.binValue = in;
          return this;
       }
       
-      
+      public byte version() {
+         return version;
+      }
+
       public OFMessageRef build() {
-         return new OFMessageRef (this);
+         OFMessageRef ref = new OFMessageRef (this); 
+         clean();
+         return ref;
+      }
+      
+      private void clean() {
+         this.binValue = null;
+         this.msgType = null;
       }
    }
 }

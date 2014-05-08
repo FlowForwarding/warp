@@ -29,6 +29,7 @@ public class OFMessageProviderFactoryAvroProtocol implements IOFMessageProviderF
     public IOFMessageProvider getMessageProvider(Short version) {
         switch (version) {
             case 1: return new OFMessageProvider10AvroProtocol();
+            case 3: return new OFMessageProvider12AvroProtocol();
             case 4: return new OFMessageProvider13AvroProtocol();
             default: return null;
         }
