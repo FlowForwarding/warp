@@ -70,17 +70,17 @@ public class AvroProtocol implements IProtocolContainer<String, GenericContainer
 
    @Override
    public IProtocolStructure<String, GenericContainer> structure(String structureName, byte[]... in) {
-      return (IProtocolStructure<String, GenericContainer>) builders.get(structureName).Value(in[0]).build();
+      return (IProtocolStructure<String, GenericContainer>) builders.get(structureName).value(in[0]).build();
    }
    
    @Override
    public IProtocolAtom<String, GenericContainer> atom(String atomName, byte[]... in) {
-      return (IProtocolAtom<String, GenericContainer>) builders.get(atomName).Value(in[0]).build();
+      return (IProtocolAtom<String, GenericContainer>) builders.get(atomName).value(in[0]).build();
    }
    
    @Override
    public IProtocolAtom<String, GenericContainer> atom(String atomName, GenericContainer... in) {
-      return (IProtocolAtom<String, GenericContainer>) builders.get(atomName).Value(in[0]).build();
+      return (IProtocolAtom<String, GenericContainer>) builders.get(atomName).value(in[0]).build();
    }
    
    @Override

@@ -27,25 +27,37 @@ public class OFMessageRef {
          internal = builder.container.structure(builder.msgType, builder.binValue);
       } else {
          internal = builder.container.structure("ofp_header", builder.binValue);
-         ofType = builder.container.atom("ofp_type", internal.get("type")).getName();
+         ofType = builder.container.atom("ofp_type", internal.get("type")).name();
          
          switch (ofType) {
          case "OFPT_HELLO": 
             internal = builder.container.structure("ofp_hello", builder.binValue);
-            
             break;
+         case "OFPT_ERROR":
+             internal = builder.container.structure("ofp_error", builder.binValue);
+             break;
+         case "OFPT_FEATURES_REQUEST":
+             internal = builder.container.structure("ofp_switch_features_request", builder.binValue);
+             break;
+         case "OFPT_FEATURES_REPLY":
+             internal = builder.container.structure("ofp_switch_features", builder.binValue);
+             break;
          default:
             break;
          }
       }
    }
    
-   public byte[] encode() {
-      return internal.encode();
+   public byte[] binary() {
+      return internal.binary();
    }
    
-   public String getName () {
-      return internal.getName();
+   public byte[] field(String name) {
+	   return internal.binary(name);
+   }
+   
+   public String type() {
+	   return ofType;
    }
    
    public static class OFMessageBuilder{

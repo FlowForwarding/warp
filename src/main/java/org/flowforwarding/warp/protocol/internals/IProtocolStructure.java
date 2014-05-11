@@ -12,5 +12,6 @@ public interface IProtocolStructure <External, Internal> extends IProtocolItem <
    public Internal get();
    public Internal get(String name);
    public void add(IProtocolItem<External, Internal> value);
-   public byte[] encode();
+   public byte[] binary(String name);
+   public byte[] binary();
 }

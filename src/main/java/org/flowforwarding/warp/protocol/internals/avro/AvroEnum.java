@@ -62,7 +62,8 @@ public class AvroEnum implements IProtocolAtom <String, GenericContainer> {
       }*/
    }
    
-   public String getName() {
+   @Override
+   public String name() {
       return name;
    }
 
@@ -95,14 +96,14 @@ public class AvroEnum implements IProtocolAtom <String, GenericContainer> {
       }
       
       @Override
-      public AvroEnumBuilder Value (byte[] in) {
+      public AvroEnumBuilder value (byte[] in) {
          this.binValue = in;
          
          return this;
       }
       
       @Override
-      public AvroEnumBuilder Value (GenericContainer in) {
+      public AvroEnumBuilder value (GenericContainer in) {
          this.value = in;
          
          return this;
@@ -138,14 +139,6 @@ public class AvroEnum implements IProtocolAtom <String, GenericContainer> {
             }         
          }
       }
-
-      /**
-       * @return the name
-       */
-      public String getName() {
-         return name;
-      }
-
    }
 
 }

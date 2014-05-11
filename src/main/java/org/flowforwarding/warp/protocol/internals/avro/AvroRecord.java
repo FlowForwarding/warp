@@ -76,7 +76,7 @@ public class AvroRecord implements IProtocolStructure <String, GenericContainer>
          GenericContainer val = item.get();
          // TODO Improv. I dislike this NULL verification
          if (val != null)
-            builder.set(item.getName(), val);
+            builder.set(item.name(), val);
       }
       
       GenericRecord record = builder.build();
@@ -89,7 +89,8 @@ public class AvroRecord implements IProtocolStructure <String, GenericContainer>
       items.add(item);
    }
    
-   public String getName() {
+   @Override
+   public String name() {
       return name;
    }
 
@@ -105,7 +106,7 @@ public class AvroRecord implements IProtocolStructure <String, GenericContainer>
     * @see org.flowforwarding.warp.protocol.internals.IProtocolStructure#encode()
     */
    @Override
-   public byte[] encode() {
+   public byte[] binary() {
       GenericRecord record = (GenericRecord) get();
       ByteArrayOutputStream out = new ByteArrayOutputStream();
       
@@ -123,6 +124,15 @@ public class AvroRecord implements IProtocolStructure <String, GenericContainer>
       return out.toByteArray();
    }
    
+   @Override
+   public byte[] binary(String name) {
+	   if (recordValue != null) {
+		   //TODO Improvs: excepion should be thrown in case of wrong field name
+		   return ((Fixed)recordValue.get(name)).bytes();
+	   }
+	   return null;
+   }
+   
    public static class AvroRecordBuilder extends AvroItemBuilder {
       protected final String name;
       protected final Schema schema;
@@ -136,13 +146,13 @@ public class AvroRecord implements IProtocolStructure <String, GenericContainer>
       }
       
       @Override
-      public AvroRecordBuilder Value (byte[] in) {
+      public AvroRecordBuilder value (byte[] in) {
          binValue = in;
          return this;
       }
       
       @Override
-      public AvroItemBuilder Value(GenericContainer in) {
+      public AvroItemBuilder value(GenericContainer in) {
          value = (GenericRecord) in;
          return this;
       }
@@ -162,10 +172,6 @@ public class AvroRecord implements IProtocolStructure <String, GenericContainer>
       
       public void addItemBuilder (String nm, IProtocolBuilder<String, GenericContainer> builder) {
          builders.put(nm, builder);
-      }
-      
-      public Schema getSchema() {
-         return schema;
       }
    }
 }

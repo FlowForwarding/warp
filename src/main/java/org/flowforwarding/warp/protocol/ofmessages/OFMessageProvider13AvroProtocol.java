@@ -308,7 +308,7 @@ public class OFMessageProvider13AvroProtocol implements IOFMessageProvider {
 
    public byte[] encodeHelloMessage() {
       org.flowforwarding.warp.protocol.common.OFMessageRef helloMsg = builderNew.type("ofp_hello").build();
-      return helloMsg.encode();
+      return helloMsg.binary();
    }
    
    public byte[] encodeEchoRequest() {

@@ -15,15 +15,7 @@ import org.flowforwarding.warp.protocol.internals.avro.AvroRecord.AvroRecordBuil
 public abstract class AvroItemBuilder implements IProtocolBuilder<String, GenericContainer>{
 
    // TODO Improvs: Should it to be created Value methods in IProtocolBuilder?  
-   /**
-    * @param in
-    * @return
-    */
-   public abstract AvroItemBuilder Value(byte[] in);
-   /**
-    * @param in
-    * @return
-    */
-   public abstract AvroItemBuilder Value(GenericContainer in);
+   public abstract AvroItemBuilder value(byte[] in);
+   public abstract AvroItemBuilder value(GenericContainer in);
 
 }

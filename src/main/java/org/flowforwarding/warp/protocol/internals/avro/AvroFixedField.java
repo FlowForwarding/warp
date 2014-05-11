@@ -65,11 +65,13 @@ public class AvroFixedField implements IProtocolAtom <String, GenericContainer>{
       return;
    }
    
-   public int getSize() {
+   //TODO Improvs: should we declare it in IProtocolAtom 
+   public int size() {
       return size;
    }
 
-   public String getName() {
+   @Override
+   public String name() {
       return name;
    }
 
@@ -99,20 +101,14 @@ public class AvroFixedField implements IProtocolAtom <String, GenericContainer>{
       }
       
       @Override
-      public AvroFixedBuilder Value (byte [] in) {
+      public AvroFixedBuilder value (byte [] in) {
          this.binValue = in;
          return this;
       }
       @Override
-      public AvroItemBuilder Value(GenericContainer in) {
+      public AvroItemBuilder value(GenericContainer in) {
          this.value = in;
          return this;
       }
-      
-      public String getName() {
-         return name;
-      }
-   }
-   
-   
+   } 
 }

@@ -13,6 +13,9 @@ import org.flowforwarding.warp.protocol.ofmessages.OFMessageProviderFactoryAvroP
 import org.flowforwarding.warp.protocol.ofstructures.OFStructureInstruction.OFStructureInstructionRef;
 import org.flowforwarding.warp.protocol.common.OFMessageRef;
 import org.flowforwarding.warp.protocol.common.OFMessageRef.OFMessageBuilder;
+import org.flowforwarding.warp.util.Convert;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import akka.actor.ActorRef;
 import akka.actor.UntypedActor;
@@ -30,6 +33,7 @@ import akka.util.ByteString;
 public class SwitchNurse extends UntypedActor {
    
    private final String schemaSrc = "of_protocol_13.avpr";
+   private static final Logger log =  LoggerFactory.getLogger(SwitchNurse.class);
    
    private enum State {
       STARTED,
@@ -70,31 +74,36 @@ public class SwitchNurse extends UntypedActor {
             OFMessageRef inMsg = builder.value(in.toArray()).build();
             
             if ((provider != null) && (inMsg != null)) {
-               swRef.setVersion(builder.version());
-               getSender().tell(TcpMessage.write(ByteString.fromArray(builder.type("ofp_hello").build().encode())), getSelf());
-               this.state = State.CONNECTED;
-               getSender().tell(TcpMessage.write(ByteString.fromArray(builder.type("ofp_switch_features_request").build().encode())), getSelf());
+                if (inMsg.type().equals("OFPT_HELLO")) {
+                	log.info ("IN: Hello");
 
-               // TODO REMOVE THIS:
-               provider.init();
-               
-               tcpChannel = getSender();
+                    swRef.setVersion(builder.version());
+                    getSender().tell(TcpMessage.write(ByteString.fromArray(builder.type("ofp_hello").build().binary())), getSelf());
+                    this.state = State.CONNECTED;
+                    log.info ("STATE: Connected to OF Switch version "+ builder.version());
+                    getSender().tell(TcpMessage.write(ByteString.fromArray(builder.type("ofp_switch_features_request").build().binary())), getSelf());
+
+                    // TODO REMOVE THIS:
+                    provider.init();
+                    tcpChannel = getSender();
+                }
             }
             
             break;
          case CONNECTED:   
             in = ((Received) msg).data();
-            
-            if (provider.isSwitchFeatures(in.toArray())) {
-               if (provider.getDPID(in.toArray()) != null) {
-                  swRef.setDpid(provider.getDPID(in.toArray()));
-                  System.out.println("[OF-INFO] DPID: " + Long.toHexString(swRef.getDpid().longValue()) +" Feature Reply is received from the Switch ");
-                  System.out.println("[OF-INFO] Connected to Switch "+ Long.toHexString(swRef.getDpid().longValue()));
-                  state = State.HANDSHAKED;
-                  
-                  ofSessionHandler.tell(new OFEventHandshaked(swRef), getSelf());
-               }
+            inMsg = builder.value(in.toArray()).build();
+           
+            if (inMsg.type().equals("OFPT_FEATURES_REPLY")) {
+               log.info("IN: Features Reply");
+               byte[] DPID = inMsg.field("datapath_id");
+               swRef.setDpid(Convert.toLong(DPID));
+               log.info("INFO: Switch DPID is " + Long.toHexString(Convert.toLong(DPID)));
+             
+               state = State.HANDSHAKED;
+               ofSessionHandler.tell(new OFEventHandshaked(swRef), getSelf());
             }
+            
             break;
             
          case HANDSHAKED:
