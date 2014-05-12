@@ -15,9 +15,12 @@ import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.RecursiveTask;
 import java.util.concurrent.atomic.AtomicLong;
 
+import org.flowforwarding.warp.protocol.common.OFMessageRef;
+import org.flowforwarding.warp.protocol.common.OFMessageRef.OFMessageBuilder;
 import org.flowforwarding.warp.protocol.ofmessages.IOFMessageProvider;
 import org.flowforwarding.warp.protocol.ofmessages.IOFMessageProviderFactory;
 import org.flowforwarding.warp.protocol.ofmessages.OFMessageProviderFactoryAvroProtocol;
+import org.flowforwarding.warp.util.Convert;
 import org.jboss.netty.bootstrap.ServerBootstrap;
 import org.jboss.netty.buffer.BigEndianHeapChannelBuffer;
 import org.jboss.netty.buffer.ChannelBuffer;
@@ -112,7 +115,7 @@ public class JController {
       private Event event = null;
       
       public void update (Event event) {
-         log.info("REST Service EVENT");
+         log.info("WARP REST EVENT: ");
          Occured.getInstance().switchOn();
          this.event = event;
       }
@@ -127,7 +130,7 @@ public class JController {
                e.printStackTrace();
             }
             if (Occured.getInstance().isOccured()) {
-               log.info("REST Service INCOMING request");
+               log.info("WARP REST API: INCOMING request");
                entries = ((org.flowforwarding.warp.jcontroller.restapi.RestApiTask)this.event).join();
                handlerTask.write();
                Occured.getInstance().switchOff();
@@ -191,7 +194,8 @@ public class JController {
    
    public class ChannelHandler extends IdleStateHandler{
 //   public class ChannelHandler extends IdleStateAwareChannelHandler{
-      
+      OFMessageBuilder builder = null;
+      private OFMessageRef inMsg = null;
       private final Logger log =  LoggerFactory.getLogger(ChannelHandler.class);
       
       @Override
@@ -231,10 +235,12 @@ public class JController {
       @Override
       public void messageReceived( ChannelHandlerContext ctx, MessageEvent e) {
          transferredBytes.addAndGet(((ChannelBuffer) e.getMessage()).readableBytes());
+         
+         byte[] in = ((ChannelBuffer) e.getMessage()).array();
           
          switch (state) {
          case STARTED:
-             
+            builder = new OFMessageBuilder("avro", in);
              /*BasicFactory ofMessageFactory = null;
              if (ofMessageFactory == null) // lazy init
                 ofMessageFactory = new BasicFactory();
@@ -247,7 +253,7 @@ public class JController {
              e.getChannel().write(buf);
              buf.clear();*/
             
-            log.info("OUTGOING Message: HELLO");
+            log.info("WARP OUT: HELLO");
             BigEndianHeapChannelBuffer x = new BigEndianHeapChannelBuffer(provider.getHello(new ByteArrayOutputStream()).toByteArray());
             e.getChannel().write(x);
             x.clear();
@@ -258,34 +264,25 @@ public class JController {
             state = State.HANDSHAKED;
             break;
          case HANDSHAKED:
-            log.info("OUTGOING Message: SET_CONFIG");
+            synchronized (this) {
+            inMsg = builder.value(in).build();
+            if (inMsg.type().equals("OFPT_FEATURES_REPLY")) {
+               byte[] DPID = inMsg.field("datapath_id");
+               log.info("WARP INFO: Switch DPID is " + Long.toHexString(Convert.toLong(DPID)).toUpperCase());
+            }
+            }
+            log.info("WARP OUT: SET_CONFIG");
             BigEndianHeapChannelBuffer z = new BigEndianHeapChannelBuffer(provider.getSetSwitchConfig(new ByteArrayOutputStream()).toByteArray());
             e.getChannel().write(z);
             z.clear();
-            log.info("OUTGOING Message: GET_CONFIG_REQUEST");
+            log.info("WARP OUT: GET_CONFIG_REQUEST");
             BigEndianHeapChannelBuffer a = new BigEndianHeapChannelBuffer(provider.getSwitchConfigRequest(new ByteArrayOutputStream()).toByteArray());
             e.getChannel().write(a);
             state = State.CONFIG_READY;
-            
-            /*BigEndianHeapChannelBuffer b = new BigEndianHeapChannelBuffer(provider.getFlowModTest(new ByteArrayOutputStream()).toByteArray());
-            e.getChannel().write(b);*/ 
-
+ 
             break;
          case CONFIG_READY:
             
-/*            BasicFactory ofMessageFactory = null;
-            if (ofMessageFactory == null) // lazy init
-               ofMessageFactory = new BasicFactory();
-
-            OFFlowMod emptyFlowMod = (OFFlowMod) ofMessageFactory
-                   .getMessage(OFType.FLOW_MOD);
-
-            initDefaultFlowMod(emptyFlowMod);
-            
-            ChannelBuffer buf = ChannelBuffers.buffer(emptyFlowMod.getLengthU());
-            emptyFlowMod.writeTo(buf);
-            e.getChannel().write(buf);
- //           buf.clear();*/
             state = State.READY;            
 
             break;
@@ -299,7 +296,7 @@ public class JController {
          Set<String> dpids = entries.keySet();
          
          for (String dpid : dpids) {
-            log.info("OUTGOING Message: FLOW_MOD");
+            log.info("WARP OUT: FLOW_MOD");
             BigEndianHeapChannelBuffer b = new BigEndianHeapChannelBuffer(provider.getFlowMod(entries.get(dpid), new ByteArrayOutputStream()).toByteArray());
             channel.write(b);
          }
