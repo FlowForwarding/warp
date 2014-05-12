@@ -34,14 +34,17 @@ public class OFMessageRef {
             internal = builder.container.structure("ofp_hello", builder.binValue);
             break;
          case "OFPT_ERROR":
-             internal = builder.container.structure("ofp_error", builder.binValue);
+            internal = builder.container.structure("ofp_error", builder.binValue);
              break;
          case "OFPT_FEATURES_REQUEST":
-             internal = builder.container.structure("ofp_switch_features_request", builder.binValue);
+            internal = builder.container.structure("ofp_switch_features_request", builder.binValue);
              break;
          case "OFPT_FEATURES_REPLY":
-             internal = builder.container.structure("ofp_switch_features", builder.binValue);
+            internal = builder.container.structure("ofp_switch_features", builder.binValue);
              break;
+         case "OFPT_GET_CONFIG_REPLY":
+            internal = builder.container.structure("ofp_switch_config", builder.binValue);
+            break;
          default:
             break;
          }

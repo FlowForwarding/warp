@@ -98,16 +98,23 @@ public class SwitchNurse extends UntypedActor {
                log.info("IN: Features Reply");
                byte[] DPID = inMsg.field("datapath_id");
                swRef.setDpid(Convert.toLong(DPID));
-               log.info("INFO: Switch DPID is " + Long.toHexString(Convert.toLong(DPID)));
+               log.info("INFO: Switch DPID is " + Long.toHexString(Convert.toLong(DPID)).toUpperCase());
              
                state = State.HANDSHAKED;
                ofSessionHandler.tell(new OFEventHandshaked(swRef), getSelf());
+               
+               getSender().tell(TcpMessage.write(ByteString.fromArray(builder.type("ofp_get_config_request").build().binary())), getSelf());
             }
             
             break;
             
          case HANDSHAKED:
             in = ((Received) msg).data();
+            inMsg = builder.value(in.toArray()).build();
+            
+            if (inMsg.type().equals("OFPT_GET_CONFIG_REPLY")) {
+               log.info("IN: Config Reply");
+            }
             
             if (provider.isConfig(in.toArray())) {
                System.out.println("[OF-INFO] DPID: " + Long.toHexString(swRef.getDpid().longValue()) +" Switch Config is received from the Switch ");
