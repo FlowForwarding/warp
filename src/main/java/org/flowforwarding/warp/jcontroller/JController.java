@@ -6,6 +6,7 @@ package org.flowforwarding.warp.jcontroller;
 
 import java.io.ByteArrayOutputStream;
 import java.net.InetSocketAddress;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
@@ -196,20 +197,13 @@ public class JController {
 //   public class ChannelHandler extends IdleStateAwareChannelHandler{
       OFMessageBuilder builder = null;
       private OFMessageRef inMsg = null;
+      private Map<byte[], Channel> DPIDs = new HashMap<>();
       private final Logger log =  LoggerFactory.getLogger(ChannelHandler.class);
       
       @Override
       protected void channelIdle(ChannelHandlerContext ctx, IdleState state,
             long lastActivityTimeMillis) throws Exception {
 
-/*         if (ofMessageFactory == null) // lazy init
-            ofMessageFactory = new BasicFactory();
-
-         OFEchoRequest echoReq = (OFEchoRequest) ofMessageFactory.getMessage(OFType.ECHO_REQUEST);
-         
-         ChannelBuffer buf = ChannelBuffers.buffer(echoReq.getLengthU());
-         echoReq.writeTo(buf);*/
-         
          BigEndianHeapChannelBuffer buf = new BigEndianHeapChannelBuffer(provider.encodeEchoRequest());
          channel.write(buf);
          buf.clear();
@@ -241,18 +235,6 @@ public class JController {
          switch (state) {
          case STARTED:
             builder = new OFMessageBuilder("avro", in);
-             /*BasicFactory ofMessageFactory = null;
-             if (ofMessageFactory == null) // lazy init
-                ofMessageFactory = new BasicFactory();
-
-             OFHello helloMsg = (OFHello) ofMessageFactory
-                    .getMessage(OFType.HELLO);
-             
-             ChannelBuffer buf = ChannelBuffers.buffer(helloMsg.getLengthU());
-             helloMsg.writeTo(buf);
-             e.getChannel().write(buf);
-             buf.clear();*/
-            
             log.info("WARP OUT: HELLO");
             BigEndianHeapChannelBuffer x = new BigEndianHeapChannelBuffer(provider.getHello(new ByteArrayOutputStream()).toByteArray());
             e.getChannel().write(x);
@@ -267,8 +249,8 @@ public class JController {
             synchronized (this) {
             inMsg = builder.value(in).build();
             if (inMsg.type().equals("OFPT_FEATURES_REPLY")) {
-               byte[] DPID = inMsg.field("datapath_id");
-               log.info("WARP INFO: Switch DPID is " + Long.toHexString(Convert.toLong(DPID)).toUpperCase());
+               DPIDs.put(inMsg.field("datapath_id"), e.getChannel());
+               log.info("WARP INFO: Switch DPID is " + Long.toHexString(Convert.toLong(inMsg.field("datapath_id"))).toUpperCase());
             }
             }
             log.info("WARP OUT: SET_CONFIG");
@@ -292,50 +274,21 @@ public class JController {
       }
       
       public void write() {
-         //System.out.println(">>>> write: entering");
-         Set<String> dpids = entries.keySet();
+         Set<String> commands = entries.keySet();
          
-         for (String dpid : dpids) {
+         for (String command : commands) {
+            if (command.contains("show")) {
+               Set<byte[]> dpids = DPIDs.keySet();
+               log.info("WARP INFO: Switches connected ");
+               for (byte[] dpid : dpids)
+                  log.info("          | " + Long.toHexString(Convert.toLong(dpid)).toUpperCase());
+               break;
+            }
+
             log.info("WARP OUT: FLOW_MOD");
-            BigEndianHeapChannelBuffer b = new BigEndianHeapChannelBuffer(provider.getFlowMod(entries.get(dpid), new ByteArrayOutputStream()).toByteArray());
+            BigEndianHeapChannelBuffer b = new BigEndianHeapChannelBuffer(provider.getFlowMod(entries.get(command), new ByteArrayOutputStream()).toByteArray());
             channel.write(b);
          }
-        
-//         while (it.hasNext()) {
-           // System.out.println(">>>> write: 1");
-//            Map<String, OFFlowMod> flows = entries.get(it.next());
-//            Set<String> flowNames = flows.keySet();
-//            Iterator<String> flowIt = flowNames.iterator();
-            
-//            while (flowIt.hasNext()) {
-             //  System.out.println(">>>> write: 2");
-//               OFFlowMod flow = flows.get(flowIt.next());
-//               ChannelBuffer buf = ChannelBuffers.buffer(flow.getLengthU());
-//               flow.writeTo(buf);
-               //System.out.println(">>>> write: " + buf.toString());
-//               channel.write(buf);
-//               buf.clear();
-//            }
-//         }
       }
    }
-   
-/*   public static void initDefaultFlowMod(OFFlowMod fm) {
-      fm.setIdleTimeout((short) 0);   // infinite
-      fm.setHardTimeout((short) 0);   // infinite
-      //fm.setBufferId(OFPacketOut.BUFFER_ID_NONE);
-      fm.setBufferId(0);
-      fm.setCommand((byte) OFFlowMod.OFPFC_DELETE);
-      fm.setFlags((short) 0);
-      fm.setOutPort(OFPort.OFPP_NONE.getValue());
-      // TODO DO StaticFlowEntryPusher - setCookie
-      //fm.setCookie(computeEntryCookie(fm, 0, entryName));
-      fm.setCookie(0);
-      //fm.setPriority(Short.MIN_VALUE);
-      fm.setPriority(Short.valueOf("0"));
-      
-      OFMatch2 ofMatch2 = new OFMatch2();
-      fm.setMatch2(ofMatch2);
-      
-  }*/
 }

@@ -44,6 +44,7 @@ public class RestApiTask extends RecursiveTask <Map<String, Map<String, Object>>
    private Map<String, Map<String, Object>> entries;
    //private Map<String, Object> entries;
    
+   public static final String SHOW = "show";
    public static final String NAME = "name";
    public static final String SWITCH = "switch_id";
    public static final String ACTIVE = "active";
@@ -263,6 +264,8 @@ public class RestApiTask extends RecursiveTask <Map<String, Map<String, Object>>
            entry.put(IPV6_EXTHDR, jp.getText());        //39
         else if (n == "tos-bits")
            entry.put(NW_TOS, jp.getText());
+        else if (n == "show")
+           entry.put(SHOW, jp.getText());
       }
       
       return entry;
