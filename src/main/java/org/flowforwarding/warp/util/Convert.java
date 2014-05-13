@@ -4,6 +4,9 @@
  */
 package org.flowforwarding.warp.util;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 /**
  * @author Infoblox Inc.
  *
@@ -33,5 +36,36 @@ public class Convert {
       
       return res;
    }
+   
+   public static byte[] dpidToBytes (String id) {
+      
+      byte[] dpid = new byte[8];
+//      Matcher matcher = Pattern.compile("^([0-9A-Fa-f]{2}[\\.:-]){7}([0-9A-Fa-f]{2})$").matcher(id);
+//      Matcher matcher = Pattern.compile("^([0-9A-Fa-f]{2}[\\.:-]){7}([0-9A-Fa-f]{2})$").matcher(id);      
+//      Matcher matcher = Pattern.compile("^([0-9A-F]{2}[:-]){7}([0-9A-F]{2})$").matcher(id);
+      Matcher matcher = Pattern.compile("(?:(\\p{XDigit}+)\\:(\\p{XDigit}+)\\:(\\p{XDigit}+)\\:(\\p{XDigit}+)\\:(\\p{XDigit}+)\\:(\\p{XDigit}+):(\\p{XDigit}+):(\\p{XDigit}+))").matcher(id);
+      
+      if (matcher.matches()) {
+         for (int i=0; i<8; i++) {
+            if (matcher.group(i+1) != null) {
+               try {
+                  dpid[i] = getByte("0x" + matcher.group(i+1));
+                }
+                catch (NumberFormatException e) {
+                    return null;
+                }
+            }
+            else {
+               return null;
+            }
+        }
+      } else
+         return null;
 
+      return dpid;
+   }
+   
+   private static byte getByte(String str) {
+      return Integer.decode(str).byteValue();
+  }
 }

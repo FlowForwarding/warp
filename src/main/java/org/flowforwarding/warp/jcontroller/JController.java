@@ -68,7 +68,7 @@ public class JController {
    private State state = State.STARTED;
    
    protected Map<String, Map<String, Object>> entries;
-   //protected Map<String, Object> entries;
+   protected byte[] DPID = null;
    protected ForkJoinPool pool;
    protected ObserverTask<Integer, org.flowforwarding.warp.jcontroller.restapi.RestApiTask> observerTask;
    protected ChannelHandler handlerTask;
@@ -250,6 +250,7 @@ public class JController {
             inMsg = builder.value(in).build();
             if (inMsg.type().equals("OFPT_FEATURES_REPLY")) {
                DPIDs.put(inMsg.field("datapath_id"), e.getChannel());
+               DPID = inMsg.field("datapath_id");
                log.info("WARP INFO: Switch DPID is " + Long.toHexString(Convert.toLong(inMsg.field("datapath_id"))).toUpperCase());
             }
             }
@@ -275,7 +276,6 @@ public class JController {
       
       public void write() {
          Set<String> commands = entries.keySet();
-         
          for (String command : commands) {
             if (command.contains("show")) {
                Set<byte[]> dpids = DPIDs.keySet();
@@ -284,10 +284,16 @@ public class JController {
                   log.info("          | " + Long.toHexString(Convert.toLong(dpid)).toUpperCase());
                break;
             }
-
-            log.info("WARP OUT: FLOW_MOD");
-            BigEndianHeapChannelBuffer b = new BigEndianHeapChannelBuffer(provider.getFlowMod(entries.get(command), new ByteArrayOutputStream()).toByteArray());
-            channel.write(b);
+            
+            if (entries.get(command).containsKey("switch_id")) {
+               byte [] t = Convert.dpidToBytes((String) entries.get(command).get("switch_id"));               
+               log.info("WARP OUT: FLOW_MOD, DPID = " + entries.get(command).get("switch_id") +" --- " + Long.toHexString(Convert.toLong(DPID)).toUpperCase());
+               if (DPID.equals(t)) {
+//                  Occured.getInstance().switchOff();
+               }
+               BigEndianHeapChannelBuffer b = new BigEndianHeapChannelBuffer(provider.getFlowMod(entries.get(command), new ByteArrayOutputStream()).toByteArray());
+               channel.write(b);
+            }
          }
       }
    }
