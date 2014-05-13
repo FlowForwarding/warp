@@ -287,12 +287,17 @@ public class JController {
             
             if (entries.get(command).containsKey("switch_id")) {
                byte [] t = Convert.dpidToBytes((String) entries.get(command).get("switch_id"));               
-               log.info("WARP OUT: FLOW_MOD, DPID = " + entries.get(command).get("switch_id") +" --- " + Long.toHexString(Convert.toLong(DPID)).toUpperCase());
-               if (DPID.equals(t)) {
-//                  Occured.getInstance().switchOff();
-               }
+               log.info("WARP OUT: FLOW_MOD, DPID = " + entries.get(command).get("switch_id"));
+
                BigEndianHeapChannelBuffer b = new BigEndianHeapChannelBuffer(provider.getFlowMod(entries.get(command), new ByteArrayOutputStream()).toByteArray());
-               channel.write(b);
+               
+               Set<byte[]> dpids = DPIDs.keySet();
+               log.info("WARP INFO: Switches connected ");
+               for (byte[] dpid : dpids) {
+                  if (Convert.toLong(dpid).longValue() == Convert.toLong(t).longValue()) 
+                     DPIDs.get(dpid).write(b);
+               }
+//               channel.write(b);
             }
          }
       }
