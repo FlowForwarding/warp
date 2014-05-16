@@ -13,19 +13,25 @@ import java.util.regex.Pattern;
  */
 public class Convert {
    
-   public static Long toLong(byte[] buffer) {
+   public static void main(String[] args) {
+      toArray("0x567778");
+      toArray("0x56777D");
+      toArray("0x56777d");
+      toArray("56777D");
+      toArray("567770");
+   }
+   
+   public static long toLong(byte[] buffer) {
+      //TODO Improvs: Throw an exception in case size is more than 8?
       long result = 0;
-
-      result |=  ((long)(buffer[7])  & 255);
-      result |=  (((long)(buffer[6])  & 255) << 8);
-      result |=  (((long)(buffer[5])  & 255) << 16);
-      result |=  (((long)(buffer[4])  & 255) << 24);
-      result |=  (((long)(buffer[3])  & 255) << 32);
-      result |=  (((long)(buffer[2])  & 255) << 40);
-      result |=  (((long)(buffer[1])  & 255) << 48);
-      result |=  (((long)(buffer[0])  & 255) << 56);
-
-		return new Long(result);
+      int shift = 8 * (buffer.length - 1);
+      
+      for (byte b : buffer) {
+         result |= ((long)(b & 255)) << shift;
+         shift -= 8;
+      }
+      
+		return result;
    }
    
    public static String toHexString (byte[] buffer) {
@@ -35,6 +41,26 @@ public class Convert {
       }
       
       return res;
+   }
+   
+   public static byte[] toArray (String in) {
+      
+      String patternHex = "(?:0[xX])?[0-9a-fA-F]+";
+      String patternDec = "(?:0[dD])?[0-9]+";
+      
+      Matcher matchDec = Pattern.compile(patternDec).matcher(in);
+      if (matchDec.matches()) {
+         System.out.println("Decimal");
+         return null;
+      }
+
+      Matcher matchHex = Pattern.compile(patternHex).matcher(in);
+      if (matchHex.matches()) {
+         System.out.println("Hexadecimal");
+         return null;
+      }
+      
+      return null;
    }
    
    public static byte[] dpidToBytes (String id) {

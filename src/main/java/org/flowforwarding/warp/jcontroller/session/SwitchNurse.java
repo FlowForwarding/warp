@@ -113,11 +113,10 @@ public class SwitchNurse extends UntypedActor {
             inMsg = builder.value(in.toArray()).build();
             
             if (inMsg.type().equals("OFPT_GET_CONFIG_REPLY")) {
-               log.info("IN: Config Reply");
+               log.info("IN: Config Reply from Switch " + Long.toHexString(swRef.getDpid().longValue()));
             }
             
             if (provider.isConfig(in.toArray())) {
-               System.out.println("[OF-INFO] DPID: " + Long.toHexString(swRef.getDpid().longValue()) +" Switch Config is received from the Switch ");
                ofSessionHandler.tell(new OFEventSwitchConfig(swRef, provider.parseSwitchConfig(in.toArray())), getSelf());
             } else if (provider.isPacketIn(in.toArray())) {
                System.out.println("[OF-INFO] DPID: " + Long.toHexString(swRef.getDpid().longValue()) +" Packet-In is received from the Switch");

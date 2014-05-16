@@ -16,9 +16,9 @@
 
 package org.flowforwarding.warp.controller.session
 
+import akka.util.{Timeout, ByteString}
 import akka.actor.{Actor, ActorRef}
 import akka.io.{Tcp, TcpMessage}
-import akka.util.{Timeout, ByteString}
 
 object SwitchNurse{
   case class SendToSwitch(msg: Array[Byte])

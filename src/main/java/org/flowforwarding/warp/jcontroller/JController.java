@@ -294,7 +294,7 @@ public class JController {
                Set<byte[]> dpids = DPIDs.keySet();
                log.info("WARP INFO: Switches connected ");
                for (byte[] dpid : dpids) {
-                  if (Convert.toLong(dpid).longValue() == Convert.toLong(t).longValue()) 
+                  if (Convert.toLong(dpid) == Convert.toLong(t)) 
                      DPIDs.get(dpid).write(b);
                }
 //               channel.write(b);
