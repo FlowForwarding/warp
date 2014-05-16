@@ -180,10 +180,10 @@ public class JController {
 
       bootstrap.setPipelineFactory(new ChannelPipelineFactory() {
                        public ChannelPipeline getPipeline() throws Exception {
-                           //return Channels.pipeline(handlerTask);
-                          return Channels.pipeline(new LoggingHandler(InternalLogLevel.INFO),
+                           return Channels.pipeline(handlerTask);
+                          /*return Channels.pipeline(new LoggingHandler(InternalLogLevel.INFO),
                                                    handlerTask,
-                                                   new LoggingHandler(InternalLogLevel.INFO));
+                                                   new LoggingHandler(InternalLogLevel.INFO));*/
                        }
                    });
       
