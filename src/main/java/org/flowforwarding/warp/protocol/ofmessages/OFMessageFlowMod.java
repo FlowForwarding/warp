@@ -11,12 +11,12 @@ import java.util.List;
 import org.flowforwarding.warp.protocol.ofstructures.MatchSet;
 import org.flowforwarding.warp.protocol.ofstructures.OFStructureInstruction;
 import org.flowforwarding.warp.protocol.ofstructures.OFStructureInstruction.OFStructureInstructionRef;
-import org.flowforwarding.warp.protocol.ofstructures.Tuple;
 import org.flowforwarding.warp.protocol.supply.OFMAddField;
 import org.flowforwarding.warp.protocol.supply.OFMAddInstruction;
 import org.flowforwarding.warp.protocol.supply.OFMAddMatch;
 import org.flowforwarding.warp.protocol.supply.OFMGetInstructions;
 import org.flowforwarding.warp.protocol.supply.OFMGetMatches;
+import org.flowforwarding.warp.util.Tuple;
 
 /**
  * @author Infoblox Inc.

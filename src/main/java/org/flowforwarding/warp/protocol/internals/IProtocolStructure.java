@@ -10,8 +10,9 @@ package org.flowforwarding.warp.protocol.internals;
  */
 public interface IProtocolStructure <External, Internal> extends IProtocolItem <External, Internal>{
    public Internal get();
-   public Internal get(String name);
+   public IProtocolItem<External, Internal> get(String name);
    public void add(IProtocolItem<External, Internal> value);
+   public void set(String name, byte[] value);
    public byte[] binary(String name);
    public byte[] binary();
 }

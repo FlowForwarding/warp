@@ -9,5 +9,5 @@ package org.flowforwarding.warp.protocol.internals;
  *
  */
 public interface IProtocolAtom <External, Internal> extends IProtocolItem <External, Internal>{
-   public void set(External value);
+   public void set(byte[] value);
 }

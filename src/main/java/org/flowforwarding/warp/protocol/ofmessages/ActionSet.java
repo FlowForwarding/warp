@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.flowforwarding.warp.protocol.ofstructures.Tuple;
+import org.flowforwarding.warp.util.Tuple;
 
 /**
  * @author Infoblox Inc.

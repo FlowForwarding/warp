@@ -4,7 +4,7 @@
  */
 package org.flowforwarding.warp.protocol.offields.match;
 
-import org.flowforwarding.warp.protocol.ofstructures.Tuple;
+import org.flowforwarding.warp.util.Tuple;
 
 /**
  * @author Infoblox Inc.

@@ -28,7 +28,7 @@ import org.flowforwarding.warp.protocol.internals.avro.AvroEnum.*;
  * @author Infoblox Inc.
  *
  */
-public class AvroProtocol implements IProtocolContainer<String, GenericContainer>{
+public class AvroProtocol implements IProtocolContainer<String, GenericContainer> {
 
    private String avprSrc;
    private byte version;
@@ -95,6 +95,8 @@ public class AvroProtocol implements IProtocolContainer<String, GenericContainer
       for (Field field : fields) {
          if (field.schema().getType().getName().equalsIgnoreCase("fixed")) {
             b.addItemBuilder(field.name(), new AvroFixedBuilder(field.name(), field.schema()));
+            if (field.defaultValue() == null)
+               b.notReadyToBuild();
          } else if (field.schema().getType().getName().equalsIgnoreCase("record")) {
             b.addItemBuilder(field.name(), makeRecordBuilder(field.name(), field.schema()));
          }

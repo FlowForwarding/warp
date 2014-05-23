@@ -60,9 +60,9 @@ public class AvroFixedField implements IProtocolAtom <String, GenericContainer>{
    }
 
    @Override
-   public void set(String value) {
-      // TODO Auto-generated method stub
-      return;
+   public void set(byte [] value) {
+      // TODO Improvs: Exception in case of size inconsistence
+      this.binValue = value;
    }
    
    //TODO Improvs: should we declare it in IProtocolAtom 

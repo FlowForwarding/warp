@@ -45,7 +45,6 @@ import org.flowforwarding.warp.protocol.ofstructures.IOFStructureBuilder;
 import org.flowforwarding.warp.protocol.ofstructures.OFStructureBuilder13;
 import org.flowforwarding.warp.protocol.ofstructures.OFStructureInstruction;
 import org.flowforwarding.warp.protocol.ofstructures.OFStructureInstruction.OFStructureInstructionRef;
-import org.flowforwarding.warp.protocol.ofstructures.Tuple;
 import org.apache.avro.generic.GenericData.Fixed;
 import org.apache.avro.generic.GenericDatumReader;
 import org.apache.avro.generic.GenericDatumWriter;
@@ -59,6 +58,7 @@ import org.apache.avro.io.DecoderFactory;
 import org.apache.avro.io.Encoder;
 import org.apache.avro.io.EncoderFactory;
 import org.apache.avro.specific.SpecificFixed;
+import org.flowforwarding.warp.util.Tuple;
 import org.flowforwarding.warp.util.U16;
 import org.flowforwarding.warp.util.U8;
 

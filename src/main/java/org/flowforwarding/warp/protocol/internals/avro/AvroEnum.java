@@ -76,7 +76,7 @@ public class AvroEnum implements IProtocolAtom <String, GenericContainer> {
    }
 
    @Override
-   public void set(String value) {
+   public void set(byte[] value) {
       // TODO Improve: throw Exception??!
    }
    
@@ -98,6 +98,8 @@ public class AvroEnum implements IProtocolAtom <String, GenericContainer> {
       @Override
       public AvroEnumBuilder value (byte[] in) {
          this.binValue = in;
+         //TODO Improvs: Fixed only?
+         this.value = new GenericData.Fixed(schema, in);
          
          return this;
       }

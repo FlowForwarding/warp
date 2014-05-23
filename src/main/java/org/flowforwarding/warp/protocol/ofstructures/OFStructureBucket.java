@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.flowforwarding.warp.protocol.ofmessages.ActionSet;
+import org.flowforwarding.warp.util.Tuple;
 
 public class OFStructureBucket  implements IOFStructure {
    

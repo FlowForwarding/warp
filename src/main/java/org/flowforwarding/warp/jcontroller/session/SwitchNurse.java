@@ -72,16 +72,15 @@ public class SwitchNurse extends UntypedActor {
             
             builder = new OFMessageBuilder("avro", in.toArray());
             OFMessageRef inMsg = builder.value(in.toArray()).build();
-            
+
             if ((provider != null) && (inMsg != null)) {
                 if (inMsg.type().equals("OFPT_HELLO")) {
                 	log.info ("IN: Hello");
-
                     swRef.setVersion(builder.version());
-                    getSender().tell(TcpMessage.write(ByteString.fromArray(builder.type("ofp_hello").build().binary())), getSelf());
+                    getSender().tell(TcpMessage.write(ByteString.fromArray(builder.type("ofp_hello").set("header.xid", "0x0000").build().binary())), getSelf());
                     this.state = State.CONNECTED;
                     log.info ("STATE: Connected to OF Switch version "+ builder.version());
-                    getSender().tell(TcpMessage.write(ByteString.fromArray(builder.type("ofp_switch_features_request").build().binary())), getSelf());
+                    getSender().tell(TcpMessage.write(ByteString.fromArray(builder.type("ofp_switch_features_request").set("xid", "0x0000").build().binary())), getSelf());
 
                     // TODO REMOVE THIS:
                     provider.init();
@@ -113,8 +112,10 @@ public class SwitchNurse extends UntypedActor {
             inMsg = builder.value(in.toArray()).build();
             
             if (inMsg.type().equals("OFPT_GET_CONFIG_REPLY")) {
+               OFMessageRef flowModRef = builder.type("ofp_flow_mod").build();
                log.info("IN: Config Reply from Switch " + Long.toHexString(swRef.getDpid().longValue()));
-            }
+               
+            } 
             
             if (provider.isConfig(in.toArray())) {
                ofSessionHandler.tell(new OFEventSwitchConfig(swRef, provider.parseSwitchConfig(in.toArray())), getSelf());

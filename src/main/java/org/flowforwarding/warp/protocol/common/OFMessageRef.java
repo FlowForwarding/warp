@@ -4,6 +4,11 @@
  */
 package org.flowforwarding.warp.protocol.common;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.apache.avro.generic.GenericContainer;
 import org.apache.avro.generic.GenericData.Fixed;
 import org.flowforwarding.warp.protocol.internals.IProtocolAtom;
@@ -11,6 +16,7 @@ import org.flowforwarding.warp.protocol.internals.IProtocolContainer;
 import org.flowforwarding.warp.protocol.internals.IProtocolStructure;
 import org.flowforwarding.warp.protocol.internals.avro.AvroProtocol;
 import org.flowforwarding.warp.protocol.internals.avro.AvroRecord;
+import org.flowforwarding.warp.util.*;
 
 /**
  * @author Infoblox Inc.
@@ -20,14 +26,14 @@ public class OFMessageRef {
    
    private String ofType = "";
    private int version;
-   private IProtocolStructure<String, GenericContainer> internal;
+   private IProtocolStructure<?, ?> internal;
    
    private OFMessageRef(OFMessageBuilder builder) {
       if (builder.binValue == null) {
          internal = builder.container.structure(builder.msgType, builder.binValue);
       } else {
          internal = builder.container.structure("ofp_header", builder.binValue);
-         ofType = builder.container.atom("ofp_type", internal.get("type")).name();
+         ofType = builder.container.atom("ofp_type", internal.binary("type")).name();
          
          switch (ofType) {
          case "OFPT_HELLO": 
@@ -49,6 +55,11 @@ public class OFMessageRef {
             break;
          }
       }
+      for (Tuple <String, String>t : builder.items) {
+         this.set(t.getName(), t.getValue());
+      }
+      
+      builder.items.clear();
    }
    
    public byte[] binary() {
@@ -63,11 +74,16 @@ public class OFMessageRef {
 	   return ofType;
    }
    
-   public static class OFMessageBuilder{
+   public void set(String name, String value) {
+      internal.set(name, Convert.toArray(value));
+   }
+   
+   public static class OFMessageBuilder {
       
-      private final IProtocolContainer<String, GenericContainer> container;
+      private final IProtocolContainer<?, ?> container;
       private String msgType;
       private byte[] binValue;
+      private List<Tuple<String, String>> items = new ArrayList<>();
       private final byte version;
       
       public OFMessageBuilder (String containerType, String src) {
@@ -80,7 +96,7 @@ public class OFMessageRef {
             version = (byte) 0xff;
          }
       }
-      
+
       public OFMessageBuilder (String containerType, byte[] in) {
          
          if (containerType.equalsIgnoreCase("avro")) {
@@ -99,6 +115,11 @@ public class OFMessageRef {
       
       public OFMessageBuilder value(byte[] in) {
          this.binValue = in;
+         return this;
+      }
+      
+      public OFMessageBuilder set(String name, String value) {
+         items.add(new Tuple<>(name, value));         
          return this;
       }
       

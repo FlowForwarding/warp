@@ -14,11 +14,31 @@ import java.util.regex.Pattern;
 public class Convert {
    
    public static void main(String[] args) {
-      toArray("0x567778");
-      toArray("0x56777D");
-      toArray("0x56777d");
-      toArray("56777D");
-      toArray("567770");
+//      dpidToBytes("00:00:00:00:00:00:00:00");
+      for (byte i : toArray("56777D")) {
+         System.out.print(i + ", ");
+      }
+      System.out.println("56777D");
+      
+      for (byte i : toArray("0x57773")) {
+         System.out.print(i + ", ");
+      }
+      System.out.println("0x57773");
+      
+      for (byte i : toArray("0x56777D")) {
+         System.out.print(i + ", ");
+      }
+      System.out.println("0x56777D");
+      
+      for (byte i : toArray("0x56777d")) {
+         System.out.print(i + ", ");
+      }
+      System.out.println("0x56777d");
+      
+      for (byte i : toArray("567770")) {
+         System.out.print(i + ", ");
+      }
+      System.out.println("567770");
    }
    
    public static long toLong(byte[] buffer) {
@@ -45,21 +65,30 @@ public class Convert {
    
    public static byte[] toArray (String in) {
       
-      String patternHex = "(?:0[xX])?[0-9a-fA-F]+";
-      String patternDec = "(?:0[dD])?[0-9]+";
-      
+      String patternHex = "(?:0[xX])?([0-9a-fA-F]+)";
+      String patternDec = "(?:0[dD])?([0-9]+)";
+
       Matcher matchDec = Pattern.compile(patternDec).matcher(in);
       if (matchDec.matches()) {
-         System.out.println("Decimal");
-         return null;
-      }
+         char[] nums = matchDec.group(1).toCharArray();
+         byte[] result = new byte[nums.length];
+         int i = 0;
+         for (char n : nums) {
+            result[i++] = (byte)Character.getNumericValue(n);
+         }
+         return result;
+      } 
 
       Matcher matchHex = Pattern.compile(patternHex).matcher(in);
       if (matchHex.matches()) {
-         System.out.println("Hexadecimal");
-         return null;
+         char[] nums = matchHex.group(1).toCharArray();
+         byte[] result = new byte[nums.length];
+         int i = 0;
+         for (char n : nums) {
+            result[i++] = (byte)Character.getNumericValue(n);
+         }
+         return result;
       }
-      
       return null;
    }
    

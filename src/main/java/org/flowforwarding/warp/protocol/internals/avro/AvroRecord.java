@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericContainer;
@@ -39,7 +40,7 @@ public class AvroRecord implements IProtocolStructure <String, GenericContainer>
    protected String name;
    protected Schema schema;
    protected GenericRecord recordValue;
-   protected List<IProtocolItem<String, GenericContainer>> items = new ArrayList<>();
+   protected Map<String, IProtocolItem<String, GenericContainer>> items = new HashMap<>();
    
    private AvroRecord (AvroRecordBuilder builder) {
       name = builder.name;
@@ -61,18 +62,18 @@ public class AvroRecord implements IProtocolStructure <String, GenericContainer>
    }
 
    @Override
-   public GenericContainer get(String name) {
-      if (recordValue != null) {
-         return (GenericContainer) recordValue.get(name);
-      } else
-         return null;
+   public IProtocolItem<String, GenericContainer> get(String name) {
+      // TODO Improvs: Exception is 
+         return items.get(name);
    }
    
    @Override
    public GenericContainer get() {
       
       GenericRecordBuilder builder = new GenericRecordBuilder(schema);
-      for (IProtocolItem<String, GenericContainer> item : items) {
+      Set<String> keys = items.keySet();
+      for (String key : keys) {
+         IProtocolItem<String, GenericContainer> item = items.get(key);
          GenericContainer val = item.get();
          // TODO Improv. I dislike this NULL verification
          if (val != null)
@@ -86,7 +87,7 @@ public class AvroRecord implements IProtocolStructure <String, GenericContainer>
    @Override
    public void add(IProtocolItem<String, GenericContainer> item) {
       // TODO Improvs: Check name against Avro Schema
-      items.add(item);
+      items.put(item.name(), item);
    }
    
    @Override
@@ -102,9 +103,6 @@ public class AvroRecord implements IProtocolStructure <String, GenericContainer>
       return recordValue;
    }
    
-   /* (non-Javadoc)
-    * @see org.flowforwarding.warp.protocol.internals.IProtocolStructure#encode()
-    */
    @Override
    public byte[] binary() {
       GenericRecord record = (GenericRecord) get();
@@ -125,6 +123,22 @@ public class AvroRecord implements IProtocolStructure <String, GenericContainer>
    }
    
    @Override
+   public void set(String name, byte[] value) {
+      String[] names = name. split("\\.");
+      IProtocolItem<String, GenericContainer> item = this;
+      for (String n : names) {
+         if (item instanceof AvroRecord) {
+            item = ((AvroRecord) item).get(n);
+            continue;
+         }
+      }
+      // TODO Improve: Is Non-Fixed value possible at the end?
+      if (item instanceof AvroFixedField)
+         ((AvroFixedField) item).set(value);
+      return;
+   }
+
+   @Override
    public byte[] binary(String name) {
 	   if (recordValue != null) {
 		   //TODO Improvs: excepion should be thrown in case of wrong field name
@@ -139,6 +153,7 @@ public class AvroRecord implements IProtocolStructure <String, GenericContainer>
       protected Map<String, IProtocolBuilder<String, GenericContainer>> builders = new HashMap<>();
       protected GenericRecord value;
       protected byte[] binValue;
+      protected boolean readyToBuild = true;
       
       public AvroRecordBuilder (String nm, Schema sch) {
          name = nm;
@@ -173,5 +188,11 @@ public class AvroRecord implements IProtocolStructure <String, GenericContainer>
       public void addItemBuilder (String nm, IProtocolBuilder<String, GenericContainer> builder) {
          builders.put(nm, builder);
       }
+      
+      public void notReadyToBuild () {
+         readyToBuild = false;
+      }
+      
+      public boolean isReadyToBuild() {return readyToBuild;}
    }
 }
