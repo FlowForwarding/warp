@@ -24,6 +24,9 @@ import org.flowforwarding.warp.protocol.internals.avro.AvroFixedField.*;
 import org.flowforwarding.warp.protocol.internals.avro.AvroRecord.*;
 import org.flowforwarding.warp.protocol.internals.avro.AvroEnum.*;
 
+import com.typesafe.config.Config;
+import com.typesafe.config.ConfigFactory;
+
 /**
  * @author Infoblox Inc.
  *
@@ -110,13 +113,28 @@ public class AvroProtocol implements IProtocolContainer<String, GenericContainer
    }
    
    public static AvroProtocol getInstance (byte version) {
-      switch (version) {
+      Config conf = ConfigFactory.load();
+      String warpConf = conf.getString("warp-conf");
+      Config warpConfig = ConfigFactory.load(warpConf);
+      
+      /*switch (version) {
       case 0x5:
          return getInstance("of_protocol_14.avpr");
       case 0x4:
          return getInstance("of_protocol_13.avpr");
       case 0x3:
          return getInstance("of_protocol_12.avpr");         
+      default:
+         return null;   
+      }*/
+      
+      switch (version) {
+      case 0x5:
+         return getInstance(warpConfig.getString("driver-prop.ofp_5"));
+      case 0x4:
+         return getInstance(warpConfig.getString("driver-prop.ofp_4"));
+      case 0x3:
+         return getInstance(warpConfig.getString("driver-prop.ofp_3"));         
       default:
          return null;   
       }
