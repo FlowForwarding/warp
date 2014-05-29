@@ -16,8 +16,8 @@ import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.RecursiveTask;
 import java.util.concurrent.atomic.AtomicLong;
 
-import org.flowforwarding.warp.protocol.common.OFMessageRef;
-import org.flowforwarding.warp.protocol.common.OFMessageRef.OFMessageBuilder;
+import org.flowforwarding.warp.protocol.ofp.OFMessageRef;
+import org.flowforwarding.warp.protocol.ofp.OFMessageRef.OFMessageBuilder;
 import org.flowforwarding.warp.protocol.ofmessages.IOFMessageProvider;
 import org.flowforwarding.warp.protocol.ofmessages.IOFMessageProviderFactory;
 import org.flowforwarding.warp.protocol.ofmessages.OFMessageProviderFactoryAvroProtocol;

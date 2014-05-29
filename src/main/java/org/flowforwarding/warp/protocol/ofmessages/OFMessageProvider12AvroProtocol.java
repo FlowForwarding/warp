@@ -29,7 +29,7 @@ import org.apache.avro.Schema.Field;
 import org.apache.avro.generic.GenericArray;
 import org.apache.avro.generic.GenericData;
 import org.apache.avro.Protocol;
-import org.flowforwarding.warp.protocol.common.OFMessageRef.OFMessageBuilder;
+import org.flowforwarding.warp.protocol.ofp.OFMessageRef.OFMessageBuilder;
 import org.flowforwarding.warp.protocol.internals.avro.AvroEnum;
 import org.flowforwarding.warp.protocol.internals.avro.AvroItemBuilder;
 import org.flowforwarding.warp.protocol.internals.avro.AvroProtocol;
@@ -307,7 +307,7 @@ public class OFMessageProvider12AvroProtocol implements IOFMessageProvider {
    }*/
 
    public byte[] encodeHelloMessage() {
-      org.flowforwarding.warp.protocol.common.OFMessageRef helloMsg = builderNew.type("ofp_hello").build();
+      org.flowforwarding.warp.protocol.ofp.OFMessageRef helloMsg = builderNew.type("ofp_hello").build();
       return helloMsg.binary();
    }
    
