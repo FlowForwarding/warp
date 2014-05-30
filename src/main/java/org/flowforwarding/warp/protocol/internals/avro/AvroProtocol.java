@@ -17,15 +17,13 @@ import org.apache.avro.Schema.Field;
 import org.apache.avro.generic.GenericContainer;
 import org.apache.avro.generic.GenericData.Fixed;
 import org.apache.avro.generic.GenericRecord;
+import org.flowforwarding.warp.context.Context;
 import org.flowforwarding.warp.protocol.internals.IProtocolAtom;
 import org.flowforwarding.warp.protocol.internals.IProtocolContainer;
 import org.flowforwarding.warp.protocol.internals.IProtocolStructure;
 import org.flowforwarding.warp.protocol.internals.avro.AvroEnum.*;
 import org.flowforwarding.warp.protocol.internals.avro.AvroRecord.*;
 import org.flowforwarding.warp.protocol.internals.avro.AvroFixedField.*;
-
-import com.typesafe.config.Config;
-import com.typesafe.config.ConfigFactory;
 
 /**
  * @author Infoblox Inc.
@@ -113,10 +111,8 @@ public class AvroProtocol implements IProtocolContainer<String, GenericContainer
    }
    
    public static AvroProtocol getInstance (byte version) {
-      Config conf = ConfigFactory.load();
-      String warpConf = conf.getString("warp-conf");
-      Config warpConfig = ConfigFactory.load(warpConf);
       
+      Context context = Context.getInstance();
       /*switch (version) {
       case 0x5:
          return getInstance("of_protocol_14.avpr");
@@ -130,7 +126,7 @@ public class AvroProtocol implements IProtocolContainer<String, GenericContainer
       
       switch (version) {
       case 0x5:
-         return getInstance(warpConfig.getString("driver-prop.ofp_5"));
+         return getInstance();
       case 0x4:
          return getInstance(warpConfig.getString("driver-prop.ofp_4"));
       case 0x3:
