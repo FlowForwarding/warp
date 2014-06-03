@@ -27,7 +27,13 @@ public class Context {
    private ConfigList protocols;
    
    private Context() {
-      warpConfig = ConfigFactory.load(ConfigFactory.load().getString("warp-conf"));
+      Config conf = ConfigFactory.load();
+      String configName = conf.getString("warp-conf-name");
+      if (conf.hasPath("warp-conf-path"))
+         warpConfig = ConfigFactory.load(ConfigFactory.load().getString("warp-conf-path").concat("/").concat(ConfigFactory.load().getString("warp-conf-name")));
+      else 
+         warpConfig = ConfigFactory.load(ConfigFactory.load().getString("warp-conf-name"));
+      System.out.println("");
    }
    
    public static Context getInstance () {
