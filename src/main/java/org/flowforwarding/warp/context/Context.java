@@ -4,7 +4,9 @@
  */
 package org.flowforwarding.warp.context;
 
+import java.net.URL;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -20,38 +22,27 @@ import com.typesafe.config.ConfigValue;
  */
 public class Context {
    
-   private final Map<String, Map<String, Object>> protocols = new HashMap<>();
+   //private Map<String, Config> protocols = new HashMap<>();
+   private Config warpConfig; 
+   private ConfigList protocols;
    
    private Context() {
-      Config warpConfig = ConfigFactory.load(ConfigFactory.load().getString("warp-conf"));
-      
-      ConfigList protocols = warpConfig.getList("protocols");
-      
-      for (ConfigValue protocol : protocols) {
-         Config protocolProperties = warpConfig.getConfig(protocol.render());
-         Map <String, Object> protocolPropsEntry = new HashMap<>();
-         
-         Set<Entry<String, ConfigValue>> set = protocolProperties.entrySet();
-         for (Entry<String, ConfigValue> entry : set)
-            protocolPropsEntry.put(entry.getKey(), entry.getValue().render());
-         
-         this.protocols.put(protocol.render(), protocolPropsEntry);
-      }
+      warpConfig = ConfigFactory.load(ConfigFactory.load().getString("warp-conf"));
    }
    
    public static Context getInstance () {
       return Holder.INSTANCE;
+   }
+   
+   public String value (String protocol, String property) {
+      return warpConfig.getConfig(protocol).getString(property);
    }
 
    private static class Holder {
       private static final Context INSTANCE = new Context();
    }
    
-   public Map <String, Object> protocolProperties (String protocol) {
-      return protocols.get(protocol);
-   }
-   
    public Set<String> protocols () {
-      return protocols.keySet();
+      return null;
    }
 }

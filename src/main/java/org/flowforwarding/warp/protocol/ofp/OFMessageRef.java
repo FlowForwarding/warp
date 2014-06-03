@@ -34,7 +34,6 @@ public class OFMessageRef {
       } else {
          internal = builder.container.structure("ofp_header", builder.binValue);
          ofType = builder.container.atom("ofp_type", internal.binary("type")).name();
-         
          switch (ofType) {
          case "OFPT_HELLO": 
             internal = builder.container.structure("ofp_hello", builder.binValue);

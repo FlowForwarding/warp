@@ -11,6 +11,7 @@
     <property name="target" value="1.7"/>
     <property name="source" value="1.7"/>
     <path id="warp.classpath">
+	<pathelement location="${controller.root}/"/>
     	<pathelement location="${controller.root}/build/classes/main"/>
         <pathelement location="${controller.root}/deps/lib/jackson-all-1.9.11.jar"/>
         <pathelement location="${controller.root}/deps/lib/netty-3.6.3.Final.jar"/>

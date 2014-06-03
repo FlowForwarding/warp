@@ -17,16 +17,6 @@ public class Launcher {
     */
    public static void main(String[] args) {
       Context context = Context.getInstance();
-      
-      Set<String> protocols = context.protocols();
-      for (String p : protocols) {
-         System.out.println(p + ": ");
-        
-         for (String key : context.protocolProperties(p).keySet()) {
-            System.out.println(key + ": " + context.protocolProperties(p).get(key));
-         }
-      }
-      
       ControllerRef cRef = Controller.launch(SimpleHandler.class);
    }
 

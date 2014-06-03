@@ -79,10 +79,10 @@ public class AvroProtocol implements IProtocolContainer<String, GenericContainer
       return (IProtocolAtom<String, GenericContainer>) builders.get(atomName).value(in[0]).build();
    }
    
-   @Override
+/*   @Override
    public IProtocolAtom<String, GenericContainer> atom(String atomName, GenericContainer... in) {
       return (IProtocolAtom<String, GenericContainer>) builders.get(atomName).value(in[0]).build();
-   }
+   }*/
    
    @Override
    public byte version() {
@@ -111,29 +111,7 @@ public class AvroProtocol implements IProtocolContainer<String, GenericContainer
    }
    
    public static AvroProtocol getInstance (byte version) {
-      
-      Context context = Context.getInstance();
-      /*switch (version) {
-      case 0x5:
-         return getInstance("of_protocol_14.avpr");
-      case 0x4:
-         return getInstance("of_protocol_13.avpr");
-      case 0x3:
-         return getInstance("of_protocol_12.avpr");         
-      default:
-         return null;   
-      }*/
-      
-      switch (version) {
-      case 0x5:
-         return getInstance();
-      case 0x4:
-         return getInstance(warpConfig.getString("driver-prop.ofp_4"));
-      case 0x3:
-         return getInstance(warpConfig.getString("driver-prop.ofp_3"));         
-      default:
-         return null;   
-      }
+      return getInstance(Context.getInstance().value("OFP", "version." + Byte.toString(version)));
    }
    
    public static AvroProtocol getInstance (String src) {
