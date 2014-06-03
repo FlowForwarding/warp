@@ -14,6 +14,6 @@ public interface IProtocolContainer <External, Internal>{
    public void init();
    public IProtocolStructure <External, Internal> structure(String structureName, byte []... in);
    public IProtocolAtom <External, Internal> atom(String atomName, byte []... in);
-   public IProtocolAtom<External, Internal> atom(String atomName, Internal... in);
+//   public IProtocolAtom<External, Internal> atom(String atomName, Internal... in);
    byte version();
 }

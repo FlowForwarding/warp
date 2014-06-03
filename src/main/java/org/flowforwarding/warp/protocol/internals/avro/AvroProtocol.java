@@ -17,12 +17,13 @@ import org.apache.avro.Schema.Field;
 import org.apache.avro.generic.GenericContainer;
 import org.apache.avro.generic.GenericData.Fixed;
 import org.apache.avro.generic.GenericRecord;
+import org.flowforwarding.warp.context.Context;
 import org.flowforwarding.warp.protocol.internals.IProtocolAtom;
 import org.flowforwarding.warp.protocol.internals.IProtocolContainer;
 import org.flowforwarding.warp.protocol.internals.IProtocolStructure;
-import org.flowforwarding.warp.protocol.internals.avro.AvroFixedField.*;
-import org.flowforwarding.warp.protocol.internals.avro.AvroRecord.*;
 import org.flowforwarding.warp.protocol.internals.avro.AvroEnum.*;
+import org.flowforwarding.warp.protocol.internals.avro.AvroRecord.*;
+import org.flowforwarding.warp.protocol.internals.avro.AvroFixedField.*;
 
 /**
  * @author Infoblox Inc.
@@ -78,10 +79,10 @@ public class AvroProtocol implements IProtocolContainer<String, GenericContainer
       return (IProtocolAtom<String, GenericContainer>) builders.get(atomName).value(in[0]).build();
    }
    
-   @Override
+/*   @Override
    public IProtocolAtom<String, GenericContainer> atom(String atomName, GenericContainer... in) {
       return (IProtocolAtom<String, GenericContainer>) builders.get(atomName).value(in[0]).build();
-   }
+   }*/
    
    @Override
    public byte version() {
@@ -110,16 +111,7 @@ public class AvroProtocol implements IProtocolContainer<String, GenericContainer
    }
    
    public static AvroProtocol getInstance (byte version) {
-      switch (version) {
-      case 0x5:
-         return getInstance("of_protocol_14.avpr");
-      case 0x4:
-         return getInstance("of_protocol_13.avpr");
-      case 0x3:
-         return getInstance("of_protocol_12.avpr");         
-      default:
-         return null;   
-      }
+      return getInstance(Context.getInstance().value("OFP", "version." + Byte.toString(version)));
    }
    
    public static AvroProtocol getInstance (String src) {

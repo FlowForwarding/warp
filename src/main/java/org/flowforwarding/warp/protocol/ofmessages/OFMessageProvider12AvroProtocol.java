@@ -29,9 +29,8 @@ import org.apache.avro.Schema.Field;
 import org.apache.avro.generic.GenericArray;
 import org.apache.avro.generic.GenericData;
 import org.apache.avro.Protocol;
-import org.flowforwarding.warp.protocol.common.OFMessageRef.OFMessageBuilder;
+import org.flowforwarding.warp.protocol.ofp.OFMessageRef.OFMessageBuilder;
 import org.flowforwarding.warp.protocol.internals.avro.AvroEnum;
-import org.flowforwarding.warp.protocol.internals.avro.AvroFixedField.*;
 import org.flowforwarding.warp.protocol.internals.avro.AvroItemBuilder;
 import org.flowforwarding.warp.protocol.internals.avro.AvroProtocol;
 import org.flowforwarding.warp.protocol.internals.avro.AvroRecord;
@@ -41,6 +40,7 @@ import org.flowforwarding.warp.protocol.ofmessages.OFMessageGroupMod.OFMessageGr
 import org.flowforwarding.warp.protocol.ofmessages.OFMessageHello.OFMessageHelloRef;
 import org.flowforwarding.warp.protocol.ofmessages.OFMessagePacketIn.OFMessagePacketInRef;
 import org.flowforwarding.warp.protocol.ofmessages.OFMessageSwitchConfig.OFMessageSwitchConfigRef;
+import org.flowforwarding.warp.protocol.internals.avro.AvroFixedField.*;
 import org.flowforwarding.warp.protocol.ofstructures.IOFStructureBuilder;
 import org.flowforwarding.warp.protocol.ofstructures.OFStructureBuilder13;
 import org.flowforwarding.warp.protocol.ofstructures.OFStructureInstruction;
@@ -307,7 +307,7 @@ public class OFMessageProvider12AvroProtocol implements IOFMessageProvider {
    }*/
 
    public byte[] encodeHelloMessage() {
-      org.flowforwarding.warp.protocol.common.OFMessageRef helloMsg = builderNew.type("ofp_hello").build();
+      org.flowforwarding.warp.protocol.ofp.OFMessageRef helloMsg = builderNew.type("ofp_hello").build();
       return helloMsg.binary();
    }
    
