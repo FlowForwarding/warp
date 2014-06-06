@@ -41,10 +41,12 @@ public class AvroRecord implements IProtocolStructure <String, GenericContainer>
    protected Schema schema;
    protected GenericRecord recordValue;
    protected Map<String, IProtocolItem<String, GenericContainer>> items = new HashMap<>();
+   protected boolean readyToBinary = true;
    
    private AvroRecord (AvroRecordBuilder builder) {
       name = builder.name;
       schema = builder.schema;
+      readyToBinary = builder.readyToBinary;
       
       if (builder.binValue != null) {
          recordValue = new GenericData.Record(schema);
@@ -69,25 +71,37 @@ public class AvroRecord implements IProtocolStructure <String, GenericContainer>
    
    @Override
    public GenericContainer get() {
-      
-      GenericRecordBuilder builder = new GenericRecordBuilder(schema);
-      Set<String> keys = items.keySet();
-      for (String key : keys) {
-         IProtocolItem<String, GenericContainer> item = items.get(key);
-         GenericContainer val = item.get();
-         // TODO Improv. I dislike this NULL verification
-         if (val != null)
-            builder.set(item.name(), val);
+      if (readyToBinary) {
+         GenericRecordBuilder builder = new GenericRecordBuilder(schema);
+         Set<String> keys = items.keySet();
+         for (String key : keys) {
+            IProtocolItem<String, GenericContainer> item = items.get(key);
+            GenericContainer val = item.get();
+            // TODO Improv. I dislike this NULL verification
+            if (val != null)
+               builder.set(item.name(), val);
+         }
+         
+         return builder.build();
+      } else {
+         GenericRecord record = new GenericData.Record (schema);
+
+         Set<String> keys = items.keySet();
+         for (String key : keys) {
+            IProtocolItem<String, GenericContainer> item = items.get(key);
+            GenericContainer val = item.get();
+            // TODO Improv. I dislike this NULL verification
+            if (val != null)
+               record.put(item.name(), val);
+         }         
+         return record;
       }
-      
-      GenericRecord record = builder.build();
-      return record;
    }
 
    @Override
-   public void add(IProtocolItem<String, GenericContainer> item) {
+   public void add(String name, IProtocolItem<String, GenericContainer> item) {
       // TODO Improvs: Check name against Avro Schema
-      items.put(item.name(), item);
+      items.put(name, item);
    }
    
    @Override
@@ -153,7 +167,7 @@ public class AvroRecord implements IProtocolStructure <String, GenericContainer>
       protected Map<String, IProtocolBuilder<String, GenericContainer>> builders = new HashMap<>();
       protected GenericRecord value;
       protected byte[] binValue;
-      protected boolean readyToBuild = true;
+      protected boolean readyToBinary = true;
       
       public AvroRecordBuilder (String nm, Schema sch) {
          name = nm;
@@ -176,7 +190,7 @@ public class AvroRecord implements IProtocolStructure <String, GenericContainer>
       public IProtocolItem<String, GenericContainer> build() {
          AvroRecord rec = new AvroRecord(this);
          for (String nm: builders.keySet()) {
-            rec.add(builders.get(nm).build());
+            rec.add(name, builders.get(nm).build());
          }
          return rec;
       }
@@ -189,10 +203,10 @@ public class AvroRecord implements IProtocolStructure <String, GenericContainer>
          builders.put(nm, builder);
       }
       
-      public void notReadyToBuild () {
-         readyToBuild = false;
+      public void notReadyToBinary () {
+         readyToBinary = false;
       }
       
-      public boolean isReadyToBuild() {return readyToBuild;}
+      public boolean isReadyToBuild() {return readyToBinary;}
    }
 }

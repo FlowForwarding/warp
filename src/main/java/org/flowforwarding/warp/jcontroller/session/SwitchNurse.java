@@ -114,7 +114,13 @@ public class SwitchNurse extends UntypedActor {
             if (inMsg.type().equals("OFPT_GET_CONFIG_REPLY")) {
                OFMessageRef flowModRef = builder.type("ofp_flow_mod").build();
                log.info("IN: Config Reply from Switch " + Long.toHexString(swRef.getDpid().longValue()));
+/*               
+               OFMessageRef matchInPort = builder.type("oxm_tlv_ingress_port").build();
+               matchInPort.set("tlv", "4");
+               OFMessageRef tlv = builder.type("oxm_tlv").build();
+               tlv.add("match", matchInPort);
                
+               tlv.binary();*/
             } 
             
             if (provider.isConfig(in.toArray())) {

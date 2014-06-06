@@ -315,6 +315,10 @@ public abstract class Schema extends JsonProperties {
   public int getFixedSize() {
     throw new AvroRuntimeException("Not fixed: "+this);
   }
+  
+  public int getBitmapSize() {
+     throw new AvroRuntimeException("Not bitmap: "+this);
+  }
 
   /** Render this as <a href="http://json.org/">JSON</a>.*/
   @Override
@@ -1375,10 +1379,15 @@ public abstract class Schema extends JsonProperties {
       return defaultValue;
     }
 
+    public int getBitmapSize() { return size; }
+    //TODO Improvs: Do we need it? Or do we need getBitmapSize? 
+    public int getFixedSize() { return size; }
+
     public BitmapSchema(Name name, JsonNode sizeNode, JsonNode defaultValue, String doc, int size, boolean isError) {
       super(Type.BITMAP, name, doc);
       this.isError = isError;
-      this.size = size;
+//      this.size = size;
+      this.size = sizeNode.getIntValue()/8;
       
       if (defaultValue != null) {
         if (defaultValue.isInt()) {

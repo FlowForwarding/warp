@@ -70,10 +70,11 @@ public class AvroProtocol implements IProtocolContainer<String, GenericContainer
    }
 
    @Override
-   public IProtocolStructure<String, GenericContainer> structure(String structureName, byte[]... in) {
-      return (IProtocolStructure<String, GenericContainer>) builders.get(structureName).value(in[0]).build();
+   public AvroRecord structure(String structureName, byte[]... in) {
+      return (AvroRecord) builders.get(structureName).value(in[0]).build();
    }
    
+   //TODO Improvs: Replace with AvroItem?
    @Override
    public IProtocolAtom<String, GenericContainer> atom(String atomName, byte[]... in) {
       return (IProtocolAtom<String, GenericContainer>) builders.get(atomName).value(in[0]).build();
@@ -94,12 +95,14 @@ public class AvroProtocol implements IProtocolContainer<String, GenericContainer
       AvroRecordBuilder b = new AvroRecordBuilder(name, schema);
       ArrayList<Field> fields = (ArrayList<Field>) schema.getFields();
       for (Field field : fields) {
-         if (field.schema().getType().getName().equalsIgnoreCase("fixed")) {
+         if (field.schema().getType().getName().equalsIgnoreCase("fixed") || field.schema().getType().getName().equalsIgnoreCase("bitmap")) {
             b.addItemBuilder(field.name(), new AvroFixedBuilder(field.name(), field.schema()));
             if (field.defaultValue() == null)
-               b.notReadyToBuild();
+               b.notReadyToBinary();
          } else if (field.schema().getType().getName().equalsIgnoreCase("record")) {
             b.addItemBuilder(field.name(), makeRecordBuilder(field.name(), field.schema()));
+            if (field.defaultValue() == null)
+               b.notReadyToBinary();
          }
       }
       

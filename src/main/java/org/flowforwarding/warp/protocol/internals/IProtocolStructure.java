@@ -4,6 +4,8 @@
  */
 package org.flowforwarding.warp.protocol.internals;
 
+import org.apache.avro.generic.GenericContainer;
+
 /**
  * @author Infoblox Inc.
  *
@@ -11,7 +13,7 @@ package org.flowforwarding.warp.protocol.internals;
 public interface IProtocolStructure <External, Internal> extends IProtocolItem <External, Internal>{
    public Internal get();
    public IProtocolItem<External, Internal> get(String name);
-   public void add(IProtocolItem<External, Internal> value);
+   public void add(String name, IProtocolItem<External, Internal> item);
    public void set(String name, byte[] value);
    public byte[] binary(String name);
    public byte[] binary();

@@ -13,6 +13,7 @@ import org.apache.avro.generic.GenericContainer;
 import org.apache.avro.generic.GenericData.Fixed;
 import org.flowforwarding.warp.protocol.internals.IProtocolAtom;
 import org.flowforwarding.warp.protocol.internals.IProtocolContainer;
+import org.flowforwarding.warp.protocol.internals.IProtocolItem;
 import org.flowforwarding.warp.protocol.internals.IProtocolStructure;
 import org.flowforwarding.warp.protocol.internals.avro.AvroProtocol;
 import org.flowforwarding.warp.protocol.internals.avro.AvroRecord;
@@ -26,7 +27,7 @@ public class OFMessageRef {
    
    private String ofType = "";
    private int version;
-   private IProtocolStructure<?, ?> internal;
+   private AvroRecord internal;
    
    private OFMessageRef(OFMessageBuilder builder) {
       if (builder.binValue == null) {
@@ -69,6 +70,10 @@ public class OFMessageRef {
 	   return internal.binary(name);
    }
    
+   public AvroRecord getInternal() {
+      return internal;
+   }
+   
    public String type() {
 	   return ofType;
    }
@@ -77,9 +82,19 @@ public class OFMessageRef {
       internal.set(name, Convert.toArray(value));
    }
    
+   public void add(String name, OFMessageRef value) {
+      internal.add(name, Internal.get(value));      
+   }
+   
+   private static class Internal {
+      public static AvroRecord get(OFMessageRef ref) {
+         return ref.internal;
+      }
+   }
+   
    public static class OFMessageBuilder {
       
-      private final IProtocolContainer<?, ?> container;
+      private final AvroProtocol container;
       private String msgType;
       private byte[] binValue;
       private List<Tuple<String, String>> items = new ArrayList<>();
