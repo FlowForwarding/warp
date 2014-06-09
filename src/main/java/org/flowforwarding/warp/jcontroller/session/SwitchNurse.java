@@ -122,9 +122,10 @@ public class SwitchNurse extends UntypedActor {
                OFMessageRef tlv = builder.type("oxm_tlv").build();
                tlv.add("match", matchInPort);
                
-               OFMessageRef matchArray = builder.type("oxm_tlvs").build();
+               OFMessageRef tlv_fields = builder.type("oxm_tlv_fields").build();
+               tlv_fields.add("oxm_tlvs", tlv);
                
-               tlv.binary();
+               tlv_fields.binary();
             } 
             
             if (provider.isConfig(in.toArray())) {

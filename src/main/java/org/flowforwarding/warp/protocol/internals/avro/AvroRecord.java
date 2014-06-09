@@ -66,7 +66,7 @@ public class AvroRecord implements IProtocolStructure <String, GenericContainer>
    @Override
    public IProtocolItem<String, GenericContainer> get(String name) {
       // TODO Improvs: Exception is 
-         return items.get(name);
+      return items.get(name);
    }
    
    @Override
@@ -98,12 +98,6 @@ public class AvroRecord implements IProtocolStructure <String, GenericContainer>
       }
    }
 
-   @Override
-   public void add(String name, IProtocolItem<String, GenericContainer> item) {
-      // TODO Improvs: Check name against Avro Schema
-      items.put(name, item);
-   }
-   
    @Override
    public String name() {
       return name;
@@ -147,9 +141,15 @@ public class AvroRecord implements IProtocolStructure <String, GenericContainer>
          }
       }
       // TODO Improve: Is Non-Fixed value possible at the end?
-      if (item instanceof AvroFixedField)
-         ((AvroFixedField) item).set(value);
+      if (item instanceof AvroFixedField) 
+         ((AvroFixedField) item).set(value); 
       return;
+   }
+   
+   @Override
+   public void add(String name, IProtocolItem<String, GenericContainer> i) {
+      // TODO Improvs: Check name against Avro Schema
+      items.put(name, i);
    }
 
    @Override

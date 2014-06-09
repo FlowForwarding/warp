@@ -10,7 +10,8 @@ import org.apache.avro.generic.GenericData;
 import org.flowforwarding.warp.protocol.internals.IProtocolItem;
 
 public class AvroArray implements IProtocolItem <String, GenericContainer>{
-
+// TODO Improvs: Should we replace IProtocolItem with AvroItem or something?
+   
    protected String name;
    protected Schema schema;
    protected Schema itemSchema;
@@ -34,6 +35,10 @@ public class AvroArray implements IProtocolItem <String, GenericContainer>{
    
    public void add (GenericContainer item) {
       array.add(item);
+   }
+   
+   public void add (IProtocolItem <String, GenericContainer> item) {
+      array.add(item.get());
    }
    
    public static class AvroArrayBuilder extends AvroItemBuilder {
