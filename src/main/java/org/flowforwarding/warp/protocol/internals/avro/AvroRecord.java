@@ -92,7 +92,7 @@ public class AvroRecord implements IProtocolStructure <String, GenericContainer>
             GenericContainer val = item.get();
             // TODO Improv. I dislike this NULL verification
             if (val != null)
-               record.put(item.name(), val);
+               record.put(key, val);
          }         
          return record;
       }
@@ -190,7 +190,7 @@ public class AvroRecord implements IProtocolStructure <String, GenericContainer>
       public IProtocolItem<String, GenericContainer> build() {
          AvroRecord rec = new AvroRecord(this);
          for (String nm: builders.keySet()) {
-            rec.add(name, builders.get(nm).build());
+            rec.add(nm, builders.get(nm).build());
          }
          return rec;
       }

@@ -69,8 +69,9 @@ public class SwitchNurse extends UntypedActor {
          case STARTED:
             ByteString in = ((Received) msg).data();
             provider = factory.getMessageProvider(in.toArray());
-            
+           
             builder = new OFMessageBuilder("avro", in.toArray());
+            OFMessageRef ref_ = builder.type("ofp_hello").set("header.xid", "0x0000").build();
             OFMessageRef inMsg = builder.value(in.toArray()).build();
 
             if ((provider != null) && (inMsg != null)) {
@@ -102,6 +103,7 @@ public class SwitchNurse extends UntypedActor {
                state = State.HANDSHAKED;
                ofSessionHandler.tell(new OFEventHandshaked(swRef), getSelf());
                
+               OFMessageRef ref = builder.type("ofp_get_config_request").build();
                getSender().tell(TcpMessage.write(ByteString.fromArray(builder.type("ofp_get_config_request").build().binary())), getSelf());
             }
             
@@ -114,13 +116,15 @@ public class SwitchNurse extends UntypedActor {
             if (inMsg.type().equals("OFPT_GET_CONFIG_REPLY")) {
                OFMessageRef flowModRef = builder.type("ofp_flow_mod").build();
                log.info("IN: Config Reply from Switch " + Long.toHexString(swRef.getDpid().longValue()));
-/*               
+               
                OFMessageRef matchInPort = builder.type("oxm_tlv_ingress_port").build();
                matchInPort.set("tlv", "4");
                OFMessageRef tlv = builder.type("oxm_tlv").build();
                tlv.add("match", matchInPort);
                
-               tlv.binary();*/
+               OFMessageRef matchArray = builder.type("oxm_tlvs").build();
+               
+               tlv.binary();
             } 
             
             if (provider.isConfig(in.toArray())) {

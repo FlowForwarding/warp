@@ -20,10 +20,11 @@ import org.apache.avro.generic.GenericRecord;
 import org.flowforwarding.warp.context.Context;
 import org.flowforwarding.warp.protocol.internals.IProtocolAtom;
 import org.flowforwarding.warp.protocol.internals.IProtocolContainer;
-import org.flowforwarding.warp.protocol.internals.IProtocolStructure;
 import org.flowforwarding.warp.protocol.internals.avro.AvroEnum.*;
 import org.flowforwarding.warp.protocol.internals.avro.AvroRecord.*;
 import org.flowforwarding.warp.protocol.internals.avro.AvroFixedField.*;
+import org.flowforwarding.warp.protocol.internals.avro.AvroUnionField.*;
+import org.flowforwarding.warp.protocol.internals.avro.AvroArray.*;
 
 /**
  * @author Infoblox Inc.
@@ -103,6 +104,12 @@ public class AvroProtocol implements IProtocolContainer<String, GenericContainer
             b.addItemBuilder(field.name(), makeRecordBuilder(field.name(), field.schema()));
             if (field.defaultValue() == null)
                b.notReadyToBinary();
+         } else if (field.schema().getType().getName().equalsIgnoreCase("union")) {
+            b.addItemBuilder(field.name(), new AvroUnionBuilder(field.name(), field.schema()));
+            b.notReadyToBinary();
+         } else if (field.schema().getType().getName().equalsIgnoreCase("array")) {
+            b.addItemBuilder(field.name(), new AvroArrayBuilder(field.name(), field.schema()));
+            b.notReadyToBinary();
          }
       }
       
