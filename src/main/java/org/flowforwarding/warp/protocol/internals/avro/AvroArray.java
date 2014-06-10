@@ -9,7 +9,8 @@ import org.apache.avro.generic.GenericContainer;
 import org.apache.avro.generic.GenericData;
 import org.flowforwarding.warp.protocol.internals.IProtocolItem;
 
-public class AvroArray implements IProtocolItem <String, GenericContainer>{
+//public class AvroArray implements IProtocolItem <String, GenericContainer>{
+public class AvroArray extends AvroItem{
 // TODO Improvs: Should we replace IProtocolItem with AvroItem or something?
    
    protected String name;

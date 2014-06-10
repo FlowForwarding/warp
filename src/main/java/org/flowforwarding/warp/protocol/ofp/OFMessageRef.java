@@ -6,15 +6,8 @@ package org.flowforwarding.warp.protocol.ofp;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-import org.apache.avro.generic.GenericContainer;
-import org.apache.avro.generic.GenericData.Fixed;
-import org.flowforwarding.warp.protocol.internals.IProtocolAtom;
-import org.flowforwarding.warp.protocol.internals.IProtocolContainer;
-import org.flowforwarding.warp.protocol.internals.IProtocolItem;
-import org.flowforwarding.warp.protocol.internals.IProtocolStructure;
+import org.flowforwarding.warp.protocol.internals.avro.AvroItem;
 import org.flowforwarding.warp.protocol.internals.avro.AvroProtocol;
 import org.flowforwarding.warp.protocol.internals.avro.AvroRecord;
 import org.flowforwarding.warp.util.*;
@@ -62,6 +55,10 @@ public class OFMessageRef {
       builder.items.clear();
    }
    
+   private OFMessageRef (AvroRecord i) {
+      this.internal = i;
+   }
+   
    public byte[] binary() {
       return internal.binary();
    }
@@ -70,9 +67,9 @@ public class OFMessageRef {
 	   return internal.binary(name);
    }
    
-   public AvroRecord getInternal() {
+/*   public AvroRecord getInternal() {
       return internal;
-   }
+   }*/
    
    public String type() {
 	   return ofType;
@@ -84,6 +81,15 @@ public class OFMessageRef {
    
    public void add(String name, OFMessageRef value) {
       internal.add(name, Internal.get(value));      
+   }
+   
+   public void add(OFMessageRef value) {
+
+   }
+   
+   public OFItemRef get (String name) {
+      //TODO Improvs: What if NOT AvroRecord?
+      return new OFItemRef((AvroItem)internal.get(name));
    }
    
    private static class Internal {
