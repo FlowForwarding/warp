@@ -35,7 +35,8 @@ import org.flowforwarding.warp.protocol.internals.IProtocolStructure;
  * @author Infoblox Inc.
  *
  */
-public class AvroRecord implements IProtocolStructure <String, GenericContainer>{
+//public class AvroRecord implements IProtocolStructure <String, GenericContainer>{
+public class AvroRecord  extends AvroItem implements IProtocolStructure <String, GenericContainer>{   
    
    protected String name;
    protected Schema schema;
