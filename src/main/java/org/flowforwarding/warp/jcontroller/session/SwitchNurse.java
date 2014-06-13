@@ -12,7 +12,6 @@ import org.flowforwarding.warp.protocol.ofmessages.OFMessageFlowMod.OFMessageFlo
 import org.flowforwarding.warp.protocol.ofmessages.OFMessageProviderFactoryAvroProtocol;
 import org.flowforwarding.warp.protocol.ofstructures.OFStructureInstruction.OFStructureInstructionRef;
 import org.flowforwarding.warp.protocol.ofp.OFItemRef;
-import org.flowforwarding.warp.protocol.ofp.OFItemRef.OFItemBuilder;
 import org.flowforwarding.warp.protocol.ofp.OFMessageRef;
 import org.flowforwarding.warp.protocol.ofp.OFMessageRef.OFMessageBuilder;
 import org.flowforwarding.warp.util.Convert;
@@ -54,9 +53,6 @@ public class SwitchNurse extends UntypedActor {
    IOFMessageProviderFactory factory = new OFMessageProviderFactoryAvroProtocol();
    IOFMessageProvider provider = null;
    OFMessageBuilder builder = null;
-   OFItemBuilder itemBuilder = null;
-   
-   
    
    @Override
    public void preStart() throws Exception {
@@ -74,7 +70,6 @@ public class SwitchNurse extends UntypedActor {
             provider = factory.getMessageProvider(in.toArray());
            
             builder = new OFMessageBuilder("avro", in.toArray());
-            itemBuilder = new OFItemBuilder("avro", in.toArray());
             OFMessageRef ref_ = builder.type("ofp_hello").set("header.xid", "0x0000").build();
             OFMessageRef inMsg = builder.value(in.toArray()).build();
 
@@ -118,20 +113,22 @@ public class SwitchNurse extends UntypedActor {
             inMsg = builder.value(in.toArray()).build();
             
             if (inMsg.type().equals("OFPT_GET_CONFIG_REPLY")) {
-               OFMessageRef flowModRef = builder.type("ofp_flow_mod").build();
                log.info("IN: Config Reply from Switch " + Long.toHexString(swRef.getDpid().longValue()));
                
-               OFItemRef matchInPort = itemBuilder.type("oxm_tlv_ingress_port").build();
+               OFMessageRef flowModRef = builder.type("ofp_flow_mod").build();
+               
+               
+               
+/*               OFItemRef matchInPort = itemBuilder.type("oxm_tlv_ingress_port").build();
                matchInPort.set("tlv", "4");
                OFItemRef tlv = itemBuilder.type("oxm_tlv").build();
                tlv.add("match", matchInPort);
                
                OFMessageRef tlv_fields = builder.type("oxm_tlv_fields").build();
                //tlv_fields.add("oxm_tlvs", tlv);
-               OFItemRef i = tlv_fields.get("oxm_tlvs");
-               i.add(tlv);
+               tlv_fields.get("oxm_tlvs").add(tlv);
                
-               tlv_fields.binary();
+               tlv_fields.binary();*/
             } 
             
             if (provider.isConfig(in.toArray())) {

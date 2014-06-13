@@ -9,8 +9,7 @@ import org.apache.avro.generic.GenericContainer;
 import org.apache.avro.generic.GenericData;
 import org.flowforwarding.warp.protocol.internals.IProtocolItem;
 
-//public class AvroArray implements IProtocolItem <String, GenericContainer>{
-public class AvroArray extends AvroItem{
+public class AvroArray implements IProtocolItem<String, GenericContainer>{
 // TODO Improvs: Should we replace IProtocolItem with AvroItem or something?
    
    protected String name;
@@ -38,7 +37,7 @@ public class AvroArray extends AvroItem{
       array.add(item);
    }
    
-   public void add (IProtocolItem <String, GenericContainer> item) {
+   public void add (IProtocolItem<String, GenericContainer> item) {
       array.add(item.get());
    }
    

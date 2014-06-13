@@ -75,7 +75,6 @@ public class AvroProtocol implements IProtocolContainer<String, GenericContainer
       return (AvroRecord) builders.get(structureName).value(in[0]).build();
    }
    
-   //TODO Improvs: Replace with AvroItem?
    @Override
    public IProtocolAtom<String, GenericContainer> atom(String atomName, byte[]... in) {
       return (IProtocolAtom<String, GenericContainer>) builders.get(atomName).value(in[0]).build();

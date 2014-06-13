@@ -6,15 +6,12 @@ package org.flowforwarding.warp.protocol.internals.avro;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericContainer;
-import org.apache.avro.generic.GenericData.*;
 import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.GenericDatumReader;
 import org.apache.avro.generic.GenericDatumWriter;
@@ -26,8 +23,6 @@ import org.apache.avro.io.Decoder;
 import org.apache.avro.io.DecoderFactory;
 import org.apache.avro.io.Encoder;
 import org.apache.avro.io.EncoderFactory;
-import org.flowforwarding.warp.protocol.internals.IProtocolAtom;
-import org.flowforwarding.warp.protocol.internals.IProtocolBuilder;
 import org.flowforwarding.warp.protocol.internals.IProtocolItem;
 import org.flowforwarding.warp.protocol.internals.IProtocolStructure;
 
@@ -36,7 +31,7 @@ import org.flowforwarding.warp.protocol.internals.IProtocolStructure;
  *
  */
 //public class AvroRecord implements IProtocolStructure <String, GenericContainer>{
-public class AvroRecord  extends AvroItem implements IProtocolStructure <String, GenericContainer>{   
+public class AvroRecord implements IProtocolItem<String, GenericContainer>, IProtocolStructure<String, GenericContainer> {   
    
    protected String name;
    protected Schema schema;
@@ -165,7 +160,7 @@ public class AvroRecord  extends AvroItem implements IProtocolStructure <String,
    public static class AvroRecordBuilder extends AvroItemBuilder {
       protected final String name;
       protected final Schema schema;
-      protected Map<String, IProtocolBuilder<String, GenericContainer>> builders = new HashMap<>();
+      protected Map<String, AvroItemBuilder> builders = new HashMap<>();
       protected GenericRecord value;
       protected byte[] binValue;
       protected boolean readyToBinary = true;
@@ -188,7 +183,7 @@ public class AvroRecord  extends AvroItem implements IProtocolStructure <String,
       }
       
       @Override
-      public IProtocolItem<String, GenericContainer> build() {
+      public AvroRecord build() {
          AvroRecord rec = new AvroRecord(this);
          for (String nm: builders.keySet()) {
             rec.add(nm, builders.get(nm).build());
@@ -200,7 +195,7 @@ public class AvroRecord  extends AvroItem implements IProtocolStructure <String,
          return name;
       }
       
-      public void addItemBuilder (String nm, IProtocolBuilder<String, GenericContainer> builder) {
+      public void addItemBuilder (String nm, AvroItemBuilder builder) {
          builders.put(nm, builder);
       }
       

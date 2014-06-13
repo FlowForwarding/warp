@@ -4,7 +4,6 @@
  */
 package org.flowforwarding.warp.protocol.ofp;
 
-import org.flowforwarding.warp.protocol.internals.avro.AvroItem;
 import org.flowforwarding.warp.protocol.internals.avro.AvroProtocol;
 import org.flowforwarding.warp.util.Convert;
 
@@ -14,7 +13,7 @@ import org.flowforwarding.warp.util.Convert;
  */
 public class OFItemRef {
    
-   private AvroItem internal;
+/*   private AvroItem internal;
    private int version;
    
    private OFItemRef(OFItemBuilder builder) {
@@ -27,10 +26,6 @@ public class OFItemRef {
    
    public void add(OFItemRef value) {
       internal.add(Internal.get(value));
-   }
-   
-   public void add(String name, OFItemRef value) {
-      internal.add(name, Internal.get(value));      
    }
    
    public void set(String name, String value) {
@@ -88,5 +83,5 @@ public class OFItemRef {
       }
 
 
-   }
+   }*/
 }

@@ -7,7 +7,6 @@ package org.flowforwarding.warp.protocol.ofp;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.flowforwarding.warp.protocol.internals.avro.AvroItem;
 import org.flowforwarding.warp.protocol.internals.avro.AvroProtocol;
 import org.flowforwarding.warp.protocol.internals.avro.AvroRecord;
 import org.flowforwarding.warp.util.*;
@@ -67,10 +66,6 @@ public class OFMessageRef {
 	   return internal.binary(name);
    }
    
-/*   public AvroRecord getInternal() {
-      return internal;
-   }*/
-   
    public String type() {
 	   return ofType;
    }
@@ -85,11 +80,6 @@ public class OFMessageRef {
    
    public void add(OFMessageRef value) {
 
-   }
-   
-   public OFItemRef get (String name) {
-      //TODO Improvs: What if NOT AvroRecord?
-      return new OFItemRef((AvroItem)internal.get(name));
    }
    
    private static class Internal {

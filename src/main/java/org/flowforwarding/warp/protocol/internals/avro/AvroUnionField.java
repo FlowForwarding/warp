@@ -4,7 +4,7 @@ import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericContainer;
 import org.flowforwarding.warp.protocol.internals.IProtocolItem;
 
-public class AvroUnionField implements IProtocolItem <String, GenericContainer>{
+public class AvroUnionField implements IProtocolItem<String, GenericContainer> {
    
    protected String name;
    protected Schema schema;
