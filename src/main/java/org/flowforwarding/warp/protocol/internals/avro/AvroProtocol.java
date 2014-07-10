@@ -22,7 +22,7 @@ import org.flowforwarding.warp.protocol.internals.IProtocolAtom;
 import org.flowforwarding.warp.protocol.internals.IProtocolContainer;
 import org.flowforwarding.warp.protocol.internals.avro.AvroEnum.*;
 import org.flowforwarding.warp.protocol.internals.avro.AvroRecord.*;
-import org.flowforwarding.warp.protocol.internals.avro.AvroFixedField.*;
+import org.flowforwarding.warp.protocol.internals.avro.AvroFixed.*;
 import org.flowforwarding.warp.protocol.internals.avro.AvroUnionField.*;
 import org.flowforwarding.warp.protocol.internals.avro.AvroArray.*;
 

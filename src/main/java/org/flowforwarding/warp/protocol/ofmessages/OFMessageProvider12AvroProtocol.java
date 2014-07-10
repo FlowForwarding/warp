@@ -40,7 +40,7 @@ import org.flowforwarding.warp.protocol.ofmessages.OFMessageGroupMod.OFMessageGr
 import org.flowforwarding.warp.protocol.ofmessages.OFMessageHello.OFMessageHelloRef;
 import org.flowforwarding.warp.protocol.ofmessages.OFMessagePacketIn.OFMessagePacketInRef;
 import org.flowforwarding.warp.protocol.ofmessages.OFMessageSwitchConfig.OFMessageSwitchConfigRef;
-import org.flowforwarding.warp.protocol.internals.avro.AvroFixedField.*;
+import org.flowforwarding.warp.protocol.internals.avro.AvroFixed.*;
 import org.flowforwarding.warp.protocol.ofstructures.IOFStructureBuilder;
 import org.flowforwarding.warp.protocol.ofstructures.OFStructureBuilder13;
 import org.flowforwarding.warp.protocol.ofstructures.OFStructureInstruction;

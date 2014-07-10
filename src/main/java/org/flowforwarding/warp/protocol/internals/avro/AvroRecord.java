@@ -30,7 +30,6 @@ import org.flowforwarding.warp.protocol.internals.IProtocolStructure;
  * @author Infoblox Inc.
  *
  */
-//public class AvroRecord implements IProtocolStructure <String, GenericContainer>{
 public class AvroRecord implements IProtocolItem<String, GenericContainer>, IProtocolStructure<String, GenericContainer> {   
    
    protected String name;
@@ -56,7 +55,6 @@ public class AvroRecord implements IProtocolItem<String, GenericContainer>, IPro
             e.printStackTrace();
          }
       }      
-
    }
 
    @Override
@@ -137,8 +135,8 @@ public class AvroRecord implements IProtocolItem<String, GenericContainer>, IPro
          }
       }
       // TODO Improve: Is Non-Fixed value possible at the end?
-      if (item instanceof AvroFixedField) 
-         ((AvroFixedField) item).set(value); 
+      if (item instanceof AvroFixed) 
+         ((AvroFixed) item).set(value); 
       return;
    }
    
