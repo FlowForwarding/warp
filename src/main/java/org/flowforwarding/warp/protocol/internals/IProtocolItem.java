@@ -9,8 +9,6 @@ package org.flowforwarding.warp.protocol.internals;
  *
  */
 public interface IProtocolItem <External, Internal>{
-   
    public String name();
    public Internal get();
-
 }
