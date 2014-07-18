@@ -7,6 +7,7 @@ package org.flowforwarding.warp.protocol.ofp;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.flowforwarding.warp.protocol.container.avro.AvroContainer;
 import org.flowforwarding.warp.protocol.internals.avro.AvroProtocol;
 import org.flowforwarding.warp.protocol.internals.avro.AvroRecord;
 import org.flowforwarding.warp.util.*;
@@ -91,19 +92,28 @@ public class OFMessageRef {
    public static class OFMessageBuilder {
       
       private final AvroProtocol container;
+      private final AvroContainer container2;
       private String msgType;
       private byte[] binValue;
       private List<Tuple<String, String>> items = new ArrayList<>();
       private final byte version;
+      private final byte version2;      
       
       public OFMessageBuilder (String containerType, String src) {
          
          if (containerType.equalsIgnoreCase("avro")) {
             container = AvroProtocol.getInstance(src);
             version = container.version();
+            
+            container2 = AvroContainer.getInstance(src);
+            version2 = container.version();
+            
          } else {
             container = null;
             version = (byte) 0xff;
+            
+            container2 = null;
+            version2 = (byte) 0xff;
          }
       }
 
@@ -112,9 +122,16 @@ public class OFMessageRef {
          if (containerType.equalsIgnoreCase("avro")) {
             container = AvroProtocol.getInstance(in[0]);
             version = container.version();
+            
+            container2 = AvroContainer.getInstance(in[0]);
+            version2 = container.version();
+            
          } else {
             container = null;
             version = (byte) 0xff;
+            
+            container2 = null;
+            version2 = (byte) 0xff;
          }
       }
       

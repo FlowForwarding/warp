@@ -4,8 +4,6 @@
  */
 package org.flowforwarding.warp.protocol.internals;
 
-import org.apache.avro.generic.GenericContainer;
-
 /**
  * @author Infoblox Inc.
  *
