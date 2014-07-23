@@ -8,7 +8,7 @@ package org.flowforwarding.warp.protocol.container;
  * @author Infoblox Inc.
  *
  */
-public interface INamedValue <External, Internal> {
+public interface INamedValue <External, Internal>{
    public String name(); 
    public Internal get();
 }

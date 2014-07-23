@@ -24,7 +24,7 @@ import org.flowforwarding.warp.protocol.container.INamedValue;
  *
  */
 public class AvroFixed implements IAtom<String, GenericContainer>, 
-                                  INamedValue<String, GenericContainer>, 
+                                  INamedValue<String, GenericContainer>,
                                   IBuilt<String, GenericContainer>{
    
    protected String name;

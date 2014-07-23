@@ -22,6 +22,7 @@ import org.flowforwarding.warp.protocol.container.IAtom;
 import org.flowforwarding.warp.protocol.container.IBuilder;
 import org.flowforwarding.warp.protocol.container.IContainer;
 import org.flowforwarding.warp.protocol.container.avro.AvroFixed.AvroFixedBuilder;
+import org.flowforwarding.warp.protocol.container.avro.AvroRecord.AvroRecordBuilder;
 
 /**
  * @author Infoblox Inc.
@@ -83,13 +84,13 @@ public class AvroContainer implements IContainer <String, GenericContainer> {
             b.addItemBuilder(field.name(), makeRecordBuilder(field.name(), field.schema()));
             if (field.defaultValue() == null)
                b.notReadyToBinary();
-         } else if (field.schema().getType().getName().equalsIgnoreCase("union")) {
+         }/* else if (field.schema().getType().getName().equalsIgnoreCase("union")) {
             b.addItemBuilder(field.name(), new AvroUnionBuilder(field.name(), field.schema()));
             b.notReadyToBinary();
          } else if (field.schema().getType().getName().equalsIgnoreCase("array")) {
             b.addItemBuilder(field.name(), new AvroArrayBuilder(field.name(), field.schema()));
             b.notReadyToBinary();
-         }
+         }*/
       }
       
       return b;

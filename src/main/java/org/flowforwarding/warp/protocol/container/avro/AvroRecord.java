@@ -33,15 +33,15 @@ import org.flowforwarding.warp.protocol.container.IStructure;
  * @author Infoblox Inc.
  *
  */
-public class AvroRecord implements IBuilt<String, GenericContainer>, 
-                                   IBinary<String, GenericContainer>,
+public class AvroRecord implements IBinary<String, GenericContainer>,
                                    INamedValue<String, GenericContainer>,
-                                   IStructure<String, GenericContainer> {
+                                   IStructure<String, GenericContainer>,
+                                   IBuilt<String, GenericContainer>{
    
    protected String name;
    protected Schema schema;
    protected GenericRecord recordValue;
-   protected Map<String, INamedValue<String, GenericContainer>> items = new HashMap<>();
+   protected Map<String, AvroItem> items = new HashMap<>();
    protected boolean readyToBinary = true;
    
    private AvroRecord (AvroRecordBuilder builder) {
@@ -119,7 +119,7 @@ public class AvroRecord implements IBuilt<String, GenericContainer>,
       return null;
    }
    
-   public void add(String name, IBuilt<String, GenericContainer> i) {
+   public void add(String name, AvroItem i) {
       items.put(name, i);
    }
    
@@ -152,7 +152,7 @@ public class AvroRecord implements IBuilt<String, GenericContainer>,
       public AvroRecord build() {
          AvroRecord rec = new AvroRecord(this);
          for (String nm: builders.keySet()) {
-            rec.add(nm, builders.get(nm).build());
+            rec.add(nm, (AvroItem) builders.get(nm).build());
          }
          return rec;
       }
