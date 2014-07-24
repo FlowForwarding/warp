@@ -20,11 +20,17 @@ public class AvroItem implements IBuilt<String, GenericContainer>,
                                  INamedValue<String, GenericContainer>{
 
    private IBuilt<String, GenericContainer> item;
+   
+   public AvroItem (IBuilt<String, GenericContainer> i) {
+      item = i;
+   }
 
    @Override
    public String name() {
-      // TODO Auto-generated method stub
-      return null;
+      if (item instanceof INamedValue) {
+         return ((INamedValue) item).name();
+      } else return null;
+      // TODO Improvs: exception
    }
 
    @Override
