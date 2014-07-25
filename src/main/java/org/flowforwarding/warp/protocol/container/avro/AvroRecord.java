@@ -119,7 +119,7 @@ public class AvroRecord implements IBinary<String, GenericContainer>,
       return null;
    }
    
-   public void add(String name, AvroItem i) {
+   private void add(String name, AvroItem i) {
       items.put(name, i);
    }
    
