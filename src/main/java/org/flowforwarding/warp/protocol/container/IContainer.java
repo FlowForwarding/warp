@@ -10,6 +10,6 @@ package org.flowforwarding.warp.protocol.container;
  */
 public interface IContainer <External, Internal> {
    public void init();
-//   public IStructure <External, Internal> structure(String structureName, byte []... in);
+   public IStructure <External, Internal> structure(String structureName, byte []... in);
    public IAtom <External, Internal> atom(String atomName, byte []... in);
 }

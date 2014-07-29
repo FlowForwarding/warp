@@ -8,7 +8,6 @@ package org.flowforwarding.warp.protocol.container;
  * @author Infoblox Inc.
  *
  */
-public interface IBinary <External, Internal> {
-   public byte [] binary();
-   public byte [] binary(String name);
+public interface ISet <External, Internal>{
+
 }

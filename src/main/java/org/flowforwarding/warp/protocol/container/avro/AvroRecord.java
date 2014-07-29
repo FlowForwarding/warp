@@ -115,7 +115,29 @@ public class AvroRecord implements IBinary<String, GenericContainer>,
 
    @Override
    public byte[] binary() {
-      // TODO Auto-generated method stub
+      GenericRecord record = (GenericRecord) get();
+      ByteArrayOutputStream out = new ByteArrayOutputStream();
+      
+      DatumWriter<GenericRecord> writer = new GenericDatumWriter<GenericRecord>(this.schema);
+      Encoder encoder = EncoderFactory.get().binaryNonEncoder(out, null);
+      
+      try {
+         writer.write(record, encoder);
+         encoder.flush();
+      } catch (IOException e) {
+         // TODO Auto-generated catch block
+         e.printStackTrace();
+      }
+      
+      return out.toByteArray();   
+   }
+   
+   @Override
+   public byte[] binary(String name) {
+      if (recordValue != null) {
+         //TODO Improvs: excepion should be thrown in case of wrong field name
+         return ((Fixed)recordValue.get(name)).bytes();
+      }
       return null;
    }
    
@@ -152,7 +174,7 @@ public class AvroRecord implements IBinary<String, GenericContainer>,
       public AvroRecord build() {
          AvroRecord rec = new AvroRecord(this);
          for (String nm: builders.keySet()) {
-            rec.add(nm, (AvroItem) builders.get(nm).build());
+            rec.add(nm, new AvroItem(builders.get(nm).build()));
          }
          return rec;
       }

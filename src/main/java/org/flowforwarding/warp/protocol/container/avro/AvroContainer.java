@@ -18,11 +18,11 @@ import org.apache.avro.generic.GenericContainer;
 import org.apache.avro.generic.GenericRecord;
 import org.apache.avro.generic.GenericData.Fixed;
 import org.flowforwarding.warp.context.Context;
-import org.flowforwarding.warp.protocol.container.IAtom;
 import org.flowforwarding.warp.protocol.container.IBuilder;
 import org.flowforwarding.warp.protocol.container.IContainer;
 import org.flowforwarding.warp.protocol.container.avro.AvroFixed.AvroFixedBuilder;
 import org.flowforwarding.warp.protocol.container.avro.AvroRecord.AvroRecordBuilder;
+import org.flowforwarding.warp.protocol.container.avro.AvroEnum.AvroEnumBuilder;
 
 /**
  * @author Infoblox Inc.
@@ -41,8 +41,14 @@ public class AvroContainer implements IContainer <String, GenericContainer> {
    }
    
    @Override
-   public IAtom<String, GenericContainer> atom(String atomName, byte[]... in) {
-      return (IAtom<String, GenericContainer>) builders.get(atomName).value(in[0]).build();
+   public AvroItem atom(String atomName, byte[]... in) {
+      return  new AvroItem(builders.get(atomName).value(in[0]).build());
+   }
+   
+   @Override
+   public AvroItem structure(String structureName, byte[]... in) {
+      //TODO I: place for class-cast error handling
+      return new AvroItem (builders.get(structureName).value(in[0]).build());
    }
    
    @Override
@@ -59,16 +65,24 @@ public class AvroContainer implements IContainer <String, GenericContainer> {
                builders.put(schema.getName(), new AvroFixedBuilder(schema.getName(), schema));
             } else if (schema.getType().getName().equalsIgnoreCase("record")) {
                builders.put(schema.getName(), makeRecordBuilder(schema.getName(), schema));
+            } else if (schema.getType().getName().equalsIgnoreCase("enum")) {
+               builders.put(schema.getName(), new AvroEnumBuilder(schema.getName(), schema));
             }
          }
          
          // TODO Improvs: Just a quick solution to get version.
-         //version = ((Fixed)((GenericRecord) builders.get("ofp_header").build().get()).get("version")).bytes()[0];
+         AvroItem item = new AvroItem(builders.get("ofp_header").build());
+         version = ((Fixed)((GenericRecord)item.get()).get("version")).bytes()[0];
          
       } catch (IOException e) {
          // TODO Auto-generated catch block
          e.printStackTrace();
       }
+   }
+   
+   //TODO Q: should we put into interface?
+   public byte version () {
+      return version;
    }
    
    protected static AvroRecordBuilder makeRecordBuilder (String name, Schema schema) {

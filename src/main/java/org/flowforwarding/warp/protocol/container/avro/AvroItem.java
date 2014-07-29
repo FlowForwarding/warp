@@ -6,6 +6,7 @@ package org.flowforwarding.warp.protocol.container.avro;
 
 import org.apache.avro.generic.GenericContainer;
 import org.flowforwarding.warp.protocol.container.IAtom;
+import org.flowforwarding.warp.protocol.container.IBinary;
 import org.flowforwarding.warp.protocol.container.IBuilt;
 import org.flowforwarding.warp.protocol.container.INamedValue;
 import org.flowforwarding.warp.protocol.container.IStructure;
@@ -17,7 +18,8 @@ import org.flowforwarding.warp.protocol.container.IStructure;
 public class AvroItem implements IBuilt<String, GenericContainer>,
                                  IAtom<String, GenericContainer>,
                                  IStructure<String, GenericContainer>,
-                                 INamedValue<String, GenericContainer>{
+                                 INamedValue<String, GenericContainer>,
+                                 IBinary<String, GenericContainer>{
 
    private IBuilt<String, GenericContainer> item;
    
@@ -35,32 +37,40 @@ public class AvroItem implements IBuilt<String, GenericContainer>,
 
    @Override
    public GenericContainer get() {
-      // TODO Auto-generated method stub
-      return null;
+      return item.get();
    }
 
    @Override
    public void set(String name, GenericContainer value) {
-      // TODO Auto-generated method stub
-      
+      //TODO I: error handling must be here
+      ((IStructure)item).set(name, value);
    }
 
    @Override
    public void set(String name, byte[] value) {
-      // TODO Auto-generated method stub
-      
+      //TODO I: error handling must be here      
+      ((IStructure)item).set(name, value);
    }
 
    @Override
    public void set(byte[] value) {
-      // TODO Auto-generated method stub
-      
+      ((IAtom)item).set(value);
    }
 
    @Override
    public void set(GenericContainer value) {
       // TODO Auto-generated method stub
       
+   }
+
+   @Override
+   public byte[] binary() {
+      return ((IBinary)item).binary();
+   }
+
+   @Override
+   public byte[] binary(String name) {
+      return ((IBinary)item).binary(name);
    }
 
 }

@@ -11,9 +11,8 @@ import org.flowforwarding.warp.protocol.ofmessages.IOFMessageProviderFactory;
 import org.flowforwarding.warp.protocol.ofmessages.OFMessageFlowMod.OFMessageFlowModRef;
 import org.flowforwarding.warp.protocol.ofmessages.OFMessageProviderFactoryAvroProtocol;
 import org.flowforwarding.warp.protocol.ofstructures.OFStructureInstruction.OFStructureInstructionRef;
-import org.flowforwarding.warp.protocol.ofp.OFItemRef;
-import org.flowforwarding.warp.protocol.ofp.OFMessageRef;
-import org.flowforwarding.warp.protocol.ofp.OFMessageRef.OFMessageBuilder;
+import org.flowforwarding.warp.protocol.ofp.avro.OFMessage;
+import org.flowforwarding.warp.protocol.ofp.avro.OFMessage.OFMessageBuilder;
 import org.flowforwarding.warp.util.Convert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,7 +51,9 @@ public class SwitchNurse extends UntypedActor {
    
    IOFMessageProviderFactory factory = new OFMessageProviderFactoryAvroProtocol();
    IOFMessageProvider provider = null;
+
    OFMessageBuilder builder = null;
+   
    
    @Override
    public void preStart() throws Exception {
@@ -68,10 +69,9 @@ public class SwitchNurse extends UntypedActor {
          case STARTED:
             ByteString in = ((Received) msg).data();
             provider = factory.getMessageProvider(in.toArray());
-           
-            builder = new OFMessageBuilder("avro", in.toArray());
-            OFMessageRef ref_ = builder.type("ofp_hello").set("header.xid", "0x0000").build();
-            OFMessageRef inMsg = builder.value(in.toArray()).build();
+
+            builder = new org.flowforwarding.warp.protocol.ofp.avro.OFMessage.OFMessageBuilder(in.toArray());            
+            OFMessage inMsg = builder.value(in.toArray()).build(); 
 
             if ((provider != null) && (inMsg != null)) {
                 if (inMsg.type().equals("OFPT_HELLO")) {
@@ -101,8 +101,7 @@ public class SwitchNurse extends UntypedActor {
              
                state = State.HANDSHAKED;
                ofSessionHandler.tell(new OFEventHandshaked(swRef), getSelf());
-               
-               OFMessageRef ref = builder.type("ofp_get_config_request").build();
+
                getSender().tell(TcpMessage.write(ByteString.fromArray(builder.type("ofp_get_config_request").build().binary())), getSelf());
             }
             
@@ -115,7 +114,7 @@ public class SwitchNurse extends UntypedActor {
             if (inMsg.type().equals("OFPT_GET_CONFIG_REPLY")) {
                log.info("IN: Config Reply from Switch " + Long.toHexString(swRef.getDpid().longValue()));
                
-               OFMessageRef flowModRef = builder.type("ofp_flow_mod").build();
+               OFMessage flowMod = builder.type("ofp_flow_mod").build();
 /*               OFItemRef matchInPort = itemBuilder.type("oxm_tlv_ingress_port").build();
                matchInPort.set("tlv", "4");
                OFItemRef tlv = itemBuilder.type("oxm_tlv").build();

@@ -2,27 +2,30 @@
  * © 2013 FlowForwarding.Org
  * All Rights Reserved.  Use is subject to license terms.
  */
-package org.flowforwarding.warp.protocol.ofp;
+package org.flowforwarding.warp.protocol.ofp.avro;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.flowforwarding.warp.protocol.container.avro.AvroContainer;
-import org.flowforwarding.warp.protocol.internals.avro.AvroProtocol;
+import org.flowforwarding.warp.protocol.container.avro.AvroItem;
 import org.flowforwarding.warp.protocol.internals.avro.AvroRecord;
-import org.flowforwarding.warp.util.*;
+import org.flowforwarding.warp.protocol.ofp.IMessage;
+import org.flowforwarding.warp.protocol.ofp.IMessageBuilder;
+import org.flowforwarding.warp.protocol.ofp.OFMessageRef;
+import org.flowforwarding.warp.protocol.ofp.OFMessageRef.OFMessageBuilder;
+import org.flowforwarding.warp.util.Tuple;
 
 /**
  * @author Infoblox Inc.
  *
  */
-public class OFMessageRef {
+public class OFMessage implements IMessage<AvroItem> {
    
+   private AvroItem internal;
    private String ofType = "";
-   private int version;
-   private AvroRecord internal;
    
-   private OFMessageRef(OFMessageBuilder builder) {
+   private OFMessage(OFMessageBuilder builder) {
       if (builder.binValue == null) {
          internal = builder.container.structure(builder.msgType, builder.binValue);
       } else {
@@ -55,68 +58,43 @@ public class OFMessageRef {
       builder.items.clear();
    }
    
-   private OFMessageRef (AvroRecord i) {
-      this.internal = i;
+   private void set(String name, String value) {
    }
    
+   //TODO I: should we put the declaration into Interface?
+   public String type() {
+      return ofType;
+   }
+
+   //TODO I: should we put the declaration into Interface?   
    public byte[] binary() {
       return internal.binary();
    }
-   
-   public byte[] field(String name) {
-	   return internal.binary(name);
-   }
-   
-   public String type() {
-	   return ofType;
-   }
-   
-   public void set(String name, String value) {
-      internal.set(name, Convert.toArray(value));
-   }
-   
-   public void add(String name, OFMessageRef value) {
-      internal.add(name, Internal.get(value));      
-   }
-   
-   public void add(OFMessageRef value) {
 
+   //TODO I: should we put the declaration into Interface?
+   public byte[] field(String name) {
+      return internal.binary(name);
    }
-   
-   private static class Internal {
-      public static AvroRecord get(OFMessageRef ref) {
-         return ref.internal;
-      }
-   }
-   
-   public static class OFMessageBuilder {
-      
-      private final AvroProtocol container;
+
+
+   public static class OFMessageBuilder implements IMessageBuilder<AvroItem>{
+      private final AvroContainer container;
+      private final byte version;      
       private String msgType;
       private byte[] binValue;
       private List<Tuple<String, String>> items = new ArrayList<>();
-      private final byte version;
-      
-      public OFMessageBuilder (String containerType, String src) {
-         
-         if (containerType.equalsIgnoreCase("avro")) {
-            container = AvroProtocol.getInstance(src);
-            version = container.version();
-         } else {
-            container = null;
-            version = (byte) 0xff;
-         }
-      }
 
-      public OFMessageBuilder (String containerType, byte[] in) {
-         
-         if (containerType.equalsIgnoreCase("avro")) {
-            container = AvroProtocol.getInstance(in[0]);
-            version = container.version();
-         } else {
-            container = null;
-            version = (byte) 0xff;
-         }
+      
+      public OFMessageBuilder (String src) {
+         //TODO I: place for error-handling
+         container = AvroContainer.getInstance(src);
+         version = container.version();
+      }
+      
+      public OFMessageBuilder (byte[] in) {
+         //TODO I: place for error-handling         
+         container = AvroContainer.getInstance(in[0]);
+         version = container.version();
       }
       
       public OFMessageBuilder type(String type) {
@@ -138,10 +116,10 @@ public class OFMessageRef {
          return version;
       }
 
-      public OFMessageRef build() {
-         OFMessageRef ref = new OFMessageRef (this); 
+      public OFMessage build() {
+         OFMessage msg = new OFMessage (this); 
          clean();
-         return ref;
+         return msg;
       }
       
       private void clean() {
@@ -149,4 +127,5 @@ public class OFMessageRef {
          this.msgType = null;
       }
    }
+   
 }
