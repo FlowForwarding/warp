@@ -75,7 +75,14 @@ public class OFMessage implements IMessage<AvroItem> {
    public byte[] field(String name) {
       return internal.binary(name);
    }
-
+   
+   public class Ref {
+      private AvroItem pointer;
+      
+      private Ref(AvroItem p) {
+         this.pointer = p;
+      }
+   }
 
    public static class OFMessageBuilder implements IMessageBuilder<AvroItem>{
       private final AvroContainer container;
@@ -127,5 +134,5 @@ public class OFMessage implements IMessage<AvroItem> {
          this.msgType = null;
       }
    }
-   
+
 }
