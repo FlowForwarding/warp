@@ -2,7 +2,7 @@
  * © 2013 FlowForwarding.Org
  * All Rights Reserved.  Use is subject to license terms.
  */
-package org.flowforwarding.warp.protocol.internals.avro;
+package org.flowforwarding.warp.protocol.container.avro;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -15,35 +15,46 @@ import org.apache.avro.Protocol;
 import org.apache.avro.Schema;
 import org.apache.avro.Schema.Field;
 import org.apache.avro.generic.GenericContainer;
-import org.apache.avro.generic.GenericData.Fixed;
 import org.apache.avro.generic.GenericRecord;
+import org.apache.avro.generic.GenericData.Fixed;
 import org.flowforwarding.warp.context.Context;
-import org.flowforwarding.warp.protocol.internals.IProtocolAtom;
-import org.flowforwarding.warp.protocol.internals.IProtocolContainer;
-import org.flowforwarding.warp.protocol.internals.avro.AvroEnum.*;
-import org.flowforwarding.warp.protocol.internals.avro.AvroRecord.*;
-import org.flowforwarding.warp.protocol.internals.avro.AvroFixedField.*;
-import org.flowforwarding.warp.protocol.internals.avro.AvroUnionField.*;
-import org.flowforwarding.warp.protocol.internals.avro.AvroArray.*;
+import org.flowforwarding.warp.protocol.container.IBuilder;
+import org.flowforwarding.warp.protocol.container.IContainer;
+import org.flowforwarding.warp.protocol.container.avro.AvroFixed.AvroFixedBuilder;
+import org.flowforwarding.warp.protocol.container.avro.AvroRecord.AvroRecordBuilder;
+import org.flowforwarding.warp.protocol.container.avro.AvroEnum.AvroEnumBuilder;
 
 /**
  * @author Infoblox Inc.
  *
  */
-public class AvroProtocol implements IProtocolContainer<String, GenericContainer> {
+public class AvroContainer implements IContainer <String, GenericContainer> {
 
    private String avprSrc;
    private byte version;
    Protocol protocol;
-   protected Map<String, AvroItemBuilder> builders = new HashMap<>();
    
-   private AvroProtocol (String src) {
+   protected Map<String, IBuilder<String, GenericContainer>> builders = new HashMap<>();
+   
+   private AvroContainer (String src) {
       this.avprSrc = src;
+   }
+   
+   @Override
+   public AvroItem atom(String atomName, byte[]... in) {
+      return  new AvroItem(builders.get(atomName).value(in[0]).build());
+   }
+   
+   @Override
+   public AvroItem structure(String structureName, byte[]... in) {
+      //TODO I: place for class-cast error handling
+      return new AvroItem (builders.get(structureName).value(in[0]).build());
    }
    
    @Override
    public void init() {
       InputStream str = Thread.currentThread().getContextClassLoader().getResourceAsStream(this.avprSrc);
+      
       try {
          protocol = Protocol.parse(str);
          
@@ -59,35 +70,18 @@ public class AvroProtocol implements IProtocolContainer<String, GenericContainer
             }
          }
          
-         // TODO Improvs: Quick solution to get version.
-         version = ((Fixed)((GenericRecord) builders.get("ofp_header").build().get()).get("version")).bytes()[0];
-         
+         // TODO Improvs: Just a quick solution to get version.
+         AvroItem item = new AvroItem(builders.get("ofp_header").build());
+         version = ((Fixed)((GenericRecord)item.get()).get("version")).bytes()[0];
          
       } catch (IOException e) {
          // TODO Auto-generated catch block
          e.printStackTrace();
       }
-      
-   }
-
-   @Override
-   public AvroRecord structure(String structureName, byte[]... in) {
-      return (AvroRecord) builders.get(structureName).value(in[0]).build();
    }
    
-   //TODO Improvs: Replace with AvroItem?
-   @Override
-   public IProtocolAtom<String, GenericContainer> atom(String atomName, byte[]... in) {
-      return (IProtocolAtom<String, GenericContainer>) builders.get(atomName).value(in[0]).build();
-   }
-   
-/*   @Override
-   public IProtocolAtom<String, GenericContainer> atom(String atomName, GenericContainer... in) {
-      return (IProtocolAtom<String, GenericContainer>) builders.get(atomName).value(in[0]).build();
-   }*/
-   
-   @Override
-   public byte version() {
+   //TODO Q: should we put into interface?
+   public byte version () {
       return version;
    }
    
@@ -104,31 +98,31 @@ public class AvroProtocol implements IProtocolContainer<String, GenericContainer
             b.addItemBuilder(field.name(), makeRecordBuilder(field.name(), field.schema()));
             if (field.defaultValue() == null)
                b.notReadyToBinary();
-         } else if (field.schema().getType().getName().equalsIgnoreCase("union")) {
+         }/* else if (field.schema().getType().getName().equalsIgnoreCase("union")) {
             b.addItemBuilder(field.name(), new AvroUnionBuilder(field.name(), field.schema()));
             b.notReadyToBinary();
          } else if (field.schema().getType().getName().equalsIgnoreCase("array")) {
             b.addItemBuilder(field.name(), new AvroArrayBuilder(field.name(), field.schema()));
             b.notReadyToBinary();
-         }
+         }*/
       }
       
       return b;
    }
    
    private static class Holder {
-      private static final Map<String, AvroProtocol> PROTOCOLS = new HashMap<>();
+      private static final Map<String, AvroContainer> PROTOCOLS = new HashMap<>();
    }
    
-   public static AvroProtocol getInstance (byte version) {
+   public static AvroContainer getInstance (byte version) {
       return getInstance(Context.getInstance().value("OFP", "version." + Byte.toString(version)));
    }
    
-   public static AvroProtocol getInstance (String src) {
+   public static AvroContainer getInstance (String src) {
       if (Holder.PROTOCOLS.containsKey(src)) 
          return Holder.PROTOCOLS.get(src);
       else {
-         AvroProtocol newProtocol = new AvroProtocol(src);
+         AvroContainer newProtocol = new AvroContainer(src);
          newProtocol.init();
          Holder.PROTOCOLS.put(src, newProtocol);
          

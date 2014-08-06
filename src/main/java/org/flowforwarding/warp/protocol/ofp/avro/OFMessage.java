@@ -2,34 +2,28 @@
  * © 2013 FlowForwarding.Org
  * All Rights Reserved.  Use is subject to license terms.
  */
-package org.flowforwarding.warp.protocol.ofp;
+package org.flowforwarding.warp.protocol.ofp.avro;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-import org.apache.avro.generic.GenericContainer;
-import org.apache.avro.generic.GenericData.Fixed;
-import org.flowforwarding.warp.protocol.internals.IProtocolAtom;
-import org.flowforwarding.warp.protocol.internals.IProtocolContainer;
-import org.flowforwarding.warp.protocol.internals.IProtocolItem;
-import org.flowforwarding.warp.protocol.internals.IProtocolStructure;
-import org.flowforwarding.warp.protocol.internals.avro.AvroProtocol;
-import org.flowforwarding.warp.protocol.internals.avro.AvroRecord;
-import org.flowforwarding.warp.util.*;
+import org.flowforwarding.warp.protocol.container.avro.AvroContainer;
+import org.flowforwarding.warp.protocol.container.avro.AvroItem;
+import org.flowforwarding.warp.protocol.ofp.IMessage;
+import org.flowforwarding.warp.protocol.ofp.IMessageBuilder;
+import org.flowforwarding.warp.util.Tuple;
 
 /**
  * @author Infoblox Inc.
  *
  */
-public class OFMessageRef {
+public class OFMessage implements IMessage<AvroItem> {
    
+   private AvroItem internal;
    private String ofType = "";
-   private int version;
-   private AvroRecord internal;
+   private Ref ref;
    
-   private OFMessageRef(OFMessageBuilder builder) {
+   private OFMessage(OFMessageBuilder builder) {
       if (builder.binValue == null) {
          internal = builder.container.structure(builder.msgType, builder.binValue);
       } else {
@@ -58,68 +52,66 @@ public class OFMessageRef {
       for (Tuple <String, String>t : builder.items) {
          this.set(t.getName(), t.getValue());
       }
-      
+      ref = new Ref (internal);
       builder.items.clear();
    }
    
+   private void set(String name, String value) {
+   }
+   
+   //TODO I: should we put the declaration into Interface?
+   public String type() {
+      return ofType;
+   }
+
+   //TODO I: should we put the declaration into Interface?   
    public byte[] binary() {
       return internal.binary();
    }
-   
+
+   //TODO I: should we put the declaration into Interface?
    public byte[] field(String name) {
-	   return internal.binary(name);
+      return internal.binary(name);
    }
    
-   public AvroRecord getInternal() {
-      return internal;
+   public Ref get(String name) {
+      ref.set((AvroItem) internal.field(name));
+      return ref;
    }
    
-   public String type() {
-	   return ofType;
-   }
-   
-   public void set(String name, String value) {
-      internal.set(name, Convert.toArray(value));
-   }
-   
-   public void add(String name, OFMessageRef value) {
-      internal.add(name, Internal.get(value));      
-   }
-   
-   private static class Internal {
-      public static AvroRecord get(OFMessageRef ref) {
-         return ref.internal;
-      }
-   }
-   
-   public static class OFMessageBuilder {
+   public class Ref {
+      private AvroItem internal;
+      private Ref(AvroItem i) {internal = i;}
+
+      public void set(AvroItem i) {internal = i;}
+      public void set(byte[] value) {internal.set(value);}
       
-      private final AvroProtocol container;
+      public Ref get(String name) {
+         //TODO I: Class-cast
+         this.internal = (AvroItem) internal.field(name);
+         return this;
+      }
+      
+   }
+
+   public static class OFMessageBuilder implements IMessageBuilder<AvroItem>{
+      private final AvroContainer container;
+      private final byte version;      
       private String msgType;
       private byte[] binValue;
       private List<Tuple<String, String>> items = new ArrayList<>();
-      private final byte version;
-      
-      public OFMessageBuilder (String containerType, String src) {
-         
-         if (containerType.equalsIgnoreCase("avro")) {
-            container = AvroProtocol.getInstance(src);
-            version = container.version();
-         } else {
-            container = null;
-            version = (byte) 0xff;
-         }
-      }
 
-      public OFMessageBuilder (String containerType, byte[] in) {
-         
-         if (containerType.equalsIgnoreCase("avro")) {
-            container = AvroProtocol.getInstance(in[0]);
-            version = container.version();
-         } else {
-            container = null;
-            version = (byte) 0xff;
-         }
+      
+      public OFMessageBuilder (String src) {
+         //TODO I: place for error-handling
+         container = AvroContainer.getInstance(src);
+         version = container.version();
+      }
+      
+      public OFMessageBuilder (byte[] in) {
+         //TODO I: place for error-handling         
+         container = AvroContainer.getInstance(in[0]);
+         version = container.version();
       }
       
       public OFMessageBuilder type(String type) {
@@ -141,10 +133,10 @@ public class OFMessageRef {
          return version;
       }
 
-      public OFMessageRef build() {
-         OFMessageRef ref = new OFMessageRef (this); 
+      public OFMessage build() {
+         OFMessage msg = new OFMessage (this); 
          clean();
-         return ref;
+         return msg;
       }
       
       private void clean() {

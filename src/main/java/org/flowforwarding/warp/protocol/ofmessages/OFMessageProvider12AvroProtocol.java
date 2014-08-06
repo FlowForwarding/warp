@@ -29,18 +29,13 @@ import org.apache.avro.Schema.Field;
 import org.apache.avro.generic.GenericArray;
 import org.apache.avro.generic.GenericData;
 import org.apache.avro.Protocol;
-import org.flowforwarding.warp.protocol.ofp.OFMessageRef.OFMessageBuilder;
-import org.flowforwarding.warp.protocol.internals.avro.AvroEnum;
-import org.flowforwarding.warp.protocol.internals.avro.AvroItemBuilder;
-import org.flowforwarding.warp.protocol.internals.avro.AvroProtocol;
-import org.flowforwarding.warp.protocol.internals.avro.AvroRecord;
 import org.flowforwarding.warp.protocol.ofmessages.OFMessageError.OFMessageErrorRef;
 import org.flowforwarding.warp.protocol.ofmessages.OFMessageFlowMod.OFMessageFlowModRef;
 import org.flowforwarding.warp.protocol.ofmessages.OFMessageGroupMod.OFMessageGroupModRef;
 import org.flowforwarding.warp.protocol.ofmessages.OFMessageHello.OFMessageHelloRef;
 import org.flowforwarding.warp.protocol.ofmessages.OFMessagePacketIn.OFMessagePacketInRef;
 import org.flowforwarding.warp.protocol.ofmessages.OFMessageSwitchConfig.OFMessageSwitchConfigRef;
-import org.flowforwarding.warp.protocol.internals.avro.AvroFixedField.*;
+import org.flowforwarding.warp.protocol.ofp.avro.OFMessage.OFMessageBuilder;
 import org.flowforwarding.warp.protocol.ofstructures.IOFStructureBuilder;
 import org.flowforwarding.warp.protocol.ofstructures.OFStructureBuilder13;
 import org.flowforwarding.warp.protocol.ofstructures.OFStructureInstruction;
@@ -136,9 +131,9 @@ public class OFMessageProvider12AvroProtocol implements IOFMessageProvider {
    
    
    private Protocol protocol = null;
-   protected IOFMessageBuilder builder = null;
    protected IOFStructureBuilder structureBuilder = null;
-   OFMessageBuilder builderNew = null;
+   OFMessageBuilder builder = null;
+   IOFMessageBuilder builder12 = null;
 
    final class MatchEntry<K, V> implements Map.Entry<K, V> {
        private final K key;
@@ -171,10 +166,10 @@ public class OFMessageProvider12AvroProtocol implements IOFMessageProvider {
       try {
          InputStream str = Thread.currentThread().getContextClassLoader().getResourceAsStream(schemaSrc);
          
-         builderNew = new OFMessageBuilder("avro", schemaSrc);
+         builder = new OFMessageBuilder(schemaSrc);
 
          protocol = Protocol.parse(str);
-         builder = new OFMessageBuilder13();
+         builder12 = new OFMessageBuilder13();
          structureBuilder = new OFStructureBuilder13();
 
          } catch (IOException e) {
@@ -229,7 +224,7 @@ public class OFMessageProvider12AvroProtocol implements IOFMessageProvider {
    }
    
    public OFMessageFlowModRef buildFlowModMsg () {
-      return builder.buildFlowMod();
+      return builder12.buildFlowMod();
    }
    
    public OFStructureInstructionRef buildInstructionApplyActions () {
@@ -307,7 +302,7 @@ public class OFMessageProvider12AvroProtocol implements IOFMessageProvider {
    }*/
 
    public byte[] encodeHelloMessage() {
-      org.flowforwarding.warp.protocol.ofp.OFMessageRef helloMsg = builderNew.type("ofp_hello").build();
+      org.flowforwarding.warp.protocol.ofp.avro.OFMessage helloMsg = builder.type("ofp_hello").build();
       return helloMsg.binary();
    }
    
@@ -2545,7 +2540,7 @@ public OFMessageSwitchConfigRef parseSwitchConfig(byte[] in) {
    
 // TODO Improvs: We plan to get all flags from Avro protocol type... soon... so let it be now just numbers
    short flags = getShort((GenericData.Fixed)record.get("flags"));
-   OFMessageSwitchConfigRef configH = builder.buildSwitchConfig();
+   OFMessageSwitchConfigRef configH = builder12.buildSwitchConfig();
    if (flags == 0) {
       configH.setConfigFlagFragNormal();
    } else {
@@ -2564,7 +2559,7 @@ public OFMessageErrorRef parseError(byte[] in) {
 // TODO Improvs: We plan to get all flags from Avro protocol type... soon... so let it be now just numbers
    short type = getShort((GenericData.Fixed)record.get("type"));
    short code = getShort((GenericData.Fixed)record.get("code"));
-   OFMessageErrorRef errorH = builder.buildError();
+   OFMessageErrorRef errorH = builder12.buildError();
    
    errorH.setCode(code);
    errorH.setType(type);
@@ -2593,7 +2588,7 @@ public boolean isPacketIn(byte[] in) {
 @Override
 public OFMessagePacketInRef parsePacketIn(byte[] in) {
  
-   return builder.buildPacketIn();
+   return builder12.buildPacketIn();
 }
 
 /* (non-Javadoc)

@@ -1,16 +1,25 @@
-package org.flowforwarding.warp.protocol.internals.avro;
+/**
+ * © 2013 FlowForwarding.Org
+ * All Rights Reserved.  Use is subject to license terms.
+ */
+package org.flowforwarding.warp.protocol.container.avro;
 
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericContainer;
-import org.flowforwarding.warp.protocol.internals.IProtocolItem;
+import org.flowforwarding.warp.protocol.container.IBuilder;
+import org.flowforwarding.warp.protocol.container.IBuilt;
 
-public class AvroUnionField implements IProtocolItem <String, GenericContainer>{
-   
-   protected String name;
+/**
+ * @author Infoblox Inc.
+ *
+ */
+public class AvroUnion {
+
+/*   protected String name;
    protected Schema schema;
    protected GenericContainer value;
    
-   private AvroUnionField (AvroUnionBuilder builder) {
+   private AvroUnion (AvroUnionBuilder builder) {
       name = builder.name;
       schema = builder.schema;
    }
@@ -20,14 +29,14 @@ public class AvroUnionField implements IProtocolItem <String, GenericContainer>{
    @Override
    public String name() { return name; }
    
-   public static class AvroUnionBuilder extends AvroItemBuilder {
+   public static class AvroUnionBuilder implements IBuilder<String, GenericContainer> {
       protected final String name;
       protected final Schema schema;
       protected GenericContainer value = null;
       
       @Override
-      public IProtocolItem<String, GenericContainer> build() {
-         return new AvroUnionField(this);
+      public AvroUnion build() {
+         return new AvroUnion(this);
       }
       
       public AvroUnionBuilder(String nm, Schema sch) {
@@ -44,5 +53,5 @@ public class AvroUnionField implements IProtocolItem <String, GenericContainer>{
          this.value = in;
          return this;
       }
-   } 
+   }*/
 }

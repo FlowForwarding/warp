@@ -7,7 +7,6 @@ package org.flowforwarding.warp.jcontroller;
 import java.io.ByteArrayOutputStream;
 import java.net.InetSocketAddress;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -16,11 +15,11 @@ import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.RecursiveTask;
 import java.util.concurrent.atomic.AtomicLong;
 
-import org.flowforwarding.warp.protocol.ofp.OFMessageRef;
-import org.flowforwarding.warp.protocol.ofp.OFMessageRef.OFMessageBuilder;
 import org.flowforwarding.warp.protocol.ofmessages.IOFMessageProvider;
 import org.flowforwarding.warp.protocol.ofmessages.IOFMessageProviderFactory;
 import org.flowforwarding.warp.protocol.ofmessages.OFMessageProviderFactoryAvroProtocol;
+import org.flowforwarding.warp.protocol.ofp.avro.OFMessage;
+import org.flowforwarding.warp.protocol.ofp.avro.OFMessage.OFMessageBuilder;
 import org.flowforwarding.warp.util.Convert;
 import org.jboss.netty.bootstrap.ServerBootstrap;
 import org.jboss.netty.buffer.BigEndianHeapChannelBuffer;
@@ -33,10 +32,8 @@ import org.jboss.netty.channel.ChannelStateEvent;
 import org.jboss.netty.channel.Channels;
 import org.jboss.netty.channel.MessageEvent;
 import org.jboss.netty.channel.socket.nio.NioServerSocketChannelFactory;
-import org.jboss.netty.handler.logging.LoggingHandler;
 import org.jboss.netty.handler.timeout.IdleState;
 import org.jboss.netty.handler.timeout.IdleStateHandler;
-import org.jboss.netty.logging.InternalLogLevel;
 import org.jboss.netty.logging.InternalLoggerFactory;
 import org.jboss.netty.logging.Slf4JLoggerFactory;
 import org.jboss.netty.util.HashedWheelTimer;
@@ -196,7 +193,7 @@ public class JController {
    public class ChannelHandler extends IdleStateHandler{
 //   public class ChannelHandler extends IdleStateAwareChannelHandler{
       OFMessageBuilder builder = null;
-      private OFMessageRef inMsg = null;
+      private OFMessage inMsg = null;
       private Map<byte[], Channel> DPIDs = new HashMap<>();
       private final Logger log =  LoggerFactory.getLogger(ChannelHandler.class);
       
@@ -234,7 +231,7 @@ public class JController {
           
          switch (state) {
          case STARTED:
-            builder = new OFMessageBuilder("avro", in);
+            builder = new OFMessageBuilder(in);
             log.info("WARP OUT: HELLO");
             BigEndianHeapChannelBuffer x = new BigEndianHeapChannelBuffer(provider.getHello(new ByteArrayOutputStream()).toByteArray());
             e.getChannel().write(x);

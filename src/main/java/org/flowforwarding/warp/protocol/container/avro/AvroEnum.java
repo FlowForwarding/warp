@@ -2,9 +2,8 @@
  * © 2013 FlowForwarding.Org
  * All Rights Reserved.  Use is subject to license terms.
  */
-package org.flowforwarding.warp.protocol.internals.avro;
+package org.flowforwarding.warp.protocol.container.avro;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,31 +11,26 @@ import java.util.Map;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericContainer;
 import org.apache.avro.generic.GenericData;
-import org.apache.avro.generic.GenericDatumReader;
 import org.apache.avro.generic.GenericData.Fixed;
-import org.apache.avro.io.Decoder;
-import org.apache.avro.io.DecoderFactory;
 import org.codehaus.jackson.JsonNode;
-import org.flowforwarding.warp.protocol.internals.IProtocolAtom;
+import org.flowforwarding.warp.protocol.container.IAtom;
+import org.flowforwarding.warp.protocol.container.IBuilder;
+import org.flowforwarding.warp.protocol.container.IBuilt;
+import org.flowforwarding.warp.protocol.container.INamedValue;
+import org.flowforwarding.warp.protocol.container.ISet;
 
 /**
  * @author Infoblox Inc.
  *
  */
-public class AvroEnum implements IProtocolAtom <String, GenericContainer> {
-
+public class AvroEnum implements ISet <String, GenericContainer>,
+                                 INamedValue<String, GenericContainer>,
+                                 IBuilt<String, GenericContainer>{
    protected final String name;
    protected final Schema schema;
-   
-   // TODO Improv: Fixed? array? We should think about it.
-   protected GenericContainer value;
-   
-   @Override
-   public GenericContainer get() {
-      // TODO Improve: catch possible exception. It will be thrown in case inconsistence between value and schema
-      return null;
 
-   }
+   //TODO I: Fixed? array? We should think about it.
+   protected GenericContainer value;
    
    private AvroEnum (AvroEnumBuilder builder) {
       schema = builder.schema;
@@ -61,26 +55,19 @@ public class AvroEnum implements IProtocolAtom <String, GenericContainer> {
          }
       }*/
    }
-   
+
    @Override
    public String name() {
       return name;
    }
-
-   public Schema getSchema() {
-      return schema;
-   }
-
-   public GenericContainer getValue() {
-      return value;
-   }
-
-   @Override
-   public void set(byte[] value) {
-      // TODO Improve: throw Exception??!
-   }
    
-   public static class AvroEnumBuilder extends AvroItemBuilder{
+   @Override
+   public GenericContainer get() {
+      // TODO Auto-generated method stub
+      return null;
+   }
+
+   public static class AvroEnumBuilder implements IBuilder<String, GenericContainer> {
       protected String name;
       protected Schema schema;
       protected Schema itemsType;
@@ -142,5 +129,4 @@ public class AvroEnum implements IProtocolAtom <String, GenericContainer> {
          }
       }
    }
-
 }

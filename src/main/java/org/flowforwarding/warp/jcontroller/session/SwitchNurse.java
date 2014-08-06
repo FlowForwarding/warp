@@ -11,8 +11,8 @@ import org.flowforwarding.warp.protocol.ofmessages.IOFMessageProviderFactory;
 import org.flowforwarding.warp.protocol.ofmessages.OFMessageFlowMod.OFMessageFlowModRef;
 import org.flowforwarding.warp.protocol.ofmessages.OFMessageProviderFactoryAvroProtocol;
 import org.flowforwarding.warp.protocol.ofstructures.OFStructureInstruction.OFStructureInstructionRef;
-import org.flowforwarding.warp.protocol.ofp.OFMessageRef;
-import org.flowforwarding.warp.protocol.ofp.OFMessageRef.OFMessageBuilder;
+import org.flowforwarding.warp.protocol.ofp.avro.OFMessage;
+import org.flowforwarding.warp.protocol.ofp.avro.OFMessage.OFMessageBuilder;
 import org.flowforwarding.warp.util.Convert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,8 +51,8 @@ public class SwitchNurse extends UntypedActor {
    
    IOFMessageProviderFactory factory = new OFMessageProviderFactoryAvroProtocol();
    IOFMessageProvider provider = null;
+
    OFMessageBuilder builder = null;
-   
    
    
    @Override
@@ -69,19 +69,25 @@ public class SwitchNurse extends UntypedActor {
          case STARTED:
             ByteString in = ((Received) msg).data();
             provider = factory.getMessageProvider(in.toArray());
-           
-            builder = new OFMessageBuilder("avro", in.toArray());
-            OFMessageRef ref_ = builder.type("ofp_hello").set("header.xid", "0x0000").build();
-            OFMessageRef inMsg = builder.value(in.toArray()).build();
+
+            builder = new org.flowforwarding.warp.protocol.ofp.avro.OFMessage.OFMessageBuilder(in.toArray());            
+            OFMessage inMsg = builder.value(in.toArray()).build(); 
 
             if ((provider != null) && (inMsg != null)) {
                 if (inMsg.type().equals("OFPT_HELLO")) {
                 	log.info ("IN: Hello");
                     swRef.setVersion(builder.version());
-                    getSender().tell(TcpMessage.write(ByteString.fromArray(builder.type("ofp_hello").set("header.xid", "0x0000").build().binary())), getSelf());
+//                    getSender().tell(TcpMessage.write(ByteString.fromArray(builder.type("ofp_hello").set("header.xid", "0xabba").build().binary())), getSelf());
+                    OFMessage helloMsg = builder.type("ofp_hello").build();
+                    byte[] v = {127,127,127,127};
+                    helloMsg.get("header").get("xid").set(v);
+
+                    //getSender().tell(TcpMessage.write(ByteString.fromArray(builder.type("ofp_hello").build().binary())), getSelf());
+                    getSender().tell(TcpMessage.write(ByteString.fromArray(helloMsg.binary())), getSelf());
                     this.state = State.CONNECTED;
                     log.info ("STATE: Connected to OF Switch version "+ builder.version());
-                    getSender().tell(TcpMessage.write(ByteString.fromArray(builder.type("ofp_switch_features_request").set("xid", "0x0000").build().binary())), getSelf());
+//                    getSender().tell(TcpMessage.write(ByteString.fromArray(builder.type("ofp_switch_features_request").set("xid", "0xabba").build().binary())), getSelf());
+                    getSender().tell(TcpMessage.write(ByteString.fromArray(builder.type("ofp_switch_features_request").build().binary())), getSelf());
 
                     // TODO REMOVE THIS:
                     provider.init();
@@ -102,8 +108,7 @@ public class SwitchNurse extends UntypedActor {
              
                state = State.HANDSHAKED;
                ofSessionHandler.tell(new OFEventHandshaked(swRef), getSelf());
-               
-               OFMessageRef ref = builder.type("ofp_get_config_request").build();
+
                getSender().tell(TcpMessage.write(ByteString.fromArray(builder.type("ofp_get_config_request").build().binary())), getSelf());
             }
             
@@ -114,18 +119,19 @@ public class SwitchNurse extends UntypedActor {
             inMsg = builder.value(in.toArray()).build();
             
             if (inMsg.type().equals("OFPT_GET_CONFIG_REPLY")) {
-               OFMessageRef flowModRef = builder.type("ofp_flow_mod").build();
                log.info("IN: Config Reply from Switch " + Long.toHexString(swRef.getDpid().longValue()));
                
-               OFMessageRef matchInPort = builder.type("oxm_tlv_ingress_port").build();
+               OFMessage flowMod = builder.type("ofp_flow_mod").build();
+/*               OFItemRef matchInPort = itemBuilder.type("oxm_tlv_ingress_port").build();
                matchInPort.set("tlv", "4");
-               OFMessageRef tlv = builder.type("oxm_tlv").build();
+               OFItemRef tlv = itemBuilder.type("oxm_tlv").build();
                tlv.add("match", matchInPort);
                
                OFMessageRef tlv_fields = builder.type("oxm_tlv_fields").build();
-               tlv_fields.add("oxm_tlvs", tlv);
+               //tlv_fields.add("oxm_tlvs", tlv);
+               tlv_fields.get("oxm_tlvs").add(tlv);
                
-               tlv_fields.binary();
+               tlv_fields.binary();*/
             } 
             
             if (provider.isConfig(in.toArray())) {

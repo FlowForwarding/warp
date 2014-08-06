@@ -8,6 +8,6 @@ package org.flowforwarding.warp.protocol.ofp;
  * @author Infoblox Inc.
  *
  */
-public class OFMessageFactory {
+public interface IMessageBuilder <T>{
 
 }

@@ -2,19 +2,16 @@
  * © 2013 FlowForwarding.Org
  * All Rights Reserved.  Use is subject to license terms.
  */
-package org.flowforwarding.warp.protocol.internals.avro;
+package org.flowforwarding.warp.protocol.container.avro;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericContainer;
-import org.apache.avro.generic.GenericData.*;
 import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.GenericDatumReader;
 import org.apache.avro.generic.GenericDatumWriter;
@@ -26,21 +23,25 @@ import org.apache.avro.io.Decoder;
 import org.apache.avro.io.DecoderFactory;
 import org.apache.avro.io.Encoder;
 import org.apache.avro.io.EncoderFactory;
-import org.flowforwarding.warp.protocol.internals.IProtocolAtom;
-import org.flowforwarding.warp.protocol.internals.IProtocolBuilder;
-import org.flowforwarding.warp.protocol.internals.IProtocolItem;
-import org.flowforwarding.warp.protocol.internals.IProtocolStructure;
+import org.flowforwarding.warp.protocol.container.IBinary;
+import org.flowforwarding.warp.protocol.container.IBuilder;
+import org.flowforwarding.warp.protocol.container.IBuilt;
+import org.flowforwarding.warp.protocol.container.INamedValue;
+import org.flowforwarding.warp.protocol.container.IStructure;
 
 /**
  * @author Infoblox Inc.
  *
  */
-public class AvroRecord implements IProtocolStructure <String, GenericContainer>{
+public class AvroRecord implements IBinary<String, GenericContainer>,
+                                   INamedValue<String, GenericContainer>,
+                                   IStructure<String, GenericContainer>,
+                                   IBuilt<String, GenericContainer>{
    
    protected String name;
    protected Schema schema;
    protected GenericRecord recordValue;
-   protected Map<String, IProtocolItem<String, GenericContainer>> items = new HashMap<>();
+   protected Map<String, AvroItem> fields = new HashMap<>();
    protected boolean readyToBinary = true;
    
    private AvroRecord (AvroRecordBuilder builder) {
@@ -60,22 +61,15 @@ public class AvroRecord implements IProtocolStructure <String, GenericContainer>
             e.printStackTrace();
          }
       }      
-
-   }
-
-   @Override
-   public IProtocolItem<String, GenericContainer> get(String name) {
-      // TODO Improvs: Exception is 
-      return items.get(name);
    }
    
    @Override
    public GenericContainer get() {
       if (readyToBinary) {
          GenericRecordBuilder builder = new GenericRecordBuilder(schema);
-         Set<String> keys = items.keySet();
+         Set<String> keys = fields.keySet();
          for (String key : keys) {
-            IProtocolItem<String, GenericContainer> item = items.get(key);
+            INamedValue<String, GenericContainer> item = fields.get(key);
             GenericContainer val = item.get();
             // TODO Improv. I dislike this NULL verification
             if (val != null)
@@ -86,9 +80,9 @@ public class AvroRecord implements IProtocolStructure <String, GenericContainer>
       } else {
          GenericRecord record = new GenericData.Record (schema);
 
-         Set<String> keys = items.keySet();
+         Set<String> keys = fields.keySet();
          for (String key : keys) {
-            IProtocolItem<String, GenericContainer> item = items.get(key);
+            INamedValue<String, GenericContainer> item = fields.get(key);
             GenericContainer val = item.get();
             // TODO Improv. I dislike this NULL verification
             if (val != null)
@@ -99,18 +93,26 @@ public class AvroRecord implements IProtocolStructure <String, GenericContainer>
    }
 
    @Override
+   public void set(String name, GenericContainer value) {
+      // TODO Auto-generated method stub
+      
+   }
+
+   @Override
+   public void set(String name, byte[] value) {
+      INamedValue<String, GenericContainer> item = fields.get(name);
+      
+      // TODO Improv: What about non-fixed?
+      if (item instanceof AvroFixed) 
+         ((AvroFixed) item).set(value); 
+      return;
+   }
+
+   @Override
    public String name() {
       return name;
    }
 
-   public Schema getSchema() {
-      return schema;
-   }
-   
-   public GenericRecord getRecord() {
-      return recordValue;
-   }
-   
    @Override
    public byte[] binary() {
       GenericRecord record = (GenericRecord) get();
@@ -127,44 +129,26 @@ public class AvroRecord implements IProtocolStructure <String, GenericContainer>
          e.printStackTrace();
       }
       
-      return out.toByteArray();
+      return out.toByteArray();   
    }
    
-   @Override
-   public void set(String name, byte[] value) {
-      String[] names = name. split("\\.");
-      IProtocolItem<String, GenericContainer> item = this;
-      for (String n : names) {
-         if (item instanceof AvroRecord) {
-            item = ((AvroRecord) item).get(n);
-            continue;
-         }
-      }
-      // TODO Improve: Is Non-Fixed value possible at the end?
-      if (item instanceof AvroFixedField) 
-         ((AvroFixedField) item).set(value); 
-      return;
-   }
-   
-   @Override
-   public void add(String name, IProtocolItem<String, GenericContainer> i) {
-      // TODO Improvs: Check name against Avro Schema
-      items.put(name, i);
-   }
-
    @Override
    public byte[] binary(String name) {
-	   if (recordValue != null) {
-		   //TODO Improvs: excepion should be thrown in case of wrong field name
-		   return ((Fixed)recordValue.get(name)).bytes();
-	   }
-	   return null;
+      if (recordValue != null) {
+         //TODO Improvs: excepion should be thrown in case of wrong field name
+         return ((Fixed)recordValue.get(name)).bytes();
+      }
+      return null;
    }
    
-   public static class AvroRecordBuilder extends AvroItemBuilder {
+   private void add(String name, AvroItem i) {
+      fields.put(name, i);
+   }
+   
+   public static class AvroRecordBuilder implements IBuilder<String, GenericContainer> {
       protected final String name;
       protected final Schema schema;
-      protected Map<String, IProtocolBuilder<String, GenericContainer>> builders = new HashMap<>();
+      protected Map<String, IBuilder<String, GenericContainer>> builders = new HashMap<>();
       protected GenericRecord value;
       protected byte[] binValue;
       protected boolean readyToBinary = true;
@@ -181,16 +165,16 @@ public class AvroRecord implements IProtocolStructure <String, GenericContainer>
       }
       
       @Override
-      public AvroItemBuilder value(GenericContainer in) {
+      public IBuilder<String, GenericContainer> value(GenericContainer in) {
          value = (GenericRecord) in;
          return this;
       }
       
       @Override
-      public IProtocolItem<String, GenericContainer> build() {
+      public AvroRecord build() {
          AvroRecord rec = new AvroRecord(this);
          for (String nm: builders.keySet()) {
-            rec.add(nm, builders.get(nm).build());
+            rec.add(nm, new AvroItem(builders.get(nm).build()));
          }
          return rec;
       }
@@ -199,7 +183,7 @@ public class AvroRecord implements IProtocolStructure <String, GenericContainer>
          return name;
       }
       
-      public void addItemBuilder (String nm, IProtocolBuilder<String, GenericContainer> builder) {
+      public void addItemBuilder (String nm, IBuilder<String, GenericContainer> builder) {
          builders.put(nm, builder);
       }
       
@@ -208,5 +192,10 @@ public class AvroRecord implements IProtocolStructure <String, GenericContainer>
       }
       
       public boolean isReadyToBuild() {return readyToBinary;}
+   }
+   
+   @Override
+   public AvroItem field(String name) {
+      return fields.get(name);
    }
 }

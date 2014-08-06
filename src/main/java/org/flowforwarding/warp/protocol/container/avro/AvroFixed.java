@@ -2,35 +2,38 @@
  * © 2013 FlowForwarding.Org
  * All Rights Reserved.  Use is subject to license terms.
  */
-package org.flowforwarding.warp.protocol.internals.avro;
+package org.flowforwarding.warp.protocol.container.avro;
 
 import java.io.IOException;
 
-import org.flowforwarding.warp.protocol.internals.IProtocolAtom;
-import org.flowforwarding.warp.protocol.internals.IProtocolItem;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericContainer;
 import org.apache.avro.generic.GenericData;
-import org.apache.avro.generic.GenericData.Fixed;
 import org.apache.avro.generic.GenericDatumReader;
-import org.apache.avro.generic.GenericRecord;
+import org.apache.avro.generic.GenericData.Fixed;
 import org.apache.avro.io.Decoder;
 import org.apache.avro.io.DecoderFactory;
+import org.flowforwarding.warp.protocol.container.IAtom;
+import org.flowforwarding.warp.protocol.container.IBinary;
+import org.flowforwarding.warp.protocol.container.IBuilder;
+import org.flowforwarding.warp.protocol.container.IBuilt;
+import org.flowforwarding.warp.protocol.container.INamedValue;
 
 /**
  * @author Infoblox Inc.
  *
  */
-public class AvroFixedField implements IProtocolAtom <String, GenericContainer>{
+public class AvroFixed implements IAtom<String, GenericContainer>, 
+                                  INamedValue<String, GenericContainer>,
+                                  IBuilt<String, GenericContainer>{
    
    protected String name;
-
    protected int size;
    protected byte[] binValue = null;
    protected Fixed fixedValue = null;
    protected Schema schema;
 
-   private AvroFixedField (AvroFixedBuilder builder) {
+   private AvroFixed (AvroFixedBuilder builder) {
       name = builder.name;
       schema = builder.schema;
   // TODO Improv: catch possible exception. It will be thrown in case Schema is NOT Fixed
@@ -65,6 +68,12 @@ public class AvroFixedField implements IProtocolAtom <String, GenericContainer>{
       this.binValue = value;
    }
    
+   @Override
+   public void set(GenericContainer value) {
+      // TODO Improvs: Exception in case of size inconsistence
+      this.fixedValue = (Fixed) value;
+   }
+   
    //TODO Improvs: should we declare it in IProtocolAtom 
    public int size() {
       return size;
@@ -84,15 +93,15 @@ public class AvroFixedField implements IProtocolAtom <String, GenericContainer>{
       return schema;
    }
    
-   public static class AvroFixedBuilder extends AvroItemBuilder {
+   public static class AvroFixedBuilder implements IBuilder <String, GenericContainer>{
       protected final String name;
       protected final Schema schema;
       protected byte [] binValue = null;
       protected GenericContainer value = null;
       
       @Override
-      public IProtocolItem<String, GenericContainer> build() {
-         return new AvroFixedField(this);
+      public IBuilt<String, GenericContainer> build() {
+         return new AvroFixed(this);
       }
       
       public AvroFixedBuilder(String nm, Schema sch) {
@@ -106,9 +115,9 @@ public class AvroFixedField implements IProtocolAtom <String, GenericContainer>{
          return this;
       }
       @Override
-      public AvroItemBuilder value(GenericContainer in) {
+      public AvroFixedBuilder value(GenericContainer in) {
          this.value = in;
          return this;
       }
-   } 
+   }
 }
