@@ -7,8 +7,6 @@ package org.flowforwarding.warp.protocol.ofp.avro;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.avro.generic.GenericContainer;
-import org.flowforwarding.warp.protocol.container.INamedValue;
 import org.flowforwarding.warp.protocol.container.avro.AvroContainer;
 import org.flowforwarding.warp.protocol.container.avro.AvroItem;
 import org.flowforwarding.warp.protocol.ofp.IMessage;
