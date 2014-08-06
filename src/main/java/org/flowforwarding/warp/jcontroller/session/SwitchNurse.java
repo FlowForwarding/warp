@@ -77,10 +77,17 @@ public class SwitchNurse extends UntypedActor {
                 if (inMsg.type().equals("OFPT_HELLO")) {
                 	log.info ("IN: Hello");
                     swRef.setVersion(builder.version());
-                    getSender().tell(TcpMessage.write(ByteString.fromArray(builder.type("ofp_hello").set("header.xid", "0x0000").build().binary())), getSelf());
+//                    getSender().tell(TcpMessage.write(ByteString.fromArray(builder.type("ofp_hello").set("header.xid", "0xabba").build().binary())), getSelf());
+                    OFMessage helloMsg = builder.type("ofp_hello").build();
+                    byte[] v = {127,127,127,127};
+                    helloMsg.get("header").get("xid").set(v);
+
+                    //getSender().tell(TcpMessage.write(ByteString.fromArray(builder.type("ofp_hello").build().binary())), getSelf());
+                    getSender().tell(TcpMessage.write(ByteString.fromArray(helloMsg.binary())), getSelf());
                     this.state = State.CONNECTED;
                     log.info ("STATE: Connected to OF Switch version "+ builder.version());
-                    getSender().tell(TcpMessage.write(ByteString.fromArray(builder.type("ofp_switch_features_request").set("xid", "0x0000").build().binary())), getSelf());
+//                    getSender().tell(TcpMessage.write(ByteString.fromArray(builder.type("ofp_switch_features_request").set("xid", "0xabba").build().binary())), getSelf());
+                    getSender().tell(TcpMessage.write(ByteString.fromArray(builder.type("ofp_switch_features_request").build().binary())), getSelf());
 
                     // TODO REMOVE THIS:
                     provider.init();

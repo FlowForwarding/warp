@@ -4,7 +4,6 @@
  */
 package org.flowforwarding.warp.protocol.ofp;
 
-import org.flowforwarding.warp.protocol.internals.avro.AvroProtocol;
 import org.flowforwarding.warp.util.Convert;
 
 /**

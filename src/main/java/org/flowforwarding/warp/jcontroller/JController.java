@@ -16,11 +16,11 @@ import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.RecursiveTask;
 import java.util.concurrent.atomic.AtomicLong;
 
-import org.flowforwarding.warp.protocol.ofp.OFMessageRef;
-import org.flowforwarding.warp.protocol.ofp.OFMessageRef.OFMessageBuilder;
 import org.flowforwarding.warp.protocol.ofmessages.IOFMessageProvider;
 import org.flowforwarding.warp.protocol.ofmessages.IOFMessageProviderFactory;
 import org.flowforwarding.warp.protocol.ofmessages.OFMessageProviderFactoryAvroProtocol;
+import org.flowforwarding.warp.protocol.ofp.avro.OFMessage;
+import org.flowforwarding.warp.protocol.ofp.avro.OFMessage.OFMessageBuilder;
 import org.flowforwarding.warp.util.Convert;
 import org.jboss.netty.bootstrap.ServerBootstrap;
 import org.jboss.netty.buffer.BigEndianHeapChannelBuffer;
@@ -196,7 +196,7 @@ public class JController {
    public class ChannelHandler extends IdleStateHandler{
 //   public class ChannelHandler extends IdleStateAwareChannelHandler{
       OFMessageBuilder builder = null;
-      private OFMessageRef inMsg = null;
+      private OFMessage inMsg = null;
       private Map<byte[], Channel> DPIDs = new HashMap<>();
       private final Logger log =  LoggerFactory.getLogger(ChannelHandler.class);
       
@@ -234,7 +234,7 @@ public class JController {
           
          switch (state) {
          case STARTED:
-            builder = new OFMessageBuilder("avro", in);
+            builder = new OFMessageBuilder(in);
             log.info("WARP OUT: HELLO");
             BigEndianHeapChannelBuffer x = new BigEndianHeapChannelBuffer(provider.getHello(new ByteArrayOutputStream()).toByteArray());
             e.getChannel().write(x);

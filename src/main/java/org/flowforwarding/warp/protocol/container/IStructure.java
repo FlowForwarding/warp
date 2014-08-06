@@ -11,4 +11,6 @@ package org.flowforwarding.warp.protocol.container;
 public interface IStructure <External, Internal>{
    public void set (String name, Internal value);
    public void set (String name, byte[] value);
+   
+   public INamedValue<External, Internal> field(String name);
 }

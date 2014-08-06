@@ -59,8 +59,6 @@ public class AvroItem implements IBuilt<String, GenericContainer>,
 
    @Override
    public void set(GenericContainer value) {
-      // TODO Auto-generated method stub
-      
    }
 
    @Override
@@ -73,4 +71,8 @@ public class AvroItem implements IBuilt<String, GenericContainer>,
       return ((IBinary)item).binary(name);
    }
 
+   @Override
+   public INamedValue<String, GenericContainer> field(String name) {
+      return ((IStructure)item).field(name);
+   }
 }

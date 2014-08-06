@@ -7,13 +7,12 @@ package org.flowforwarding.warp.protocol.ofp.avro;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.avro.generic.GenericContainer;
+import org.flowforwarding.warp.protocol.container.INamedValue;
 import org.flowforwarding.warp.protocol.container.avro.AvroContainer;
 import org.flowforwarding.warp.protocol.container.avro.AvroItem;
-import org.flowforwarding.warp.protocol.internals.avro.AvroRecord;
 import org.flowforwarding.warp.protocol.ofp.IMessage;
 import org.flowforwarding.warp.protocol.ofp.IMessageBuilder;
-import org.flowforwarding.warp.protocol.ofp.OFMessageRef;
-import org.flowforwarding.warp.protocol.ofp.OFMessageRef.OFMessageBuilder;
 import org.flowforwarding.warp.util.Tuple;
 
 /**
@@ -24,6 +23,7 @@ public class OFMessage implements IMessage<AvroItem> {
    
    private AvroItem internal;
    private String ofType = "";
+   private Ref ref;
    
    private OFMessage(OFMessageBuilder builder) {
       if (builder.binValue == null) {
@@ -54,7 +54,7 @@ public class OFMessage implements IMessage<AvroItem> {
       for (Tuple <String, String>t : builder.items) {
          this.set(t.getName(), t.getValue());
       }
-      
+      ref = new Ref (internal);
       builder.items.clear();
    }
    
@@ -76,12 +76,24 @@ public class OFMessage implements IMessage<AvroItem> {
       return internal.binary(name);
    }
    
+   public Ref get(String name) {
+      ref.set((AvroItem) internal.field(name));
+      return ref;
+   }
+   
    public class Ref {
-      private AvroItem pointer;
+      private AvroItem internal;
+      private Ref(AvroItem i) {internal = i;}
+
+      public void set(AvroItem i) {internal = i;}
+      public void set(byte[] value) {internal.set(value);}
       
-      private Ref(AvroItem p) {
-         this.pointer = p;
+      public Ref get(String name) {
+         //TODO I: Class-cast
+         this.internal = (AvroItem) internal.field(name);
+         return this;
       }
+      
    }
 
    public static class OFMessageBuilder implements IMessageBuilder<AvroItem>{
@@ -134,5 +146,4 @@ public class OFMessage implements IMessage<AvroItem> {
          this.msgType = null;
       }
    }
-
 }

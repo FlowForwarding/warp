@@ -41,7 +41,7 @@ public class AvroRecord implements IBinary<String, GenericContainer>,
    protected String name;
    protected Schema schema;
    protected GenericRecord recordValue;
-   protected Map<String, AvroItem> items = new HashMap<>();
+   protected Map<String, AvroItem> fields = new HashMap<>();
    protected boolean readyToBinary = true;
    
    private AvroRecord (AvroRecordBuilder builder) {
@@ -67,9 +67,9 @@ public class AvroRecord implements IBinary<String, GenericContainer>,
    public GenericContainer get() {
       if (readyToBinary) {
          GenericRecordBuilder builder = new GenericRecordBuilder(schema);
-         Set<String> keys = items.keySet();
+         Set<String> keys = fields.keySet();
          for (String key : keys) {
-            INamedValue<String, GenericContainer> item = items.get(key);
+            INamedValue<String, GenericContainer> item = fields.get(key);
             GenericContainer val = item.get();
             // TODO Improv. I dislike this NULL verification
             if (val != null)
@@ -80,9 +80,9 @@ public class AvroRecord implements IBinary<String, GenericContainer>,
       } else {
          GenericRecord record = new GenericData.Record (schema);
 
-         Set<String> keys = items.keySet();
+         Set<String> keys = fields.keySet();
          for (String key : keys) {
-            INamedValue<String, GenericContainer> item = items.get(key);
+            INamedValue<String, GenericContainer> item = fields.get(key);
             GenericContainer val = item.get();
             // TODO Improv. I dislike this NULL verification
             if (val != null)
@@ -100,7 +100,7 @@ public class AvroRecord implements IBinary<String, GenericContainer>,
 
    @Override
    public void set(String name, byte[] value) {
-      INamedValue<String, GenericContainer> item = items.get(name);
+      INamedValue<String, GenericContainer> item = fields.get(name);
       
       // TODO Improv: What about non-fixed?
       if (item instanceof AvroFixed) 
@@ -142,7 +142,7 @@ public class AvroRecord implements IBinary<String, GenericContainer>,
    }
    
    private void add(String name, AvroItem i) {
-      items.put(name, i);
+      fields.put(name, i);
    }
    
    public static class AvroRecordBuilder implements IBuilder<String, GenericContainer> {
@@ -192,5 +192,10 @@ public class AvroRecord implements IBinary<String, GenericContainer>,
       }
       
       public boolean isReadyToBuild() {return readyToBinary;}
+   }
+   
+   @Override
+   public AvroItem field(String name) {
+      return fields.get(name);
    }
 }
