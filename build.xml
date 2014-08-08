@@ -4,6 +4,7 @@
     <property name="controller.root" value="${basedir}"/>
     <property name="src.root" value="${basedir}/src/main"/>
     <property name="javasrc.root" value="${src.root}/java"/>
+    <property name="scalasrc.root" value="${src.root}/scala"/>
     <property name="javadocs.root" value="${basedir}/build/javadocs"/>    	
     <property name="library.root" value="${basedir}/build/lib"/>
     <property name="avro.location" value="${javasrc.root}/avro-trunk/lang/java/avro"/>
@@ -23,8 +24,21 @@
         <pathelement location="${controller.root}/deps/lib/slf4j-api-1.7.7.jar"/>
         <pathelement location="${controller.root}/deps/lib/logback-classic-1.1.2.jar"/>
         <pathelement location="${controller.root}/deps/lib/logback-core-1.1.2.jar"/>
-        <pathelement location="${avro.location}/target/avro-1.7.4-SNAPSHOT.jar"/>
+	<pathelement location="${avro.location}/target/avro-1.7.4-SNAPSHOT.jar"/>
     </path>
+    <target name="scala-init">
+        <property name="scala-library.jar" value="{scala.home}/lib/scala-library.jar"/>	    
+	<path id="scala-build.classpath">
+            <pathelement location="${scala-library.jar}"/>
+	    <pathelement location="${build.dir}"/>
+        </path>
+        <taskdef resource="scala/tools/ant/antlib.xml">
+	    <classpath>
+                <pathelement location="${scala.home}/lib/scala-compiler.jar"/>
+		<pathelement location="${scala-library.jar}"/>
+            </classpath>
+        </taskdef>
+    </target>
     <target name="init">
         <mkdir dir="build"/>
         <mkdir dir="build/classes"/>
@@ -35,6 +49,7 @@
                 <exclude name="**/*.java"/>
             </fileset>
         </copy>
+        <property name="scala-library.jar" value="{scala.home}/lib/scala-library.jar"/>
     </target>
     <target name="clean">
         <delete dir="${basedir}/build"/>
@@ -46,7 +61,7 @@
     <target depends="init" name="build-project">
         <echo message="${ant.project.name}: ${ant.file}"/>
         <javac debug="true" debuglevel="${debuglevel}" destdir="build/classes/main" includeantruntime="false" source="${source}" target="${target}">
-            <src path="${javasrc.root}"/>
+	    <src path="${javasrc.root}"/>
             <src path="${src.root}/resources"/>
             <exclude name="resources/"/>
             <exclude name="avro-trunk/"/>
