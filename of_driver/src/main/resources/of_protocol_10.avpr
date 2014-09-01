@@ -1,0 +1,412 @@
+  { "namespace" :"of10",
+    "protocol":"ofp10",
+    "types":[
+     {"name":"uint_8", "type":"fixed", "size":1},
+     {"name":"uint_16", "type":"fixed", "size":2},
+     {"name":"uint_24", "type":"fixed", "size":3},
+     {"name":"uint_32", "type":"fixed", "size":4},
+     {"name":"uint_48", "type":"fixed", "size":6},
+     {"name":"uint_64", "type":"fixed", "size":8},
+     {"name":"uint_128", "type":"fixed", "size":16},
+     {"name":"pad_6", "type":"fixed", "size":6},
+     {"name":"pad_4", "type":"fixed", "size":4},
+     {"name":"pad_3", "type":"fixed", "size":3},
+     {"name":"pad_2", "type":"fixed", "size":2},
+     {"name":"pad_1", "type":"fixed", "size":1},
+
+     {"name":"ofp_type",
+      "type":"enum",
+      "items":"uint_8",
+      "list":[
+       {"name":"OFPT_HELLO", "default":[0]},
+       {"name":"OFPT_ERROR",  "default":[1]},
+       {"name":"OFPT_ECHO_REQUEST", "default":[2]},
+       {"name":"OFPT_ECHO_REPLY", "default":[3]},
+       {"name":"OFPT_VENDOR", "default":[4]},
+       
+       {"name":"OFPT_FEATURES_REQUEST", "default":[5]},
+       {"name":"OFPT_FEATURES_REPLY", "default":[6]},
+       {"name":"OFPT_GET_CONFIG_REQUEST", "default":[7]},
+       {"name":"OFPT_GET_CONFIG_REPLY", "default":[8]},
+       {"name":"OFPT_SET_CONFIG", "default":[9]},
+       
+       {"name":"OFPT_PACKET_IN", "default":[10]},
+       {"name":"OFPT_FLOW_REMOVED", "default":[11]},
+       {"name":"OFPT_PORT_STATUS", "default":[12]},
+       
+       {"name":"OFPT_PACKET_OUT", "default":[13]},
+       {"name":"OFPT_FLOW_MOD", "default":[14]},
+       {"name":"OFPT_PORT_MOD", "default":[15]},
+       
+       {"name":"OFPT_STATS_REQUEST", "default":[16]},
+       {"name":"OFPT_STATS_REPLY", "default":[17]},
+       
+       {"name":"OFPL_BARRIER_REQUEST", "default":[0,18]},
+       {"name":"OFPL_BARRIER_REPLY", "default":[0,19]},
+       
+       {"name":"OFPT_QUEUE_GET_REQUEST", "default":[20]},
+       {"name":"OFPT_QUEUE_GET_REPLY", "default":[21]}
+      ]
+     },
+
+     {"name":"ofp_length",
+      "type":"enum",
+      "items":"uint_16",
+      "list":[
+       {"name":"OFPL_HELLO_LEN", "default":[0,8]},
+       {"name":"OFPL_ERROR_LEN",  "default":[0,16]},
+       {"name":"OFPL_ECHO_REQUEST_LEN", "default":[0,8]},
+       {"name":"OFPL_ECHO_REPLY_LEN", "default":[0,8]},
+       {"name":"OFPL_VENDOR_LEN", "default":[0,16]},
+       
+       {"name":"OFPL_FEATURES_REQUEST_LEN", "default":[0,8]},
+       {"name":"OFPL_FEATURES_REPLY_LEN", "default":[0,32]},
+       {"name":"OFPL_GET_CONFIG_REQUEST_LEN", "default":[0,8]},
+       {"name":"OFPL_GET_CONFIG_REPLY_LEN", "default":[0,12]},
+       {"name":"OFPL_SET_CONFIG_LEN", "default":[0,12]},
+       
+       {"name":"OFPL_PACKET_IN_LEN", "default":[0,20]},
+       {"name":"OFPL_FLOW_REMOVED_LEN", "default":[0,88]},
+       {"name":"OFPL_PORT_STATUS_LEN", "default":[0,64]},
+       
+       {"name":"OFPL_PACKET_OUT_LEN", "default":[0,16]},
+       {"name":"OFPL_FLOW_MOD_LEN", "default":[0,72]},
+       {"name":"OFPL_PORT_MOD_LEN", "default":[0,32]},
+       
+       {"name":"OFPL_STATS_REQUEST_LEN", "default":[0,12]},
+       {"name":"OFPL_STATS_REPLY_LEN", "default":[0,12]},
+       
+       {"name":"OFPL_BARRIER_REQUEST_LEN", "default":[0,8]},
+       {"name":"OFPL_BARRIER_REPLY_LEN", "default":[0,8]},
+       
+       {"name":"OFPL_QUEUE_GET_REQUEST_LEN", "default":[0,8]},
+       {"name":"OFPL_QUEUE_GET_REPLY_LEN", "default":[0,32]}
+    ]
+   },
+
+   {"name":"ofp_header",
+    "type":"record",
+    "fields":[ 
+     {"name":"version", "type":"uint_8", "default":[1]},
+     {"name":"type", "type":"ofp_type"},
+     {"name":"length", "type":"ofp_length"},
+     {"name":"xid", "type":"uint_32"}
+    ]
+   },
+
+   {"name":"ofp_port_config",
+    "type":"enum",
+    "items":"uint_32",
+    "list":[
+     {"name":"FPPC_PORT_DOWN", "default":{"shift":[1, 0]}},
+     {"name":"OFPPC_NO_STP", "default":{"shift":[1, 1]}},
+     {"name":"OFPPC_NO_RECV", "default":{"shift":[1, 2]}},
+     {"name":"OFPPC_NO_RECV_STP", "default":{"shift":[1, 3]}},
+     {"name":"OFPPC_NO_FLOOD", "default":{"shift":[1, 4]}},
+     {"name":"OFPPC_NO_FWD", "default":{"shift":[1, 5]}},
+     {"name":"OFPPC_NO_PACKET_IN", "default":{"shift":[1, 6]}}
+    ]
+   },
+   
+   {"name":"ofp_port_state",
+    "type":"enum",
+    "items":"uint_32",
+    "list": [
+     {"name":"OFPPS_LINK_DOWN", "default":{"shift":[1, 0]}},
+     {"name":"OFPPS_STP_LISTEN", "default":{"shift":[0, 8]}},
+     {"name":"OFPPS_STP_LEARN", "default":{"shift":[1, 8]}},
+     {"name":"OFPPS_STP_FORWARD", "default":{"shift":[2, 8]}},
+     {"name":"OFPPS_STP_BLOCK", "default":{"shift":[3, 8]}},                    
+     {"name":"OFPPS_STP_MASK", "default":{"shift":[3, 8]}}     
+    ]
+   },
+   
+   {"name":"ofp_port",
+    "type":"enum",
+    "items":"uint_16",
+    "list": [
+     {"name":"OFPP_MAX", "default":[255,0]},
+     {"name":"OFPP_IN_PORT", "default":[255, 248]},
+     {"name":"OFPP_TABLE", "default":[255, 249]},
+     {"name":"OFPP_NORMAL", "default":[255, 250]},
+     {"name":"OFPP_FLOOD", "default":[255, 251]},
+     {"name":"OFPP_ALL", "default":[255, 252]},
+     {"name":"OFPP_CONTROLLER", "default":[255, 253]},
+     {"name":"OFPP_LOCAL", "default":[255, 254]},
+     {"name":"OFPP_NONE", "default":[255, 255]},
+     {"name":"OFPP_FLOOD", "default":[255, 251]},
+     {"name":"OFPP_FLOOD", "default":[255, 251]}
+    ]
+   },
+   
+   {"name":"ofp_port_features",
+    "type":"enum",
+    "items":"uint_32",
+    "list": [
+     {"name":"OFPPF_10MB_HD", "default":{"shift":[1, 0]}},
+     {"name":"OFPPF_10MB_FD", "default":{"shift":[1, 1]}},
+     {"name":"OFPPF_100MB_HD", "default":{"shift":[1, 2]}},
+     {"name":"OFPPF_100MB_FD", "default":{"shift":[1, 3]}},
+     {"name":"OFPPF_1GB_HD", "default":{"shift":[1, 4]}},
+     {"name":"OFPPF_1GB_FD", "default":{"shift":[1, 5]}},
+     {"name":"OFPPF_10GB_FD", "default":{"shift":[1, 6]}},                              
+     {"name":"OFPPF_COPPER", "default":{"shift":[1, 7]}},
+     {"name":"OFPPF_FIBER", "default":{"shift":[1, 8]}},
+     {"name":"OFPPF_AUTONEG", "default":{"shift":[1, 9]}},
+     {"name":"OFPPF_PAUSE", "default":{"shift":[1, 10]}},
+     {"name":"OFPPF_PAUSE_ASYM", "default":{"shift":[1, 11]}}
+    ]
+   },
+
+   {"name":"ofp_phy_port",
+    "type":"record",
+    "fields":[
+     {"name":"port_no", "type":"ofp_port"},
+     {"name":"hw_addr", "type":{"type":"array", "items":"uint_8"}},
+     {"name":"port_name", "type":{"type":"array", "items":"uint_8"}},
+     {"name":"config", "type":"ofp_port_config"},
+     {"name":"state", "type":"ofp_port_state"},
+     {"name":"curr", "type":"ofp_port_features"},       
+     {"name":"advertised", "type":"ofp_port_features"}, 
+     {"name":"supported", "type":"ofp_port_features"},
+     {"name":"peer", "type":"ofp_port_features"}
+    ]
+   },
+
+   {"name":"ofp_queue_properties",
+    "type":"enum",
+    "items":"uint_16",
+    "list":[
+     {"name":"OFPQT_NONE", "default":[0,0]},
+     {"name":"OFPQT_MIN_RATE", "default":[0,1]}
+    ]
+   },
+   
+   {"name":"queue_properties_len",
+    "type":"enum",
+    "items":"uint_16",
+    "list":[
+     {"name":"QTL_NONE_LEN", "default":[0,0]},
+     {"name":"QTL_MIN_RATE_LEN", "default":[0,16]}
+    ]
+   },
+   
+   {"name":"ofp_queue_prop_header",
+    "type":"record",
+    "fields":[
+     {"name":"property", "type":"ofp_queue_properties"},
+     {"name":"len", "type":"queue_properties_len"},
+     {"name":"pad", "type":"pad_4"}
+    ]
+   },
+   
+   {"name":"queue_prop_header_min_rate",
+    "type":"record",
+    "fields":[
+     {"name":"property", "type":"ofp_queue_properties", "default":"OFPQT_MIN_RATE"},
+     {"name":"len", "type":"queue_properties_len", "default":"QTL_MIN_RATE_LEN"},
+     {"name":"pad", "type":"pad_4", "default":[0,0,0,0]}
+    ]
+   },
+
+   {"name":"ofp_queue_prop_min_rate",
+    "type":"record",
+    "fields":[
+     {"name":"prop_header", "type":"queue_prop_header_min_rate"},
+     {"name":"rate", "type":"uint_16", "default":[0,0]}, 
+     {"name":"pad", "type":"pad_6", "default":[0,0,0,0,0,0]}         
+    ]
+   },
+
+   {"name":"queue_property",
+    "type":"record",
+    "fields": [
+     {"name":"property", "type":["ofp_queue_prop_min_rate"]}
+    ]
+   }, 
+
+   {"name":"ofp_packet_queue",
+    "type":"record",
+    "fields":[
+     {"name":"queue_id", "type":"uint_32"},
+     {"name":"len", "type":"uint_16"},
+     {"name":"pad", "type":"pad_2"},
+     {"name":"properties", "type":{"type":"array", "items":"queue_property"}}    
+    ]
+   },
+
+
+
+
+
+   {"name":"hello_header",
+    "type":"record",
+    "fields":[ 
+     {"name":"version", "type":"uint_8", "default":[1]},
+     {"name":"type", "type":"ofp_type", "default":"OFPT_HELLO"},
+     {"name":"length", "type":"ofp_length", "default":"OFPL_HELLO_LEN"},
+     {"name":"xid", "type":"uint_32", "default":[0,0,0,0]}
+    ]
+   },
+
+   {"name":"ofp_hello",
+    "type":"record",
+    "fields":[
+      {"name":"header", "type":"hello_header"}
+    ]
+   },
+
+   {"name":"echo_request_header",
+    "type":"record",
+    "fields":[ 
+     {"name":"version", "type":"uint_8", "default":[1]},
+     {"name":"type", "type":"ofp_type", "default":"OFPT_ECHO_REQUEST"},
+     {"name":"length", "type":"ofp_length", "default":"OFPL_ECHO_REQUEST_LEN"},
+     {"name":"xid", "type":"uint_32", "default":[0,0,0,0]}
+    ]
+   },
+   
+   {"name":"ofp_echo_request",
+    "type":"record",
+    "fields":[
+      {"name":"header", "type":"echo_request_header"}
+    ]
+   },
+   
+   {"name":"echo_reply_header",
+    "type":"record",
+    "fields":[ 
+     {"name":"version", "type":"uint_8", "default":[1]},
+     {"name":"type", "type":"ofp_type", "default":"OFPT_ECHO_REPLY"},
+     {"name":"length", "type":"ofp_length", "default":"OFPL_ECHO_REPLY_LEN"},
+     {"name":"xid", "type":"uint_32", "default":[0,0,0,0]}
+    ]
+   },
+     
+   {"name":"ofp_echo_reply",
+    "type":"record",
+    "fields":[
+      {"name":"header", "type":"echo_reply_header"}
+    ]
+   },
+
+   
+
+
+   
+
+
+   {"name":"ofp_capabilities",
+    "type":"enum",
+    "items":"uint_32",
+    "list":[{"name":"OFPC_FLOW_STATS", "default":{"shift":[1, 0]}},
+            {"name":"OFPC_TABLE_STATS", "default":{"shift":[1, 1]}},
+            {"name":"OFPC_PORT_STATS", "default":{"shift":[1, 2]}},
+            {"name":"OFPC_STP", "default":{"shift":[1, 3]}},
+            {"name":"OFPC_RESERVED", "default":{"shift":[1, 4]}},
+            {"name":"OFPC_IP_REASM", "default":{"shift":[1, 5]}},
+            {"name":"OFPC_QUEUE_STATS", "default":{"shift":[1, 6]}},
+            {"name":"OFPC_ARP_MATCH_IP", "default":{"shift":[1, 7]}}
+    ]
+   },
+
+   {"name":"features_request_header",
+    "type":"record",
+    "fields":[ 
+     {"name":"version", "type":"uint_8", "default":[1]},
+     {"name":"type", "type":"ofp_type", "default":"OFPT_FEATURES_REQUEST"},
+     {"name":"length", "type":"ofp_length", "default":"OFPL_FEATURES_REQUEST_LEN"},
+     {"name":"xid", "type":"uint_32", "default":[0,0,0,0]}
+    ]
+   },
+
+   {"name":"ofp_features_request",
+    "type":"record",
+    "fields":[
+     {"name":"header", "type":"features_request_header"}
+    ]
+   },
+
+   {"name":"switch_features_header",
+    "type":"record",
+    "fields":[ 
+     {"name":"version", "type":"uint_8", "default":[1]},
+     {"name":"type", "type":"ofp_type", "default":"OFPT_FEATURES_REPLY"},
+     {"name":"length", "type":"ofp_length", "default":"OFPL_FEATURES_REPLY_LEN"},
+     {"name":"xid", "type":"uint_32", "default":[0,0,0,0]}
+    ]
+   },
+
+   {"name":"ofp_switch_features",
+    "type":"record",
+    "fields":[ 
+     {"name":"header", "type":"ofp_header"},
+     {"name":"datapath_id", "type":"uint_64"},
+     {"name":"n_buffers", "type":"uint_32"},
+     {"name":"n_tables", "type":"uint_8"},
+     {"name":"pad", "type":"pad_3"},
+     {"name":"capabilities", "type":"ofp_capabilities"},
+     {"name":"actions", "type":"uint_32"}
+    ]
+   },
+
+   {"name":"get_config_request_header",
+    "type":"record", 
+    "fields":[ 
+      {"name":"version", "type":"uint_8", "default":[1]},
+      {"name":"type", "type":"ofp_type", "default":"OFPT_GET_CONFIG_REQUEST"},
+      {"name":"length", "type":"ofp_length", "default":"OFPL_GET_CONFIG_REQUEST_LEN"},
+      {"name":"xid", "type":"uint_32", "default":[0,0,0,0]}
+    ]
+   },
+
+   {"name":"ofp_get_config_request",
+    "type":"record",
+    "fields":[
+      {"name":"header", "type":"get_config_request_header"}
+    ]
+   },
+
+   {"name":"switch_config_header",
+    "type":"record", 
+    "fields":[ 
+      {"name":"version", "type":"uint_8", "default":[1]},
+      {"name":"type", "type":"ofp_type", "default":"OFPT_GET_CONFIG_REPLY"},
+      {"name":"length", "type":"ofp_length", "default":"OFPL_GET_CONFIG_REPLY_LEN"},
+      {"name":"xid", "type":"uint_32", "default":[0,0,0,0]}
+    ]
+   },
+   
+   {"name":"ofp_switch_config",
+    "type":"record",
+    "fields":[ 
+      {"name":"header", "type":"switch_config_header"},
+      {"name":"flags", "type":"uint_16"},
+      {"name":"miss_send_len", "type":"uint_16"}
+    ]
+   },
+
+   {"name":"packet_in_header",
+    "type":"record", 
+    "fields":[ 
+      {"name":"version", "type":"uint_8", "default":[1]},
+      {"name":"type", "type":"ofp_type", "default":"OFPT_PACKET_IN"},
+      {"name":"length", "type":"ofp_length", "default":"OFPL_PACKET_IN_LEN"},
+      {"name":"xid", "type":"uint_32", "default":[0,0,0,0]}
+    ]
+   },
+
+   {"name":"ofp_packet_in",
+    "type":"record",
+    "fields":[
+     {"name":"header", "type":"packet_in_header"},
+     {"name":"buffer_id", "type":"uint_32"},
+     {"name":"total_len", "type":"uint_16"},
+     {"name":"in_port", "type":"uint_16"}, 
+     {"name":"reason", "type":"uint_8"},
+     {"name":"pad", "type":"pad_1"},
+     {"name":"data", "type":{"type":"array", "items":"uint_8"}}
+    ]
+   }
+  ]
+}

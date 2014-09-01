@@ -1,4 +1,7 @@
 *.class
 build/classes
 build/lib
-src/main/java/org/flowforwarding/warp/controller/test/AvroMineTest.java
+of_driver/src/main/java/org/flowforwarding/warp/controller/test/AvroMineTest.java
+of_driver/target
+controller/target
+project/target
