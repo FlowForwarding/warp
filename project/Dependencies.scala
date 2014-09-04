@@ -16,7 +16,7 @@ object Dependencies {
   object V {
     //val jackson       = "1.8.8" //not the latest version (required by patched avro)
     val akka          = "2.3.2"
-    val spray         = "1.3.1-20140423" // nightly
+    val spray         = "1.3.1" // nightly
     val spray_json    = "1.2.6"
     val reflections   = "0.9.9-RC1"
     val logback       = "1.1.2"
