@@ -12,7 +12,7 @@ object Build extends Build{
   val SCALA_MINOR_VERSION = "1"
   val SCALA_VERSION = SCALA_MAJOR_VERSION + "." + SCALA_MINOR_VERSION
 
-  val WARP_VERSION = "0.1"
+  val WARP_VERSION = "0.5"
   val SCALAVRO_VERSION = "0.6.2-patched"
 
   lazy val warpCommonSettings = Defaults.defaultSettings ++ Seq(
