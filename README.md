@@ -26,6 +26,8 @@ Jar files will be placed:
 
 ##How to start controller
 
+Currently, there are two Controllers shipped. 
+
 Start controller executable jar:
 ```bash
  $ java -jar ./of_driver/target/scala-2.11/controller-assembly-0.5.jar
