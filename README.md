@@ -26,13 +26,16 @@ Jar files will be placed:
 
 ##How to start controller
 
-Currently, there are two Controllers shipped. 
-
-Start controller executable jar:
+Start java controller:
 ```bash
- $ java -jar ./of_driver/target/scala-2.11/controller-assembly-0.5.jar
+ $ java -jar ./of_driver/target/scala-2.11/of_driver-assembly-0.5.jar
 ```
+More detailed information can be found [here]https://github.com/FlowForwarding/warp/wiki/1.-Warp-User's-Guide
 
+Start scala controller executable jar:
+```bash
+ $ java -jar ./controller/target/scala-2.11/controller-assembly-0.5.jar
+```
 In the console issue the command: ```start <ip> <port>```
 
-More detailed information about controller usage you can find here:
+More detailed information about controller usage you can find here:[here]https://github
