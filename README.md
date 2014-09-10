@@ -30,7 +30,7 @@ Start java controller:
 ```bash
  $ java -jar ./of_driver/target/scala-2.11/of_driver-assembly-0.5.jar
 ```
-More detailed information can be found [here] https://github.com/FlowForwarding/warp/wiki/1.-Warp-User's-Guide
+More detailed information can be found [here] (https://github.com/FlowForwarding/warp/wiki/1.-Warp-User's-Guide)
 
 Start scala controller executable jar:
 ```bash
@@ -38,4 +38,4 @@ Start scala controller executable jar:
 ```
 In the console issue the command: ```start <ip> <port>```
 
-More detailed information about controller usage you can find here:[here] https://github
+More detailed information about controller usage you can find here:[here] (https://github)
