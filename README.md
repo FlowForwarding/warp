@@ -38,4 +38,4 @@ Start scala controller executable jar:
 ```
 In the console issue the command: ```start <ip> <port>```
 
-More detailed information about controller usage you can find here:[here] (https://github)
+More detailed information about controller usage you can find [here] (https://github)
