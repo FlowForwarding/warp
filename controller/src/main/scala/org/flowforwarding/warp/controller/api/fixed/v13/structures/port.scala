@@ -69,7 +69,9 @@ case class PortConfig(portDown: Boolean, noReceived: Boolean, noForwarded: Boole
 
 case class PortState(linkDown: Boolean, /* No physical link present. */
                      blocked: Boolean,  /* Port is blocked */
-                     live: Boolean)     /* Live for Fast Failover Group. */
+                     live: Boolean) /* Live for Fast Failover Group. */extends Bitmap {
+  override def bits = Array(0, 1, 2)
+}
 
 trait Port {
   val number:     PortNumber
@@ -82,8 +84,8 @@ trait Port {
   val advertised: PortFeatures  /* Features being advertised by the port. */
   val supported:  PortFeatures  /* Features supported by the port. */
   val peer:       PortFeatures  /* Features advertised by peer. */
-  val currSpeed:  PortFeatures  /* Current port bitrate in kbps. */
-  val maxSpeed:   PortFeatures  /* Max port bitrate in kbps */
+  val currSpeed:  UInt          /* Current port bitrate in kbps. */
+  val maxSpeed:   UInt          /* Max port bitrate in kbps */
 }
 
 private[fixed] trait Ofp13PortDescription extends StructureDescription{
@@ -96,14 +98,14 @@ private[fixed] trait Ofp13PortDescription extends StructureDescription{
         val number:     PortNumber   = PortNumber(primitiveField[UInt]("port_no"))
         val hwAddress:  MacAddress   = MacAddress(primitiveField[ULong]("hw_addr"))
         val name:       String       = stringField("name")
-        val config:     PortConfig   = bitmapField("config", Array(UInt(0), UInt(2), UInt(5), UInt(6)))
-        val state:      PortState    = bitmapField("state")
-        val curr:       PortFeatures = bitmapField("curr")
-        val advertised: PortFeatures = bitmapField("advertised")
-        val supported:  PortFeatures = bitmapField("supported")
-        val peer:       PortFeatures = bitmapField("peer")
-        val currSpeed:  PortFeatures = bitmapField("curr_speed")
-        val maxSpeed:   PortFeatures = bitmapField("max_speed")
+        val config:     PortConfig   = bitmapField[PortConfig]("config", Array(UInt(0), UInt(2), UInt(5), UInt(6)))
+        val state:      PortState    = bitmapField[PortState]("state")
+        val curr:       PortFeatures = bitmapField[PortFeatures]("curr")
+        val advertised: PortFeatures = bitmapField[PortFeatures]("advertised")
+        val supported:  PortFeatures = bitmapField[PortFeatures]("supported")
+        val peer:       PortFeatures = bitmapField[PortFeatures]("peer")
+        val currSpeed:  UInt         = primitiveField[UInt]("curr_speed")
+        val maxSpeed:   UInt         = primitiveField[UInt]("max_speed")
       }
     }
   }
