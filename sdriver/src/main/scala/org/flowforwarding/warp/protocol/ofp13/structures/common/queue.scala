@@ -44,7 +44,7 @@ case class ofp_packet_queue private[protocol] (
   properties: RawSeq[ofp_queue_property])
 
 object ofp_packet_queue extends RawSeqFieldsInfo{
-  val rawFieldsLengthCalculator: LengthCalculator = { case 4 => {
+  val rawFieldsLengthCalculator: LengthCalculator = { case 4 => Some {
     case Seq(_, _, len: UInt16, _*) => UInt16.toShort(len) - 16
   }}
 }
@@ -74,7 +74,7 @@ case class ofp_queue_prop_experimenter private[protocol] (
 
 
 object ofp_queue_prop_experimenter extends RawSeqFieldsInfo {
-  val rawFieldsLengthCalculator: LengthCalculator = { case 3 => {
+  val rawFieldsLengthCalculator: LengthCalculator = { case 3 => Some {
     case Seq(h: ofp_queue_prop_header, _*) => UInt16.toShort(h.len) - 16
   }}
 }

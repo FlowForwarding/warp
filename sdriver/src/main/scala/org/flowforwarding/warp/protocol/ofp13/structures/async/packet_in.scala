@@ -29,7 +29,7 @@ case class ofp_packet_in private[protocol] (
   data: RawSeq[UInt8])         /* Ethernet frame */
 
 object ofp_packet_in extends RawSeqFieldsInfo{
-  val rawFieldsLengthCalculator: LengthCalculator = { case 8 => { case Seq(_, _, total_len: UInt16, _*) => U16.f(UInt16.toShort(total_len)) } }
+  val rawFieldsLengthCalculator: LengthCalculator = { case 8 => Some { case Seq(_, _, total_len: UInt16, _*) => U16.f(UInt16.toShort(total_len)) }}
 }
 
 /* Why is this packet being sent to the controller? */

@@ -15,9 +15,9 @@ package object structures {
 
   /* Helper functions for deserialization of raw sequences */
 
-  val bodyLength: Seq[Any] => Int = bodyLengthMinus(0)
+  val bodyLength: Option[Seq[Any] => Int] = bodyLengthMinus(0)
 
-  def bodyLengthMinus(size: Int): Seq[Any] => Int = {
+  def bodyLengthMinus(size: Int): Option[Seq[Any] => Int] = Some {
     case Seq(h: ofp_header, _*) =>
       val headerSize = 1 + 1 + 2 + 4
       U16.f(h.length.data) - headerSize - size

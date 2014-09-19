@@ -72,7 +72,7 @@ case class ofp_port private [protocol] (
   max_speed:  UInt32  /* Max port bitrate in kbps */)
 
 object ofp_port extends RawSeqFieldsInfo{
-  val rawFieldsLengthCalculator: PartialFunction[Int, (Seq[Any]) => Int] = { case 4 => _ => 16 }
+  val rawFieldsLengthCalculator: LengthCalculator = { case 4 => Some { _ => 16 } }
 }
 
 /* Flags to indicate behavior of the physical port. These flags are

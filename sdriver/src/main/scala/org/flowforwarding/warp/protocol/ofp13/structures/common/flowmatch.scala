@@ -43,8 +43,8 @@ object ofp_match extends RawSeqFieldsInfo{
   }
 
   val rawFieldsLengthCalculator: LengthCalculator = {
-    case 2 => (s: Seq[Any]) => lenField(1)(s) - 4
-    case 3 => (s: Seq[Any]) => closingPadLength(lenField(1)(s))
+    case 2 => Some { (s: Seq[Any]) => lenField(1)(s) - 4 }
+    case 3 => Some { (s: Seq[Any]) => closingPadLength(lenField(1)(s)) }
   }
 }
 
@@ -109,7 +109,7 @@ case class oxm_tlv private[protocol] (header: UInt32, entry: RawSeq[UInt8])
 object oxm_tlv extends RawSeqFieldsInfo{
   private[protocol] def build(header: UInt32, entry: RawSeq[UInt8] = RawSeq()) = oxm_tlv(header, entry)
 
-  val rawFieldsLengthCalculator: LengthCalculator = { case 1 => { case Seq(OxmTlvHeader(_, _, _, length)) => length.toInt} }
+  val rawFieldsLengthCalculator: LengthCalculator = { case 1 => Some { case Seq(OxmTlvHeader(_, _, _, length)) => length.toInt} }
 }
 
 object OxmTlvHeader{

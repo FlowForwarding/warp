@@ -56,8 +56,8 @@ case class ofp_hello_elem_versionbitmap private[protocol] (//hType: OFP_HELLO_EL
 
 object ofp_hello_elem_versionbitmap extends RawSeqFieldsInfo{
   val rawFieldsLengthCalculator: LengthCalculator = {
-    case 1 => s => lenField(0)(s) - 4
-    case 2 => s =>  /* (lenField(1)(s) + 7) / 8 * 8 */ 0   // TODO: fix calculation
+    case 1 => Some { s => lenField(0)(s) - 4 }
+    case 2 => Some { s =>  /* (lenField(1)(s) + 7) / 8 * 8 */ 0 }   // TODO: fix calculation
   }
 
   private[protocol] def build(bitmaps: RawSeq[UInt32] = RawSeq()) = {

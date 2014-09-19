@@ -50,6 +50,7 @@ package object dynamic{
     case b: Byte            => b.toLong
 
     case ui64: UInt64          => UInt64.toLong(ui64)
+    case ui48: UInt48          => UInt48.toLong(ui48)
     case ui32: UInt32          => UInt32.toInt(ui32).toLong
     case ui16: UInt16          => UInt16.toShort(ui16).toLong
     case ui8:  UInt8           => UInt8.toByte(ui8).toLong

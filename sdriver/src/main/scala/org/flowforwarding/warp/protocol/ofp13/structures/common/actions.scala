@@ -189,7 +189,7 @@ object ofp_action_set_field extends RawSeqFieldsInfo{
   def len(s: Seq[Any]) = s(0).asInstanceOf[OFP_ACTION_LENGTH].data
 
   val rawFieldsLengthCalculator: LengthCalculator = {
-    case 2 => (s: Seq[Any]) => closingPadSize(len(s) - 8)
+    case 2 => Some { (s: Seq[Any]) => closingPadSize(len(s) - 8) }
   }
 
   private def closingPadSize(oxmLength: Int) = (oxmLength + 7) / 8 * 8 - (8 + oxmLength)

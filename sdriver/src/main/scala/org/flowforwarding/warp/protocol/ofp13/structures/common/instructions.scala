@@ -75,7 +75,7 @@ abstract class ofp_instruction_actions_companion[T <: ofp_instruction](
 
   private [protocol] def build(actions: RawSeq[ofp_action]) = constructor(IL_ACTIONS(actions), Pad4(), actions)
 
-  val rawFieldsLengthCalculator: LengthCalculator = { case 2 => {
+  val rawFieldsLengthCalculator: LengthCalculator = { case 2 => Some {
     case Seq(x: instruction_length.Value, _*) => x.data - IL_ACTIONS.data
   }}
 }
@@ -117,7 +117,7 @@ case class ofp_instruction_experimenter private[protocol] (
 object ofp_instruction_experimenter extends RawSeqFieldsInfo {
   private [protocol] def build(experimenter: UInt32, data: RawSeq[UInt8]) = ofp_instruction_experimenter(IL_EXPERIMENTER(data.length), experimenter, data)
 
-  val rawFieldsLengthCalculator: LengthCalculator = { case 2 => {
+  val rawFieldsLengthCalculator: LengthCalculator = { case 2 => Some {
     case Seq(x: instruction_length.Value, _*) => x.data - IL_EXPERIMENTER.data
   }}
 }
