@@ -7,41 +7,72 @@
 package org.flowforwarding.warp.protocol.ofp13.structures
 
 import com.gensler.scalavro.types.supply._
+import com.gensler.scalavro.util.Union._
+import org.flowforwarding.warp.protocol.dynamic.DynamicPath
 import org.flowforwarding.warp.protocol.ofp13.structures.ofp_multipart_type.OFP_MULTIPART_TYPE
-import org.flowforwarding.warp.protocol.ofp13.structures.ofp_multipart_request_flags.OFP_MILTIPART_REQUEST_FLAGS
-import org.flowforwarding.warp.protocol.ofp13.structures.ofp_multipart_reply_flags.OFP_MILTIPART_REPLY_FLAGS
+import org.flowforwarding.warp.protocol.ofp13.structures.ofp_multipart_request_flags.OFP_MULTIPART_REQUEST_FLAGS
+import org.flowforwarding.warp.protocol.ofp13.structures.ofp_multipart_reply_flags.OFP_MULTIPART_REPLY_FLAGS
+import ofp_length._
 
-case class ofp_multipart_request(header: ofp_header,
-                                 t: OFP_MULTIPART_TYPE,              /* One of the OFPMP_* constants. */    // TODO: union of multipart messages
-                                 flags: OFP_MILTIPART_REQUEST_FLAGS, /* OFPMPF_REQ_* flags. */
-                                 pad: Pad4 = Pad4(),
-                                 body: RawSeq[UInt8] = RawSeq())     /* Body of the request. 0 or more bytes. */
+object ofp_multipart_request{
+  type All = union [ofp_multipart_desc_request] #or
+                   [ofp_multipart_flow_request] #or
+                   [ofp_multipart_aggregate_request] #or
+                   [ofp_multipart_table_request] #or
+                   [ofp_multipart_port_stats_request] #or
+                   [ofp_multipart_queue_request] #or
+                   [ofp_multipart_group_request] #or
+                   [ofp_multipart_group_desc_request] #or
+                   [ofp_multipart_group_features_request] #or
+                   [ofp_multipart_meter_request] #or
+                   [ofp_multipart_meter_config_request] #or
+                   [ofp_multipart_meter_features_request] #or
+                   [ofp_multipart_table_features_request] #or
+                   [ofp_multipart_port_desc_request] #or
+                   [ofp_multipart_experimenter_request]
 
-object ofp_multipart_request extends RawSeqFieldsInfo{
-  val rawFieldsLengthCalculator: LengthCalculator = { case 4 => ??? } // TODO: Implement
+  // TODO: think about construction through direct passing of type, flags and body params
+  // The current implementation breaks protocol: added new structure layer "data"
+  private[protocol] def build(@DynamicPath("header", "xid") xid: UInt32, data: ofp_multipart_request_type) = {
+    val header = ofp_header(OFPL_MULTIPART_REQUEST_LEN, xid)
+    ofp_multipart_request(header, data)
+  }
 }
 
-case class ofp_multipart_reply(header: ofp_header,
-                               t: OFP_MULTIPART_TYPE,            /* One of the OFPMP_* constants. */   // TODO: union of multipart messages
-                               flags: OFP_MILTIPART_REPLY_FLAGS, /* OFPMPF_REPLY_* flags. */
-                               pad: Pad4 = Pad4(),
-                               body: RawSeq[UInt8] = RawSeq())   /* Body of the reply. 0 or more bytes. */
-
-object ofp_multipart_reply extends RawSeqFieldsInfo{
-  val rawFieldsLengthCalculator: LengthCalculator = { case 4 => ??? } // TODO: Implement
+object ofp_multipart_reply{
+  type All = union [ofp_multipart_desc_reply] #or
+                   [ofp_multipart_flow_reply] #or
+                   [ofp_multipart_aggregate_reply] #or
+                   [ofp_multipart_table_reply] #or
+                   [ofp_multipart_port_stats_reply] #or
+                   [ofp_multipart_queue_reply] #or
+                   [ofp_multipart_group_reply] #or
+                   [ofp_multipart_group_desc_reply] #or
+                   [ofp_multipart_group_features_reply] #or
+                   [ofp_multipart_meter_reply] #or
+                   [ofp_multipart_meter_config_reply] #or
+                   [ofp_multipart_meter_features_reply] #or
+                   [ofp_multipart_table_features_reply] #or
+                   [ofp_multipart_port_desc_reply] #or
+                   [ofp_multipart_experimenter_reply]
 }
+
+trait ofp_multipart_reply_type extends WordTaggedUnion[ofp_multipart_reply.All, OFP_MULTIPART_TYPE]
+trait ofp_multipart_request_type extends WordTaggedUnion[ofp_multipart_request.All, OFP_MULTIPART_TYPE]
+
+case class ofp_multipart_reply private[protocol] (header: ofp_header, data: ofp_multipart_reply_type)
+case class ofp_multipart_request private[protocol] (header: ofp_header, data: ofp_multipart_request_type)
 
 object ofp_multipart_request_flags extends WordBitmap{
-  type OFP_MILTIPART_REQUEST_FLAGS = Value
+  type OFP_MULTIPART_REQUEST_FLAGS = Value
   val OFPMPF_REQ_MORE = ##(1 << 0) /* More requests to follow. */
 }
 
 object ofp_multipart_reply_flags extends WordBitmap{
-  type OFP_MILTIPART_REPLY_FLAGS = Value
+  type OFP_MULTIPART_REPLY_FLAGS = Value
   val OFPMPF_REPLY_MORE = ##(1 << 0) /* More replies to follow. */
 }
 
-// TODO: deal with types
 object ofp_multipart_type extends WordEnum{
   type OFP_MULTIPART_TYPE = Value
 
