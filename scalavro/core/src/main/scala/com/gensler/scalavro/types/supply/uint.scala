@@ -65,7 +65,11 @@ object UInt32{
 }
 
 object UInt48{
-  def toLong(value: UInt48)(implicit bo: ByteOrder = ByteOrder.BIG_ENDIAN): Long  = fixedToBuffer(value, bo).getLong
+  def toLong(value: UInt48)(implicit bo: ByteOrder = ByteOrder.BIG_ENDIAN): Long  = {
+    val zeros = Seq[Byte](0, 0)
+    val bytes = if (bo == ByteOrder.BIG_ENDIAN) zeros ++ value.bytes else value.bytes ++ zeros
+    ByteBuffer.wrap(bytes.toArray).order(bo).getLong
+  }
   def fromLong(data: Long)(implicit bo: ByteOrder = ByteOrder.BIG_ENDIAN): UInt48 = {
     val bytes = allocateBuffer(8).order(bo).putLong(data).array().toList
     val cropBytes = if(bo == ByteOrder.BIG_ENDIAN) bytes.splitAt(2)._2 else bytes.splitAt(6)._1
