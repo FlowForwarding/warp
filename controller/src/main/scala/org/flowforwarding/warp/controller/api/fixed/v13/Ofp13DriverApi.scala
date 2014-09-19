@@ -16,6 +16,8 @@ import org.flowforwarding.warp.controller.api.fixed.v13.messages.async._
 import org.flowforwarding.warp.controller.api.fixed.v13.messages.symmetric._
 import org.flowforwarding.warp.controller.api.fixed.v13.messages.controller._
 import org.flowforwarding.warp.controller.api.fixed.v13.messages.controller.mod._
+import org.flowforwarding.warp.controller.api.fixed.v13.messages.controller.multipart._
+import org.flowforwarding.warp.controller.api.fixed.v13.messages.controller.multipart.data._
 
 import org.flowforwarding.warp.controller.api.fixed.v13.structures._
 import org.flowforwarding.warp.controller.api.fixed.v13.structures.instructions.Ofp13InstructionsDescription
@@ -53,6 +55,10 @@ trait Ofp13DriverApi extends MessagesDescriptionHelper[Ofp13MessageHandlers]
                      with Ofp13ConfigDescription
                      with Ofp13BarrierDescription
                      with Ofp13AsyncDescription
+
+                     with Ofp13SwitchDescriptionDescription
+                     with Ofp13PortDescriptionDescription
+                     with Ofp13MultipartDescription
 { driver: DynamicStructureBuilder[_ <: DynamicStructure] => }
 
 abstract class Ofp13MessageHandlers(controllerBus: ControllerBus)
@@ -69,3 +75,7 @@ abstract class Ofp13MessageHandlers(controllerBus: ControllerBus)
                                        with GetConfigReplyHandler
                                        with BarrierHandler
                                        with GetAsyncReplyHandler
+                                       // multipart handlers
+                                       with MultipartReplyHandlers
+                                       with SwitchDescriptionReplyHandler
+                                       with PortDescriptionReplyHandler

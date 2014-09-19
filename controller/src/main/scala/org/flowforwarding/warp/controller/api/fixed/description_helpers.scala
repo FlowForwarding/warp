@@ -58,9 +58,10 @@ trait StructuresDescriptionHelper{
     self.build(structureBuilder toDynamicInput input)
   }
 
-  def buildDynamic(input: BuilderInput): Try[DynamicStructure] = {
-    val structureBuilder = selectBuilder { b => firstGenericParameter(b) == Some(input.getClass) } .asInstanceOf[OfpStructureBuilder[BuilderInput]]
-    self.build(structureBuilder toDynamicInput input)
+  def buildDynamic(input: BuilderInput): Try[DynamicStructure] = Try {
+    selectBuilder { b => firstGenericParameter(b) == Some(input.getClass)}.asInstanceOf[OfpStructureBuilder[BuilderInput]]
+  } flatMap { sb =>
+    self.build(sb toDynamicInput input)
   }
 }
 

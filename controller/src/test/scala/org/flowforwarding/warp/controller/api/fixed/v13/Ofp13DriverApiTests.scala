@@ -10,9 +10,7 @@ import org.flowforwarding.warp.controller.api.fixed._
 import org.flowforwarding.warp.controller.api.fixed.v13.messages.symmetric._
 import org.flowforwarding.warp.controller.api.fixed.v13.messages.controller._
 import org.flowforwarding.warp.controller.api.fixed.v13.messages.controller.mod._
-
-import org.flowforwarding.warp.controller.api.fixed.v13.messages.controller.mod.{Ofp13PortModTest, Ofp13MeterModTest, Ofp13GroupModTest, Ofp13FlowModTest}
-import org.flowforwarding.warp.controller.api.fixed.v13.messages.controller.{Ofp13PacketOutTest, Ofp13QueueGetConfigTest, Ofp13RoleTest}
+import org.flowforwarding.warp.controller.api.fixed.v13.messages.controller.multipart._
 
 
 class Ofp13DriverApiTests extends MessageTestsSet[Ofp13DriverApi]
@@ -31,4 +29,7 @@ class Ofp13DriverApiTests extends MessageTestsSet[Ofp13DriverApi]
                              with Ofp13BarrierTest
                              with Ofp13AsyncTest
                              with Ofp13PacketOutTest
+
+                             with Ofp13SwitchDescriptionTest
+                             with Ofp13PortDescriptionTest
 

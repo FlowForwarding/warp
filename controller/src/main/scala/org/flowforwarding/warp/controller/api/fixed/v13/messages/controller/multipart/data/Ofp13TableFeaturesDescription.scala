@@ -1,11 +1,11 @@
-/*
- * © 2013 FlowForwarding.Org
- * All Rights Reserved.  Use is subject to license terms.
- *
- * @author Vitaliy Savkin (Vitaliy_Savkin@epam.com)
- */
-package org.flowforwarding.warp.controller.api.fixed.v13.messages.controller.multipart
-
+///*
+// * © 2013 FlowForwarding.Org
+// * All Rights Reserved.  Use is subject to license terms.
+// *
+// * @author Vitaliy Savkin (Vitaliy_Savkin@epam.com)
+// */
+//package org.flowforwarding.warp.controller.api.fixed.v13.messages.controller.multipart
+//
 // TODO: Implement
 //
 //import org.flowforwarding.warp.controller.api.dynamic._
