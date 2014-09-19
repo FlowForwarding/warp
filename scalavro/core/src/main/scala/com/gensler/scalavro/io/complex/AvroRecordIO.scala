@@ -128,10 +128,22 @@ case class AvroRecordIO[T](avroType: AvroRecord[T]) extends AvroTypeIO[T]()(avro
     for ((reader, i) <- fieldReaders.zipWithIndex) {
       val field = reader match {
         case r: AvroRawArrayIO[_, _] =>
-          val rawBytes = new Array[Byte](rsfInfo.rawFieldsLengthCalculator(i)(args))
-          val readBytes = decoder.inputStream().read(rawBytes)
-          require(readBytes == -1 && rawBytes.length == 0 ||
-                  readBytes == rawBytes.length, s"Actual amount of raw data ($readBytes bytes) doesn't match amount supposed by RawSeqFieldsInfo (${rawBytes.length} bytes)")
+          val rawBytes = rsfInfo.rawFieldsLengthCalculator(i) match {
+            case Some(f) =>
+              val rawBytes = new Array[Byte](f(args))
+              val readBytes = decoder.inputStream().read(rawBytes)
+              require(readBytes == -1 && rawBytes.length == 0 || readBytes == rawBytes.length,
+                      s"Actual amount of raw data ($readBytes bytes) doesn't match amount supposed by RawSeqFieldsInfo (${rawBytes.length} bytes)")
+              rawBytes
+            case None =>
+              val bytes = new scala.collection.mutable.ArrayBuffer[Byte]()
+              var b = decoder.inputStream().read()
+              while (b != -1) {
+                bytes += b.toByte
+                b = decoder.inputStream().read()
+              }
+              bytes.toArray
+          }
           // TODO: choose type of new decoder based on actual type of argument "decoder"
           val rawSeqDecoder = DecoderFactory.get.directBinaryDecoder(new ByteArrayInputStream(rawBytes), null)
           r.read(rawSeqDecoder, references, !useReferences)
