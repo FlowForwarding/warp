@@ -54,7 +54,7 @@ private[fixed] trait Ofp13MultipartDescription extends Ofp13MessageDescription {
     }
   }
 
-  protected[fixed] implicit object MultipartResponseData extends FromDynamic[MultipartReplyData] {
+  protected[fixed] implicit object MultipartReplyData extends FromDynamic[MultipartReplyData] {
     val fromDynamic: PartialFunction[DynamicStructure, MultipartReplyData] = {
       case s if s.ofType[SwitchDescriptionReplyData] => new OfpStructure[SwitchDescriptionReplyData](s) with SwitchDescriptionReplyData {
         val reqMore = primitiveField[UShort]("flags") == UShort(1)
