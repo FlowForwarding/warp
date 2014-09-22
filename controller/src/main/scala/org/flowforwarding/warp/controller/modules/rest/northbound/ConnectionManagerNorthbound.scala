@@ -6,14 +6,10 @@
  */
 package org.flowforwarding.warp.controller.modules.rest.northbound
 
-import java.math.BigInteger
 import java.net.InetAddress
-import java.util.concurrent.TimeoutException
 
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
-
-import spire.math.ULong
 
 import spray.json._
 import spray.http._
@@ -23,28 +19,36 @@ import MediaTypes._
 
 import org.flowforwarding.warp.controller.bus.ControllerBus
 import org.flowforwarding.warp.controller.modules.rest.RestApiService
-import org.flowforwarding.warp.controller.modules.managers.{ConnectionManager, ConnectionService}
-import org.flowforwarding.warp.controller.modules.managers.ConnectionManager.NodeNotFound
+import org.flowforwarding.warp.controller.modules.managers.{Node, ConnectionManager, AbstractService}
+import org.flowforwarding.warp.controller.modules.rest.northbound.NorthboundUtils._
 
+import scala.util.{Failure, Success}
 
 // TODO: check authorization
 class ConnectionManagerNorthbound(val bus: ControllerBus, serverPrefix: String) extends RestApiService(serverPrefix) {
   import ConnectionManager._
+  import AbstractService._
 
   override val servicePrefix = "/connectionmanager"
 
   override def route =
     //  PUT /node/{nodeId}/address/{ipAddress}/port/{port}
     path("node" / Segment / "address" / Segment / "port" / IntNumber) { (id, ip, port) =>
-      put { complete(handleConnect(ULong(stringToLong(id)), InetAddress.getByName(ip), port, None)) }
+      put {
+        complete(handleConnect("OF", id, InetAddress.getByName(ip), port))
+      }
     } ~
     // DELETE /node/{nodeType}/{nodeId}
     path("node" / Segment / Segment) { (nodeType, nodeId) =>
-      delete { complete(handleDisconnect(ULong(stringToLong(nodeId)))) }
+      delete {
+        complete(handleDisconnect(nodeType, nodeId))
+      }
     } ~
     // PUT /node/{nodeType}/{nodeId}/address/{ipAddress}/port/{port}
     path("node" / Segment / Segment / "address" / Segment / "port" / IntNumber) { (`type`, id, ip, port) =>
-      put { complete(handleConnect(ULong(stringToLong(id)), InetAddress.getByName(ip), port, Some(`type`))) }
+      put {
+        complete(handleConnect(`type`, id, InetAddress.getByName(ip), port))
+      }
     } ~
     // GET /nodes
     path("nodes") {
@@ -55,40 +59,30 @@ class ConnectionManagerNorthbound(val bus: ControllerBus, serverPrefix: String) 
       }
     }
 
-  def stringToLong(values: String): Long =
-    new BigInteger(values.replaceAll(":", ""), 16).longValue
+  private val pn = processNode("Connection Manager Service not available", "Could not connect to the Node with the specified parameters") _
 
-  def longToHexString(value: Long): String = {
-    val arr = value.toHexString.toCharArray
-    val padded = Seq.fill(16 - arr.length)('0') ++ arr
-    padded.grouped(2).map(_ mkString "").mkString(":")
-  }
-
-  private def aggregateNodes(nodes: Set[(ULong, String)]) = {
-    val jsNodes = nodes map { case (id, t) => JsObject(("type", JsString(t)), ("id", JsString(longToHexString(id.toLong)))) }
-    JsObject(("node", JsArray(jsNodes.toList)))
-  }
-
-  private val handleError: PartialFunction[Throwable, HttpResponse]  = {
-    case e: TimeoutException => HttpResponse(503, "Connection Manager Service not available")
-    case e => HttpResponse(500, e.getStackTrace.mkString(e.getMessage, "\n", ""))
-  }
-
-  private def handleConnect(nodeId: ULong, ip: InetAddress, port: Int, nodeType: Option[String]): Future[HttpResponse] = {
-    askFirst(Connect(nodeId, ip, port, nodeType)) map {
-      case Done          => HttpResponse(200, "Node connected successfully")
-      case InvalidParams => HttpResponse(404, "Invalid IP Address or Port parameter passed")
-      case NodeNotFound  => HttpResponse(406, "Could not connect to the Node with the specified parameters")
+  private def handleConnect(nodeType: String, nodeId: String, ip: InetAddress, port: Int): Future[HttpResponse] =
+    pn(nodeType, nodeId) { n =>
+      askFirst(Connect(n, ip, port)) map {
+        case Done => HttpResponse(200, "Node connected successfully")
+        case InvalidParams => HttpResponse(406, "Invalid IP Address or Port parameter passed")
+        case NodeNotFound => HttpResponse(404, "Could not connect to the Node with the specified parameters")
+      }
     }
-  } recover handleError
 
-  private def handleDisconnect(nodeId: ULong): Future[HttpResponse] = askFirst(Disconnect(nodeId)) map {
-    case Done         => HttpResponse(200, "Node disconnected successfully")
-    case NodeNotFound => HttpResponse(404, "Could not find a connection with the specified Node identifier")
-  } recover handleError
+  private def handleDisconnect(nodeType: String, nodeId: String): Future[HttpResponse] =
+    pn(nodeType, nodeId) { n =>
+      askFirst(Disconnect(n)) map {
+        case Done => HttpResponse(200, "Node disconnected successfully")
+        case NodeNotFound => HttpResponse(404, "Could not find a connection with the specified Node identifier")
+      }
+    }
 
-  private def handleGetNodes(controllerAddress: Option[InetAddress]): Future[HttpResponse] = askFirst(GetNodes(controllerAddress)) map {
-    case Nodes(nodes)  => HttpResponse(200, HttpEntity(contentType = ContentType(`application/json`, `UTF-8`), string = aggregateNodes(nodes).toString))
-    case InvalidParams => HttpResponse(406, "Invalid Controller IP Address passed")
-  } recover handleError
+  private def handleGetNodes(controllerAddress: Option[InetAddress]): Future[HttpResponse] =
+    askFirst(GetNodes(controllerAddress)) map {
+      case Nodes(nodes) =>
+        val jsNodes = nodes map { _.toJson }
+        jsonOk(JsObject("node" -> JsArray(jsNodes.toList)))
+      case InvalidParams => HttpResponse(406, "Invalid Controller IP Address passed")
+    } withServiceErrorReport "Connection Manager"
 }
