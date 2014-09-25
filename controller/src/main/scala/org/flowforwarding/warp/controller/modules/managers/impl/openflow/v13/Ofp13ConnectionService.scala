@@ -34,14 +34,14 @@ class Ofp13ConnectionService(controllerBus: ControllerBus) extends Ofp13MessageH
 
   private val connectedDpids = scala.collection.mutable.Set[ULong]()
 
-  def connect(node: OFNode, ip: InetAddress, port: Int): Future[ServiceResponse] = Future.successful(NodeNotFound)
+  def connect(node: OFNode, ip: InetAddress, port: Int): Future[ServiceResponse] = Future.successful(NotFound)
 
   def disconnect(node: OFNode): Future[ServiceResponse] = {
     val result = if(connectedDpids.contains(node.id)){
       publishMessage(SwitchConnector.ForceDisconnect(node.id))
       Done
     }
-    else NodeNotFound
+    else NotFound
     Future.successful(result)
   }
 

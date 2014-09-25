@@ -43,21 +43,23 @@ class InventoryManager(val bus: ServiceBus) extends AbstractManager[InventorySer
 
   private def reduceNodes(nodes: Array[Any]) = {
     if (nodes contains InvalidParams) InvalidParams
-    else Nodes(nodes.foldLeft(Map.empty[Node[_], Set[Property[_]]]) { case (ids1, Nodes(ids2)) => ids1 ++ ids2})
+    else if (nodes forall { _ == NotFound }) NotFound
+    else Nodes(nodes.collect { case ns: Nodes => ns }
+                    .foldLeft(Map.empty[Node[_], Set[Property[_]]]) { case (ids1, Nodes(ids2)) => ids1 ++ ids2})
   }
 
   private def reduceNodeConnectors(connectors: Array[Any]) =
     connectors collectFirst {
       case c: Connectors => c
     } getOrElse {
-      InvalidParams
+      NotFound
     }
 
   private def reduceNodeProperties(properties: Array[Any]) =
     properties collectFirst {
       case c: PropertyValue => c
     } getOrElse {
-      InvalidParams
+      NotFound
     }
 
   override protected def handleRequest(e: ServiceRequest): Future[Any] = e match {

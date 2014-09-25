@@ -98,7 +98,7 @@ class SwitchManagerNorthbound(val bus: ControllerBus, serverPrefix: String) exte
           val allProps = connectors map { case (c, props) =>
             JsObject("nodeconnector" -> c.toJson, "properties" -> props.toJson) }
           jsonOk(JsObject("nodeConnectorProperties" -> JsArray(allProps.toList)))
-        case NodeNotFound => HttpResponse(404, "Could not find a connection with the specified Node identifier")
+        case NotFound => HttpResponse(404, "Could not find a connection with the specified Node identifier")
       } withServiceErrorReport "Inventory Manager"
     }
 
@@ -108,7 +108,7 @@ class SwitchManagerNorthbound(val bus: ControllerBus, serverPrefix: String) exte
         case Success(p) =>
           askFirst(AddNodeProperty(n, p)) map {
             case Done => HttpResponse(201, "Operation successful")
-            case NodeNotFound => HttpResponse(404, "The Container Name or nodeId or configuration name is not found")
+            case NotFound => HttpResponse(404, "The Container Name or nodeId or configuration name is not found")
             case NotAcceptable => HttpResponse(406, "The property cannot be configured in non-default container")
             case Conflict =>  HttpResponse(409, "Unable to update configuration due to cluster conflict or conflicting description property")
           }
@@ -117,21 +117,19 @@ class SwitchManagerNorthbound(val bus: ControllerBus, serverPrefix: String) exte
       }
     }
 
-  def handleRemoveNodeProperty(nodeType: String, nodeId: String, propertyName: String): Future[HttpResponse] =
-    pn(nodeType, nodeId) { n =>
-      askFirst(RemoveNodeProperty(n, propertyName)) map {
-        case Done => HttpResponse(204, "Property removed successfully")
-        case NodeNotFound => HttpResponse(404, "The Container Name or nodeId or configuration name is not found")
-      }
+  def handleRemoveNodeProperty(nodeType: String, nodeId: String, propertyName: String): Future[HttpResponse] = pn(nodeType, nodeId) { n =>
+    askFirst(RemoveNodeProperty(n, propertyName)) map {
+      case Done => HttpResponse(204, "Property removed successfully")
+      case NotFound => HttpResponse(404, "The Container Name or nodeId or configuration name is not found")
     }
+  }
 
-  def handleGetNodeProperty(nodeType: String, nodeId: String, propertyName: String): Future[HttpResponse] =
-    pn(nodeType, nodeId) { n =>
-      askFirst(GetNodeProperty(n, propertyName)) map {
-        case PropertyValue(p) => HttpResponse(201, "Operation successful")
-        case NodeNotFound => HttpResponse(404, "The Container Name or nodeId or configuration name is not found")
-      }
+  def handleGetNodeProperty(nodeType: String, nodeId: String, propertyName: String): Future[HttpResponse] = pn(nodeType, nodeId) { n =>
+    askFirst(GetNodeProperty(n, propertyName)) map {
+      case PropertyValue(p) => HttpResponse(201, "Operation successful")
+      case NotFound => HttpResponse(404, "The Container Name or nodeId or configuration name is not found")
     }
+  }
 
   def handleAddNodeConnectorProperty(nodeType: String, nodeId: String,
                                      connectorType: String, connectorId: String,
@@ -141,7 +139,7 @@ class SwitchManagerNorthbound(val bus: ControllerBus, serverPrefix: String) exte
         case Success(p) =>
           askFirst(AddNodeConnectorProperty(nc, p)) map {
             case Done => HttpResponse(201, "Operation successful")
-            case NodeNotFound => HttpResponse(404, "The Container Name or nodeId or configuration name is not found")
+            case NotFound => HttpResponse(404, "The Container Name or nodeId or configuration name is not found")
           }
         case Failure(f) =>
           Future.successful(HttpResponse(404, "Wrong property"))
@@ -154,7 +152,7 @@ class SwitchManagerNorthbound(val bus: ControllerBus, serverPrefix: String) exte
     pnc(nodeType, nodeId, connectorType, connectorId) { n =>
       askFirst(RemoveNodeConnectorProperty(n, propertyName)) map {
         case Done => HttpResponse(204, "Property removed successfully")
-        case NodeNotFound => HttpResponse(404, "The Container Name or nodeId or configuration name is not found")
+        case NotFound => HttpResponse(404, "The Container Name or nodeId or configuration name is not found")
       }
     }
 

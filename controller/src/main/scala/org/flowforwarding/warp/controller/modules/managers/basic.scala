@@ -33,9 +33,9 @@ abstract class AbstractManager[R <: ServiceRequest: ClassTag] extends Service{
 
   protected def reduceServiceResponses(iterable: Array[Any]) =
     if (iterable contains Done) Done
-    else if (iterable forall { _ == NodeNotFound }) NodeNotFound
-    else if (iterable forall { _ == NotAcceptable }) NotAcceptable
-    else if (iterable forall { _ == Conflict }) Conflict
+    else if (iterable.nonEmpty && (iterable forall { _ == NotFound })) NotFound
+    else if (iterable.nonEmpty && (iterable forall { _ == NotAcceptable })) NotAcceptable
+    else if (iterable.nonEmpty && (iterable forall { _ == Conflict })) Conflict
     else InvalidParams
 }
 
@@ -61,7 +61,7 @@ trait AbstractService[NodeType <: Node[_], ConnectorType <: NodeConnector[_, Nod
 object AbstractService {
   trait ServiceResponse
   case object Done extends ServiceResponse
-  case object NodeNotFound extends ServiceResponse
+  case object NotFound extends ServiceResponse
   case object InvalidParams extends ServiceResponse
   case object NotAcceptable extends ServiceResponse
   case object Conflict extends ServiceResponse

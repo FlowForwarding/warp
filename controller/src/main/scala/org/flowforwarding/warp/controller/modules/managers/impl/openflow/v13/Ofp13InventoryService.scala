@@ -92,12 +92,12 @@ class Ofp13InventoryService(controllerBus: ControllerBus) extends Ofp13MessageHa
     Config(port.config.bitmap),
     State(port.state.bitmap),
     MaxSpeed(port.maxSpeed),
-    MacAddress(port.hwAddress.bytes),
+    MAC(port.hwAddress.bytes),
     Name(port.name))
 
   private def toProps(features: FeaturesReply): Set[Property[_]] = Set(
     TimeStamp(System.currentTimeMillis()),
-    MacAddress(deriveMacAddress(features.datapathId)),
+    MAC(deriveMacAddress(features.datapathId)),
     Tables(features.tablesCount),
     Capabilities(features.capabilities.bitmap),
     //SupportedFlowActions        send another multipart request?  Group Descriptions?
@@ -116,7 +116,7 @@ class Ofp13InventoryService(controllerBus: ControllerBus) extends Ofp13MessageHa
   override def getNodeProperty(node: OFNode, propertyName: String): Future[ServiceResponse] = {
    nodeProps.collectFirst { case (`node`, p) => p }
             .flatMap { props => props collectFirst { case p if p.name == propertyName => p } }
-            .fold(Future.successful[ServiceResponse](NodeNotFound)) { p => Future.successful(PropertyValue(p)) }
+            .fold(Future.successful[ServiceResponse](NotFound)) { p => Future.successful(PropertyValue(p)) }
   }
 
   //TODO: find out acceptable properties and implement methods

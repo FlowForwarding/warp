@@ -36,7 +36,7 @@ object Property{
       case `DescriptionName` =>           Description          (value)
       case `TablesName` =>                Tables               (UByte(value.toShort))
       case `TimeStampName` =>             TimeStamp            (value.toLong)
-      case `MacAddressName` =>            MacAddress           (value.split('-').map(_.toByte))
+      case `MacAddressName` =>            MAC.parse(value).get
       case `CapabilitiesName` =>          Capabilities         (ULong(value))
       case `BuffersName` =>               Buffers              (UInt(value.toLong))
       case `SupportedFlowActionName` =>   SupportedFlowActions (ULong(value))
@@ -57,10 +57,26 @@ import Property._
 case class Description         (value: String)      extends Property[String]      { def name = DescriptionName }
 case class Tables              (value: UByte)       extends Property[UByte]       { def name = TablesName }
 case class TimeStamp           (value: Long)        extends Property[Long]        { def name = TimeStampName }
-case class MacAddress          (value: Array[Byte]) extends Property[Array[Byte]] { def name = MacAddressName }
 case class Capabilities        (value: ULong)       extends Property[ULong]       { def name = CapabilitiesName }
 case class Buffers             (value: UInt)        extends Property[UInt]        { def name = BuffersName }
 case class SupportedFlowActions(value: ULong)       extends Property[ULong]       { def name = SupportedFlowActionName }
+case class MAC                 (value: Array[Byte]) extends Property[Array[Byte]] {
+  def name = MacAddressName
+
+  override def toString =
+    value map { b =>
+      val s = (b.toLong & 0xff).toHexString
+      if(s.length == 2) s else '0' + s
+    } mkString ":"
+}
+
+object MAC{
+  def parse(s: String) = Try {
+    val data = s split ":" map { _.toByte }
+    if(data.length != 6) throw new Exception("Wrong MAC format")
+    MAC(data.toArray)
+  }
+}
 
 case class AdvertisedBandwidth(value: ULong)  extends Property[ULong]             { def name = AdvertisedBandwidthName }
 case class SupportedBandwidth (value: ULong)  extends Property[ULong]             { def name = SupportedBandwidthName } 
@@ -69,4 +85,6 @@ case class Name               (value: String) extends Property[String]          
 case class Config             (value: ULong)  extends Property[ULong]             { def name = ConfigName }
 case class State              (value: ULong)  extends Property[ULong]             { def name = StateName }
 case class MaxSpeed           (value: UInt)   extends Property[UInt]              { def name = MaxSpeedName }
+
+
   

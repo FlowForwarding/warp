@@ -31,7 +31,9 @@ class ConnectionManager(val bus: ServiceBus) extends AbstractManager[ConnectionS
 
   private def reduceNodes(nodes: Array[Any]) =
     if (nodes contains InvalidParams) InvalidParams
-    else Nodes(nodes.foldLeft(Seq.empty[Node[_]]) { case (ids1, Nodes(ids2)) => ids1 ++ ids2 })
+    else if (nodes forall { _ == NotFound }) NotFound
+    else Nodes(nodes.collect { case ns: Nodes => ns }
+                    .foldLeft(Seq.empty[Node[_]]) { case (ids1, Nodes(ids2)) => ids1 ++ ids2 })
 
   override protected def handleRequest(e: ServiceRequest): Future[Any] = e match {
     case Connect(node, ip, port) => askAll(new Connect(node, ip, port) with Broadcast) map reduceServiceResponses

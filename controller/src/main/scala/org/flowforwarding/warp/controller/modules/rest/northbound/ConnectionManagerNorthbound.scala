@@ -66,7 +66,7 @@ class ConnectionManagerNorthbound(val bus: ControllerBus, serverPrefix: String) 
       askFirst(Connect(n, ip, port)) map {
         case Done => HttpResponse(200, "Node connected successfully")
         case InvalidParams => HttpResponse(406, "Invalid IP Address or Port parameter passed")
-        case NodeNotFound => HttpResponse(404, "Could not connect to the Node with the specified parameters")
+        case NotFound => HttpResponse(404, "Could not connect to the Node with the specified parameters")
       }
     }
 
@@ -74,7 +74,7 @@ class ConnectionManagerNorthbound(val bus: ControllerBus, serverPrefix: String) 
     pn(nodeType, nodeId) { n =>
       askFirst(Disconnect(n)) map {
         case Done => HttpResponse(200, "Node disconnected successfully")
-        case NodeNotFound => HttpResponse(404, "Could not find a connection with the specified Node identifier")
+        case NotFound => HttpResponse(404, "Could not find a connection with the specified Node identifier")
       }
     }
 
