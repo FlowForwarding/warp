@@ -6,6 +6,8 @@
  */
 package org.flowforwarding.warp.controller.modules.rest.northbound
 
+import org.flowforwarding.warp.controller.modules.managers.sal.Property
+
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 

@@ -10,9 +10,8 @@ import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 
 import org.flowforwarding.warp.controller.bus.{ServiceBus, ServiceRequest}
-import org.flowforwarding.warp.controller.modules.Service
-import org.flowforwarding.warp.controller.driver_interface.MessageDriverFactory
 import org.flowforwarding.warp.controller.modules.managers.AbstractService._
+import org.flowforwarding.warp.controller.modules.managers.sal.{NodeConnector, Node, Property}
 
 object InventoryManager{
 
@@ -38,14 +37,14 @@ object InventoryManager{
   case class PropertyValue(p: Property[_]) extends ServiceResponse
 }
 
-class InventoryManager(val bus: ServiceBus) extends Service {
-  import InventoryManager._
+import InventoryManager._
+
+class InventoryManager(val bus: ServiceBus) extends AbstractManager[InventoryServiceRequest] {
 
   private def reduceNodes(nodes: Array[Any]) = {
     if (nodes contains InvalidParams) InvalidParams
     else Nodes(nodes.foldLeft(Map.empty[Node[_], Set[Property[_]]]) { case (ids1, Nodes(ids2)) => ids1 ++ ids2})
   }
-
 
   private def reduceNodeConnectors(connectors: Array[Any]) =
     connectors collectFirst {
@@ -73,25 +72,20 @@ class InventoryManager(val bus: ServiceBus) extends Service {
     case RemoveNodeConnectorProperty(connector, propertyName) => askAll(new RemoveNodeConnectorProperty(connector, propertyName) with Broadcast) map reduceServiceResponses
     //case GetNodeConnectorProperty(connector, propertyName)    => askAll(new GetNodeConnectorProperty(connector, propertyName)    with Broadcast) map reduceCommandResponses
   }
-
-  override protected def compatibleWith(factory: MessageDriverFactory[_]): Boolean = true
-
-  override def started() = { registerService { case req: InventoryServiceRequest => !req.isInstanceOf[Broadcast] } }
 }
 
 trait InventoryService[NodeType <: Node[_], ConnectorType <: NodeConnector[_, NodeType]] extends AbstractService[NodeType, ConnectorType] {
   self: NodeTag[NodeType, ConnectorType] =>
-  import InventoryManager._
 
   val handleRequestImpl: PartialFunction[ServiceRequest, Future[Any]] = {
     case GetNodes()                                                                        => getNodes()
-    case GetNodeConnectors(node) if checkNode(node)                                        => getNodeConnectors(castNode(node))
+    case GetNodeConnectors(node)                              if checkNode(node)           => getNodeConnectors(castNode(node))
 
-    case AddNodeProperty(node, property) if checkNode(node)                                => addNodeProperty(castNode(node), property)
-    case RemoveNodeProperty(node, propertyName) if checkNode(node)                         => removeNodeProperty(castNode(node), propertyName)
-    case GetNodeProperty(node, propertyName) if checkNode(node)                            => getNodeProperty(castNode(node), propertyName)
+    case AddNodeProperty(node, property)                      if checkNode(node)           => addNodeProperty(castNode(node), property)
+    case RemoveNodeProperty(node, propertyName)               if checkNode(node)           => removeNodeProperty(castNode(node), propertyName)
+    case GetNodeProperty(node, propertyName)                  if checkNode(node)           => getNodeProperty(castNode(node), propertyName)
 
-    case AddNodeConnectorProperty(connector, property) if checkConnector(connector)        => addNodeConnectorProperty(castConnector(connector), property)
+    case AddNodeConnectorProperty(connector, property)        if checkConnector(connector) => addNodeConnectorProperty(castConnector(connector), property)
     case RemoveNodeConnectorProperty(connector, propertyName) if checkConnector(connector) => removeNodeConnectorProperty(castConnector(connector), propertyName)
     //case GetNodeConnectorProperty(connector, propertyName) if checkConnector(connector)    => getNodeConnectorProperty(castConnector(connector), propertyName)
   }

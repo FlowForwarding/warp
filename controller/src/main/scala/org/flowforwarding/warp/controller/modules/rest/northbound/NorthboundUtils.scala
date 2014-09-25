@@ -7,7 +7,7 @@
 package org.flowforwarding.warp.controller.modules.rest.northbound
 
 import java.util.concurrent.TimeoutException
-import org.flowforwarding.warp.controller.modules.managers.{MacAddress, Property, NodeConnector, Node}
+import org.flowforwarding.warp.controller.modules.managers.sal.{MacAddress, NodeConnector, Node, Property}
 import spray.http.HttpCharsets._
 import spray.http.MediaTypes._
 import spray.json._

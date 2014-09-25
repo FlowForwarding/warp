@@ -7,7 +7,8 @@
 package org.flowforwarding.warp.controller.modules.managers.impl.openflow.v13
 
 import scala.reflect.ClassTag
-import org.flowforwarding.warp.controller.modules.managers.{OFNodeConnector, NodeTag, OFNode}
+import org.flowforwarding.warp.controller.modules.managers.NodeTag
+import org.flowforwarding.warp.controller.modules.managers.sal.{OFNodeConnector, OFNode}
 
 trait Ofp13Tag extends NodeTag[OFNode, OFNodeConnector]{
   protected implicit val nodeTag: ClassTag[OFNode] = ClassTag(classOf[OFNode])

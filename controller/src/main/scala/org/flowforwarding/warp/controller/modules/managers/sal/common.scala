@@ -4,7 +4,7 @@
  *
  * @author Vitaliy Savkin (Vitaliy_Savkin@epam.com)
  */
-package org.flowforwarding.warp.controller.modules.managers
+package org.flowforwarding.warp.controller.modules.managers.sal
 
 import java.math.BigInteger
 

@@ -13,6 +13,7 @@ import spire.math.ULong
 import org.flowforwarding.warp.controller.SwitchConnector
 import org.flowforwarding.warp.controller.bus.ControllerBus
 import org.flowforwarding.warp.controller.modules.managers._, AbstractService._
+import org.flowforwarding.warp.controller.modules.managers.sal._
 import org.flowforwarding.warp.controller.api.fixed.{IncomingMessagePredicate, BuilderInput}
 import org.flowforwarding.warp.controller.api.fixed.v13.Ofp13MessageHandlers
 import org.flowforwarding.warp.controller.api.fixed.v13.messages.async.{PortReason, PortStatus}
@@ -25,9 +26,6 @@ import org.flowforwarding.warp.controller.api.dynamic.DynamicStructureBuilder
 class Ofp13InventoryService(controllerBus: ControllerBus) extends Ofp13MessageHandlers(controllerBus) with InventoryService[OFNode, OFNodeConnector] with Ofp13Tag {
   import InventoryManager._
   import scala.collection.mutable.{Map => MMap}
-
-  val nodeConnectorsProps = MMap[OFNodeConnector, Set[Property[_]]]()
-  val nodeProps = MMap[OFNode, Set[Property[_]]]()
 
   override def started() = {
     super.started()
@@ -47,6 +45,9 @@ class Ofp13InventoryService(controllerBus: ControllerBus) extends Ofp13MessageHa
         case _: SwitchConnector.SwitchDisconnected => true
       }}
   }
+
+  private val nodeConnectorsProps = MMap[OFNodeConnector, Set[Property[_]]]()
+  private val nodeProps = MMap[OFNode, Set[Property[_]]]()
 
   override def handleDisconnected(api: DynamicStructureBuilder[_], dpid: ULong): Unit = {
     nodeProps remove OFNode(dpid)
