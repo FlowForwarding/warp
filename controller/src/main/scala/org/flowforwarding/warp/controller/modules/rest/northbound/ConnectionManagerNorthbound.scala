@@ -19,14 +19,14 @@ import MediaTypes._
 
 import org.flowforwarding.warp.controller.bus.ControllerBus
 import org.flowforwarding.warp.controller.modules.rest.RestApiService
-import org.flowforwarding.warp.controller.modules.managers.{ConnectionManager, AbstractService}
+import org.flowforwarding.warp.controller.modules.managers.{ConnectionMessages, AbstractService}
 import org.flowforwarding.warp.controller.modules.rest.northbound.NorthboundUtils._
 
 import scala.util.{Failure, Success}
 
 // TODO: check authorization
 class ConnectionManagerNorthbound(val bus: ControllerBus, serverPrefix: String) extends RestApiService(serverPrefix) {
-  import ConnectionManager._
+  import ConnectionMessages._
   import AbstractService._
 
   override val servicePrefix = "/connectionmanager"

@@ -13,12 +13,13 @@ import scala.concurrent.{Await, TimeoutException, Future, Promise}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration.Duration
 
-import org.flowforwarding.warp.controller._
-import org.flowforwarding.warp.controller.api.dynamic.{DynamicDriver, DynamicStructure}
-import org.flowforwarding.warp.controller.api.fixed._
-import org.flowforwarding.warp.controller.driver_interface.{OfpFeaturesExtractor, MessageDriver, MessageDriverFactory}
-import org.flowforwarding.warp.controller.util.ClassReloader
 import spire.math.{UInt, UByte, ULong}
+
+import org.flowforwarding.warp.controller.api.dynamic.DynamicStructure
+import org.flowforwarding.warp.controller.api.fixed._
+import org.flowforwarding.warp.controller.driver_interface.{OfpFeaturesExtractor, MessageDriverFactory}
+import org.flowforwarding.warp.controller.util.NonCachingClassLoader
+
 import org.flowforwarding.warp.controller.bus.{MessageEnvelope, ControllerBus, ServiceBusActor}
 import org.flowforwarding.warp.controller.SwitchConnector.{SwitchOutgoingMessage, MessageSendingResult, SwitchIncomingMessage}
 import org.flowforwarding.warp.controller.ModuleManager.{DriverFoundResponse, DriverByVersion}
@@ -54,7 +55,7 @@ class MessagesTestModule[DriverType <: OfpFeaturesExtractor[DynamicStructure] wi
   }
 
   implicit val classLoader = this.getClass.getClassLoader
-  val testsSet = new ClassReloader(s => s.endsWith("Tests") || s.endsWith("Test") || s.contains("Test$")).loadClass(testsSetClass).newInstance().asInstanceOf[MessageTestsSet[DriverType]]
+  val testsSet = new NonCachingClassLoader(s => s.endsWith("Tests") || s.endsWith("Test") || s.contains("Test$")).loadClass(testsSetClass).newInstance().asInstanceOf[MessageTestsSet[DriverType]]
   val version = UByte(v.toInt)
   val dpid = ULong(id)
 

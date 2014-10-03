@@ -23,7 +23,7 @@ import org.flowforwarding.warp.controller.modules.managers.sal.{OFNodeConnector,
 
 
 class Ofp13ConnectionService(controllerBus: ControllerBus) extends Ofp13MessageHandlers(controllerBus) with ConnectionService[OFNode, OFNodeConnector] with Ofp13Tag {
-  import ConnectionManager._
+  import ConnectionMessages._
 
   override def started() = {
     super.started()

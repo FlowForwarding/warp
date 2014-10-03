@@ -13,7 +13,7 @@ import org.flowforwarding.warp.controller.bus.{ServiceBus, ServiceRequest}
 import org.flowforwarding.warp.controller.modules.managers.AbstractService._
 import org.flowforwarding.warp.controller.modules.managers.sal.{NodeConnector, Node, Property}
 
-object InventoryManager{
+object InventoryMessages{
 
   // NOTE: containerName parameter is skipped since this feature is not implemented in warp
 
@@ -37,7 +37,7 @@ object InventoryManager{
   case class PropertyValue(p: Property[_]) extends ServiceResponse
 }
 
-import InventoryManager._
+import InventoryMessages._
 
 class InventoryManager(val bus: ServiceBus) extends AbstractManager[InventoryServiceRequest] {
 

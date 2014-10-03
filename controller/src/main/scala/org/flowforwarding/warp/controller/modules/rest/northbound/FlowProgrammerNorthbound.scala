@@ -15,7 +15,7 @@ import spray.json._
 import spray.http._
 
 import org.flowforwarding.warp.controller.bus.ControllerBus
-import org.flowforwarding.warp.controller.modules.managers.{FlowsManager, AbstractService}
+import org.flowforwarding.warp.controller.modules.managers.{FlowsMessages, AbstractService}
 import org.flowforwarding.warp.controller.modules.managers.sal.{Node, Flow}
 import org.flowforwarding.warp.controller.modules.rest.RestApiService
 import org.flowforwarding.warp.controller.modules.rest.northbound.NorthboundUtils._
@@ -23,7 +23,7 @@ import org.flowforwarding.warp.controller.modules.rest.northbound.NorthboundUtil
 
 // TODO: check authorization
 class FlowProgrammerNorthbound(val bus: ControllerBus, serverPrefix: String) extends RestApiService(serverPrefix) {
-  import FlowsManager._
+  import FlowsMessages._
   import AbstractService._
 
   override val servicePrefix = "/flowprogrammer"

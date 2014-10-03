@@ -26,6 +26,7 @@ import org.flowforwarding.warp.controller.modules.Module.CheckCompatibility
 import org.flowforwarding.warp.controller.bus.{ControllerBusActor, ControllerBus, ServiceRequest}
 import org.flowforwarding.warp.controller.modules.Module
 import org.flowforwarding.warp.controller.SwitchConnector.NewDriverFactory
+import org.flowforwarding.warp.controller.util.NonCachingClassLoader
 
 object ModuleManager {
   case class Start(address: InetSocketAddress)
@@ -136,7 +137,11 @@ private class ModuleManager(val bus: ControllerBus, manager: ActorRef) extends C
 
     case AddModule(moduleName, moduleClass, args) =>
       val req = sender()
-      Try { context.actorOf(Props.create(Class.forName(moduleClass), bus +: args: _*), "Module-" + moduleName) } match {
+      Try {
+        implicit val parentCl = this.getClass.getClassLoader
+        val moduleLoader = new NonCachingClassLoader(_.startsWith(moduleClass))
+        context.actorOf(Props.create(moduleLoader loadClass moduleClass, bus +: args: _*), "Module-" + moduleName)
+      } match {
         case Success(module) if driverFactory == null =>
           context stop module
           req ! AddModuleResponse(moduleName, Some(new Exception("Driver factory must be set before adding of any module")))

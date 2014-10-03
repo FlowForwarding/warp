@@ -24,7 +24,7 @@ import scala.util.{Failure, Success}
 // TODO: check authorization
 class SwitchManagerNorthbound(val bus: ControllerBus, serverPrefix: String) extends RestApiService(serverPrefix) {
 
-  import InventoryManager._
+  import InventoryMessages._
   import AbstractService._
 
   override val servicePrefix = "/switchmanager"
@@ -82,14 +82,15 @@ class SwitchManagerNorthbound(val bus: ControllerBus, serverPrefix: String) exte
   private val pn = processNode("Inventory Manager", "The Container Name or node or configuration name is not found") _
   private val pnc = processNodeConnector("Inventory Manager", "The Container Name or node or configuration name is not found") _
 
-  def handleGetNodes(): Future[HttpResponse] =
+  def handleGetNodes(): Future[HttpResponse] = {
     askFirst(GetNodes()) map {
       case Nodes(nodes) =>
-        val allProps = nodes map { case (n, props) => JsObject("node" -> n.toJson, "properties" -> props.toJson) }
+        val allProps = nodes map { case (n, props) => JsObject("node" -> n.toJson, "properties" -> props.toJson)}
         jsonOk(JsObject("nodeProperties" -> JsArray(allProps.toList)))
       case InvalidParams =>
         HttpResponse(406, "Invalid Controller IP Address passed")
     } withServiceErrorReport "Inventory Manager"
+  }
 
   def handleGetNodeConnectors(nodeType: String, nodeId: String): Future[HttpResponse] =
     pn(nodeType, nodeId) { n =>

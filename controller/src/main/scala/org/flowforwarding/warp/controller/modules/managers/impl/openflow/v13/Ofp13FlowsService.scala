@@ -31,7 +31,7 @@ import org.flowforwarding.warp.controller.api.fixed.v13.structures.actions.Actio
 import org.flowforwarding.warp.controller.api.fixed.v13.structures.instructions.InstructionApplyActions
 
 class Ofp13FlowsService(controllerBus: ControllerBus) extends Ofp13MessageHandlers(controllerBus) with FlowsService[OFNode, OFNodeConnector] with Ofp13Tag {
-  import FlowsManager._
+  import FlowsMessages._
   import scala.collection.mutable.{Map => MMap}
 
   override def started() = {

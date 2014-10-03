@@ -15,7 +15,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import org.flowforwarding.warp.controller.bus.{ServiceBus, ServiceRequest}
 import org.flowforwarding.warp.controller.modules.managers.AbstractService._
 
-object FlowsManager{
+object FlowsMessages{
   trait FlowProgrammerServiceRequest extends ServiceRequest
 
   case class GetContainerFlows()                         extends FlowProgrammerServiceRequest
@@ -30,10 +30,10 @@ object FlowsManager{
   case class NodeFlow(flow: Flow) extends ServiceResponse
 }
 
-import FlowsManager._
+import FlowsMessages._
 
-class FlowsManager(val bus: ServiceBus) extends AbstractManager[FlowProgrammerServiceRequest] {
-  import InventoryManager._
+class FlowsMessages(val bus: ServiceBus) extends AbstractManager[FlowProgrammerServiceRequest] {
+  import InventoryMessages._
   import AbstractService._
 
   private def reduceContainerFlows(flows: Array[Any]) = {

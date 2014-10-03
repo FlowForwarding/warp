@@ -11,6 +11,7 @@ import java.util.concurrent.TimeUnit
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits._
 
+import akka.actor.ActorRef
 import akka.io.IO
 import akka.util.Timeout
 import akka.pattern.{ask, pipe}
@@ -23,17 +24,24 @@ import org.flowforwarding.warp.controller.driver_interface.MessageDriverFactory
 import org.flowforwarding.warp.controller.bus.{ServiceBusActor, ServiceBus, ServiceRequest}
 import org.flowforwarding.warp.controller.modules.{Module, Service}
 
+import scala.concurrent.duration.Duration
+
 case class RestApiRequest(appName: String, request: HttpRequest) extends ServiceRequest
 
 class RestApiServer(val bus: ServiceBus, serverPrefixes: Array[String]) extends Module with ServiceBusActor{
   // TODO: fix creation of modules in module manager (allow passing arrays of String to a constructor)
   def this(bus: ServiceBus, serverPrefix: String) = this(bus, Array(serverPrefix))
 
+  var dispatcher: Option[ActorRef] = None
+
   override def started(): Unit = {
     IO(Http)(context.system) ! Http.Bind(self, interface = "localhost", port = 8080)
   }
 
-  override def shutdown(): Unit = { }
+  override def shutdown(): Unit = {
+    dispatcher foreach  { _ ! Http.Unbind(Duration(0, TimeUnit.SECONDS)) }
+    super.shutdown()
+  }
 
   override def compatibleWith(factory: MessageDriverFactory[_]): Boolean = true
 
@@ -46,12 +54,16 @@ class RestApiServer(val bus: ServiceBus, serverPrefixes: Array[String]) extends 
         println("Service uri: " + serviceUri)
         askFirst(RestApiRequest(serviceUri, r)) pipeTo sender()
       }
+    case Http.Bound(_) =>
+      dispatcher = Some(sender())
+    case Http.CommandFailed(cmd)  =>
+      println("Command failed: " + cmd.failureMessage)
     case c: Http.Connected => // TODO: handle other Http messages
       sender() ! Http.Register(self)
   }
 }
 
-abstract class RestApiService(serverPrefix: String) extends Module with Service with HttpServiceBase{
+abstract class RestApiService(serverPrefix: String) extends Service with HttpServiceBase{
 
   // must starts with slash
   val servicePrefix: String

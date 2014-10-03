@@ -24,7 +24,7 @@ import org.flowforwarding.warp.controller.api.fixed.v13.messages.controller.mult
 import org.flowforwarding.warp.controller.api.dynamic.DynamicStructureBuilder
 
 class Ofp13InventoryService(controllerBus: ControllerBus) extends Ofp13MessageHandlers(controllerBus) with InventoryService[OFNode, OFNodeConnector] with Ofp13Tag {
-  import InventoryManager._
+  import InventoryMessages._
   import scala.collection.mutable.{Map => MMap}
 
   override def started() = {

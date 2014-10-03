@@ -84,11 +84,6 @@ trait ServiceBusActor extends Actor{
     bus.registerService(self, acceptedRequests: PartialFunction[ServiceRequest, Boolean])
 
   protected final def unregisterService(): Unit = bus.unregisterService(self)
-
-  override def postStop(): Unit = {
-    unregisterService()
-    super.postStop()
-  }
 }
 
 trait MessageBusActor extends Actor{

@@ -15,7 +15,7 @@ import org.flowforwarding.warp.controller.bus.{ServiceBus, ServiceRequest}
 import org.flowforwarding.warp.controller.modules.managers.AbstractService._
 import org.flowforwarding.warp.controller.modules.managers.sal.{NodeConnector, Node}
 
-object ConnectionManager{
+object ConnectionMessages{
   trait ConnectionServiceRequest extends ServiceRequest
   case class ConnectWithUnknownType(id: String, ip: InetAddress, port: Int) extends ConnectionServiceRequest
   case class Connect(node: Node[_], ip: InetAddress, port: Int) extends ConnectionServiceRequest
@@ -25,7 +25,7 @@ object ConnectionManager{
   case class Nodes(ids: Seq[Node[_]]) extends ServiceResponse
 }
 
-import ConnectionManager._
+import ConnectionMessages._
 
 class ConnectionManager(val bus: ServiceBus) extends AbstractManager[ConnectionServiceRequest] {
 
