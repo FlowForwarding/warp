@@ -15,7 +15,7 @@ import org.flowforwarding.warp.controller.api.fixed.v13.structures.actions.{Ofp1
 import org.flowforwarding.warp.controller.api.fixed.text_view.BITextView
 
 case class ControllerMaxLength(v: UShort)
-object Max extends ControllerMaxLength(UShort(0xffff))
+object Max extends ControllerMaxLength(UShort(0xffe5))
 object NoBuffer extends ControllerMaxLength(UShort(0xffff))
 
 case class PacketOutInput(bufferId: ControllerMaxLength, inPort: PortNumber, actions: Array[Action], data: Array[Byte]) extends Ofp13MessageInput
