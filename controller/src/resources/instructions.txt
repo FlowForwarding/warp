@@ -10,7 +10,11 @@ add module cm_nb of type org.flowforwarding.warp.controller.modules.rest.northbo
 add module connection_manager of type org.flowforwarding.warp.controller.modules.managers.ConnectionManager -p
 add module ofp_connection of type org.flowforwarding.warp.controller.modules.managers.impl.openflow.v13.Ofp13ConnectionService -p
 
-start 10.17.14.20 6633
+add module flows_nb of type org.flowforwarding.warp.controller.modules.rest.northbound.FlowProgrammerNorthbound -p /controller/nb/v2
+add module flows_manager of type org.flowforwarding.warp.controller.modules.managers.FlowsManager -p
+add module ofp_flows of type org.flowforwarding.warp.controller.modules.managers.impl.openflow.v13.Ofp13FlowsService -p
+
+start 10.17.14.55 6633
 
 #set factory org.flowforwarding.warp.protocol.ofp13.Ofp13Impl -p
 
