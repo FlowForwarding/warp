@@ -80,7 +80,7 @@ abstract class OxmTlv[T: HasSize] extends BuilderInput{
   def oxmClass: OxmClass = OxmClass.OpenflowBasic
   def hasMask: Boolean = false
   def oxmField: OxmMatchFields
-  def oxmLength: UByte = UByte(4) + valueSize
+  def oxmLength: UByte = valueSize
   private[fixed] def header: UInt = UIntHeader(oxmClass, hasMask, oxmField, oxmLength)
   private[fixed] def data: Array[Byte] = implicitly[HasSize[T]].bytes(value)
 }
@@ -100,7 +100,7 @@ private object UIntHeader{
 
 private[fixed] abstract class MaskableTlv[T: HasSize] extends OxmTlv[T] {
   override def hasMask: Boolean = mask.isDefined
-  override def oxmLength: UByte = UByte(4) + (if (mask.isDefined) valueSize * UByte(2) else valueSize)
+  override def oxmLength: UByte = if (mask.isDefined) valueSize * UByte(2) else valueSize
   override def data: Array[Byte] = super.data ++ (mask map implicitly[HasSize[T]].bytes).getOrElse(Array.empty)
   val mask: Option[T]
 }
