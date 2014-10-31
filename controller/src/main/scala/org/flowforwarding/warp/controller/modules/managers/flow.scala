@@ -32,7 +32,7 @@ object FlowsMessages{
 
 import FlowsMessages._
 
-class FlowsMessages(val bus: ServiceBus) extends AbstractManager[FlowProgrammerServiceRequest] {
+class FlowsManager(val bus: ServiceBus) extends AbstractManager[FlowProgrammerServiceRequest] {
   import InventoryMessages._
   import AbstractService._
 

@@ -30,20 +30,18 @@ class Ofp13InventoryService(controllerBus: ControllerBus) extends Ofp13MessageHa
   override def started() = {
     super.started()
     subscribe("inventory") {
-      testIncomingMessage {
-        new IncomingMessagePredicate {
-          def test(dpid: ULong, payload: Any) = {
-            payload match {
-              case _: PortStatus | _: FeaturesReply => true
-              case mp: MultipartReply =>
-                mp.data.isInstanceOf[PortDescriptionReplyData] ||
-                mp.data.isInstanceOf[SwitchDescriptionReplyData]
-            }
+      val filter = new IncomingMessagePredicate {
+        def test(dpid: ULong, payload: Any) = {
+          payload match {
+            case _: PortStatus | _: FeaturesReply => true
+            case mp: MultipartReply =>
+              mp.data.isInstanceOf[PortDescriptionReplyData] ||
+              mp.data.isInstanceOf[SwitchDescriptionReplyData]
           }
         }
-      } orElse {
-        case _: SwitchConnector.SwitchDisconnected => true
-      }}
+      }
+      testIncomingMessage { filter } orElse { case _: SwitchConnector.SwitchDisconnected => true }
+    }
   }
 
   private val nodeConnectorsProps = MMap[OFNodeConnector, Set[Property[_]]]()

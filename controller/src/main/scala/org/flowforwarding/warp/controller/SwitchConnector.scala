@@ -96,7 +96,7 @@ private class SwitchConnector[T <: OFMessage, DriverType <: MessageDriver[T]](va
           context become handshakedState(tcpChannel, driver, dpid, rest)
           publishMessage(SwitchHandshake(dpid, driver))
           subscribe("afterHandshakeMessages") {
-            case SwitchOutgoingMessage(`dpid`, _: T) | ForceDisconnect(_) => true
+            case SwitchOutgoingMessage(`dpid`, _: T) | ForceDisconnect(`dpid`) => true
           }
           publishMessages(driver, messages, dpid)
         case Failure(t) =>

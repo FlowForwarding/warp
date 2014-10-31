@@ -8,6 +8,8 @@ package org.flowforwarding.warp.controller.modules.managers.impl.openflow.v13
 
 import java.net.{Inet6Address, Inet4Address}
 
+import org.flowforwarding.warp.controller.api.fixed.v13.messages.async.{FlowRemovedReason, Error, FlowRem}
+
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -20,7 +22,7 @@ import org.flowforwarding.warp.controller.modules.managers._
 import org.flowforwarding.warp.controller.modules.managers.AbstractService._
 import org.flowforwarding.warp.controller.modules.managers.sal._
 
-import org.flowforwarding.warp.controller.api.fixed.{SpecificVersionMessageHandlers, BuilderInput, MessagesDescriptionHelper}
+import org.flowforwarding.warp.controller.api.fixed.{IncomingMessagePredicate, SpecificVersionMessageHandlers, BuilderInput, MessagesDescriptionHelper}
 import org.flowforwarding.warp.controller.api.fixed.util.{MacAddress, IPv6Address, IPv4Address}
 import org.flowforwarding.warp.controller.api.fixed.v13.Ofp13MessageHandlers
 import org.flowforwarding.warp.controller.api.fixed.v13.messages.controller.NoBuffer
@@ -36,15 +38,38 @@ class Ofp13FlowsService(controllerBus: ControllerBus) extends Ofp13MessageHandle
 
   override def started() = {
     super.started()
-//    subscribe("connections") {
-//      case _: SwitchConnector.SwitchHandshake | _: SwitchConnector.SwitchDisconnected => true
-//    }
+    subscribe("connections") {
+      val filter = new IncomingMessagePredicate {
+        def test(dpid: ULong, payload: Any) = {
+          payload match { case _: FlowRem | _: Error  => true }
+        }
+      }
+      testIncomingMessage { filter }
+    }
   }
 
   private val flows = MMap[OFNode, Seq[Flow]]()
 
   private val hasName = (name: String) => (flow: Flow) => flow.name contains name
   private def nodeFlow(node: OFNode, name: String) = flows.get(node) flatMap { _ find hasName(name) }
+
+  override def onError(dpid: ULong, msg: Error): Array[BuilderInput] = {
+    // TODO: check xid to ensure that it is really flow-related error
+    println(s"Flow error (${msg.message}}: dpid = $dpid, type = ${msg.errorType}}, code = ${msg.errorCode} ")
+    Array.empty
+  }
+
+  override def onFlowRem(dpid: ULong, msg: FlowRem): Array[BuilderInput] = {
+    val node = OFNode(dpid)
+    // if there is a flow and for some reason it is still marked as installed, remove the mark
+    flows(node) find {
+      f => f.priority == Some(msg.priority) && f.matchFields == msg.m.fields.toSet && f.installInHw
+    } foreach {
+      f => flows(node) = (flows(node) filterNot (f==)) :+ f.copy(installInHw = !f.installInHw)
+    }
+    println(s"Flow removed: dpid = $dpid, reason = ${msg.reason}")
+    Array.empty
+  }
 
   override def getContainerFlows(): Future[ServiceResponse] = Future.successful(ContainerFlows(flows.toMap))
 
@@ -78,13 +103,19 @@ class Ofp13FlowsService(controllerBus: ControllerBus) extends Ofp13MessageHandle
 
   override def addFlow(node: OFNode, flow: Flow): Future[ServiceResponse] = Future.successful {
     withValidation(node, flow, (n, f) => {
-      flows(n) = flows.get(n) match {
-        case Some(fs) => fs :+ f
-        case None => Seq(f)
+      def conflict(f1: Flow)(f2: Flow) = f1.name == f2.name || (f1.priority == f2.priority && f1.matchFields == f2.matchFields)
+      val (res, updatedFlows) = flows.get(n) match {
+        case Some(fs) if fs exists conflict(f) =>
+          (Conflict, fs)
+        case Some(fs) =>
+          (Done, fs :+ flow)
+        case None =>
+          (Done, Seq(f))
       }
-      if(f.installInHw)
+      flows(n) = updatedFlows
+      if(res == Done && f.installInHw)
         installFlow(n, f)
-      Done
+      res
     })
   }
 
