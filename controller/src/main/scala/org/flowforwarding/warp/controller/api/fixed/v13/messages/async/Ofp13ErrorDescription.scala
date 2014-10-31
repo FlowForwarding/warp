@@ -17,6 +17,7 @@ trait Error extends Ofp13Message{
   val errorType: UShort
   val errorCode: UShort
   val data: Array[Byte]
+  def message = String.valueOf(data)
 }
 
 private[fixed] trait ErrorHandler{

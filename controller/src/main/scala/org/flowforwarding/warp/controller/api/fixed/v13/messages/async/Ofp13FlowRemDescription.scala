@@ -20,16 +20,16 @@ object FlowRemovedReason extends Enumeration{
 }
 
 trait FlowRem extends Ofp13Message{
-  val cookie: ULong	            //Opaque controller-issued identifier
-  val priority: UInt	            //Priority level of flow entry
+  val cookie: ULong	              // Opaque controller-issued identifier
+  val priority: UInt              // Priority level of flow entry
   val reason: FlowRemovedReason
-  val tableId: UShort	          //ID of the table
-  val durationSeconds: ULong	    //Time flow was alive in seconds
-  val durationNanoseconds: ULong	//Time flow was alive in nanoseconds beyond duration_sec
-  val idleTimeout: UInt	        //Idle timeout from original flow mod
-  val hardTimeout: UInt	        //Hard timeout from original flow mod
-  val packetCount: ULong         // must be UInt64!! // Number of packets that was associated with the flow
-  val byteCount: ULong           // must be UInt64!!	// Number of bytes that was associated with the flow
+  val tableId: UShort	            // ID of the table
+  val durationSeconds: ULong	    // Time flow was alive in seconds
+  val durationNanoseconds: ULong  // Time flow was alive in nanoseconds beyond duration_sec
+  val idleTimeout: UInt	          // Idle timeout from original flow mod
+  val hardTimeout: UInt	          // Hard timeout from original flow mod
+  val packetCount: ULong          // Number of packets that was associated with the flow
+  val byteCount: ULong            // Number of bytes that was associated with the flow
   val m: Match	
 }
 
@@ -54,5 +54,5 @@ private[fixed] trait Ofp13FlowRemDescription extends Ofp13MessageDescription{
     val m: Match                   = structureField[Match]("match")
   }
 
-  abstract override def messageClasses = classOf[FlowRemStructure] :: super.messageClasses
+  protected abstract override def messageClasses = classOf[FlowRemStructure] :: super.messageClasses
 }

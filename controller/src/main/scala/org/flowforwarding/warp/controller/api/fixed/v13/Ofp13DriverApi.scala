@@ -42,6 +42,7 @@ trait Ofp13DriverApi extends MessagesDescriptionHelper[Ofp13MessageHandlers]
                      with Ofp13ErrorDescription
                      with Ofp13PacketInDescription
                      with Ofp13PortStatusDescription
+                     with Ofp13FlowRemDescription
 
                      with Ofp13FlowModDescription
                      with Ofp13GroupModDescription
@@ -70,6 +71,7 @@ abstract class Ofp13MessageHandlers(controllerBus: ControllerBus)
                                        with ErrorHandler
                                        with PacketInHandler
                                        with PortStatusHandler
+                                       with FlowRemHandler
                                        with RoleReplyHandler
                                        with QueueGetConfigReplyHandler
                                        with GetConfigReplyHandler
