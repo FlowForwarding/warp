@@ -97,8 +97,14 @@ private class ModuleManager(val bus: ControllerBus, manager: ActorRef) extends C
     case c: Tcp.Connected =>
       manager ! c
       println("[INFO] Getting Switch connection \n")
+      val s = sender()
       val connectionHandler = context.actorOf(Props.create(classOf[SwitchConnector[T, DriverType]], bus, self))
-      sender ! TcpMessage.register(connectionHandler)
+      connectionHandler ? CheckCompatibility(driverFactory) onComplete {
+        case Success(true) =>
+          s ! TcpMessage.register(connectionHandler)
+        case _ =>
+          context stop connectionHandler
+      }
 
     case Start(address) =>
       manager ? TcpMessage.bind(self, address, 100) map {
@@ -143,7 +149,7 @@ private class ModuleManager(val bus: ControllerBus, manager: ActorRef) extends C
         context.actorOf(Props.create(moduleLoader loadClass moduleClass, bus +: args: _*), "Module-" + moduleName)
       } match {
         case Success(module) if driverFactory == null =>
-          context stop module
+          module ! Module.Shutdown
           req ! AddModuleResponse(moduleName, Some(new Exception("Driver factory must be set before adding of any module")))
         case Success(module) =>
           module ? CheckCompatibility(driverFactory) onComplete {
@@ -152,10 +158,13 @@ private class ModuleManager(val bus: ControllerBus, manager: ActorRef) extends C
               modules(moduleName) = module
             case Success(false) =>
               req ! AddModuleResponse(moduleName, Some(new Exception("Module is not compatible with drivers factory")))
+              module ! Module.Shutdown
             case Success(_) =>
               req ! AddModuleResponse(moduleName, Some(new Exception("Wrong compatibility response")))
+              module ! Module.Shutdown
             case Failure(t) =>
               req ! AddModuleResponse(moduleName, Some(t))
+              context stop module
           }
         case Failure(t) =>
           req ! AddModuleResponse(moduleName, Some(t))

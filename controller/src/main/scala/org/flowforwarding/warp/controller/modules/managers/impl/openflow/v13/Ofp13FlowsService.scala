@@ -8,31 +8,30 @@ package org.flowforwarding.warp.controller.modules.managers.impl.openflow.v13
 
 import java.net.{Inet6Address, Inet4Address}
 
-import org.flowforwarding.warp.controller.api.fixed.v13.messages.async.{FlowRemovedReason, Error, FlowRem}
-
 import scala.concurrent.Future
-import scala.concurrent.ExecutionContext.Implicits.global
 
 import spire.math.{UByte, UInt, UShort, ULong}
 
 import org.flowforwarding.warp.controller.bus.ControllerBus
-import org.flowforwarding.warp.controller.SwitchConnector.SwitchOutgoingMessage
-import org.flowforwarding.warp.controller.ModuleManager.{DriverByVersion, DriverFoundResponse}
 import org.flowforwarding.warp.controller.modules.managers._
 import org.flowforwarding.warp.controller.modules.managers.AbstractService._
 import org.flowforwarding.warp.controller.modules.managers.sal._
 
-import org.flowforwarding.warp.controller.api.fixed.{IncomingMessagePredicate, SpecificVersionMessageHandlers, BuilderInput, MessagesDescriptionHelper}
+import org.flowforwarding.warp.controller.api.fixed._
 import org.flowforwarding.warp.controller.api.fixed.util.{MacAddress, IPv6Address, IPv4Address}
 import org.flowforwarding.warp.controller.api.fixed.v13.Ofp13MessageHandlers
 import org.flowforwarding.warp.controller.api.fixed.v13.messages.controller.NoBuffer
+import org.flowforwarding.warp.controller.api.fixed.v13.messages.async.{Error, FlowRem}
 import org.flowforwarding.warp.controller.api.fixed.v13.messages.controller.mod.{FlowModFlags, FlowModCommand, FlowModInput}, FlowModCommand._
 import org.flowforwarding.warp.controller.api.fixed.v13.structures.{GroupId, PortNumber, MatchInput}
 import org.flowforwarding.warp.controller.api.fixed.v13.structures.oxm_tlv._
 import org.flowforwarding.warp.controller.api.fixed.v13.structures.actions.Action
 import org.flowforwarding.warp.controller.api.fixed.v13.structures.instructions.InstructionApplyActions
 
-class Ofp13FlowsService(controllerBus: ControllerBus) extends Ofp13MessageHandlers(controllerBus) with FlowsService[OFNode, OFNodeConnector] with Ofp13Tag {
+class Ofp13FlowsService(controllerBus: ControllerBus) extends Ofp13MessageHandlers(controllerBus)
+                                                         with FlowsService[OFNode, OFNodeConnector]
+                                                         with Ofp13Tag
+                                                         with FixedStructuresSender {
   import FlowsMessages._
   import scala.collection.mutable.{Map => MMap}
 
@@ -226,29 +225,17 @@ class Ofp13FlowsService(controllerBus: ControllerBus) extends Ofp13MessageHandle
     )
   }
 
-  private def sendToSwitch(dpid: ULong, msg: BuilderInput) =
-    askFirst(DriverByVersion(UByte(4))) foreach {
-      case response: DriverFoundResponse =>
-        scala.util.Try {
-          response.driver.asInstanceOf[MessagesDescriptionHelper[_ <: SpecificVersionMessageHandlers[_, _]]]
-        } flatMap {
-          _ buildDynamic msg
-        } match {
-          case scala.util.Success(ds) =>
-            publishMessage(SwitchOutgoingMessage(dpid, ds))
-          case scala.util.Failure(t) =>
-            t.printStackTrace()
-        }
-    }
+  private def sendToSwitch(n: OFNode, msg: BuilderInput) =
+    sendBuilderInput(UByte(4), n.id, msg, false)
 
   private def installFlow(n: OFNode, f: Flow) = {
     val msg = convertFlow(f, Add, PortNumber.AllPorts, GroupId.AllGroups)
-    sendToSwitch(n.id, msg)
+    sendToSwitch(n, msg)
   }
 
   private def uninstallFlow(n: OFNode, f: Flow) = {
     val msg = convertFlow(f, Delete, PortNumber.AnyPort, GroupId.AnyGroup)  // are port and group correct?
-    sendToSwitch(n.id, msg)
+    sendToSwitch(n, msg)
   }
 
   override def toggleFlow(node: OFNode, flowName: String): Future[ServiceResponse] = {

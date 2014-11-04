@@ -45,7 +45,7 @@ class RestApiServer(val bus: ServiceBus, serverPrefixes: Array[String]) extends 
 
   override def compatibleWith(factory: MessageDriverFactory[_]): Boolean = true
 
-  override def moduleReceive = super.moduleReceive orElse {
+  override def auxReceive = super.auxReceive orElse {
     case r @ HttpRequest(method, uri, headers, entity, protocol) =>
       val path = uri.path.toString
       serverPrefixes.find(path.startsWith) foreach { serverPrefix =>
@@ -85,8 +85,8 @@ abstract class RestApiService(serverPrefix: String) extends Service with HttpSer
       }
   }
 
-  override def moduleReceive = {
+  override def auxReceive = {
     val pathPrefixMatcher = PathMatchers.separateOnSlashes(serverPrefix.drop(1) + servicePrefix)
-    super.moduleReceive orElse runRoute(pathPrefix(pathPrefixMatcher) { route })
+    super.auxReceive orElse runRoute(pathPrefix(pathPrefixMatcher) { route })
   }
 }

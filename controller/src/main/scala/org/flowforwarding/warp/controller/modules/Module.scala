@@ -6,11 +6,13 @@
  */
 package org.flowforwarding.warp.controller.modules
 
-import scala.concurrent.Future
+import scala.collection.immutable.Iterable
+import scala.concurrent.duration.Duration
+import scala.concurrent.{ExecutionContextExecutor, Future}
 import scala.concurrent.ExecutionContext.Implicits.global
 
 import akka.pattern.pipe
-import akka.actor.Actor
+import akka.actor._
 
 import org.flowforwarding.warp.controller.driver_interface.{OFMessage, MessageDriverFactory}
 import org.flowforwarding.warp.controller.bus.{ServiceRequest, ServiceBusActor, MessageEnvelope, MessageBusActor}
@@ -22,9 +24,11 @@ trait Module extends Actor{
   protected def started(): Unit
   protected def shutdown(): Unit = { }
 
-  override def receive: Receive = moduleReceive
+  override def receive: Receive = auxReceive
 
-  def moduleReceive: Receive = {
+  /* Always mix this function when use become method
+     in order to keep actor being warp-compatible module */
+  protected def auxReceive: Receive = {
     case CheckCompatibility(factory) =>
       if (compatibleWith(factory)){
         started()
@@ -37,6 +41,9 @@ trait Module extends Actor{
       shutdown()
       context stop self
   }
+
+  /* Use this method instead of context.become */
+  protected def setReceive(rcv: Receive) = context become (auxReceive orElse rcv)
 }
 
 object Module{
@@ -49,7 +56,7 @@ object Module{
 trait MessageConsumer extends MessageBusActor with Module{
   protected def handleEvent(e: MessageEnvelope): Unit
 
-  abstract override def moduleReceive: Receive = super.moduleReceive orElse { case e: MessageEnvelope => handleEvent(e)}
+  protected abstract override def auxReceive: Receive = super.auxReceive orElse { case e: MessageEnvelope => handleEvent(e)}
 
   abstract override def shutdown(): Unit = {
     super.shutdown()
@@ -60,7 +67,7 @@ trait MessageConsumer extends MessageBusActor with Module{
 trait Service extends ServiceBusActor with Module{
   protected def handleRequest(e: ServiceRequest): Future[Any]
 
-  abstract override def moduleReceive: Receive = super.moduleReceive orElse { case r: ServiceRequest => handleRequest(r) pipeTo sender}
+  protected abstract override def auxReceive: Receive = super.auxReceive orElse { case r: ServiceRequest => handleRequest(r) pipeTo sender}
 
   abstract override def shutdown(): Unit = {
     super.shutdown()

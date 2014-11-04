@@ -9,8 +9,8 @@ package org.flowforwarding.warp.controller.api.fixed
 trait MessageTestsSet[Description <: MessagesDescriptionHelper[_]]{
 
   trait TestData { val description: String }
-  case class TestResponse(test: PartialFunction[Description#OfpMessage[_], Boolean], description: String) extends TestData
+  case class TestResponse(test: PartialFunction[FixedOfpMessage, Boolean], description: String) extends TestData
   case class TestNoError(errorClass: Class[_], description: String) extends TestData
 
-  def tests: Map[Description#MessageInput, TestData] = Map()
+  def tests: Map[BuilderInput, TestData] = Map()
 }

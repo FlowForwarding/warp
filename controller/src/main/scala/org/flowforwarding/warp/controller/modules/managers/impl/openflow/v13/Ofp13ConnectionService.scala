@@ -12,13 +12,12 @@ import scala.concurrent.Future
 
 import spire.math.ULong
 
-import org.flowforwarding.warp.controller.modules.managers.AbstractService._
-
 import org.flowforwarding.warp.controller.SwitchConnector
 import org.flowforwarding.warp.controller.bus.ControllerBus
 import org.flowforwarding.warp.controller.modules.managers._
 import org.flowforwarding.warp.controller.api.fixed.v13.Ofp13MessageHandlers
 import org.flowforwarding.warp.controller.api.dynamic.DynamicStructureBuilder
+import org.flowforwarding.warp.controller.modules.managers.AbstractService._
 import org.flowforwarding.warp.controller.modules.managers.sal.{OFNodeConnector, OFNode}
 
 
@@ -38,7 +37,7 @@ class Ofp13ConnectionService(controllerBus: ControllerBus) extends Ofp13MessageH
 
   def disconnect(node: OFNode): Future[ServiceResponse] = {
     val result = if(connectedDpids.contains(node.id)){
-      publishMessage(SwitchConnector.ForceDisconnect(node.id))
+      askFirst(SwitchConnector.ForceDisconnect(node.id))
       Done
     }
     else NotFound

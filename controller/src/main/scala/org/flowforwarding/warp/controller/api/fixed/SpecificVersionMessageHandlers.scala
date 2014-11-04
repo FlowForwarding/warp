@@ -9,14 +9,14 @@ package org.flowforwarding.warp.controller.api.fixed
 import java.lang.reflect.Method
 
 import scala.util.{Failure, Try}
+import scala.reflect.ClassTag
+
+import spire.math._
 
 import org.flowforwarding.warp.controller.bus.{ControllerBus, MessageEnvelope}
 import org.flowforwarding.warp.controller.api.dynamic.{DynamicStructureBuilder, DynamicStructure}
 import org.flowforwarding.warp.controller.driver_interface.{MessageDriver, MessageDriverFactory, MessageHandlers}
-
-import spire.math._
 import org.flowforwarding.warp.controller.SwitchConnector.SwitchIncomingMessage
-import scala.reflect.ClassTag
 
 trait IncomingMessagePredicate { def test(dpid: ULong, payload: Any): java.lang.Boolean }
 
@@ -38,11 +38,11 @@ abstract class SpecificVersionMessageHandlers[Self <: SpecificVersionMessageHand
     super.compatibleWith(factory) && castDescription(factory.get(versionCode)).isSuccess
   }
 
-  private def handle[H <: SpecificVersionMessageHandlers[_, _]](dpid: ULong, message: MessagesDescriptionHelper[H]#OfpMessage[_]): Try[Array[MessagesDescriptionHelper[H]#MessageInput]] =
+  private def handle(dpid: ULong, message: FixedOfpMessage): Try[Array[FixedMessageInput]] =
     this.getClass.getMethods find canHandleClass(message.getClass) match {
       case Some(m) => Try {
         m.setAccessible(true)
-        m.invoke(this, Long.box(dpid.signed), message).asInstanceOf[Array[MessagesDescriptionHelper[H]#MessageInput]]
+        m.invoke(this, Long.box(dpid.signed), message).asInstanceOf[Array[FixedMessageInput]]
       }
       case None => Failure(new RuntimeException(s"Unable to handle message of type ${message.getClass}: no appropriate method found."))
     }

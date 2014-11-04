@@ -47,11 +47,14 @@ private[fixed] trait BITextViewSupport[Input <: BuilderInput] {
     def ints(field: String)   = data get field collect { case BITextViewItems(ns) => ns map { case Num(b) => UInt(b.toInt) } }
     def longs(field: String)  = data get field collect { case BITextViewItems(ns) => ns map { case Num(b) => ULong.fromBigInt(b) } }
 
+    private def buildFixed[T <: BuilderInput: ClassTag](input: BITextView): T =
+      implicitly[ClassTag[T]].runtimeClass.asInstanceOf[Class[T]].cast(api.parseTextView(input).get)
+
     def structure[T <: BuilderInput: ClassTag](field: String): Option[T] =
-      data get field collect { case v: BITextView => api.buildFixed[T](v).get }
+      data get field collect { case v: BITextView => buildFixed[T](v) }
 
     def structures[T <: BuilderInput: ClassTag](field: String): Option[List[T]] =
-      data get field collect { case BITextViewItems(is) => is map { case v: BITextView => api.buildFixed[T](v).get } }
+      data get field collect { case BITextViewItems(is) => is map { case v: BITextView => buildFixed[T](v) } }
   }
 
   final protected implicit def string(field: String)(implicit m: BITextView) = m.string(field).get

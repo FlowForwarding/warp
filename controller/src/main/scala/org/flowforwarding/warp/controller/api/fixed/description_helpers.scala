@@ -14,7 +14,7 @@ import org.flowforwarding.warp.controller.api.dynamic.{DynamicBuilderInput, Dyna
 import org.flowforwarding.warp.controller.api.fixed.util._
 import org.flowforwarding.warp.controller.api.fixed.text_view.{StructureTextView, StructureWithTextView, BITextViewSupport, BITextView}
 
-trait StructuresDescriptionHelper{
+trait StructuresDescriptionHelper {
   self: DynamicStructureBuilder[_ <: DynamicStructure] =>
 
   implicit private[fixed] val namesConfig: Config
@@ -31,14 +31,14 @@ trait StructuresDescriptionHelper{
     protected val api: StructuresDescriptionHelper with DynamicStructureBuilder[_] = self
   }
 
-  private[fixed] implicit class DynamicStructureExt(s: DynamicStructure){
+  private[fixed] implicit class DynamicStructureExt(s: DynamicStructure) {
     def ofType[T: ClassTag] = s.isTypeOf(namesConfig.getTypeName(implicitly[ClassTag[T]].runtimeClass))
   }
 
   protected def builderClasses: List[Class[_ <: OfpStructureBuilder[_]]]
 
   private[fixed] def selectBuilder(predicate: Class[_] => Boolean) =
-    builderClasses.collectFirst { case b if predicate(b) => b }
+    builderClasses.collectFirst { case b if predicate(b) => b}
       .get
       .getConstructors
       .head
@@ -46,32 +46,28 @@ trait StructuresDescriptionHelper{
       .asInstanceOf[OfpStructureBuilder[_]]
 
   def parseTextView(input: BITextView): Try[BuilderInput] = Try {
-    val b = selectBuilder { b => firstGenericParameter(b).map { s => val StructureName(n) = s; n } == Some(input.structureName)}
+    val b = selectBuilder {
+      firstGenericParameter(_).flatMap(StructureName.unapply).exists(input.structureName ==)
+    }
     b.inputFromTextView(input).asInstanceOf[BuilderInput]
   }
 
-  def buildFixed[T <: BuilderInput: ClassTag](input: BITextView): Try[T] =
-    parseTextView(input) map implicitly[ClassTag[T]].runtimeClass.asInstanceOf[Class[T]].cast
-
-  def buildDynamic(input: BITextView): Try[DynamicStructure] = {
-    val structureBuilder = selectBuilder { b => firstGenericParameter(b).map { s => val StructureName(n) = s; n } == Some(input.structureName)}
-    self.build(structureBuilder toDynamicInput input)
-  }
-
   def buildDynamic(input: BuilderInput): Try[DynamicStructure] = Try {
-    selectBuilder { b => firstGenericParameter(b) == Some(input.getClass)}.asInstanceOf[OfpStructureBuilder[BuilderInput]]
+    selectBuilder {
+      firstGenericParameter(_).exists(input.getClass ==)
+    }.asInstanceOf[OfpStructureBuilder[BuilderInput]]
   } flatMap { sb =>
     self.build(sb toDynamicInput input)
   }
 }
 
-trait StructureDescription{
+trait StructureDescription {
   apiProvider: StructuresDescriptionHelper =>
 
   protected def builderClasses: List[Class[_ <: OfpStructureBuilder[_]]] = List()
 }
 
-trait MessagesDescriptionHelper[T <: SpecificVersionMessageHandlers[_, _]] extends StructuresDescriptionHelper{
+trait MessagesDescriptionHelper[T <: SpecificVersionMessageHandlers[_, _]] extends StructuresDescriptionHelper {
   driver: DynamicStructureBuilder[_ <: DynamicStructure] =>
 
   protected def messageClasses: List[Class[_]]
@@ -80,20 +76,26 @@ trait MessagesDescriptionHelper[T <: SpecificVersionMessageHandlers[_, _]] exten
   type OfpMessage[_] <: StructureWithTextView
   protected type OfpMessageBuilder[_ <: MessageInput] <: OfpStructureBuilder[_]
 
-  def toConcreteMessage(dynamic: DynamicStructure): Try[OfpMessage[_]] = Try {
+  def toConcreteMessage(dynamic: DynamicStructure): Try[FixedOfpMessage] = Try {
     messageClasses collectFirst {
       case c if dynamic.isTypeOf(namesConfig.getTypeName(firstGenericParameter(c).get)) =>
         // Every XXXStructure type is inner class, so its constructor must get reference to outer class
         c.getConstructors.head.newInstance(this, dynamic)
     } match {
-      case Some(structure) => structure.asInstanceOf[OfpMessage[_]]
+      case Some(structure) => structure.asInstanceOf[FixedOfpMessage]
       case None => throw new RuntimeException("Undefined type of structure.")
     }
   }
 }
 
-trait MessageDescription extends StructureDescription{
+trait MessageDescription extends StructureDescription {
   apiProvider: MessagesDescriptionHelper[_] =>
 
   protected def messageClasses: List[Class[_]] = List()
+}
+
+object `package`{
+  type DescriptionHelper = MessagesDescriptionHelper[_ <: SpecificVersionMessageHandlers[_, _]]
+  type FixedOfpMessage = DescriptionHelper#OfpMessage[_]
+  type FixedMessageInput = DescriptionHelper#MessageInput
 }
