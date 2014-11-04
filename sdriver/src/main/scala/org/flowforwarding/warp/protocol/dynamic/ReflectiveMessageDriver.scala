@@ -6,6 +6,8 @@
  */
 package org.flowforwarding.warp.protocol.dynamic
 
+import org.flowforwarding.warp.controller.driver_interface.MessageType
+
 import scala.util.{Failure, Success, Try}
 
 import com.typesafe.config.{ConfigFactory, Config}
@@ -31,6 +33,8 @@ class ReflectiveMessageDriver(underlyingDriver: DriverWithReflectionSupport[_ <:
 
   def getXid(msg: ReflectiveStructure) = getXidResolvingExistential(underlyingDriver, msg).get
 
+  def getIncomingMessageType(msg: ReflectiveStructure): MessageType = getIncomingMessageTypeResolvingExistential(underlyingDriver, msg).get
+
   val versionCode: UByte = underlyingDriver.versionCode
 
   def decodeMessage(in: Array[Byte]): (Try[ReflectiveStructure], Array[Byte]) = {
@@ -46,6 +50,9 @@ class ReflectiveMessageDriver(underlyingDriver: DriverWithReflectionSupport[_ <:
 
   private def getXidResolvingExistential[T <: OfpMsg[_, _]](u: DriverWithReflectionSupport[T], msg: ReflectiveStructure) =
     u.dynamic2Static(msg).map(u.getXid)
+
+  private def getIncomingMessageTypeResolvingExistential[T <: OfpMsg[_, _]](u: DriverWithReflectionSupport[T], msg: ReflectiveStructure) =
+    u.dynamic2Static(msg).map(u.getIncomingMessageType)
 
   def getHelloMessage(supportedVersions: Array[UByte]): Array[Byte] = underlyingDriver.getHelloMessage(supportedVersions)
 

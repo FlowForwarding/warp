@@ -23,8 +23,8 @@ import spire.math.{UByte, UInt, ULong}
 import org.flowforwarding.warp.controller.bus._
 import org.flowforwarding.warp.controller.ModuleManager._
 import org.flowforwarding.warp.controller.SwitchConnector._
+import org.flowforwarding.warp.controller.driver_interface._
 import org.flowforwarding.warp.controller.modules.Service
-import org.flowforwarding.warp.controller.driver_interface.{MessageDriverFactory, MessageDriver, OFMessage}
 
 object SwitchConnector{
   // switch -> controller
@@ -42,8 +42,12 @@ object SwitchConnector{
   case class SendingFailed(cause: Throwable) extends SendingResult[Nothing] {
     override def map[R](f: Nothing => R): SendingResult[R] = this
   }
-  case class SwitchResponse[T](msg: T) extends SendingResult[T] {
-    override def map[R](f: T => R): SendingResult[R] = SwitchResponse(f(msg))
+  trait SwitchResponse[T] extends SendingResult[T]
+  case class SingleMessageSwitchResponse[T](msg: T) extends SwitchResponse[T] {
+    override def map[R](f: T => R): SendingResult[R] = SingleMessageSwitchResponse(f(msg))
+  }
+  case class MultipartMessageSwitchResponse[T](msgs: Seq[T]) extends SwitchResponse[T] {
+    override def map[R](f: T => R): SendingResult[R] = MultipartMessageSwitchResponse(msgs map f)
   }
 
   case class NewDriverFactory(sender: ActorRef) extends MessageEnvelope
@@ -126,15 +130,30 @@ private class SwitchConnector[T <: OFMessage, DriverType <: MessageDriver[T]](va
   }
 
   // dpid x xid => promise of response
-  val awaitingResponses = scala.collection.mutable.Map[(ULong, UInt), Promise[SwitchResponse[T]]]()
+  val awaitingRequests = scala.collection.mutable.Map[UInt, Promise[SwitchResponse[T]]]()
+  // think about sequence of futures
+  val receivedMultipartResponses  = scala.collection.mutable.Map[UInt, Seq[T]]().withDefaultValue(Seq.empty)
 
   def handshakedState(tcpChannel: ActorRef, driver: DriverType, dpid: ULong, prevBytes: Array[Byte]): Actor.Receive = {
     case Tcp.Received(data) =>
       val (messages, rest) = decodeMessages(driver, Nil, prevBytes ++: data.toArray)
       publishMessages(driver, messages, dpid)
       messages foreach { msg =>
-        awaitingResponses.remove((dpid, driver.getXid(msg))) foreach {
-          _ complete Success(SwitchResponse(msg))
+        val xid = driver.getXid(msg)
+        driver.getIncomingMessageType(msg) match {
+          case SingleMessageResponse =>
+            awaitingRequests.remove(xid) foreach {
+              _ complete Success(SingleMessageSwitchResponse(msg))
+            }
+          case MultipartResponse(reqMore) =>
+            receivedMultipartResponses(xid) = receivedMultipartResponses(xid) :+ msg
+            if(!reqMore)
+              awaitingRequests.remove(xid) foreach { p =>
+                receivedMultipartResponses.remove(xid) foreach { s =>
+                  p complete Success(MultipartMessageSwitchResponse(s))
+                }
+              }
+          case _ => // Async/Command/Request
         }
       }
       setReceive(handshakedState(tcpChannel, driver, dpid, rest))
@@ -146,7 +165,7 @@ private class SwitchConnector[T <: OFMessage, DriverType <: MessageDriver[T]](va
           tcpChannel ! TcpMessage.write(ByteString.fromArray(bytes))
           if(needReply) {
             val p = Promise[SwitchResponse[T]]()
-            awaitingResponses((dpid, driver.getXid(msg))) = p
+            awaitingRequests(driver.getXid(msg)) = p
             p.future pipeTo sender()
           }
           else

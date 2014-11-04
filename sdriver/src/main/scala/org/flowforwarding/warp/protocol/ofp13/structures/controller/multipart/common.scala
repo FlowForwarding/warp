@@ -57,7 +57,9 @@ object ofp_multipart_reply{
                    [ofp_multipart_experimenter_reply]
 }
 
-trait ofp_multipart_reply_type extends WordTaggedUnion[ofp_multipart_reply.All, OFP_MULTIPART_TYPE]
+trait ofp_multipart_reply_type extends WordTaggedUnion[ofp_multipart_reply.All, OFP_MULTIPART_TYPE]{
+  def flags: OFP_MULTIPART_REPLY_FLAGS
+}
 trait ofp_multipart_request_type extends WordTaggedUnion[ofp_multipart_request.All, OFP_MULTIPART_TYPE]
 
 case class ofp_multipart_reply private[protocol] (header: ofp_header, data: ofp_multipart_reply_type)

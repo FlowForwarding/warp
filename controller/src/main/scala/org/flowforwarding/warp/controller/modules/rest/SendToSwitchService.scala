@@ -92,14 +92,14 @@ class SendToSwitchService(val bus: ControllerBus, serverPrefix: String) extends 
 
   def send(req: SendToSwitchRequest): Future[HttpResponse] = {
     val SendToSwitchRequest(dpid, version, needReply, message) = req
-    val x = sendTextView[JsValue, JsValue](version, dpid, message, needReply)(readJson, writeJson)
-
-    x map {
+    sendTextView[JsValue, JsValue](version, dpid, message, needReply) map {
       case SendingSuccessfull =>
         HttpResponse(StatusCodes.OK, "Message published")
-      case SwitchResponse(json) =>
-        // think about multipart http messages for multipart ofp messages
+      case SingleMessageSwitchResponse(json) =>
         HttpResponse(StatusCodes.OK, HttpEntity(contentType = ContentType(`application/json`, `UTF-8`), string = json.toString))
+      case MultipartMessageSwitchResponse(json) =>
+        // think about multipart http messages for multipart ofp messages
+        HttpResponse(StatusCodes.OK, HttpEntity(contentType = ContentType(`application/json`, `UTF-8`), string = JsArray(json: _*).toString))
       case SendingFailed(t) =>
         t.printStackTrace()
         println("Internal error: " + t.getMessage)

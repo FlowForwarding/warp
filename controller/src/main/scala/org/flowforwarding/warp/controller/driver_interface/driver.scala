@@ -23,9 +23,17 @@ trait OfpHandshakeSupport extends OfpVersionSupport{
   def getFeaturesRequest: Array[Byte]
 }
 
+trait MessageType
+case object Async extends MessageType
+case object Request extends MessageType
+case object Command extends MessageType
+case object SingleMessageResponse extends MessageType
+case class MultipartResponse(reqMore: Boolean) extends MessageType
+
 trait OfpFeaturesExtractor[-T <: OFMessage] extends OfpVersionSupport{
   def getDPID(in: Array[Byte]): Try[ULong]
   def getXid(msg: T): UInt
+  def getIncomingMessageType(msg: T): MessageType
 }
 
 trait OfpMessageEncoder[-T <: OFMessage] extends OfpVersionSupport{

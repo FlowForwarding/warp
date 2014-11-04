@@ -8,9 +8,13 @@ package org.flowforwarding.warp.protocol.ofp13
 
 import scala.util.Try
 
+import spire.math.UByte
+
 import com.gensler.scalavro.types.AvroType
 import com.gensler.scalavro.types.supply.{RawSeq, UInt32, UInt8}
 import com.gensler.scalavro.io.complex.AvroBareUnionIO
+
+import org.flowforwarding.warp.controller.driver_interface._
 
 import org.flowforwarding.warp.protocol._
 import org.flowforwarding.warp.protocol.ofp13.structures._
@@ -21,7 +25,6 @@ import org.flowforwarding.warp.protocol.ofp13.structures.ofp_switch_features_req
 import org.flowforwarding.warp.protocol.ofp13.structures.ofp_switch_config_reply
 import org.flowforwarding.warp.protocol.ofp13.structures.ofp_switch_config_request
 import org.flowforwarding.warp.protocol.ofp13.structures.ofp_set_config
-import spire.math.UByte
 
 // Currently based on 1.3.3
 class Ofp13Impl extends StaticDriver[ofp13_messages.All, Ofp13Impl]{
@@ -32,6 +35,46 @@ class Ofp13Impl extends StaticDriver[ofp13_messages.All, Ofp13Impl]{
   protected val getDPIDField = (m: Any) => m.asInstanceOf[ofp_switch_features_reply].datapathId
 
   protected val getXidField = (m: Any) => m.asInstanceOf[{ def header: ofp_header }].header.xid
+
+  override protected val getIncomingMessageType = (m: Any) => m match {
+    case x: ofp_hello                    => Async
+    case x: ofp_error_msg                => Async
+    case x: echo_request                 => Request
+    case x: echo_reply                   => SingleMessageResponse
+    case x: ofp_experimenter_header      => Request // TODO: clarify
+    case x: ofp_switch_features_request  => Request
+    case x: ofp_switch_features_reply    => SingleMessageResponse
+    case x: ofp_switch_config_request    => Request
+    case x: ofp_switch_config_reply      => SingleMessageResponse
+    case x: ofp_set_config               => Command
+
+    case x: ofp_packet_in                => Async
+    case x: ofp_flow_removed             => Async
+    case x: ofp_port_status              => Async
+
+    case x: ofp_packet_out               => Command
+    case x: ofp_flow_mod                 => Command
+    case x: ofp_group_mod                => Command
+    case x: ofp_port_mod                 => Command
+    case x: ofp_table_mod                => Command
+
+    case x: ofp_multipart_request        => Request
+    case x: ofp_multipart_reply          => MultipartResponse(x.data.flags == ofp_multipart_reply_flags.OFPMPF_REPLY_MORE)
+
+    case x: ofp_barrier_request          => Request
+    case x: ofp_barrier_reply            => SingleMessageResponse
+
+    case x: ofp_queue_get_config_request => Request
+    case x: ofp_queue_get_config_reply   => SingleMessageResponse
+
+    case x: ofp_role_request             => Request
+    case x: ofp_role_reply               => SingleMessageResponse
+
+    case x: ofp_get_async_request        => Request
+    case x: ofp_get_async_reply          => SingleMessageResponse
+    case x: ofp_set_async                => Command
+    case x: ofp_meter_mod                => Request
+  }
 
   protected def transformValue[U](transform: UnionMemberTransform[ofp13_messages.All, U])(value: Any) = Try {
     value match {

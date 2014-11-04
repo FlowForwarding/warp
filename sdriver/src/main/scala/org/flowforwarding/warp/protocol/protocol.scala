@@ -21,7 +21,7 @@ import com.gensler.scalavro.io.complex.AvroBareUnionIO
 import com.gensler.scalavro.types.supply.{UInt16, UInt32, UInt64}
 
 import org.flowforwarding.warp.protocol.dynamic.{DriverWithReflectionSupport, ReflectiveStructure}
-import org.flowforwarding.warp.controller.driver_interface.{MessageDriverFactory, OFMessage}
+import org.flowforwarding.warp.controller.driver_interface.{MessageType, MessageDriverFactory, OFMessage}
 
 case class OfpMsg[U <: Union.not[_], T: TypeTag: prove [U]#containsType](structure: T) extends OFMessage
 
@@ -34,6 +34,7 @@ abstract class StaticDriver[U <: Union.not[_]: TypeTag, SelfType <: StaticDriver
   protected val msgTypeIO: AvroBareUnionIO[U, U]
   protected val getDPIDField: Any => UInt64
   protected val getXidField: Any => UInt32
+  protected val getIncomingMessageType: Any => MessageType
 
   protected def transformValue[R](transform: UnionMemberTransform[U, R])(value: Any): Try[R]
 
@@ -51,6 +52,10 @@ abstract class StaticDriver[U <: Union.not[_]: TypeTag, SelfType <: StaticDriver
 
   private val getXID =  transformValue { new UnionMemberTransform[U, UInt]{
     def apply[T: TypeTag: prove [U]#containsType](m: T) = UInt(UInt32.toInt(getXidField(m)))
+  }} _
+
+  private val incomingMessageType = transformValue { new UnionMemberTransform[U, MessageType]{
+    def apply[T: TypeTag: prove [U]#containsType](m: T) = getIncomingMessageType(m)
   }} _
 
   protected def encodeUnionMember[T: TypeTag: prove [U]#containsType](msg: T) = {
@@ -85,6 +90,8 @@ abstract class StaticDriver[U <: Union.not[_]: TypeTag, SelfType <: StaticDriver
   def getDPID(in: Array[Byte]): Try[ULong] = decodeMessage(in)._1 flatMap (msg => getDPID(msg.structure))
 
   def getXid(msg: OfpMsg[U, _]): UInt = getXID(msg.structure).get
+
+  def getIncomingMessageType(msg: OfpMsg[U, _]): MessageType = incomingMessageType(msg.structure).get
 
   def decodeMessage(in: Array[Byte]): (Try[OfpMsg[U, _]], Array[Byte]) = {
     val (message, rest) = decodeUnionMember(in)
