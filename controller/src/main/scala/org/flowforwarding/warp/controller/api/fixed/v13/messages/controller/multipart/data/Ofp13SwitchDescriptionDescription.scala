@@ -13,7 +13,7 @@ import org.flowforwarding.warp.controller.api.fixed.v13.messages.controller.mult
 
 import spire.math.ULong
 
-case class SwitchDescriptionRequestDataInput(reqMore: Boolean) extends MultipartRequestDataInput
+case class SwitchDescriptionRequestBodyInput() extends MultipartRequestBodyInput
 
 trait SwitchDescription{
   val manufacturer: String /* Manufacturer description. */
@@ -23,13 +23,12 @@ trait SwitchDescription{
   val datapath: String     /* Human readable description of datapath. */
 }
 
-trait SwitchDescriptionReplyData extends MultipartReplyData{
-  def reqMore: Boolean // More replies to follow
-  def body: SwitchDescription
+trait SwitchDescriptionReplyBody extends MultipartReplyBody[SwitchDescription]{
+  def value: SwitchDescription
 }
 
 trait SwitchDescriptionReplyHandler{
-  def onSwitchDescriptionReply(dpid: ULong, msg: SwitchDescriptionReplyData): Array[BuilderInput] = Array.empty[BuilderInput]
+  def onSwitchDescriptionReply(dpid: ULong, desc: SwitchDescription): Array[BuilderInput] = Array.empty[BuilderInput]
 }
 
 private[fixed] trait Ofp13SwitchDescriptionDescription extends StructureDescription {
@@ -47,13 +46,11 @@ private[fixed] trait Ofp13SwitchDescriptionDescription extends StructureDescript
     }
   }
 
-  protected class SwitchDescriptionRequestDataInputBuilder extends OfpStructureBuilder[SwitchDescriptionRequestDataInput] {
-    protected def applyInput(input: SwitchDescriptionRequestDataInput): Unit = {
-      setMember("flags", if (input.reqMore) ULong(0) else ULong(1))
-    }
+  protected class SwitchDescriptionRequestBodyInputBuilder extends OfpStructureBuilder[SwitchDescriptionRequestBodyInput] {
+    protected def applyInput(input: SwitchDescriptionRequestBodyInput): Unit = { }
 
-    override private[fixed] def inputFromTextView(implicit input: BITextView): SwitchDescriptionRequestDataInput = ???
+    override private[fixed] def inputFromTextView(implicit input: BITextView): SwitchDescriptionRequestBodyInput = SwitchDescriptionRequestBodyInput()
   }
 
-  protected abstract override def builderClasses = classOf[SwitchDescriptionRequestDataInputBuilder] :: super.builderClasses
+  protected abstract override def builderClasses = classOf[SwitchDescriptionRequestBodyInputBuilder] :: super.builderClasses
 }

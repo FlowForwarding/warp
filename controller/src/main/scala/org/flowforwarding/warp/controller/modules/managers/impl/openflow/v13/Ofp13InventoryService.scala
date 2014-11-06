@@ -35,8 +35,8 @@ class Ofp13InventoryService(controllerBus: ControllerBus) extends Ofp13MessageHa
           payload match {
             case _: PortStatus | _: FeaturesReply => true
             case mp: MultipartReply =>
-              mp.data.isInstanceOf[PortDescriptionReplyData] ||
-              mp.data.isInstanceOf[SwitchDescriptionReplyData]
+              mp.body.isInstanceOf[PortDescriptionReplyBody] ||
+              mp.body.isInstanceOf[SwitchDescriptionReplyBody]
           }
         }
       }
@@ -54,8 +54,8 @@ class Ofp13InventoryService(controllerBus: ControllerBus) extends Ofp13MessageHa
 
   override def onFeaturesReply(dpid: ULong, msg: FeaturesReply): Array[BuilderInput] = {
     nodeProps(OFNode(dpid)) = toProps(msg)
-    Array(MultipartRequestInput(PortDescriptionRequestDataInput(false)),
-          MultipartRequestInput(SwitchDescriptionRequestDataInput(false)))
+    Array(MultipartRequestInput(false, SwitchDescriptionRequestBodyInput()),
+          MultipartRequestInput(false, PortDescriptionRequestBodyInput()))
   }
 
   override def onPortStatus(dpid: ULong, msg: PortStatus): Array[BuilderInput] = {
@@ -72,14 +72,14 @@ class Ofp13InventoryService(controllerBus: ControllerBus) extends Ofp13MessageHa
     Array.empty
   }
 
-  override def onSwitchDescriptionReply(dpid: ULong, msg: SwitchDescriptionReplyData): Array[BuilderInput] = {
-    nodeProps(OFNode(dpid)) += Description(msg.body.datapath) // TODO: add another descriptions?
+  override def onSwitchDescriptionReply(dpid: ULong, desc: SwitchDescription): Array[BuilderInput] = {
+    nodeProps(OFNode(dpid)) += Description(desc.datapath) // TODO: add another descriptions?
     Array.empty
   }
 
-  override def onPortDescriptionReply(dpid: ULong, msg: PortDescriptionReplyData): Array[BuilderInput] = {
+  override def onPortDescriptionReply(dpid: ULong, desc: Array[Port]): Array[BuilderInput] = {
     val node = OFNode(dpid)
-    nodeConnectorsProps ++= msg.body map (port => (OFNodeConnector(port.number.number, "OF", node), toProps(port)))
+    nodeConnectorsProps ++= desc map (port => (OFNodeConnector(port.number.number, "OF", node), toProps(port)))
     Array.empty
   }
 

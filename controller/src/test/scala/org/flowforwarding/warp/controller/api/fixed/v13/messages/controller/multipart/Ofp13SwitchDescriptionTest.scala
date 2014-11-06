@@ -12,9 +12,9 @@ import org.flowforwarding.warp.controller.api.fixed.v13.messages.controller.mult
 
 trait Ofp13SwitchDescriptionTest extends MessageTestsSet[Ofp13DriverApi] {
   abstract override def tests = super.tests + {
-    MultipartRequestInput(SwitchDescriptionRequestDataInput(false)) -> TestResponse({
+    MultipartRequestInput(false, SwitchDescriptionRequestBodyInput()) -> TestResponse({
        case r: MultipartReply =>
-        r.data.isInstanceOf[SwitchDescriptionReplyData]
+        r.body.isInstanceOf[SwitchDescriptionReplyBody]
     }, "SwitchDescription")
   }
 }

@@ -12,8 +12,8 @@ import org.flowforwarding.warp.controller.api.fixed.v13.messages.controller.mult
 
 trait Ofp13PortDescriptionTest extends MessageTestsSet[Ofp13DriverApi] {
   abstract override def tests = super.tests + {
-    MultipartRequestInput(PortDescriptionRequestDataInput(false)) -> TestResponse({
-      case r: MultipartReply => r.data.isInstanceOf[PortDescriptionReplyData]
+    MultipartRequestInput(false, PortDescriptionRequestBodyInput()) -> TestResponse({
+      case r: MultipartReply => r.body.isInstanceOf[PortDescriptionReplyBody]
     }, "PortDescription")
   }
 }

@@ -12,27 +12,24 @@ import org.flowforwarding.warp.controller.api.fixed.v13.messages.controller.mult
 import org.flowforwarding.warp.controller.api.fixed.v13.structures.{Ofp13PortDescription, Port}
 import spire.math.ULong
 
-case class PortDescriptionRequestDataInput(reqMore: Boolean) extends MultipartRequestDataInput
+case class PortDescriptionRequestBodyInput() extends MultipartRequestBodyInput
 
-trait PortDescriptionReplyData extends MultipartReplyData{
-  def reqMore: Boolean // More replies to follow
-  def body: Array[Port]
+trait PortDescriptionReplyBody extends MultipartReplyBody[Array[Port]]{
+  def value: Array[Port]
 }
 
 trait PortDescriptionReplyHandler{
-  def onPortDescriptionReply(dpid: ULong, msg: PortDescriptionReplyData): Array[BuilderInput] = Array.empty[BuilderInput]
+  def onPortDescriptionReply(dpid: ULong, desc: Array[Port]): Array[BuilderInput] = Array.empty[BuilderInput]
 }
 
 private[fixed] trait Ofp13PortDescriptionDescription extends StructureDescription {
   apiProvider: StructuresDescriptionHelper with Ofp13PortDescription =>
 
-  protected class PortDescriptionRequestDataInputBuilder extends OfpStructureBuilder[PortDescriptionRequestDataInput] {
-    protected def applyInput(input: PortDescriptionRequestDataInput): Unit = {
-      setMember("flags", if (input.reqMore) ULong(0) else ULong(1))
-    }
+  protected class PortDescriptionRequestBodyInputBuilder extends OfpStructureBuilder[PortDescriptionRequestBodyInput] {
+    protected def applyInput(input: PortDescriptionRequestBodyInput): Unit = { }
 
-    override private[fixed] def inputFromTextView(implicit input: BITextView): PortDescriptionRequestDataInput = ???
+    override private[fixed] def inputFromTextView(implicit input: BITextView): PortDescriptionRequestBodyInput = PortDescriptionRequestBodyInput()
   }
 
-  protected abstract override def builderClasses = classOf[PortDescriptionRequestDataInputBuilder] :: super.builderClasses
+  protected abstract override def builderClasses = classOf[PortDescriptionRequestBodyInputBuilder] :: super.builderClasses
 }

@@ -106,7 +106,7 @@ private[fixed] object StructureTextView{
         case m if m.getParameterTypes.length == 0 =>
 
           val getString: PartialFunction[Any, String]  = {
-            case obj @ (_: MacAddress | _: IPv4Address | _: IPv6Address | _: ISID | true | false) => obj.toString
+            case obj @ (_: String | _: MacAddress | _: IPv4Address | _: IPv6Address | _: ISID | true | false) => obj.toString
           }
 
           val getNumber: PartialFunction[Any, BigInt] = {
