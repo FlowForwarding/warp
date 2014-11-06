@@ -1,24 +1,21 @@
+/*
+ * © 2013 FlowForwarding.Org
+ * All Rights Reserved.  Use is subject to license terms.
+ *
+ * @author Vitaliy Savkin (Vitaliy_Savkin@epam.com)
+ */
 package org.flowforwarding.warp.protocol.ofp13.structures
 
-import com.gensler.scalavro.types.supply.{RawSeqFieldsInfo, RawSeq, UInt32, Pad4}
-import org.flowforwarding.warp.protocol.dynamic.DynamicPath
-import org.flowforwarding.warp.protocol.ofp13.structures.ofp_length._
-import org.flowforwarding.warp.protocol.ofp13.structures.ofp_multipart_reply_flags.OFP_MULTIPART_REPLY_FLAGS
-import org.flowforwarding.warp.protocol.ofp13.structures.ofp_multipart_request_flags.OFP_MULTIPART_REQUEST_FLAGS
+import org.flowforwarding.warp.protocol.ofp13.structures.ofp_multipart_type._
 
-case class ofp_multipart_port_desc_reply private [protocol] (flags: OFP_MULTIPART_REPLY_FLAGS,
-                                                             pad: Pad4,
-                                                             body: RawSeq[ofp_port]) extends ofp_multipart_reply_type
+case class ofp_multipart_port_desc_request private [protocol] () extends MutipartRequest[Nothing] {
+  override def tp: OFP_MULTIPART_TYPE = ofp_multipart_type.OFPMP_PORT_DESC
 
-object ofp_multipart_port_desc_reply extends RawSeqFieldsInfo{
-  val rawFieldsLengthCalculator: LengthCalculator = {
-    case 2 => None
-  }
+  override def structures = Seq.empty
 }
-
-case class ofp_multipart_port_desc_request private [protocol] (flags: OFP_MULTIPART_REQUEST_FLAGS,
-                                                               pad: Pad4) extends ofp_multipart_request_type
 
 object ofp_multipart_port_desc_request {
-  private [protocol] def build(flags: OFP_MULTIPART_REQUEST_FLAGS) = ofp_multipart_port_desc_request(flags, Pad4())
+  private [protocol] def build() = ofp_multipart_port_desc_request()
 }
+
+case class ofp_multipart_port_desc_reply private [protocol] (desc: Seq[ofp_port])

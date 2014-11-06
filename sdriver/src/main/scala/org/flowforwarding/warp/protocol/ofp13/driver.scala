@@ -59,7 +59,7 @@ class Ofp13Impl extends StaticDriver[ofp13_messages.All, Ofp13Impl]{
     case x: ofp_table_mod                => Command
 
     case x: ofp_multipart_request        => Request
-    case x: ofp_multipart_reply          => MultipartResponse(x.data.flags == ofp_multipart_reply_flags.OFPMPF_REPLY_MORE)
+    case x: ofp_multipart_reply          => MultipartResponse(x.flags == ofp_multipart_reply_flags.OFPMPF_REPLY_MORE)
 
     case x: ofp_barrier_request          => Request
     case x: ofp_barrier_reply            => SingleMessageResponse

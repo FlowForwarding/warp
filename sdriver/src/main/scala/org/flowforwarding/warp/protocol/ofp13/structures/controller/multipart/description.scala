@@ -1,17 +1,14 @@
 package org.flowforwarding.warp.protocol.ofp13.structures
 
-import com.gensler.scalavro.types.supply.{UInt32, Pad4, RawSeqFieldsInfo, RawSeq}
-import org.flowforwarding.warp.protocol.dynamic.DynamicPath
-import org.flowforwarding.warp.protocol.ofp13.structures.ofp_multipart_reply_flags.OFP_MULTIPART_REPLY_FLAGS
-import org.flowforwarding.warp.protocol.ofp13.structures.ofp_multipart_request_flags.OFP_MULTIPART_REQUEST_FLAGS
-import ofp_length._
+import com.gensler.scalavro.types.supply.{UInt8, RawSeqFieldsInfo, RawSeq}
+import org.flowforwarding.warp.protocol.ofp13.structures.ofp_multipart_type.OFP_MULTIPART_TYPE
 
 case class ofp_desc(
-  mfr_desc: RawSeq[Byte],   /* Manufacturer description. */
-  hw_desc: RawSeq[Byte],    /* Hardware description. */
-  sw_desc: RawSeq[Byte],    /* Software description. */
-  serial_num: RawSeq[Byte], /* Serial number. */
-  dp_desc: RawSeq[Byte]     /* Human readable description of datapath. */
+  mfr_desc: RawSeq[UInt8],   /* Manufacturer description. */
+  hw_desc: RawSeq[UInt8],    /* Hardware description. */
+  sw_desc: RawSeq[UInt8],    /* Software description. */
+  serial_num: RawSeq[UInt8], /* Serial number. */
+  dp_desc: RawSeq[UInt8]     /* Human readable description of datapath. */
 )
 
 object ofp_desc extends RawSeqFieldsInfo {
@@ -24,13 +21,14 @@ object ofp_desc extends RawSeqFieldsInfo {
   }
 }
 
-case class ofp_multipart_desc_reply private [protocol] (flags: OFP_MULTIPART_REPLY_FLAGS,
-                                                        pad: Pad4,
-                                                        body: ofp_desc) extends ofp_multipart_reply_type
+case class ofp_multipart_desc_request private [protocol] () extends MutipartRequest[Nothing] {
+  override def tp: OFP_MULTIPART_TYPE = ofp_multipart_type.OFPMP_DESC
 
-case class ofp_multipart_desc_request private [protocol] (flags: OFP_MULTIPART_REQUEST_FLAGS,
-                                                          pad: Pad4) extends ofp_multipart_request_type
+  override def structures = Seq.empty
+}
 
 object ofp_multipart_desc_request {
-  private [protocol] def build(flags: OFP_MULTIPART_REQUEST_FLAGS) = ofp_multipart_desc_request(flags, Pad4())
+  private [protocol] def build() = ofp_multipart_desc_request()
 }
+
+case class ofp_multipart_desc_reply private [protocol] (desc: ofp_desc)

@@ -6,64 +6,17 @@
  */
 package org.flowforwarding.warp.protocol.ofp13.structures
 
+import java.io.{ByteArrayInputStream, ByteArrayOutputStream}
+
+import scala.reflect.runtime.universe._
+import scala.reflect.api
+
+import com.gensler.scalavro.types.AvroType
 import com.gensler.scalavro.types.supply._
 import com.gensler.scalavro.util.Union._
 import org.flowforwarding.warp.protocol.dynamic.DynamicPath
-import org.flowforwarding.warp.protocol.ofp13.structures.ofp_multipart_type.OFP_MULTIPART_TYPE
 import org.flowforwarding.warp.protocol.ofp13.structures.ofp_multipart_request_flags.OFP_MULTIPART_REQUEST_FLAGS
 import org.flowforwarding.warp.protocol.ofp13.structures.ofp_multipart_reply_flags.OFP_MULTIPART_REPLY_FLAGS
-import ofp_length._
-
-object ofp_multipart_request{
-  type All = union [ofp_multipart_desc_request] #or
-                   [ofp_multipart_flow_request] #or
-                   [ofp_multipart_aggregate_request] #or
-                   [ofp_multipart_table_request] #or
-                   [ofp_multipart_port_stats_request] #or
-                   [ofp_multipart_queue_request] #or
-                   [ofp_multipart_group_request] #or
-                   [ofp_multipart_group_desc_request] #or
-                   [ofp_multipart_group_features_request] #or
-                   [ofp_multipart_meter_request] #or
-                   [ofp_multipart_meter_config_request] #or
-                   [ofp_multipart_meter_features_request] #or
-                   [ofp_multipart_table_features_request] #or
-                   [ofp_multipart_port_desc_request] #or
-                   [ofp_multipart_experimenter_request]
-
-  // TODO: think about construction through direct passing of type, flags and body params
-  // The current implementation breaks protocol: added new structure layer "data"
-  private[protocol] def build(@DynamicPath("header", "xid") xid: UInt32, data: ofp_multipart_request_type) = {
-    val header = ofp_header(OFPL_MULTIPART_REQUEST_LEN, xid)
-    ofp_multipart_request(header, data)
-  }
-}
-
-object ofp_multipart_reply{
-  type All = union [ofp_multipart_desc_reply] #or
-                   [ofp_multipart_flow_reply] #or
-                   [ofp_multipart_aggregate_reply] #or
-                   [ofp_multipart_table_reply] #or
-                   [ofp_multipart_port_stats_reply] #or
-                   [ofp_multipart_queue_reply] #or
-                   [ofp_multipart_group_reply] #or
-                   [ofp_multipart_group_desc_reply] #or
-                   [ofp_multipart_group_features_reply] #or
-                   [ofp_multipart_meter_reply] #or
-                   [ofp_multipart_meter_config_reply] #or
-                   [ofp_multipart_meter_features_reply] #or
-                   [ofp_multipart_table_features_reply] #or
-                   [ofp_multipart_port_desc_reply] #or
-                   [ofp_multipart_experimenter_reply]
-}
-
-trait ofp_multipart_reply_type extends WordTaggedUnion[ofp_multipart_reply.All, OFP_MULTIPART_TYPE]{
-  def flags: OFP_MULTIPART_REPLY_FLAGS
-}
-trait ofp_multipart_request_type extends WordTaggedUnion[ofp_multipart_request.All, OFP_MULTIPART_TYPE]
-
-case class ofp_multipart_reply private[protocol] (header: ofp_header, data: ofp_multipart_reply_type)
-case class ofp_multipart_request private[protocol] (header: ofp_header, data: ofp_multipart_request_type)
 
 object ofp_multipart_request_flags extends WordBitmap{
   type OFP_MULTIPART_REQUEST_FLAGS = Value
@@ -142,4 +95,84 @@ object ofp_multipart_type extends WordEnum{
    * struct ofp_experimenter_multipart_header.
    * The request and reply bodies are otherwise experimenter-defined. */
   val OFPMP_EXPERIMENTER   = ##(0xffffL)
+}
+
+import ofp_length._
+import ofp_multipart_type._
+
+trait MutipartRequest[T]{
+  def tp: OFP_MULTIPART_TYPE
+  def structures: Seq[T]
+}
+
+object ofp_multipart_request extends RawSeqFieldsInfo{
+  val rawFieldsLengthCalculator: LengthCalculator = {
+    case 4 => bodyLengthMinus(8)
+  }
+
+  def classToTypeTag[A](c: Class[_]): scala.reflect.runtime.universe.TypeTag[A] = {
+    val mirror = runtimeMirror(c.getClassLoader)  // obtain runtime mirror
+    val sym = mirror.staticClass(c.getName)  // obtain class symbol for `c`
+    val tpe = sym.selfType  // obtain type object for `c`
+    // create a type tag which contains above type object
+    TypeTag(mirror, new api.TypeCreator {
+      def apply[U <: api.Universe with Singleton](m: api.Mirror[U]) =
+        if (m eq mirror) tpe.asInstanceOf[U # Type]
+        else throw new IllegalArgumentException(s"Type tag defined in $mirror cannot be migrated to other mirrors.")
+    })
+  }
+
+
+  private[protocol] def build(@DynamicPath("header", "xid") xid: UInt32, flags: ofp_multipart_request_flags.OFP_MULTIPART_REQUEST_FLAGS, body: MutipartRequest[_]) = {
+    val bytes: Array[Byte] = if(body.structures.nonEmpty) {
+      val ostream = new ByteArrayOutputStream
+      val io = AvroType(classToTypeTag[Any](body.structures.head.getClass)).io
+      body.structures.foreach { s => io.write(s, ostream) }
+      ostream.toByteArray
+    }
+    else Array.empty
+    val header = ofp_header(OFPL_MULTIPART_REQUEST_LEN + bytes.length , xid)
+    ofp_multipart_request(header, body.tp, flags, Pad4(), RawSeq(bytes map UInt8.fromByte: _*))
+  }
+}
+
+case class ofp_multipart_request private[protocol] (header: ofp_header,
+                                                    tp: OFP_MULTIPART_TYPE,
+                                                    flags: ofp_multipart_request_flags.OFP_MULTIPART_REQUEST_FLAGS,
+                                                    pad: Pad4,
+                                                    rawBody: RawSeq[UInt8])
+
+object ofp_multipart_reply extends RawSeqFieldsInfo{
+  val rawFieldsLengthCalculator: LengthCalculator = {
+    case 4 => bodyLengthMinus(8)
+  }
+}
+
+case class ofp_multipart_reply private[protocol] (header: ofp_header,
+                                                  tp: OFP_MULTIPART_TYPE,
+                                                  flags: ofp_multipart_reply_flags.OFP_MULTIPART_REPLY_FLAGS,
+                                                  pad: Pad4,
+                                                  rawBody: RawSeq[UInt8]){
+  /* I'm pretty sure anyone needs structured representation of data, not just a raw array of bytes.
+     Raw data are accessible using rawBody method.
+   */
+  private def iarray = (rawBody map UInt8.toByte).toArray
+  private def read[A: TypeTag]: A = AvroType[A].io.read(new ByteArrayInputStream(iarray)).get
+
+  def body: Any = tp match {
+    case OFPMP_DESC           => ofp_multipart_desc_reply(read[ofp_desc])
+    case OFPMP_FLOW           => ???
+    case OFPMP_AGGREGATE      => ???
+    case OFPMP_TABLE          => ???
+    case OFPMP_PORT_STATS     => ???
+    case OFPMP_QUEUE          => ???
+    case OFPMP_GROUP          => ???
+    case OFPMP_GROUP_DESC     => ???
+    case OFPMP_GROUP_FEATURES => ???
+    case OFPMP_METER          => ???
+    case OFPMP_METER_CONFIG   => ???
+    case OFPMP_METER_FEATURES => ???
+    case OFPMP_TABLE_FEATURES => ???
+    case OFPMP_PORT_DESC      => ofp_multipart_port_desc_reply(read[RawSeq[ofp_port]])
+  }
 }
