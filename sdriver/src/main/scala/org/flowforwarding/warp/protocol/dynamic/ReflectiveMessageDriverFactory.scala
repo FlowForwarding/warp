@@ -10,12 +10,13 @@ import java.io.File
 
 import scala.util.{Failure, Try, Success}
 
-import org.flowforwarding.warp.protocol.{StaticDriver, OfpMsg}
-import org.flowforwarding.warp.controller.api.dynamic.{DynamicDriver, DynamicMessageDriverFactory, DynamicStructure}
-import org.flowforwarding.warp.protocol.ofp13.Ofp13Impl
+import com.typesafe.scalalogging.StrictLogging
 import spire.math.UByte
 
-class ReflectiveMessageDriverFactory(definitionPaths: Array[String]) extends DynamicMessageDriverFactory[ReflectiveStructure]{
+import org.flowforwarding.warp.protocol.{StaticDriver, OfpMsg}
+import org.flowforwarding.warp.controller.api.dynamic.DynamicMessageDriverFactory
+
+class ReflectiveMessageDriverFactory(definitionPaths: Array[String]) extends DynamicMessageDriverFactory[ReflectiveStructure] with StrictLogging{
   def this(definitionPaths: String*) = this(definitionPaths.toArray)
 
   def get(versionCode: UByte): ReflectiveMessageDriver =
@@ -30,11 +31,11 @@ class ReflectiveMessageDriverFactory(definitionPaths: Array[String]) extends Dyn
         val errorsData = t.errorsByFile.map { case (name, errors) =>
           errors.foldLeft(name + "\n") { case (s, (line, msg)) => s + s"$line. $msg\n" }
         }
-        println(errorsData.mkString(s"An error occurred while loading driver ($path)\n${t.getMessage}\n", "\n", ""))
+        logger.error(errorsData.mkString(s"An error occurred while loading driver ($path)\n${t.getMessage}\n", "\n", ""))
       case Failure(t) =>
-        println(t.getStackTrace.mkString(s"An error occurred while loading driver ($path)\n${t.getMessage}\n", "\n", ""))
+        logger.error(s"An error occurred while loading driver ($path)", t)
       case Success(d) =>
-        println(s"Driver defined at $path has been loaded successfully")
+        logger.info(s"Driver defined at $path has been loaded successfully")
     }
     result
   } collect {

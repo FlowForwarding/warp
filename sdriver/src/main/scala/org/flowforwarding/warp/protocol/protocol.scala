@@ -8,6 +8,8 @@ package org.flowforwarding.warp.protocol
 
 import java.io.{ByteArrayInputStream, ByteArrayOutputStream}
 
+import com.typesafe.scalalogging.StrictLogging
+
 import scala.util.{Failure, Try}
 import scala.reflect.runtime.universe._
 
@@ -30,7 +32,8 @@ trait UnionMemberTransform[U <: Union.not[_], R]{
 }
 
 abstract class StaticDriver[U <: Union.not[_]: TypeTag, SelfType <: StaticDriver[U, SelfType]] extends DriverWithReflectionSupport[OfpMsg[U, _]]
-                                                                                               with MessageDriverFactory[OfpMsg[U, _]] {
+                                                                                               with MessageDriverFactory[OfpMsg[U, _]]
+                                                                                               with StrictLogging {
   protected val msgTypeIO: AvroBareUnionIO[U, U]
   protected val getDPIDField: Any => UInt64
   protected val getXidField: Any => UInt32
@@ -63,7 +66,8 @@ abstract class StaticDriver[U <: Union.not[_]: TypeTag, SelfType <: StaticDriver
     val encoder = EncoderFactory.get.directBinaryEncoder(ostream, null)
     msgTypeIO.writeBare(msg, encoder, scala.collection.mutable.Map[Any, Long](), true)
     val res = versionCode.toByte +: ostream.toByteArray // add version
-    println("Encode: " + msg + " " + res.toList + " len = " + res.length)
+    logger.debug("Encode " + msg)
+    logger.debug(s"Result (${res.length} bytes): ${res.mkString("[", ", ", "]")}")
     res
   }
 
@@ -77,8 +81,8 @@ abstract class StaticDriver[U <: Union.not[_]: TypeTag, SelfType <: StaticDriver
         val istream = new ByteArrayInputStream(firstMessageData)
         istream.skip(1) //skip version
         val res = msgTypeIO read istream
-        println("Decode: " + firstMessageData.toList)
-        println(res)
+        logger.debug("Decode " + firstMessageData.mkString("[", ", ", "]"))
+        logger.debug("Result: " + res.toString)
         (res, rest)
       }
       else (Failure(new ArrayIndexOutOfBoundsException()), in)
