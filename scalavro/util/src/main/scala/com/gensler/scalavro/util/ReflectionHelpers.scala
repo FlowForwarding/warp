@@ -1,19 +1,20 @@
 package com.gensler.scalavro.util
 
+import com.typesafe.scalalogging.StrictLogging
+import com.typesafe.config.ConfigFactory
+
 import scala.collection.immutable.ListMap
 import scala.reflect.api.{ Universe, Mirror, TypeCreator }
 import scala.reflect.ClassTag
 import scala.reflect.runtime.universe._
 import scala.collection.mutable.Builder
 
-import com.typesafe.config.{ Config, ConfigFactory }
-
 /**
   * Companion object for [[ReflectionHelpers]]
   */
 object ReflectionHelpers extends ReflectionHelpers
 
-trait ReflectionHelpers extends Logging {
+trait ReflectionHelpers extends StrictLogging {
 
   protected[scalavro] val classLoaderMirror = runtimeMirror(getClass.getClassLoader)
 
@@ -72,7 +73,7 @@ trait ReflectionHelpers extends Logging {
 
     val reflectionsExcludedPackages = config.getStringList("reflections-excluded-packages")
 
-    log.debug(
+    logger.debug(
       "Reflections class loader scanner will ignore the following packages:\n    {}\n",
       reflectionsExcludedPackages.mkString("\n    ")
     )
