@@ -1,12 +1,7 @@
 *.class
 .history
-build/classes
-build/lib
-of_driver/src/main/java/org/flowforwarding/warp/controller/test/AvroMineTest.java
-of_driver/target
-controller/target
-project/target
-project/project
-scalavro/util/target
-scalavro/core/target
-sdriver/target
+driver/target
+driver/.classpath
+driver/.project
+driver/dependency-reduced-pom.xml
+driver/warp.conf
