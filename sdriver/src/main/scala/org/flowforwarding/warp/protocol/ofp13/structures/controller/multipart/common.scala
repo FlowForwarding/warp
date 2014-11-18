@@ -153,12 +153,13 @@ case class ofp_multipart_reply private[protocol] (header: ofp_header,
                                                   flags: ofp_multipart_reply_flags.OFP_MULTIPART_REPLY_FLAGS,
                                                   pad: Pad4,
                                                   rawBody: RawSeq[UInt8]){
+
+  private lazy val iarray = (rawBody map UInt8.toByte).toArray
+  private def read[A: TypeTag]: A = AvroType[A].io.read(new ByteArrayInputStream(iarray)).get
+
   /* I'm pretty sure anyone needs structured representation of data, not just a raw array of bytes.
      Raw data are accessible using rawBody method.
    */
-  private def iarray = (rawBody map UInt8.toByte).toArray
-  private def read[A: TypeTag]: A = AvroType[A].io.read(new ByteArrayInputStream(iarray)).get
-
   def body: Any = tp match {
     case OFPMP_DESC           => ofp_multipart_desc_reply(read[ofp_desc])
     case OFPMP_FLOW           => ???
