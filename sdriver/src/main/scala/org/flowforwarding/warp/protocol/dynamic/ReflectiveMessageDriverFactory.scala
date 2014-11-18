@@ -19,12 +19,28 @@ class ReflectiveMessageDriverFactory(definitionPaths: Array[String]) extends Dyn
   def this(definitionPaths: String*) = this(definitionPaths.toArray)
 
   def get(versionCode: UByte): ReflectiveMessageDriver =
-    (definedDrivers collectFirst { case Success((d, classes)) if d.versionCode == versionCode => ReflectiveMessageDriver(d, classes) }).get
+    (definedDrivers collectFirst { case (d, classes) if d.versionCode == versionCode => ReflectiveMessageDriver(d, classes) }).get
 
+  def supportedVersions: Array[UByte] = definedDrivers collect { case (d, _) => d.versionCode }
 
-  def supportedVersions: Array[UByte] = definedDrivers collect { case Success((d, _)) => d.versionCode }
+  private val definedDrivers = definitionPaths map { path =>
+    val result = loadDriver(path)
+    result match {
+      case Failure(t: CompilationFailedException) =>
+        val errorsData = t.errorsByFile.map { case (name, errors) =>
+          errors.foldLeft(name + "\n") { case (s, (line, msg)) => s + s"$line. $msg\n" }
+        }
+        println(errorsData.mkString(s"An error occurred while loading driver ($path)\n${t.getMessage}\n", "\n", ""))
+      case Failure(t) =>
+        println(t.getStackTrace.mkString(s"An error occurred while loading driver ($path)\n${t.getMessage}\n", "\n", ""))
+      case Success(d) =>
+        println(s"Driver defined at $path has been loaded successfully")
+    }
+    result
+  } collect {
+    case Success(driver) => driver
+  }
 
-  private val definedDrivers = definitionPaths map loadDriver
 
   private def recursiveListFiles(f: File): Seq[File] = {
     val these = f.listFiles
@@ -38,7 +54,7 @@ class ReflectiveMessageDriverFactory(definitionPaths: Array[String]) extends Dyn
     val sourceFiles = if(initial.isDirectory) recursiveListFiles(initial).filterNot(_.isDirectory) else Seq(initial)
     Compiler.compile(sourceFiles) match {
       case Success(classes) => driverInfo(classes)
-      case Failure(t) => println(t); Failure(t)
+      case Failure(t) => Failure(t)
     }
   }
 

@@ -75,11 +75,7 @@ object Compiler {
    of what went wrong during compilation.
   */
 class CompilationFailedException(val messages: Map[String, Map[Int, String]])
-  extends Exception(s"Compilation completed with ${messages.values.map(_.size).sum} errors.") {
+  extends Exception(s"Compilation completed with ${messages.values.map(_.size).sum} error(s).") {
 
-  private val errorsByFile = messages map {
-    case (name, errors) => errors.toSeq.sortBy(_._1).foldLeft(name + "\n") { case (s, (line, msg)) => s + s"$line. $msg\n" }
-  }
-
-  val errorsToString = errorsByFile mkString "\n"
+  val errorsByFile = messages mapValues {_ .toSeq.sortBy(_._1) }
 }
