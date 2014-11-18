@@ -9,25 +9,28 @@ object Build extends Build{
   import Dependencies._
 
   val SCALA_MAJOR_VERSION = "2.11"
-  val SCALA_MINOR_VERSION = "1"
+  val SCALA_MINOR_VERSION = "4"
   val SCALA_VERSION = SCALA_MAJOR_VERSION + "." + SCALA_MINOR_VERSION
 
   val WARP_VERSION = "0.5"
   val SCALAVRO_VERSION = "0.6.2-patched"
+
+  val loggingLibs = Seq(scala_logging, logback_core, logback)
 
   lazy val warpCommonSettings = Defaults.defaultSettings ++ Seq(
     organization  := "org.flowforwarding",
     version       := "0.5",
     scalaVersion  := SCALA_VERSION,
     scalacOptions := Seq("-deprecation", "-unchecked", "-encoding", "utf8"),
-    resolvers     ++= Dependencies.resolutionRepos
+    resolvers     ++= Dependencies.resolutionRepos,
+    libraryDependencies ++= loggingLibs
   )
 
   lazy val of_driver_assemblySettings = sbtassembly.Plugin.assemblySettings ++ Seq(mainClass := Some("org.flowforwarding.warp.jcontroller.JController"))
 
   lazy val of_driver = Project("of_driver", file("./of_driver"), settings = warpCommonSettings ++ of_driver_assemblySettings)
     .settings(
-      libraryDependencies ++= compile(akka, slf4j, logback_core, logback, netty, jackson_core_asl, jackson_mapper_asl)
+      libraryDependencies ++= compile(akka, netty, jackson_core_asl, jackson_mapper_asl)
     )
 
   lazy val controller = Project("controller", file("./controller"), settings = warpCommonSettings ++ baseAssemblySettings)
@@ -43,7 +46,7 @@ object Build extends Build{
           case x => old(x)
         }
       },
-      libraryDependencies ++= compile(akka, spray_json, spray_http, spray_can, spray_routing, spire) ++ test(scalatest)
+      libraryDependencies ++= compile(akka, akka_slf4j, spray_json, spray_http, spray_can, spray_routing, spire) ++ test(scalatest)
     )
 
 //  lazy val jdriver = Project("jdriver", file("./jdriver"), settings = warpCommonSettings ++ assemblySettings)
@@ -110,7 +113,7 @@ object Build extends Build{
     organization := "com.gensler",
     scalaVersion := SCALA_VERSION,
     resolvers ++= Dependencies.resolutionRepos,
-    libraryDependencies ++= Seq(scala_reflect, slf4j, logback % "runtime", scalatest % "test"),
+    libraryDependencies ++= loggingLibs ++ Seq(scala_reflect, scalatest % "test"),
     scalacOptions in Compile ++= Seq(
       "-unchecked",
       "-deprecation",
