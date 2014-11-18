@@ -18,7 +18,7 @@ import org.flowforwarding.warp.controller.driver_interface.{OFMessage, MessageDr
 import org.flowforwarding.warp.controller.bus.{ServiceRequest, ServiceBusActor, MessageEnvelope, MessageBusActor}
 import org.flowforwarding.warp.controller.modules.Module._
 
-trait Module extends Actor{
+trait Module extends Actor with ActorLogging{
 
   protected def compatibleWith(factory: MessageDriverFactory[_]): Boolean
   protected def started(): Unit

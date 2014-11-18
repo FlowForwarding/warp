@@ -50,14 +50,14 @@ class RestApiServer(val bus: ServiceBus, serverPrefixes: Array[String]) extends 
       val path = uri.path.toString
       serverPrefixes.find(path.startsWith) foreach { serverPrefix =>
         val serviceUri = path.stripPrefix(serverPrefix)
-        println("Server prefix: " + serverPrefix)
-        println("Service uri: " + serviceUri)
+        log.debug("Server prefix: " + serverPrefix)
+        log.debug("Service uri: " + serviceUri)
         askFirst(RestApiRequest(serviceUri, r)) pipeTo sender()
       }
     case Http.Bound(_) =>
       dispatcher = Some(sender())
     case Http.CommandFailed(cmd)  =>
-      println("Command failed: " + cmd.failureMessage)
+      log.debug("Command failed: " + cmd.failureMessage)
     case c: Http.Connected => // TODO: handle other Http messages
       sender() ! Http.Register(self)
   }

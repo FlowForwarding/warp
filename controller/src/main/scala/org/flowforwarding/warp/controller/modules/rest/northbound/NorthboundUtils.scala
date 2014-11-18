@@ -7,6 +7,7 @@
 package org.flowforwarding.warp.controller.modules.rest.northbound
 
 import java.util.concurrent.TimeoutException
+import com.typesafe.scalalogging.StrictLogging
 import org.flowforwarding.warp.controller.modules.managers.sal._
 import spire.math.{UInt, UShort}
 import spray.http.HttpCharsets._
@@ -18,7 +19,7 @@ import spray.http.{ContentType, HttpEntity, HttpResponse}
 
 import scala.util.{Failure, Success}
 
-object NorthboundUtils{
+object NorthboundUtils extends StrictLogging{
   implicit def fuRecoverExt(f: Future[HttpResponse]) = new {
     def withServiceErrorReport(serviceUnavailableMessage: String)(implicit context: ExecutionContext) = f recover {
       case e: TimeoutException => HttpResponse(503, serviceUnavailableMessage)
@@ -36,7 +37,7 @@ object NorthboundUtils{
       case Success(n) =>
         action(n) withServiceErrorReport serviceUnavailableMessage
       case Failure(t) =>
-        println("Creation of node failed: " + t.getMessage)
+        logger.error("Creation of node failed", t)
         Future.successful(HttpResponse(404, creationFailedMessage))
     }
 
@@ -48,7 +49,7 @@ object NorthboundUtils{
       case Success(nc) =>
         action(nc) withServiceErrorReport serviceUnavailableMessage
       case Failure(t) =>
-        println("Creation of node or connector failed: " + t.getMessage)
+        logger.error("Creation of node or connector failed", t)
         Future.successful(HttpResponse(404, creationFailedMessage))
     }
   

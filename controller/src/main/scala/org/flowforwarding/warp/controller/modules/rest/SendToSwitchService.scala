@@ -101,8 +101,7 @@ class SendToSwitchService(val bus: ControllerBus, serverPrefix: String) extends 
         // think about multipart http messages for multipart ofp messages
         HttpResponse(StatusCodes.OK, HttpEntity(contentType = ContentType(`application/json`, `UTF-8`), string = JsArray(json: _*).toString))
       case SendingFailed(t) =>
-        t.printStackTrace()
-        println("Internal error: " + t.getMessage)
+        log.error("Unable to send message", t)
         HttpResponse(StatusCodes.InternalServerError, HttpEntity("Internal error: " + t.getMessage))
     }
   }

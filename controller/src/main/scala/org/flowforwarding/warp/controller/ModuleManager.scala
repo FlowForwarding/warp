@@ -9,6 +9,8 @@ package org.flowforwarding.warp.controller
 import java.util.concurrent.TimeUnit
 import java.net.InetSocketAddress
 
+import com.typesafe.config.ConfigFactory
+
 import scala.reflect.ClassTag
 import scala.util.{Failure, Success, Try}
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -56,7 +58,7 @@ object ModuleManager {
 }
 
 
-private class ModuleManager(val bus: ControllerBus, manager: ActorRef) extends ControllerBusActor {
+private class ModuleManager(val bus: ControllerBus, manager: ActorRef) extends ControllerBusActor with ActorLogging {
   import org.flowforwarding.warp.controller.ModuleManager._
 
   type T <: OFMessage
@@ -96,13 +98,14 @@ private class ModuleManager(val bus: ControllerBus, manager: ActorRef) extends C
 
     case c: Tcp.Connected =>
       manager ! c
-      println("[INFO] Getting Switch connection \n")
       val s = sender()
       val connectionHandler = context.actorOf(Props.create(classOf[SwitchConnector[T, DriverType]], bus, self))
       connectionHandler ? CheckCompatibility(driverFactory) onComplete {
         case Success(true) =>
+          log.info("Created SwitchConnector")
           s ! TcpMessage.register(connectionHandler)
-        case _ =>
+        case Failure(t) =>
+          log.error(t, "Unable to establish connection")
           context stop connectionHandler
       }
 

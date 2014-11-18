@@ -96,7 +96,9 @@ private class SwitchConnector[T <: OFMessage, DriverType <: MessageDriver[T]](va
       case (Success(msg), rest) if rest.length > 0 || rest.length == data.length => decodeMessages(driver, msg :: messages, rest)
       case (Success(msg), rest) if rest.length == 0 => (msg :: messages, rest)
       case (Failure(t), rest) if rest.length == data.length => (messages, rest)
-      case (Failure(t), rest) => t.printStackTrace(); (messages, rest)
+      case (Failure(t), rest) =>
+        log.error("Unable to decode message", t)
+        (messages, rest)
     }
   }
 
@@ -121,7 +123,7 @@ private class SwitchConnector[T <: OFMessage, DriverType <: MessageDriver[T]](va
           }
           publishMessages(driver, messages, dpid)
         case Failure(t) =>
-          println("Unable to get DPID: " + t)
+          log.error(t, "Unable to get DPID")
           context stop self
       }
 
@@ -161,7 +163,7 @@ private class SwitchConnector[T <: OFMessage, DriverType <: MessageDriver[T]](va
     case SendToSwitchInternal(msg: T, needReply) =>
       driver encodeMessage msg match {
         case Success(bytes) =>
-          println("[DEBUG]: " + bytes.toVector)
+          log.debug("Send bytes to switch " + bytes.mkString("[", ",", "]"))
           tcpChannel ! TcpMessage.write(ByteString.fromArray(bytes))
           if(needReply) {
             val p = Promise[SwitchResponse[T]]()
@@ -171,7 +173,7 @@ private class SwitchConnector[T <: OFMessage, DriverType <: MessageDriver[T]](va
           else
             sender() ! SendingSuccessfull
         case Failure(t) =>
-          t.printStackTrace()
+          log.error(t, "Unable to encode message")
           sender() ! SendingFailed(t)
       }
 

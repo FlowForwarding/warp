@@ -14,7 +14,7 @@ add module flows_nb of type org.flowforwarding.warp.controller.modules.rest.nort
 add module flows_manager of type org.flowforwarding.warp.controller.modules.managers.FlowsManager -p
 add module ofp_flows of type org.flowforwarding.warp.controller.modules.managers.impl.openflow.v13.Ofp13FlowsService -p
 
-start 10.17.8.65 6633
+start 0.0.0.0 6633
 
 #set factory org.flowforwarding.warp.protocol.ofp13.Ofp13Impl -p
 

@@ -77,9 +77,9 @@ class MessagesTestModule[DriverType <: OfpFeaturesExtractor[DynamicStructure] wi
               s"[MSG TEST] TEST ${if (succeed) "SUCCEED" else "FAILED"} [${testData.description}].\n\n"
             }
           }
-        Future.fold(results)(s"[MSG TEST] --- START TESTS (${ts.size}) ---\n\n")(_ + _) foreach println
+        Future.fold(results)(s"[MSG TEST] --- START TESTS (${ts.size}) ---\n\n")(_ + _) foreach log.info
       case Failure(t) =>
-        println("[MSG TEST] Unable to start tests \n" +  t.getMessage + "\n" + t.getStackTrace.mkString("\n"))
+        log.info("[MSG TEST] Unable to start tests \n" +  t.getMessage + "\n" + t.getStackTrace.mkString("\n"))
     }
   }
 

@@ -40,10 +40,10 @@ abstract class MessageHandlers[T <: OFMessage, ApiSupport <: OfpVersionSupport](
           castedMessage <- castMessage(message)} {
         val response = handleMessage(castedDriver, dpid, castedMessage)
         response match {
-          case Success(messages) => //println("MESSAGES                " + messages.toList);
+          case Success(messages) =>
             messages foreach { m => askFirst(SendToSwitch(dpid, m, false)) }
           case Failure(t) =>
-            t.printStackTrace()
+            log.error("Unable to handle message", t)
         }
       }
     case SwitchDisconnected(dpid, driver: MessageDriver[_]) =>

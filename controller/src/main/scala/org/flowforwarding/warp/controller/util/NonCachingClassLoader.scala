@@ -39,7 +39,6 @@ class NonCachingClassLoader(classFilter: String => Boolean)(implicit parent: Cla
               fileContent(classNameToPath(name))
             } catch {
               case e: IOException =>
-                e.printStackTrace()
                 throw new ClassNotFoundException("Could not read class file", e)
             }
           val result = defineClass(name, classData, 0, classData.length)

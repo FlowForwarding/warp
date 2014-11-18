@@ -54,7 +54,7 @@ class Ofp13FlowsService(controllerBus: ControllerBus) extends Ofp13MessageHandle
 
   override def onError(dpid: ULong, msg: Error): Array[BuilderInput] = {
     // TODO: check xid to ensure that it is really flow-related error
-    println(s"Flow error (${msg.message}}: dpid = $dpid, type = ${msg.errorType}}, code = ${msg.errorCode} ")
+    log.debug(s"Flow error (${msg.message}}: dpid = $dpid, type = ${msg.errorType}}, code = ${msg.errorCode} ")
     Array.empty
   }
 
@@ -66,7 +66,7 @@ class Ofp13FlowsService(controllerBus: ControllerBus) extends Ofp13MessageHandle
     } foreach {
       f => flows(node) = (flows(node) filterNot (f==)) :+ f.copy(installInHw = !f.installInHw)
     }
-    println(s"Flow removed: dpid = $dpid, reason = ${msg.reason}")
+    log.debug(s"Flow removed: dpid = $dpid, reason = ${msg.reason}")
     Array.empty
   }
 
