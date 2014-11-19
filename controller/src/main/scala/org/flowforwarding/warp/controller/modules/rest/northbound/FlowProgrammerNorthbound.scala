@@ -75,7 +75,7 @@ class FlowProgrammerNorthbound(val bus: ControllerBus, serverPrefix: String) ext
     pn(nodeType, nodeId) { n =>
       askFirst(GetNodeFlows(n)) map {
         case NodeFlows(flows) => jsonOk(JsObject("flowConfig" -> JsArray(flows map flowToJs(n): _*)))
-        case NotFound => HttpResponse(404, "The containerName or NodeId or Configuration name is not found")
+        case NotFound =>         HttpResponse(404, "The containerName or NodeId or Configuration name is not found")
       }
     }
 
@@ -83,7 +83,7 @@ class FlowProgrammerNorthbound(val bus: ControllerBus, serverPrefix: String) ext
     pn(nodeType, nodeId) { n =>
       askFirst(GetFlow(n, flowName)) map {
         case NodeFlow(flow) => jsonOk(flowToJs(n)(flow))
-        case NotFound => HttpResponse(404, "The containerName or NodeId or Configuration name is not found")
+        case NotFound =>       HttpResponse(404, "The containerName or NodeId or Configuration name is not found")
       }
     }
 
@@ -92,14 +92,13 @@ class FlowProgrammerNorthbound(val bus: ControllerBus, serverPrefix: String) ext
       Try { flowData.parseJson.convertTo[(Node[_], Flow)] } match {
         case Success((_, flow)) =>
           askFirst(AddFlow(n, flow.copy(name = Some(flowName)))) map {
-            case Done =>          HttpResponse(200, "Static Flow modified successfully") // 201 Created	Flow Config processed successfully
-            case NotFound =>      HttpResponse(404, "The Container Name or nodeId is not found")
-            case NotAcceptable => HttpResponse(406, "Cannot operate on Default Container when other Containers are active")
-            case Conflict =>      HttpResponse(409, "Failed to create Static Flow entry due to Conflicting Name or configuration")
-            case InvalidParams => HttpResponse(500,	"Failed to create Static Flow entry. Failure Reason included in HTTP Error response")
+            case Done =>               HttpResponse(200, "Static Flow modified successfully") // 201 Created	Flow Config processed successfully
+            case NotFound =>           HttpResponse(404, "The Container Name or nodeId is not found")
+            case NotAcceptable(msg) => HttpResponse(406, "Cannot operate on Default Container when other Containers are active")
+            case Conflict(msg) =>      HttpResponse(409, msg)
+            case InvalidParams(msg) => HttpResponse(500, msg)
           }
         case Failure(f) =>
-          f.printStackTrace()
           Future.successful(HttpResponse(400,	"Failed to create Static Flow entry due to invalid flow configuration"))
       }
     }
@@ -107,9 +106,9 @@ class FlowProgrammerNorthbound(val bus: ControllerBus, serverPrefix: String) ext
   def handleRemoveFlow(nodeType: String, nodeId: String, flowName: String) =
     pn(nodeType, nodeId) { n =>
       askFirst(RemoveFlow(n, flowName)) map {
-        case Done =>          HttpResponse(204, "Flow Config deleted successfully")
-        case NotFound =>      HttpResponse(404, "The Container Name or Node-id or Flow Name passed is not found")
-        case NotAcceptable => HttpResponse(406, "Failed to delete Flow config due to invalid operation. Failure details included in HTTP Error response")
+        case Done =>               HttpResponse(204, "Flow Config deleted successfully")
+        case NotFound =>           HttpResponse(404, "The Container Name or Node-id or Flow Name passed is not found")
+        case NotAcceptable(msg) => HttpResponse(406, "Failed to delete Flow config due to invalid operation. Failure details included in HTTP Error response")
         //  500 Internal Server Error	Failed to delete Flow config. Failure Reason included in HTTP Error response
       }
     }
@@ -117,9 +116,9 @@ class FlowProgrammerNorthbound(val bus: ControllerBus, serverPrefix: String) ext
   def handleToggleFlow(nodeType: String, nodeId: String, flowName: String) =
     pn(nodeType, nodeId) { n =>
       askFirst(ToggleFlow(n, flowName)) map {
-        case Done =>          HttpResponse(200, "Flow Config processed successfully")
-        case NotFound =>      HttpResponse(404, "The Container Name or Node-id or Flow Name passed is not found")
-        case NotAcceptable => HttpResponse(406, "Failed to delete Flow config due to invalid operation. Failure details included in HTTP Error response")
+        case Done =>               HttpResponse(200, "Flow Config processed successfully")
+        case NotFound =>           HttpResponse(404, "The Container Name or Node-id or Flow Name passed is not found")
+        case NotAcceptable(msg) => HttpResponse(406, "Failed to delete Flow config due to invalid operation. Failure details included in HTTP Error response")
         //  500 Internal Server Error	Failed to delete Flow config. Failure Reason included in HTTP Error response
       }
     }

@@ -15,6 +15,7 @@ import scala.concurrent.Future
 import scala.reflect.ClassTag
 
 trait Broadcast
+trait ProtocolInternal
 
 trait NodeTag[NodeType <: Node[_], ConnectorType <: NodeConnector[_, NodeType]] {
   protected implicit val nodeTag: ClassTag[NodeType]
@@ -26,17 +27,16 @@ abstract class AbstractManager[R <: ServiceRequest: ClassTag] extends Service{
   override protected def compatibleWith(factory: MessageDriverFactory[_]): Boolean = true
 
   override def started() = { registerService {
-    case req => implicitly[ClassTag[R]].runtimeClass.isAssignableFrom(req.getClass) && !req.isInstanceOf[Broadcast]
+    case req => implicitly[ClassTag[R]].runtimeClass.isAssignableFrom(req.getClass) && !req.isInstanceOf[Broadcast] && !req.isInstanceOf[ProtocolInternal]
   }}
 
   import AbstractService._
 
-  protected def reduceServiceResponses(iterable: Array[Any]) =
-    if (iterable contains Done) Done
-    else if (iterable.nonEmpty && (iterable forall { _ == NotFound })) NotFound
-    else if (iterable.nonEmpty && (iterable forall { _ == NotAcceptable })) NotAcceptable
-    else if (iterable.nonEmpty && (iterable forall { _ == Conflict })) Conflict
-    else InvalidParams
+  protected def reduceResponses[T](f: Array[Any] => T)(nodes: Array[Any]) =
+    nodes collectFirst { case ip: InvalidParams => ip } getOrElse {
+      if (nodes.nonEmpty && nodes.forall { _ == NotFound }) NotFound
+      else f(nodes)
+    }
 }
 
 trait AbstractService[NodeType <: Node[_], ConnectorType <: NodeConnector[_, NodeType]] extends Service with MessageConsumer {
@@ -49,12 +49,12 @@ trait AbstractService[NodeType <: Node[_], ConnectorType <: NodeConnector[_, Nod
   protected def checkConnector(connector: NodeConnector[_, _]) = implicitly[ClassTag[ConnectorType]].runtimeClass == connector.getClass
   protected def castConnector(connector: NodeConnector[_, _]): ConnectorType = implicitly[ClassTag[ConnectorType]].runtimeClass.asInstanceOf[Class[ConnectorType]].cast(connector)
 
-  val handleRequestImpl: PartialFunction[ServiceRequest, Future[Any]]
+  def handleRequestImpl: PartialFunction[ServiceRequest, Future[Any]]
 
   override protected def handleRequest(e: ServiceRequest): Future[Any] = handleRequestImpl(e)
 
   override protected def started(): Unit = { registerService {
-    case req: ServiceRequest with Broadcast => handleRequestImpl isDefinedAt req
+    case req @ (_: ServiceRequest with Broadcast | _: ServiceRequest with ProtocolInternal) => handleRequestImpl isDefinedAt req
   }}
 }
 
@@ -62,7 +62,7 @@ object AbstractService {
   trait ServiceResponse
   case object Done extends ServiceResponse
   case object NotFound extends ServiceResponse
-  case object InvalidParams extends ServiceResponse
-  case object NotAcceptable extends ServiceResponse
-  case object Conflict extends ServiceResponse
+  case class InvalidParams(message: String) extends ServiceResponse
+  case class NotAcceptable(message: String) extends ServiceResponse
+  case class Conflict(message: String) extends ServiceResponse
 }

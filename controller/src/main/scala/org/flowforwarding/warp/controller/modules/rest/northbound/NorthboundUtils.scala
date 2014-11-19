@@ -7,22 +7,26 @@
 package org.flowforwarding.warp.controller.modules.rest.northbound
 
 import java.util.concurrent.TimeoutException
-import com.typesafe.scalalogging.StrictLogging
-import org.flowforwarding.warp.controller.modules.managers.sal._
-import spire.math.{UInt, UShort}
-import spray.http.HttpCharsets._
-import spray.http.MediaTypes._
-import spray.json._
 
 import scala.concurrent.{ExecutionContext, Future}
-import spray.http.{ContentType, HttpEntity, HttpResponse}
-
 import scala.util.{Failure, Success}
+
+import spire.math.{UInt, UShort}
+
+import spray.http.HttpCharsets._
+import spray.http.MediaTypes._
+import spray.http.{ContentType, HttpEntity, HttpResponse}
+import spray.json._
+
+import com.typesafe.scalalogging.StrictLogging
+
+import org.flowforwarding.warp.controller.bus.ServiceNotFoundException
+import org.flowforwarding.warp.controller.modules.managers.sal._
 
 object NorthboundUtils extends StrictLogging{
   implicit def fuRecoverExt(f: Future[HttpResponse]) = new {
     def withServiceErrorReport(serviceUnavailableMessage: String)(implicit context: ExecutionContext) = f recover {
-      case e: TimeoutException => HttpResponse(503, serviceUnavailableMessage)
+      case _: TimeoutException | _: ServiceNotFoundException => HttpResponse(503, serviceUnavailableMessage)
       case e =>
         val err = if(e.getMessage == "Boxed Error" && e.getCause != null) e.getCause else e
         HttpResponse(500, err.getStackTrace.mkString(err.getClass.getSimpleName + "\n" + err.getMessage + "\n", "\n", ""))

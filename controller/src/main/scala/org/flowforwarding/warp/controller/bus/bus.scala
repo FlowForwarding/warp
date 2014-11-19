@@ -40,6 +40,8 @@ trait MessageBus {
     }
 }
 
+class ServiceNotFoundException extends Exception
+
 /* TODO: Register multiple services per actor */
 trait ServiceBus{
   private implicit val timeout = Timeout(5, TimeUnit.SECONDS)
@@ -57,7 +59,7 @@ trait ServiceBus{
       case (subscriber, accepts) if accepts(request) => subscriber ? request
     } match {
       case Some(response) => response pipeTo requester
-      case None => Future.failed(new Exception("Service not found."))
+      case None => Future.failed(new ServiceNotFoundException)
     }
   }
 
@@ -65,7 +67,7 @@ trait ServiceBus{
     val responses = services collect { // collect ???
       case (subscriber, accepts) if accepts(request) =>
         subscriber ? request recoverWith {
-          case to: TimeoutException => Future.failed(new Exception("Service not found."))
+          case to: TimeoutException => Future.failed(new ServiceNotFoundException)
           case t: Throwable => Future.failed(t)
         }
     }

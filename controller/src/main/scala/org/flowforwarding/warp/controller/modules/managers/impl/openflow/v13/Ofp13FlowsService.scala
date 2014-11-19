@@ -33,7 +33,6 @@ class Ofp13FlowsService(controllerBus: ControllerBus) extends Ofp13MessageHandle
                                                          with Ofp13Tag
                                                          with FixedStructuresSender {
   import FlowsMessages._
-  import scala.collection.mutable.{Map => MMap}
 
   override def started() = {
     super.started()
@@ -47,7 +46,7 @@ class Ofp13FlowsService(controllerBus: ControllerBus) extends Ofp13MessageHandle
     }
   }
 
-  private val flows = MMap[OFNode, Seq[Flow]]()
+  private var flows = Map[OFNode, Seq[Flow]]()
 
   private val hasName = (name: String) => (flow: Flow) => flow.name contains name
   private def nodeFlow(node: OFNode, name: String) = flows.get(node) flatMap { _ find hasName(name) }
@@ -64,7 +63,7 @@ class Ofp13FlowsService(controllerBus: ControllerBus) extends Ofp13MessageHandle
     flows(node) find {
       f => f.priority == Some(msg.priority) && f.matchFields == msg.m.fields.toSet && f.installInHw
     } foreach {
-      f => flows(node) = (flows(node) filterNot (f==)) :+ f.copy(installInHw = !f.installInHw)
+      f => flows = flows.updated(node, (flows(node) filterNot (f==)) :+ f.copy(installInHw = !f.installInHw))
     }
     log.debug(s"Flow removed: dpid = $dpid, reason = ${msg.reason}")
     Array.empty
@@ -86,32 +85,32 @@ class Ofp13FlowsService(controllerBus: ControllerBus) extends Ofp13MessageHandle
     val portsSet     = flow.matchFields exists { case _: TpSrc | _: TpDst => true; case _ => false }
 
     if (nwAddressSet && !ethertypeSet) { // network address check
-      println("The match on network source or destination address cannot be accepted if the match on proper ethertype is missing")
-      InvalidParams
+      InvalidParams("The match on network source or destination address cannot be accepted if the match on proper ethertype is missing")
     }
     else if (protocolSet && !ethertypeSet) { // transport protocol check
-      println("The match on network protocol cannot be accepted if the match on proper ethertype is missing")
-      InvalidParams
+      InvalidParams("The match on network protocol cannot be accepted if the match on proper ethertype is missing")
     }
     else if (portsSet && (!ethertypeSet || !protocolSet)) { // transport ports check
-      println("The match on transport source or destination port cannot be accepted if the match on network protocol and match on IP ethertype are missing")
-      InvalidParams
+      InvalidParams("The match on transport source or destination port cannot be accepted if the match on network protocol and match on IP ethertype are missing")
     }
     else afterValidation(node, flow)
   }
 
   override def addFlow(node: OFNode, flow: Flow): Future[ServiceResponse] = Future.successful {
     withValidation(node, flow, (n, f) => {
-      def conflict(f1: Flow)(f2: Flow) = f1.name == f2.name || (f1.priority == f2.priority && f1.matchFields == f2.matchFields)
+      def nameConflict(f1: Flow)(f2: Flow) = f1.name == f2.name
+      def matchConflict(f1: Flow)(f2: Flow) = f1.priority == f2.priority && f1.matchFields == f2.matchFields
       val (res, updatedFlows) = flows.get(n) match {
-        case Some(fs) if fs exists conflict(f) =>
-          (Conflict, fs)
+        case Some(fs) if fs exists nameConflict(f) =>
+          (Conflict("Entry with this name on specified switch already exists"), fs)
+        case Some(fs) if fs exists matchConflict(f) =>
+          (Conflict("A flow with same match and priority exists on the target node"), fs)
         case Some(fs) =>
           (Done, fs :+ flow)
         case None =>
           (Done, Seq(f))
       }
-      flows(n) = updatedFlows
+      flows = flows.updated(n, updatedFlows)
       if(res == Done && f.installInHw)
         installFlow(n, f)
       res
@@ -128,7 +127,7 @@ class Ofp13FlowsService(controllerBus: ControllerBus) extends Ofp13MessageHandle
     nodeFlow(node, flowName) match {
       case Some(f) =>
         uninstallFlow(node, f)
-        flows(node) = flows(node) filterNot hasName(flowName)
+        flows = flows.updated(node, flows(node) filterNot hasName(flowName))
         Future.successful(Done)
       case _ =>
         Future.successful(NotFound)
@@ -245,7 +244,7 @@ class Ofp13FlowsService(controllerBus: ControllerBus) extends Ofp13MessageHandle
           uninstallFlow(node, f)
         else
           installFlow(node, f)
-        flows(node) = (flows(node) filterNot hasName(flowName)) :+ f.copy(installInHw = !f.installInHw)
+        flows = flows.updated(node, (flows(node) filterNot hasName(flowName)) :+ f.copy(installInHw = !f.installInHw))
         Future.successful(Done)
       case _ =>
         Future.successful(NotFound)

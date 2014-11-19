@@ -29,26 +29,25 @@ import ConnectionMessages._
 
 class ConnectionManager(val bus: ServiceBus) extends AbstractManager[ConnectionServiceRequest] {
 
-  private def reduceNodes(nodes: Array[Any]) =
-    if (nodes contains InvalidParams) InvalidParams
-    else if (nodes forall { _ == NotFound }) NotFound
-    else Nodes(nodes.collect { case ns: Nodes => ns }
-                    .foldLeft(Seq.empty[Node[_]]) { case (ids1, Nodes(ids2)) => ids1 ++ ids2 })
+  private val reduceNodes = reduceResponses { responses =>
+    Nodes(responses.collect { case ns: Nodes => ns}
+                   .foldLeft(Seq.empty[Node[_]]) { case (ids1, Nodes(ids2)) => ids1 ++ ids2})
+  } _
 
   override protected def handleRequest(e: ServiceRequest): Future[Any] = e match {
-    case Connect(node, ip, port) => askAll(new Connect(node, ip, port) with Broadcast) map reduceServiceResponses
-    case Disconnect(node)        => askAll(new Disconnect(node)        with Broadcast) map reduceServiceResponses
-    case GetNodes(address)       => askAll(new GetNodes(address)       with Broadcast) map reduceNodes
+    case GetNodes(address)       => askAll(new GetNodes(address)         with Broadcast) map reduceNodes
+    case Connect(node, ip, port) => askFirst(new Connect(node, ip, port) with Broadcast)
+    case Disconnect(node)        => askFirst(new Disconnect(node)        with Broadcast)
   }
 }
 
 trait ConnectionService[NodeType <: Node[_], ConnectorType <: NodeConnector[_, NodeType]] extends AbstractService[NodeType, ConnectorType] {
   self: NodeTag[NodeType, ConnectorType] =>
 
-  val handleRequestImpl: PartialFunction[ServiceRequest, Future[Any]] = {
+  def handleRequestImpl: PartialFunction[ServiceRequest, Future[Any]] = {
+    case GetNodes(address)                    => getNodes(address)
     case Connect(n, ip, port) if checkNode(n) => connect(castNode(n), ip, port)
     case Disconnect(n)        if checkNode(n) => disconnect(castNode(n))
-    case GetNodes(address)                    => getNodes(address)
   }
 
   def connect(node: NodeType, ip: InetAddress, port: Int): Future[ServiceResponse]

@@ -30,6 +30,18 @@ class SwitchManagerNorthbound(val bus: ControllerBus, serverPrefix: String) exte
   override val servicePrefix = "/switchmanager"
 
   override def route =
+    // GET /{containerName}/nodes
+    path(Segment / "nodes") { containerName =>
+      get {
+        complete(handleGetNodes())
+      }
+    } ~
+    // POST /{containerName}/save
+    path(Segment / "save") { containerName =>
+      post {
+        complete(handleSave())
+      }
+    } ~
     // GET /{containerName}/node/{nodeType}/{nodeId}     
     path(Segment / "node" / Segment / Segment) { (containerName, ntype, nid) =>
       get {
@@ -40,12 +52,6 @@ class SwitchManagerNorthbound(val bus: ControllerBus, serverPrefix: String) exte
     path(Segment / "node" / Segment / Segment / "property" / Segment)  { (containerName, ntype, nid, pname) =>
       delete {
         complete(handleRemoveNodeProperty(ntype, nid, pname))
-      }
-    } ~
-    // GET /{containerName}/node/{nodeType}/{nodeId}/property/{propertyName}    
-    path(Segment / "node" / Segment / Segment / "property" / Segment) { (containerName, ntype, nid, name) =>
-      get {
-        complete(handleGetNodeProperty(ntype, nid, name))
       }
     } ~
     // PUT /{containerName}/node/{nodeType}/{nodeId}/property/{propertyName}/{propertyValue}   
@@ -65,18 +71,6 @@ class SwitchManagerNorthbound(val bus: ControllerBus, serverPrefix: String) exte
       put {
         complete(handleAddNodeConnectorProperty(ntype, nid, ctype, cid, name, value))
       }
-    } ~
-    // GET /{containerName}/nodes   
-    path(Segment / "nodes" ) { containerName =>
-      get {
-        complete(handleGetNodes())
-      }
-    } ~
-    // POST /{containerName}/save   
-    path(Segment / "save" ) { containerName =>
-      post {         
-        complete(handleSave())
-      }
     }
 
   private val pn = processNode("Inventory Manager", "The Container Name or node or configuration name is not found") _
@@ -87,8 +81,8 @@ class SwitchManagerNorthbound(val bus: ControllerBus, serverPrefix: String) exte
       case Nodes(nodes) =>
         val allProps = nodes map { case (n, props) => JsObject("node" -> n.toJson, "properties" -> props.toJson)}
         jsonOk(JsObject("nodeProperties" -> JsArray(allProps.toList)))
-      case InvalidParams =>
-        HttpResponse(406, "Invalid Controller IP Address passed")
+      case InvalidParams(msg) =>
+        HttpResponse(406, msg)
     } withServiceErrorReport "Inventory Manager"
   }
 
@@ -108,10 +102,10 @@ class SwitchManagerNorthbound(val bus: ControllerBus, serverPrefix: String) exte
       Property(propertyName, propertyValue) match {
         case Success(p) =>
           askFirst(AddNodeProperty(n, p)) map {
-            case Done => HttpResponse(201, "Operation successful")
-            case NotFound => HttpResponse(404, "The Container Name or nodeId or configuration name is not found")
-            case NotAcceptable => HttpResponse(406, "The property cannot be configured in non-default container")
-            case Conflict =>  HttpResponse(409, "Unable to update configuration due to cluster conflict or conflicting description property")
+            case Done =>               HttpResponse(201, "Operation successful")
+            case NotFound =>           HttpResponse(404, "The Container Name or nodeId or configuration name is not found")
+            case NotAcceptable(msg) => HttpResponse(406, msg)
+            case Conflict(msg) =>      HttpResponse(409, msg)
           }
         case Failure(f) =>
           Future.successful(HttpResponse(404, "Wrong property"))
@@ -120,14 +114,7 @@ class SwitchManagerNorthbound(val bus: ControllerBus, serverPrefix: String) exte
 
   def handleRemoveNodeProperty(nodeType: String, nodeId: String, propertyName: String): Future[HttpResponse] = pn(nodeType, nodeId) { n =>
     askFirst(RemoveNodeProperty(n, propertyName)) map {
-      case Done => HttpResponse(204, "Property removed successfully")
-      case NotFound => HttpResponse(404, "The Container Name or nodeId or configuration name is not found")
-    }
-  }
-
-  def handleGetNodeProperty(nodeType: String, nodeId: String, propertyName: String): Future[HttpResponse] = pn(nodeType, nodeId) { n =>
-    askFirst(GetNodeProperty(n, propertyName)) map {
-      case PropertyValue(p) => HttpResponse(201, "Operation successful")
+      case Done =>     HttpResponse(204, "Property removed successfully")
       case NotFound => HttpResponse(404, "The Container Name or nodeId or configuration name is not found")
     }
   }
@@ -139,7 +126,7 @@ class SwitchManagerNorthbound(val bus: ControllerBus, serverPrefix: String) exte
       Property(propertyName, propertyValue) match {
         case Success(p) =>
           askFirst(AddNodeConnectorProperty(nc, p)) map {
-            case Done => HttpResponse(201, "Operation successful")
+            case Done =>     HttpResponse(201, "Operation successful")
             case NotFound => HttpResponse(404, "The Container Name or nodeId or configuration name is not found")
           }
         case Failure(f) =>
@@ -152,7 +139,7 @@ class SwitchManagerNorthbound(val bus: ControllerBus, serverPrefix: String) exte
                                         propertyName: String): Future[HttpResponse] =
     pnc(nodeType, nodeId, connectorType, connectorId) { n =>
       askFirst(RemoveNodeConnectorProperty(n, propertyName)) map {
-        case Done => HttpResponse(204, "Property removed successfully")
+        case Done =>     HttpResponse(204, "Property removed successfully")
         case NotFound => HttpResponse(404, "The Container Name or nodeId or configuration name is not found")
       }
     }

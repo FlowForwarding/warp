@@ -11,7 +11,7 @@ import scala.concurrent.Future
 import spire.math.ULong
 
 import org.flowforwarding.warp.controller.SwitchConnector
-import org.flowforwarding.warp.controller.bus.ControllerBus
+import org.flowforwarding.warp.controller.bus.{ServiceRequest, ControllerBus}
 import org.flowforwarding.warp.controller.modules.managers._, AbstractService._
 import org.flowforwarding.warp.controller.modules.managers.sal._
 import org.flowforwarding.warp.controller.api.fixed.{IncomingMessagePredicate, BuilderInput}
@@ -23,9 +23,19 @@ import org.flowforwarding.warp.controller.api.fixed.v13.structures.Port
 import org.flowforwarding.warp.controller.api.fixed.v13.messages.controller.multipart.data._
 import org.flowforwarding.warp.controller.api.dynamic.DynamicStructureBuilder
 
+private [v13] object Ofp13InventoryMessages{
+  trait Ofp13InventoryServiceRequest extends ServiceRequest with ProtocolInternal
+
+  case class GetOfp13Nodes() extends Ofp13InventoryServiceRequest
+  case class GetOfp13NodeConnectors(node: OFNode) extends Ofp13InventoryServiceRequest
+
+  case class Ofp13Nodes(nodes: Map[OFNode, Set[Property[_]]]) extends ServiceResponse
+  case class Ofp13Connectors(connectors: Map[OFNodeConnector, Set[Property[_]]]) extends ServiceResponse
+}
+
 class Ofp13InventoryService(controllerBus: ControllerBus) extends Ofp13MessageHandlers(controllerBus) with InventoryService[OFNode, OFNodeConnector] with Ofp13Tag {
   import InventoryMessages._
-  import scala.collection.mutable.{Map => MMap}
+  import Ofp13InventoryMessages._
 
   override def started() = {
     super.started()
@@ -44,16 +54,21 @@ class Ofp13InventoryService(controllerBus: ControllerBus) extends Ofp13MessageHa
     }
   }
 
-  private val nodeConnectorsProps = MMap[OFNodeConnector, Set[Property[_]]]()
-  private val nodeProps = MMap[OFNode, Set[Property[_]]]()
+  private var nodeProps = Map[OFNode, Set[Property[_]]]()
+  private var nodeConnectorsProps = Map[OFNodeConnector, Set[Property[_]]]()
+
+  override def handleRequestImpl: PartialFunction[ServiceRequest, Future[Any]] = super.handleRequestImpl orElse {
+    case GetOfp13Nodes() => Future.successful(Ofp13Nodes(nodeProps))
+    case GetOfp13NodeConnectors(node) => Future.successful(Ofp13Connectors(nodeConnectorsProps.filter(_._1.node == node)))
+  }
 
   override def handleDisconnected(api: DynamicStructureBuilder[_], dpid: ULong): Unit = {
-    nodeProps remove OFNode(dpid)
-    nodeConnectorsProps retain { case (OFNodeConnector(_, _, OFNode(id)), _) => id != dpid }
+    nodeProps = nodeProps - OFNode(dpid)
+    nodeConnectorsProps = nodeConnectorsProps filter { case (OFNodeConnector(_, _, OFNode(id)), _) => id != dpid }
   }
 
   override def onFeaturesReply(dpid: ULong, msg: FeaturesReply): Array[BuilderInput] = {
-    nodeProps(OFNode(dpid)) = toProps(msg)
+    nodeProps = nodeProps.updated(OFNode(dpid), toProps(msg))
     Array(MultipartRequestInput(false, SwitchDescriptionRequestBodyInput()),
           MultipartRequestInput(false, PortDescriptionRequestBodyInput()))
   }
@@ -65,15 +80,15 @@ class Ofp13InventoryService(controllerBus: ControllerBus) extends Ofp13MessageHa
       case PortReason.ADD =>
       case PortReason.MODIFY =>
         val props = toProps(msg.port)
-        nodeConnectorsProps(nodeConnector) = props
+        nodeConnectorsProps.updated(nodeConnector, props)
       case PortReason.DELETE =>
-        nodeConnectorsProps.remove(nodeConnector)
+        nodeConnectorsProps = nodeConnectorsProps -nodeConnector
     }
     Array.empty
   }
 
   override def onSwitchDescriptionReply(dpid: ULong, desc: SwitchDescription): Array[BuilderInput] = {
-    nodeProps(OFNode(dpid)) += Description(desc.datapath) // TODO: add another descriptions?
+    nodeProps.updated(OFNode(dpid), Description(desc.datapath)) // TODO: add another descriptions?
     Array.empty
   }
 
@@ -104,25 +119,31 @@ class Ofp13InventoryService(controllerBus: ControllerBus) extends Ofp13MessageHa
   private def deriveMacAddress(dpid: ULong) = java.nio.ByteBuffer.allocate(8).putLong(dpid.toLong).array().drop(2)
 
   override def getNodes(): Future[ServiceResponse] = {
-    Future.successful(Nodes(nodeProps.toMap))
+    Future.successful(Nodes(nodeProps))
   }
 
   override def getNodeConnectors(node: OFNode): Future[ServiceResponse] = {
-    Future.successful(Connectors(nodeConnectorsProps.filter(_._1.node == node).toMap))
+    Future.successful(Connectors(nodeConnectorsProps.filter(_._1.node == node)))
   }
 
-  override def getNodeProperty(node: OFNode, propertyName: String): Future[ServiceResponse] = {
-   nodeProps.collectFirst { case (`node`, p) => p }
-            .flatMap { props => props collectFirst { case p if p.name == propertyName => p } }
-            .fold(Future.successful[ServiceResponse](NotFound)) { p => Future.successful(PropertyValue(p)) }
+  //TODO: ensure all the properties are acceptable
+  override def addNodeProperty(node: OFNode, property: Property[_]): Future[ServiceResponse] = {
+    nodeProps.updated(node, nodeProps(node) + property)
+    Future.successful[ServiceResponse](Done)
   }
 
-  //TODO: find out acceptable properties and implement methods
-  override def addNodeProperty(node: OFNode, property: Property[_]): Future[ServiceResponse] = Future.successful[ServiceResponse](NotAcceptable)
+  override def removeNodeProperty(node: OFNode, propertyName: String): Future[ServiceResponse] = {
+    nodeProps.updated(node, nodeProps(node) filterNot (propertyName==))
+    Future.successful[ServiceResponse](Done)
+  }
 
-  override def removeNodeProperty(node: OFNode, propertyName: String): Future[ServiceResponse] = Future.successful[ServiceResponse](NotAcceptable)
+  override def addNodeConnectorProperty(connector: OFNodeConnector, property: Property[_]) = {
+    nodeConnectorsProps.updated(connector, nodeConnectorsProps(connector) + property)
+    Future.successful[ServiceResponse](Done)
+  }
 
-  override def addNodeConnectorProperty(connector: OFNodeConnector, property: Property[_]) = Future.successful[ServiceResponse](NotAcceptable)
-
-  override def removeNodeConnectorProperty(connector: OFNodeConnector, propertyName: String) = Future.successful[ServiceResponse](NotAcceptable)
+  override def removeNodeConnectorProperty(connector: OFNodeConnector, propertyName: String) = {
+    nodeConnectorsProps.updated(connector, nodeConnectorsProps(connector) filterNot (propertyName==))
+    Future.successful[ServiceResponse](Done)
+  }
 }

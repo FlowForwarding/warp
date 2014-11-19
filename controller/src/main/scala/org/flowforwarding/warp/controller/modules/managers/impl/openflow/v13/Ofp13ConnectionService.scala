@@ -31,7 +31,7 @@ class Ofp13ConnectionService(controllerBus: ControllerBus) extends Ofp13MessageH
     }
   }
 
-  private val connectedDpids = scala.collection.mutable.Set[ULong]()
+  private var connectedDpids = Set[ULong]()
 
   def connect(node: OFNode, ip: InetAddress, port: Int): Future[ServiceResponse] = Future.successful(NotFound)
 
@@ -47,7 +47,7 @@ class Ofp13ConnectionService(controllerBus: ControllerBus) extends Ofp13MessageH
   def getNodes(controllerAddress: Option[InetAddress]): Future[ServiceResponse] =
     Future.successful(Nodes((connectedDpids map OFNode).toSeq))
 
-  override def handleHandshake(api: DynamicStructureBuilder[_], dpid: ULong): Unit = connectedDpids += dpid
+  override def handleHandshake(api: DynamicStructureBuilder[_], dpid: ULong): Unit = connectedDpids = connectedDpids + dpid
 
-  override def handleDisconnected(api: DynamicStructureBuilder[_], dpid: ULong): Unit = connectedDpids -= dpid
+  override def handleDisconnected(api: DynamicStructureBuilder[_], dpid: ULong): Unit = connectedDpids = connectedDpids - dpid
 }

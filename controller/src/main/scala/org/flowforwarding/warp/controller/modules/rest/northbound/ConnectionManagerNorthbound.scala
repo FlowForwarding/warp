@@ -64,16 +64,16 @@ class ConnectionManagerNorthbound(val bus: ControllerBus, serverPrefix: String) 
   private def handleConnect(nodeType: String, nodeId: String, ip: InetAddress, port: Int): Future[HttpResponse] =
     pn(nodeType, nodeId) { n =>
       askFirst(Connect(n, ip, port)) map {
-        case Done => HttpResponse(200, "Node connected successfully")
-        case InvalidParams => HttpResponse(406, "Invalid IP Address or Port parameter passed")
-        case NotFound => HttpResponse(404, "Could not connect to the Node with the specified parameters")
+        case Done               => HttpResponse(200, "Node connected successfully")
+        case InvalidParams(msg) => HttpResponse(406, msg)
+        case NotFound           => HttpResponse(404, "Could not connect to the Node with the specified parameters")
       }
     }
 
   private def handleDisconnect(nodeType: String, nodeId: String): Future[HttpResponse] =
     pn(nodeType, nodeId) { n =>
       askFirst(Disconnect(n)) map {
-        case Done => HttpResponse(200, "Node disconnected successfully")
+        case Done =>     HttpResponse(200, "Node disconnected successfully")
         case NotFound => HttpResponse(404, "Could not find a connection with the specified Node identifier")
       }
     }
@@ -83,6 +83,6 @@ class ConnectionManagerNorthbound(val bus: ControllerBus, serverPrefix: String) 
       case Nodes(nodes) =>
         val jsNodes = nodes map { _.toJson }
         jsonOk(JsObject("node" -> JsArray(jsNodes.toList)))
-      case InvalidParams => HttpResponse(406, "Invalid Controller IP Address passed")
+      case InvalidParams(msg) => HttpResponse(406, msg)
     } withServiceErrorReport "Connection Manager"
 }

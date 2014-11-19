@@ -177,7 +177,7 @@ private class SwitchConnector[T <: OFMessage, DriverType <: MessageDriver[T]](va
           sender() ! SendingFailed(t)
       }
 
-    case ForceDisconnect =>
+    case ForceDisconnectInternal =>
       tcpChannel ! TcpMessage.close
       sender ! (()) // TODO: reasonable value??
 

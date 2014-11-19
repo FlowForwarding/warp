@@ -36,25 +36,12 @@ class FlowsManager(val bus: ServiceBus) extends AbstractManager[FlowProgrammerSe
   import InventoryMessages._
   import AbstractService._
 
-  private def reduceContainerFlows(flows: Array[Any]) = {
-    if (flows contains InvalidParams) InvalidParams
-    else if (flows.nonEmpty && (flows forall { _ == NotFound })) NotFound
-    else ContainerFlows(flows.collect { case cfs: ContainerFlows => cfs }
-                             .foldLeft(Map.empty[Node[_], Seq[Flow]]) { case (fs1, ContainerFlows(fs2)) => fs1 ++ fs2 })
-  }
+  private val reduceContainerFlows = reduceResponses { responses =>
+    ContainerFlows(responses.collect { case cfs: ContainerFlows => cfs }
+                            .foldLeft(Map.empty[Node[_], Seq[Flow]]) { case (fs1, ContainerFlows(fs2)) => fs1 ++ fs2 })
+  } _
 
-  private def reduceNodeFlows(flows: Array[Any]) = {
-    if (flows contains InvalidParams) InvalidParams
-    else if (flows.nonEmpty && (flows forall { _ == NotFound })) NotFound
-    else NodeFlows(flows.collect { case nfs: NodeFlows => nfs }
-                        .foldLeft(Seq.empty[Flow]) { case (fs1, NodeFlows(fs2)) => fs1 ++ fs2 })
-  }
-
-  private def reduceNodeFlow(flows: Array[Any]) = {
-    flows collectFirst { case nf: NodeFlow => nf } getOrElse NotFound
-  }
-
-  private def withValidation(node: Node[_], flow: Flow, afterValidation: (Node[_], Flow) => Future[ServiceResponse]) = {
+  private def withValidation(node: Node[_], flow: Flow, afterValidation: (Node[_], Flow) => Future[Any]) = {
     val matchInPort = flow.matchFields collectFirst { case IngressPort(nc) => nc }
     val actionsPorts = flow.actions collect {
       // we have default container only
@@ -64,41 +51,39 @@ class FlowsManager(val bus: ServiceBus) extends AbstractManager[FlowProgrammerSe
     }
 
     val checkNodePresence = askFirst(GetNodes()) map {
-      case Nodes(nodes) => nodes contains node
+      case Nodes(nodes) => nodes exists { _._1 == node }
     }
 
     val checkPortsPresence = askFirst(GetNodeConnectors(node)) map {
       case Connectors(cs) => (actionsPorts ++ matchInPort) forall {
-        case nc: NodeConnector[_, _] => cs contains nc
+        case connector: NodeConnector[_, _] => cs exists { _._1 == connector }
         case _ => false
       }
     }
 
     Future.sequence(Seq(checkNodePresence, checkPortsPresence)) flatMap {
       case Seq(false, _)   =>
-        println("Node is not present in this container")
-        Future.successful(InvalidParams) //String.format("Node %s is not present in this container", node));
+        Future.successful(InvalidParams("Node is not present in this container")) //String.format("Node %s is not present in this container", node));
       case Seq(_, false)   =>
-        println("Port is not present in this container")
-        Future.successful(InvalidParams) //String.format("Port %s is not present in this container", node));
+        Future.successful(InvalidParams("Port is not present in this container")) //String.format("Port %s is not present in this container", node));
       case Seq(true, true) => afterValidation(node, flow)
     }
   }
 
   override protected def handleRequest(e: ServiceRequest): Future[Any] = e match {
-    case GetContainerFlows()        => askAll(new GetContainerFlows()        with Broadcast) map reduceContainerFlows
-    case GetNodeFlows(node)         => askAll(new GetNodeFlows(node)         with Broadcast) map reduceNodeFlows
-    case GetFlow(node, flowName)    => askAll(new GetFlow(node, flowName)    with Broadcast) map reduceNodeFlow // expects one-element sequence
-    case AddFlow(node, flow)        => withValidation(node, flow, (n, f) => this.askAll(new AddFlow(n, f) with Broadcast) map reduceServiceResponses)
-    case RemoveFlow(node, flowName) => askAll(new RemoveFlow(node, flowName) with Broadcast) map reduceServiceResponses
-    case ToggleFlow(node, flowName) => askAll(new ToggleFlow(node, flowName) with Broadcast) map reduceServiceResponses
+    case GetContainerFlows()        => askAll(new GetContainerFlows()          with Broadcast) map reduceContainerFlows
+    case GetNodeFlows(node)         => askFirst(new GetNodeFlows(node)         with Broadcast)
+    case GetFlow(node, flowName)    => askFirst(new GetFlow(node, flowName)    with Broadcast)
+    case AddFlow(node, flow)        => withValidation(node, flow, (n, f) => this.askFirst(new AddFlow(n, f) with Broadcast))
+    case RemoveFlow(node, flowName) => askFirst(new RemoveFlow(node, flowName) with Broadcast)
+    case ToggleFlow(node, flowName) => askFirst(new ToggleFlow(node, flowName) with Broadcast)
   }
 }
 
 trait FlowsService[NodeType <: Node[_], ConnectorType <: NodeConnector[_, NodeType]] extends AbstractService[NodeType, ConnectorType] {
   self: NodeTag[NodeType, ConnectorType] =>
 
-  val handleRequestImpl: PartialFunction[ServiceRequest, Future[Any]] = {
+  def handleRequestImpl: PartialFunction[ServiceRequest, Future[Any]] = {
     case GetContainerFlows()                     => getContainerFlows()
     case GetNodeFlows(n)         if checkNode(n) => getNodeFlows(castNode(n))
     case GetFlow(n, flowName)    if checkNode(n) => getFlow(castNode(n), flowName)
