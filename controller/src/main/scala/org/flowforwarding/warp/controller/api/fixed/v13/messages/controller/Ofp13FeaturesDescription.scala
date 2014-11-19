@@ -16,13 +16,13 @@ import org.flowforwarding.warp.controller.api.fixed.v13.messages.{Ofp13MessageIn
 import org.flowforwarding.warp.controller.api.fixed.text_view.BITextView
 
 case class SwitchCapabilities(
-  flowStats:   Boolean,
-  tableStats:  Boolean,
-  portStats:   Boolean,
-  groupStats:  Boolean,
-  ipReasm:     Boolean,
-  queueStats:  Boolean,
-  portBlocked: Boolean) extends Bitmap
+  flowStats:   Boolean = false,
+  tableStats:  Boolean = false,
+  portStats:   Boolean = false,
+  groupStats:  Boolean = false,
+  ipReasm:     Boolean = false,
+  queueStats:  Boolean = false,
+  portBlocked: Boolean = false) extends Bitmap
 
 trait FeaturesReply extends Ofp13Message{
   def datapathId: ULong

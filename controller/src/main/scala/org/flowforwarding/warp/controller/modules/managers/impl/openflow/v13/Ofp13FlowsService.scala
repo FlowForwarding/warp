@@ -218,7 +218,7 @@ class Ofp13FlowsService(controllerBus: ControllerBus) extends Ofp13MessageHandle
       NoBuffer,
       port,
       groupId,
-      FlowModFlags(true, false, false, false, false),  // Instruct switch to let controller know when flow is removed
+      FlowModFlags(sendFlowModRem = true),  // Instruct switch to let controller know when flow is removed
       MatchInput(true, (matchFields collect convertMatchField).toArray),
       Array(InstructionApplyActions((actions collect convertAction).toArray))
     )

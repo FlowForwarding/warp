@@ -46,30 +46,33 @@ object PortNumber{
 }
 
 case class PortFeatures(
-   _10MB_HD: Boolean,       /* 10 Mb half-duplex rate support. */
-   _10MB_FD: Boolean,       /* 10 Mb full-duplex rate support. */
-   _100MB_HD: Boolean,      /* 100 Mb half-duplex rate support. */
-   _100MB_FD: Boolean,      /* 100 Mb full-duplex rate support. */
-   _1GB_HD: Boolean,        /* 1 Gb half-duplex rate support. */
-   _1GB_FD: Boolean,        /* 1 Gb full-duplex rate support. */
-   _10GB_FD: Boolean,       /* 10 Gb full-duplex rate support. */
-   _40GB_FD: Boolean,       /* 40 Gb full-duplex rate support. */
-   _100GB_FD: Boolean,      /* 100 Gb full-duplex rate support. */
-   _1TB_FD: Boolean,        /* 1 Tb full-duplex rate support. */
-   other: Boolean,          /* Other rate, not in the list. */
-   copper: Boolean,         /* Copper medium. */
-   fiber: Boolean,          /* Fiber medium. */
-   autoneg: Boolean,        /* Auto-negotiation. */
-   pause: Boolean,          /* Pause. */
-   pauseAsym: Boolean)      /* Asymmetric pause. */  extends Bitmap
+   _10MB_HD:  Boolean = false,     /* 10 Mb half-duplex rate support. */
+   _10MB_FD:  Boolean = false,     /* 10 Mb full-duplex rate support. */
+   _100MB_HD: Boolean = false,     /* 100 Mb half-duplex rate support. */
+   _100MB_FD: Boolean = false,     /* 100 Mb full-duplex rate support. */
+   _1GB_HD:   Boolean = false,     /* 1 Gb half-duplex rate support. */
+   _1GB_FD:   Boolean = false,     /* 1 Gb full-duplex rate support. */
+   _10GB_FD:  Boolean = false,     /* 10 Gb full-duplex rate support. */
+   _40GB_FD:  Boolean = false,     /* 40 Gb full-duplex rate support. */
+   _100GB_FD: Boolean = false,     /* 100 Gb full-duplex rate support. */
+   _1TB_FD:   Boolean = false,     /* 1 Tb full-duplex rate support. */
+   other:     Boolean = false,     /* Other rate, not in the list. */
+   copper:    Boolean = false,     /* Copper medium. */
+   fiber:     Boolean = false,     /* Fiber medium. */
+   autoneg:   Boolean = false,     /* Auto-negotiation. */
+   pause:     Boolean = false,     /* Pause. */
+   pauseAsym: Boolean = false)     /* Asymmetric pause. */  extends Bitmap
 
-case class PortConfig(portDown: Boolean, noReceived: Boolean, noForwarded: Boolean, noPacketIn: Boolean) extends Bitmap{
+case class PortConfig(portDown:    Boolean = false,
+                      noReceived:  Boolean = false,
+                      noForwarded: Boolean = false,
+                      noPacketIn:  Boolean = false) extends Bitmap{
   override def bits = Array(0, 2, 5, 6)
 }
 
-case class PortState(linkDown: Boolean, /* No physical link present. */
-                     blocked: Boolean,  /* Port is blocked */
-                     live: Boolean) /* Live for Fast Failover Group. */extends Bitmap {
+case class PortState(linkDown: Boolean = false, /* No physical link present. */
+                     blocked:  Boolean = false, /* Port is blocked */
+                     live:     Boolean = false) /* Live for Fast Failover Group. */ extends Bitmap {
   override def bits = Array(0, 1, 2)
 }
 

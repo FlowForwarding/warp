@@ -21,7 +21,11 @@ object FlowModCommand extends Enumeration{
   val Add, Modify, ModifyStrict, Delete, DeleteStrict = Value
 }
 
-case class FlowModFlags(sendFlowModRem: Boolean, checkOverlap: Boolean, resetCounts: Boolean, noPktCounts: Boolean, noBytCounts: Boolean) extends Bitmap
+case class FlowModFlags(sendFlowModRem: Boolean = false,
+                        checkOverlap:   Boolean = false,
+                        resetCounts:    Boolean = false,
+                        noPktCounts:    Boolean = false,
+                        noBytCounts:    Boolean  = false) extends Bitmap
 
 case class FlowModInput(cookie: ULong,             /* Opaque controller-issued identifier. */
                         cookieMask: ULong,         /* Mask used to restrict the cookie bits that must match when the command is

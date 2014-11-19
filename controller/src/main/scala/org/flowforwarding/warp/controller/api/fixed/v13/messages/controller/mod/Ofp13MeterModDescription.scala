@@ -22,10 +22,10 @@ object MeterModCommand extends Enumeration{
 }
 
 case class MeterModFlags(
-  KBPS: Boolean,  /* Rate value in kb/s (kilo-bit per second). */
-  PKTPS: Boolean, /* Rate value in packet/sec. */
-  Burst: Boolean, /* Do burst size. */
-  Stats: Boolean  /* Collect statistics. */
+  KBPS:  Boolean = false, /* Rate value in kb/s (kilo-bit per second). */
+  PKTPS: Boolean = false, /* Rate value in packet/sec. */
+  Burst: Boolean = false, /* Do burst size. */
+  Stats: Boolean = false  /* Collect statistics. */
 ) extends Bitmap
 
 case class MeterModInput(command: MeterModCommand, flags: MeterModFlags, meterId: MeterId, bands: Array[MeterBand]) extends Ofp13MessageInput
