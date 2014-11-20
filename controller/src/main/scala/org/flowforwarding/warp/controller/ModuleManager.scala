@@ -53,10 +53,9 @@ object ModuleManager {
     val manager = Tcp.get(actorSystem).manager
     val controllerBus = new ControllerBus { }
     val controller = actorSystem.actorOf(Props.create(classOf[ModuleManager], controllerBus, manager), "Controller-Dispatcher")
-    actorSystem.actorOf(Props.create(classOf[InputHandler], controller), "Input-Handler")
+    actorSystem.actorOf(Props.create(classOf[InputHandler], controller, args.lift(0)), "Input-Handler")
   }
 }
-
 
 private class ModuleManager(val bus: ControllerBus, manager: ActorRef) extends ControllerBusActor with ActorLogging {
   import org.flowforwarding.warp.controller.ModuleManager._

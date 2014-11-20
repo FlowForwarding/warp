@@ -6,10 +6,12 @@
  */
 package org.flowforwarding.warp.controller
 
-import java.io.File
+import java.io.{FileNotFoundException, File}
 import java.util.concurrent.TimeUnit
 import java.net.{URL, URLClassLoader, InetSocketAddress}
 
+import scala.concurrent.Await
+import scala.concurrent.duration.Duration
 import scala.io.StdIn
 import scala.util.{Failure, Success, Try}
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -18,16 +20,22 @@ import akka.actor._
 import akka.pattern.ask
 import akka.util.Timeout
 
-private class InputHandler(controller: ActorRef) extends Actor{
+private class InputHandler(controller: ActorRef, instructionsPath: Option[String]) extends Actor{
 
-  override def preStart() {
-    val input = StdIn.readLine(">>")
-    self ! input
+  def prompt() = { self ! StdIn.readLine("warp> ") }
+  def readLine() = { self ! StdIn.readLine() }
+
+  override def preStart() = {
+    instructionsPath foreach { path =>
+      println(s"Controller started with initial instructions source: file $path.")
+      readFile(path)
+    }
+    prompt()
   }
 
   import org.flowforwarding.warp.controller.ModuleManager._
 
-  object Port{
+  object Port {
     def unapply(input: String): Option[Int] = Try { input.toInt } filter { i => i >= 0 && i <= 65535 } toOption
   }
 
@@ -53,46 +61,131 @@ private class InputHandler(controller: ActorRef) extends Actor{
     }
   }
 
-  implicit val t = new Timeout(40, TimeUnit.SECONDS)
+  object NotCommand{
+    def unapply(input: String): Boolean = input == "" | input.startsWith("#")
+  }
 
-  def showResponse: PartialFunction[Try[Any], Unit] = {
+  object ShowHelp {
+    def unapply(input: String): Boolean = input == ":help"
+  }
+
+  object PasteMode {
+    def unapply(input: String): Boolean = input == ":paste"
+  }
+
+  object ReadFile{
+    def unapply(input: String): Option[String] = input.split(' ') match {
+      case Array(":file", path) => Some(path)
+      case _ => None
+    }
+  }
+
+  def responseMessage: PartialFunction[Try[Any], String] = {
     case Success(Started(address, None)) =>
-      println("Started at " + address)
+      s"Started at $address"
     case Success(Started(address, Some(failure))) =>
-      println("Start failed: " + failure.getMessage)
+      s"Start failed: ${failure.getMessage}"
 
     case Success(SetFactoryResponse(None)) =>
-      println("Factory was set successfully.")
+      s"Factory was set successfully."
     case Success(SetFactoryResponse(Some(failure))) =>
-      println("Unable to set factory.")
-      failure.printStackTrace()
+      s"Unable to set factory."
 
     case Success(AddModuleResponse(moduleName, None)) =>
-      println("Module " + moduleName + " added")
+      s"Module $moduleName added"
     case Success(AddModuleResponse(moduleName, Some(failure))) =>
-      println("Unable to add module " + moduleName)
-      failure.printStackTrace()
+      s"Unable to add module $moduleName"
 
     case Success(RemoveModuleResponse(moduleName, None)) =>
-      println("Module " + moduleName + " removed")
+      s"Module $moduleName removed"
     case Success(RemoveModuleResponse(moduleName, Some(failure))) =>
-      println("Unable to remove module " + moduleName)
-      failure.printStackTrace()
+      s"Unable to remove module $moduleName"
 
     case Success(response) =>
-      println("Response: " + response)
+      s"Response: $response"
 
     case Failure(th) =>
-      println("Command request failed.")
-      th.printStackTrace()
+      s"Command request failed."
   }
 
-  def receive = {
-    case ControllerCommand(c) =>
-      controller ? c onComplete (showResponse andThen { _ => self ! StdIn.readLine(">>") })
-    case s: String if s == "" | s.startsWith("#") =>
-      self ! StdIn.readLine()
-    case c =>
-      println("Invalid command " + c + ": " + c.getClass)
+  def helpString: String =
+    """
+      |:help                                                                            print this summary
+      |:paste                                                                           enter the paste mode
+      |:file <path_to_file>                                                             read instructions from a file
+      |set factory <factory_class_name> -p [<param1>, <param2>, …]                     load factory (reloading is not implemented yet)
+      |add module <module_name> of type <module_class_name> -p [<param1>, <param2>, …] load a module
+      |rm module <module_name>                                                          remove a module
+      |start <ip> <port>                                                                start to accept incoming connections
+    """.stripMargin
+
+  def execute(cmd: Any) = {
+    implicit val t = new Timeout(40, TimeUnit.SECONDS)
+    val r = Try { Await.result(controller ? cmd, t.duration) }
+    println(responseMessage(r))
   }
+  
+  
+  def interpretCommands(lines: Iterable[String], fileName: String, noCommandsMessage: String, executingMessage: String) = {
+    val commandLines = lines.zipWithIndex
+                            .filterNot { case (line, _) => NotCommand.unapply(line) }
+
+    val finishMessage = if(commandLines.isEmpty) noCommandsMessage
+                        else executingMessage
+
+    println(finishMessage)
+
+    commandLines foreach {
+      case (ControllerCommand(cmd), _) =>
+        execute(cmd)
+      case (line, i) =>
+        println(s"$fileName:$i: Invalid command: $line")
+    }
+  }
+
+  def pasteMode(lines: List[String]): Receive = {
+    case s: String if s == "" && lines.headOption == Some("") =>
+      interpretCommands(lines.reverse, "<console>", "// No commands pasted.", "// Exiting paste mode, now executing commands.")
+      context become normalMode
+      prompt()
+    case s: String =>
+      context become pasteMode(s :: lines)
+      readLine()
+  }
+  
+  def readFile(path: String) = {
+    try {
+      val lines = scala.io.Source.fromFile(path).getLines()
+      println("// File contents: ")
+      lines foreach println
+      interpretCommands(scala.io.Source.fromFile(path).getLines().toIterable, path, "// No commands found.", "// Executing commands.")
+    }
+    catch {
+      case e: FileNotFoundException => println("File not found.")
+      case e: Throwable => println("Error: " + e.getMessage)
+    }
+  }
+
+  def normalMode: Receive = {
+    case ControllerCommand(cmd) =>
+      execute(cmd)
+      prompt()
+    case ShowHelp() =>
+      println(helpString)
+      prompt()
+    case PasteMode() =>
+      context become pasteMode(List.empty)
+      println("// Entering paste mode (post two empty lines to finish)")
+      readLine()
+    case ReadFile(path) =>
+      readFile(path)
+      prompt()
+    case NotCommand() =>
+      prompt()
+    case line =>
+      println("Invalid command: " + line)
+      prompt()
+  }
+
+  def receive = normalMode
 }
