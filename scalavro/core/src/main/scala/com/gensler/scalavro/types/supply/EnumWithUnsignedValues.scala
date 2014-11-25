@@ -25,10 +25,11 @@ trait EnumWithUnsignedValues[Elem, Unsigned <: FixedData] extends EnumWithDefaul
 
 trait ByteEnum extends EnumWithUnsignedValues[Byte, UInt8]{
   protected def ##(data: Long): Predefined = {
-    if(data < 0 || data > Byte.MaxValue.toLong - Byte.MinValue.toLong)
+    val byteOverflow = Byte.MaxValue.toLong - Byte.MinValue.toLong + 1L // same as 0x100L
+    if(data < 0 || data >= byteOverflow)
       throw new IllegalArgumentException("Value must be positive and fit to 8 bits")
     else if (data > Byte.MaxValue)
-      super.value((data - 2 * Byte.MaxValue).toByte)
+      super.value((data - byteOverflow).toByte)
     else
       super.value(data.toByte)
   }
@@ -42,10 +43,11 @@ trait ByteEnum extends EnumWithUnsignedValues[Byte, UInt8]{
 
 trait WordEnum extends EnumWithUnsignedValues[Short, UInt16]{
   protected def ##(data: Long): Predefined = {
-    if(data < 0 || data > Short.MaxValue.toLong - Short.MinValue.toLong)
+    val wordOverflow = Short.MaxValue.toLong - Short.MinValue.toLong + 1L // same as 0x10000L
+    if(data < 0 || data >= wordOverflow)
       throw new IllegalArgumentException("Value must be positive and fit to 16 bits")
     else if (data > Short.MaxValue)
-      super.value((data - 2 * Short.MaxValue).toShort)
+      super.value((data - wordOverflow).toShort)
     else
       super.value(data.toShort)
   }
@@ -59,10 +61,11 @@ trait WordEnum extends EnumWithUnsignedValues[Short, UInt16]{
 
 trait DWordEnum extends EnumWithUnsignedValues[Int, UInt32]{
   protected def ##(data: Long): Predefined = {
-    if(data < 0 || data > Int.MaxValue.toLong - Int.MinValue.toLong)
+    val dwordOverflow = Int.MaxValue.toLong - Int.MinValue.toLong + 1L // same as 0x100000000L
+    if(data < 0 || data >= dwordOverflow)
       throw new IllegalArgumentException("Value must be positive and fit to 32 bits")
     else if (data > Int.MaxValue)
-      super.value((data - 2 * Int.MaxValue).toInt)
+      super.value((data - dwordOverflow).toInt)
     else
       super.value(data.toInt)
   }

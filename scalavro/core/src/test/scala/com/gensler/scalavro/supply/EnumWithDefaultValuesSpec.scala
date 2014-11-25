@@ -31,8 +31,14 @@ class EnumWithDefaultValuesSpec extends AvroSpec {
     an [IllegalArgumentException] should be thrownBy { new DWordEnum { val f = ##(0xffffffffL + 1) } }
     an [IllegalArgumentException] should be thrownBy { new DWordEnum { val f = ##(-1) } }
 
-    /* no Exception should be thrownBy */ { new ByteEnum  { val f = ##(0xff) } }
-    /* no Exception should be thrownBy */ { new WordEnum  { val f = ##(0xffff) } }
-    /* no Exception should be thrownBy */ { new DWordEnum { val f = ##(0xffffffff) } }
+    /* no Exception should be thrownBy */ { new ByteEnum  { val f = ##(0xffL) } }
+    /* no Exception should be thrownBy */ { new WordEnum  { val f = ##(0xffffL) } }
+    /* no Exception should be thrownBy */ { new DWordEnum { val f = ##(0xffffffffL) } }
+  }
+
+  "Members of enums" should "store specified data" in {
+    val enum = new DWordEnum { val MEMBER = ##(0xfffffffdL) }
+    enum.MEMBER.data     should equal (0xfffffffdL.toInt)
+    enum.MEMBER.toString should equal ("MEMBER")
   }
 }
