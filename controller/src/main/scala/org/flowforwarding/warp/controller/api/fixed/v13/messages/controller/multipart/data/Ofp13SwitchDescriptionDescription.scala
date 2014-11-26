@@ -13,7 +13,7 @@ import org.flowforwarding.warp.controller.api.fixed.v13.messages.controller.mult
 
 import spire.math.ULong
 
-case class SwitchDescriptionRequestBodyInput() extends MultipartRequestBodyInput
+case class SwitchDescriptionRequestBodyInput() extends EmptyMultipartRequestBodyInput
 
 trait SwitchDescription{
   val manufacturer: String /* Manufacturer description. */
@@ -23,16 +23,14 @@ trait SwitchDescription{
   val datapath: String     /* Human readable description of datapath. */
 }
 
-trait SwitchDescriptionReplyBody extends MultipartReplyBody[SwitchDescription]{
-  def value: SwitchDescription
-}
+trait SwitchDescriptionReplyBody extends MultipartReplyBody[SwitchDescription]
 
 trait SwitchDescriptionReplyHandler{
   def onSwitchDescriptionReply(dpid: ULong, desc: SwitchDescription): Array[BuilderInput] = Array.empty[BuilderInput]
 }
 
 private[fixed] trait Ofp13SwitchDescriptionDescription extends StructureDescription {
-  apiProvider: StructuresDescriptionHelper =>
+  apiProvider: MessagesDescriptionHelper[_ <: SpecificVersionMessageHandlers[_, _] with SwitchDescriptionReplyHandler] =>
 
   implicit object SwitchDescription extends FromDynamic[SwitchDescription] {
     val fromDynamic: PartialFunction[DynamicStructure, SwitchDescription] = {

@@ -79,6 +79,7 @@ private[fixed] abstract class ConcreteStructureBuilder[Input <: BuilderInput: Cl
   protected def setMember(name: String, value: UInt)              = dynamicBuilderInput.setMember(mapFieldName(name), DynamicPrimitive(value.signed))
   protected def setMember(name: String, value: UShort)            = dynamicBuilderInput.setMember(mapFieldName(name), DynamicPrimitive(value.signed))
   protected def setMember(name: String, value: UByte)             = dynamicBuilderInput.setMember(mapFieldName(name), DynamicPrimitive(value.signed))
+  protected def setMember(name: String, value: String)            = dynamicBuilderInput.setMember(mapFieldName(name), DynamicPrimitives(value.getBytes map { _.toLong }))
   protected def setMember(name: String, value: Enumeration#Value) = dynamicBuilderInput.setMember(mapFieldName(name), DynamicPrimitive(value.id))
 
   protected def setMember[I <: BuilderInput: ToDynamic](name: String, input: I) =

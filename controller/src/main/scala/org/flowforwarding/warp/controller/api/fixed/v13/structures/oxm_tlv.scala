@@ -81,18 +81,24 @@ abstract class OxmTlv[T: HasSize] extends BuilderInput{
   def hasMask: Boolean = false
   def oxmField: OxmMatchFields
   def oxmLength: UByte = valueSize
-  private[fixed] def header: UInt = UIntHeader(oxmClass, hasMask, oxmField, oxmLength)
+  private[fixed] def header: UInt = OxmHeader(oxmClass, hasMask, oxmField, oxmLength)
   private[fixed] def data: Array[Byte] = implicitly[HasSize[T]].bytes(value)
 }
 
-private object UIntHeader{
-  def unapply(i: UInt): Option[(OxmClass, Boolean, OxmMatchFields, UByte)] = {
+object OxmHeader{
+  type OxmData = (OxmClass, Boolean, OxmMatchFields, UByte)
+
+  val deconstruct: UInt => OxmData = (i: UInt) => {
     val oxmClass = i >> 16
     val hm = (i >> 8) & UInt(1)
     val fields = (i >> 9) & UInt(0x7f)
     val length = i & UInt(0xff)
-    Some(OxmClass(oxmClass.toInt), hm == UInt(1), OxmMatchFields(fields.toInt), UByte(length.toShort))
+    (OxmClass(oxmClass.toInt), hm == UInt(1), OxmMatchFields(fields.toInt), UByte(length.toShort))
   }
+
+  val construct: OxmData => UInt = (apply _).tupled
+
+  def unapply(i: UInt): Option[(OxmClass, Boolean, OxmMatchFields, UByte)] = Some(deconstruct(i))
 
   def apply(oxmClass: OxmClass, hasMask: Boolean, oxmField: OxmMatchFields, length: UByte): UInt =
     UInt(oxmClass.id << 16 | oxmField.id << 9 | (if (hasMask) 1 << 8 else 0) | length.toInt)
@@ -172,7 +178,7 @@ private[fixed] trait Ofp13OxmTlvDescription extends StructureDescription{
     private val b = new OxmTlvBuilder
 
     val fromDynamic: PartialFunction[DynamicStructure, OxmTlv[_]] = { case s =>
-      val UIntHeader(_, _, oxmField, _) = UInt(s.primitiveField(b.mapFieldName("header")))
+      val OxmHeader(_, _, oxmField, _) = UInt(s.primitiveField(b.mapFieldName("header")))
       val data = ByteBuffer.wrap(s.primitivesSequence(b.mapFieldName("data")) map { _.toByte })
       oxmField match {
         case IN_PORT        => in_port(data.getUInt)

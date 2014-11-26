@@ -69,8 +69,8 @@ class Ofp13InventoryService(controllerBus: ControllerBus) extends Ofp13MessageHa
 
   override def onFeaturesReply(dpid: ULong, msg: FeaturesReply): Array[BuilderInput] = {
     nodeProps = nodeProps.updated(OFNode(dpid), toProps(msg))
-    Array(MultipartRequestInput(false, SwitchDescriptionRequestBodyInput()),
-          MultipartRequestInput(false, PortDescriptionRequestBodyInput()))
+    Array(MultipartRequestInput(SwitchDescriptionRequestBodyInput()),
+          MultipartRequestInput(PortDescriptionRequestBodyInput()))
   }
 
   override def onPortStatus(dpid: ULong, msg: PortStatus): Array[BuilderInput] = {

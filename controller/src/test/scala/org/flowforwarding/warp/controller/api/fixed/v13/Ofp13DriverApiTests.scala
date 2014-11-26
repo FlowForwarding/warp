@@ -30,6 +30,18 @@ class Ofp13DriverApiTests extends MessageTestsSet[Ofp13DriverApi]
                              with Ofp13AsyncTest
                              with Ofp13PacketOutTest
 
-                             with Ofp13SwitchDescriptionTest
+                             with Ofp13AggregateFlowStatisticsTest
+                             with Ofp13GroupFeaturesTest
+                             with Ofp13GroupStatisticsTest
+                             with Ofp13IndividualFlowStatisticsTest
+                             with Ofp13MeterConfigTest
+                             with Ofp13MeterFeaturesTest
+                             with Ofp13MeterStatisticsTest
+                             //with Ofp13MultipartExperimenterTest
                              with Ofp13PortDescriptionTest
+                             with Ofp13PortStatisticsTest
+                             with Ofp13QueueStatisticsTest
+                             with Ofp13SwitchDescriptionTest
+                             with Ofp13TableStatisticsTest
+                             with Ofp13TableFeaturesTest
 

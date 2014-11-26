@@ -9,11 +9,14 @@ package v13
 package messages.controller.multipart
 
 import org.flowforwarding.warp.controller.api.fixed.v13.messages.controller.multipart.data._
+import org.flowforwarding.warp.controller.api.fixed.v13.structures.GroupId
 
-trait Ofp13PortDescriptionTest extends MessageTestsSet[Ofp13DriverApi] {
+trait Ofp13GroupStatisticsTest extends MessageTestsSet[Ofp13DriverApi] {
+  private val req = GroupStatisticsRequest(GroupId.AllGroups)
+
   abstract override def tests = super.tests + {
-    MultipartRequestInput(PortDescriptionRequestBodyInput()) -> TestResponse({
-      case r: MultipartReply => r.body.isInstanceOf[PortDescriptionReplyBody]
-    }, "PortDescription")
+    MultipartRequestInput(GroupStatisticsRequestBodyInput(req)) -> TestResponse({
+      case r: MultipartReply => r.body.isInstanceOf[GroupStatisticsReplyBody]
+    }, "GroupStatistics")
   }
 }

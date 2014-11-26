@@ -8,12 +8,14 @@ package org.flowforwarding.warp.controller.api.fixed
 package v13
 package messages.controller.multipart
 
+import spire.syntax.literals._
+
 import org.flowforwarding.warp.controller.api.fixed.v13.messages.controller.multipart.data._
 
-trait Ofp13PortDescriptionTest extends MessageTestsSet[Ofp13DriverApi] {
+trait Ofp13TableStatisticsTest extends MessageTestsSet[Ofp13DriverApi] {
   abstract override def tests = super.tests + {
-    MultipartRequestInput(PortDescriptionRequestBodyInput()) -> TestResponse({
-      case r: MultipartReply => r.body.isInstanceOf[PortDescriptionReplyBody]
-    }, "PortDescription")
+    MultipartRequestInput(TableStatisticsRequestBodyInput()) -> TestResponse({
+      case r: MultipartReply => r.body.isInstanceOf[TableStatisticsReplyBody]
+    }, "TableStatistics")
   }
 }

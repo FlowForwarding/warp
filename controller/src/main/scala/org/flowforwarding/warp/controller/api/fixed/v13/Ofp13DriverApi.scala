@@ -6,6 +6,7 @@
  */
 package org.flowforwarding.warp.controller.api.fixed.v13
 
+import org.flowforwarding.warp.controller.api.fixed.v13.structures.table_features.{Ofp13TableFeaturePropertyDescription, Ofp13ActionIdDescription, Ofp13InstructionIdDescription}
 import spire.math.UByte
 
 import org.flowforwarding.warp.controller.bus.ControllerBus
@@ -57,9 +58,25 @@ trait Ofp13DriverApi extends MessagesDescriptionHelper[Ofp13MessageHandlers]
                      with Ofp13BarrierDescription
                      with Ofp13AsyncDescription
 
-                     with Ofp13SwitchDescriptionDescription
-                     with Ofp13PortDescriptionDescription
+                     with Ofp13TableFeaturePropertyDescription
+                     with Ofp13InstructionIdDescription
+                     with Ofp13ActionIdDescription
+
                      with Ofp13MultipartDescription
+                     with Ofp13AggregateFlowStatisticsDescription
+                     with Ofp13GroupFeaturesDescription
+                     with Ofp13GroupStatisticsDescription
+                     with Ofp13IndividualFlowStatisticsDescription
+                     with Ofp13MeterConfigDescription
+                     with Ofp13MeterFeaturesDescription
+                     with Ofp13MeterStatisticsDescription
+                     with Ofp13PortDescriptionDescription
+                     with Ofp13PortStatisticsDescription
+                     with Ofp13QueueStatisticsDescription
+                     with Ofp13SwitchDescriptionDescription
+                     with Ofp13TableFeaturesDescription
+                     with Ofp13TableStatisticsDescription
+                     with Ofp13MultipartExperimenterDescription
 { driver: DynamicStructureBuilder[_ <: DynamicStructure] => }
 
 abstract class Ofp13MessageHandlers(controllerBus: ControllerBus)
@@ -79,5 +96,17 @@ abstract class Ofp13MessageHandlers(controllerBus: ControllerBus)
                                        with GetAsyncReplyHandler
                                        // multipart handlers
                                        with MultipartReplyHandlers
-                                       with SwitchDescriptionReplyHandler
+                                       with AggregateFlowStatisticsReplyHandler
+                                       with GroupFeaturesReplyHandler
+                                       with GroupStatisticsReplyHandler
+                                       with IndividualFlowStatisticsReplyHandler
+                                       with MeterConfigReplyHandler
+                                       with MeterFeaturesReplyHandler
+                                       with MeterStatisticsReplyHandler
                                        with PortDescriptionReplyHandler
+                                       with PortStatisticsReplyHandler
+                                       with QueueStatisticsReplyHandler
+                                       with SwitchDescriptionReplyHandler
+                                       with TableFeaturesReplyHandler
+                                       with TableStatisticsReplyHandler
+                                       with MultipartExperimenterReplyHandler

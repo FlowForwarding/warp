@@ -103,11 +103,11 @@ private[fixed] trait Ofp13InstructionsDescription extends StructureDescription{
   }
 
   protected abstract override def builderClasses = classOf[InstructionGotoTableBuilder]     ::
-                                                        classOf[InstructionWriteMetadataBuilder] ::
-                                                        classOf[InstructionWriteActionsBuilder]  ::
-                                                        classOf[InstructionApplyActionsBuilder]  ::
-                                                        classOf[InstructionClearActionsBuilder]  ::
-                                                        classOf[InstructionMeterBuilder]         ::
-                                                        classOf[InstructionExperimenterBuilder]  ::
-                                                        super.builderClasses
+                                                   classOf[InstructionWriteMetadataBuilder] ::
+                                                   classOf[InstructionWriteActionsBuilder]  ::
+                                                   classOf[InstructionApplyActionsBuilder]  ::
+                                                   classOf[InstructionClearActionsBuilder]  ::
+                                                   classOf[InstructionMeterBuilder]         ::
+                                                   classOf[InstructionExperimenterBuilder]  ::
+                                                   super.builderClasses
 }

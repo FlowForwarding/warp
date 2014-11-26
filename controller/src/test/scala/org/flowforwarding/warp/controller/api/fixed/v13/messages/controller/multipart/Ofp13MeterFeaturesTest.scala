@@ -10,10 +10,10 @@ package messages.controller.multipart
 
 import org.flowforwarding.warp.controller.api.fixed.v13.messages.controller.multipart.data._
 
-trait Ofp13PortDescriptionTest extends MessageTestsSet[Ofp13DriverApi] {
+trait Ofp13MeterFeaturesTest extends MessageTestsSet[Ofp13DriverApi] {
   abstract override def tests = super.tests + {
-    MultipartRequestInput(PortDescriptionRequestBodyInput()) -> TestResponse({
-      case r: MultipartReply => r.body.isInstanceOf[PortDescriptionReplyBody]
-    }, "PortDescription")
+    MultipartRequestInput(MeterFeaturesRequestBodyInput()) -> TestResponse({
+      case r: MultipartReply => r.body.isInstanceOf[MeterFeaturesReplyBody]
+    }, "MeterFeatures")
   }
 }
