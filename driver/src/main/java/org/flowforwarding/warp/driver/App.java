@@ -14,6 +14,6 @@ public class App
    private static final Logger LOG = LoggerFactory.getLogger(App.class);
     public static void main( String[] args )
     {
-       LOG.info("Version: " + DriverConfiguration.getInstance().version);
+       LOG.info("Version: " + DriverConfiguration.getInstance().version());
     }
 }

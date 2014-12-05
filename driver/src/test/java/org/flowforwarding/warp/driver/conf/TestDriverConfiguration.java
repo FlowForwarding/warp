@@ -9,6 +9,11 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
+
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -26,21 +31,24 @@ public class TestDriverConfiguration{
          Class<?> processEnvironmentClass = Class.forName("java.lang.ProcessEnvironment");
          Field theEnvironmentField = processEnvironmentClass.getDeclaredField("theEnvironment");
          theEnvironmentField.setAccessible(true);
+         @SuppressWarnings("unchecked")
          Map<String, String> env = (Map<String, String>) theEnvironmentField.get(null);
          env.putAll(newenv);
          Field theCaseInsensitiveEnvironmentField = processEnvironmentClass.getDeclaredField("theCaseInsensitiveEnvironment");
          theCaseInsensitiveEnvironmentField.setAccessible(true);
+         @SuppressWarnings("unchecked")
          Map<String, String> cienv = (Map<String, String>)     theCaseInsensitiveEnvironmentField.get(null);
          cienv.putAll(newenv);
       } catch (NoSuchFieldException e) {
          try {
-            Class[] classes = Collections.class.getDeclaredClasses();
+            Class<?> [] classes = Collections.class.getDeclaredClasses();
             Map<String, String> env = System.getenv();
-            for(Class cl : classes) {
+            for(Class<?> cl : classes) {
                if("java.util.Collections$UnmodifiableMap".equals(cl.getName())) {
                   Field field = cl.getDeclaredField("m");
                   field.setAccessible(true);
                   Object obj = field.get(env);
+                  @SuppressWarnings("unchecked")
                   Map<String, String> map = (Map<String, String>) obj;
                   map.clear();
                   map.putAll(newenv);
@@ -61,12 +69,22 @@ public class TestDriverConfiguration{
    public void cleanUp() {}
    
    @Test
+   @Ignore
    public void testWrongWarpConfig () {
-      System.out.println("WARP_HOME: the OLD one:" + System.getenv("WARP_HOME"));
+      String warpHome = System.getenv("WARP_HOME");
       Map<String, String> newenv = new HashMap<String, String>();
-      newenv.put("WARP_HOME", "MWA-HA-HA!!!");
-      setEnv(newenv);
-      System.out.println("WARP_HOME: the NEW one:" + System.getenv("WARP_HOME"));
-      
+
+      try {
+         System.out.println(DriverConfiguration.getInstance().version());
+         newenv.put("WARP_HOME", "/humpty/dumpty/sat/on/the/wall");
+         setEnv(newenv);
+         DriverConfiguration.reload();
+         System.out.println(DriverConfiguration.getInstance().version());
+         newenv.put("WARP_HOME", warpHome);
+         setEnv(newenv);
+         fail("Expecting ExceptionInInitializerError");
+      } catch (ExceptionInInitializerError ignore) {
+      } finally {
+      }
    }
 }
