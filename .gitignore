@@ -5,3 +5,7 @@ driver/.classpath
 driver/.project
 driver/dependency-reduced-pom.xml
 driver/warp.conf
+sdriver/target
+sdriver/.classpath
+sdriver/.project
+sdriver/.cache
