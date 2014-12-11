@@ -38,7 +38,7 @@ class Ofp13Impl extends StaticDriver[ofp13_messages.All, Ofp13Impl]{
 
   override protected val getIncomingMessageType = (m: Any) => m match {
     case x: ofp_hello                    => Async
-    case x: ofp_error_msg                => Async
+    case x: ofp_error_msg                => Error
     case x: echo_request                 => Request
     case x: echo_reply                   => SingleMessageResponse
     case x: ofp_experimenter_header      => Request // TODO: clarify

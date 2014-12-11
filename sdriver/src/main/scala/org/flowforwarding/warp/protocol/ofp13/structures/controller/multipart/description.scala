@@ -21,10 +21,8 @@ object ofp_desc extends RawSeqFieldsInfo {
   }
 }
 
-case class ofp_multipart_desc_request private [protocol] () extends MutipartRequest[Nothing] {
+case class ofp_multipart_desc_request private [protocol] () extends EmptyMultipartRequest {
   override def tp: OFP_MULTIPART_TYPE = ofp_multipart_type.OFPMP_DESC
-
-  override def structures = Seq.empty
 }
 
 object ofp_multipart_desc_request {

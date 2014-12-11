@@ -50,6 +50,7 @@ object action_length extends WordEnum with AllowUnspecifiedValues[Short]{
   val AL_PUSH_PBB     = ##(8)
   val AL_POP_PBB      = ##(8)
   val AL_EXPERIMENTER = ##(8)
+  val AL_SET_FIELD    = ##(8)
   def AL_SET_FIELD(oxmDataLength: Int) = Unspecified((8 + oxmDataLength).toShort)
 }
 

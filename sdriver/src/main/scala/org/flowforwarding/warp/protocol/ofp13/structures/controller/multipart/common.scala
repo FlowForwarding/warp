@@ -100,9 +100,13 @@ object ofp_multipart_type extends WordEnum{
 import ofp_length._
 import ofp_multipart_type._
 
-trait MutipartRequest[T]{
+trait MultipartRequest[T]{
   def tp: OFP_MULTIPART_TYPE
   def structures: Seq[T]
+}
+
+trait EmptyMultipartRequest extends MultipartRequest[Nothing]{
+  def structures = Seq.empty
 }
 
 object ofp_multipart_request extends RawSeqFieldsInfo{
@@ -123,7 +127,7 @@ object ofp_multipart_request extends RawSeqFieldsInfo{
   }
 
 
-  private[protocol] def build(@DynamicPath("header", "xid") xid: UInt32, flags: ofp_multipart_request_flags.OFP_MULTIPART_REQUEST_FLAGS, body: MutipartRequest[_]) = {
+  private[protocol] def build(@DynamicPath("header", "xid") xid: UInt32, flags: ofp_multipart_request_flags.OFP_MULTIPART_REQUEST_FLAGS, body: MultipartRequest[_]) = {
     val bytes: Array[Byte] = if(body.structures.nonEmpty) {
       val ostream = new ByteArrayOutputStream
       val io = AvroType(classToTypeTag[Any](body.structures.head.getClass)).io
@@ -161,19 +165,20 @@ case class ofp_multipart_reply private[protocol] (header: ofp_header,
      Raw data are accessible using rawBody method.
    */
   def body: Any = tp match {
-    case OFPMP_DESC           => ofp_multipart_desc_reply(read[ofp_desc])
-    case OFPMP_FLOW           => ???
-    case OFPMP_AGGREGATE      => ???
-    case OFPMP_TABLE          => ???
-    case OFPMP_PORT_STATS     => ???
-    case OFPMP_QUEUE          => ???
-    case OFPMP_GROUP          => ???
-    case OFPMP_GROUP_DESC     => ???
-    case OFPMP_GROUP_FEATURES => ???
-    case OFPMP_METER          => ???
-    case OFPMP_METER_CONFIG   => ???
-    case OFPMP_METER_FEATURES => ???
-    case OFPMP_TABLE_FEATURES => ???
-    case OFPMP_PORT_DESC      => ofp_multipart_port_desc_reply(read[RawSeq[ofp_port]])
+    case OFPMP_DESC           => ofp_multipart_desc_reply           (read[       ofp_desc                   ])
+    case OFPMP_FLOW           => ofp_multipart_flow_stats_reply     (read[RawSeq[ofp_flow_stats            ]])
+    case OFPMP_AGGREGATE      => ofp_multipart_aggregate_stats_reply(read[       ofp_aggregate_stats        ])
+    case OFPMP_TABLE          => ofp_multipart_table_stats_reply    (read[RawSeq[ofp_table_stats           ]])
+    case OFPMP_PORT_STATS     => ofp_multipart_port_stats_reply     (read[       ofp_port_stats             ])
+    case OFPMP_QUEUE          => ofp_multipart_queue_stats_reply    (read[RawSeq[ofp_queue_stats           ]])
+    case OFPMP_GROUP          => ofp_multipart_group_stats_reply    (read[RawSeq[ofp_group_stats           ]])
+    case OFPMP_GROUP_DESC     => ofp_multipart_group_desc_reply     (read[RawSeq[ofp_group_desc            ]])
+    case OFPMP_GROUP_FEATURES => ofp_multipart_group_features_reply (read[       ofp_group_features         ])
+    case OFPMP_METER          => ofp_multipart_meter_stats_reply    (read[RawSeq[ofp_meter_stats           ]])
+    case OFPMP_METER_CONFIG   => ofp_multipart_meter_config_reply   (read[RawSeq[ofp_meter_config          ]])
+    case OFPMP_METER_FEATURES => ofp_multipart_meter_features_reply (read[       ofp_meter_features         ])
+    case OFPMP_TABLE_FEATURES => ofp_multipart_table_features_reply (read[RawSeq[ofp_table_features        ]])
+    case OFPMP_PORT_DESC      => ofp_multipart_port_desc_reply      (read[RawSeq[ofp_port                  ]])
+    case OFPMP_EXPERIMENTER   => ofp_multipart_experimenter_reply   (read[       ofp_experimenter_multipart ])
   }
 }

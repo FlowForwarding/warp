@@ -9,6 +9,7 @@ package org.flowforwarding.warp.protocol.ofp13.structures
 import com.gensler.scalavro.types.supply._
 import com.gensler.scalavro.util.Union._
 import com.gensler.scalavro.util.U8
+import org.flowforwarding.warp.protocol.ofp13.structures.ofp_port_no.OFP_PORT_NO
 
 import org.flowforwarding.warp.protocol.ofp13.structures.ofp_queue_property.OFP_QUEUE_PROPERTY
 
@@ -38,7 +39,7 @@ trait ofp_queue_property extends WordTaggedUnion[ofp_queue_properties.All, OFP_Q
 /* Full description for a queue. */
 case class ofp_packet_queue private[protocol] (
   queue_id: UInt32, /* id for the specific queue. */
-  port: UInt32,     /* Port this queue is attached to. */
+  port: OFP_PORT_NO,     /* Port this queue is attached to. */
   len: UInt16,      /* Length in bytes of this queue desc. */
   pad: Pad6,        /* 64-bit alignment. */
   properties: RawSeq[ofp_queue_property])
