@@ -12,7 +12,7 @@ import scala.concurrent.{Future, TimeoutException}
 
 import spire.math.{UByte, ULong}
 
-import org.flowforwarding.warp.controller.SwitchConnector.{MultipartMessageSwitchResponse, SingleMessageSwitchResponse, SendingResult, SwitchResponse}
+import org.flowforwarding.warp.controller.SwitchConnector._
 import org.flowforwarding.warp.controller.api.dynamic.DynamicStructure
 import org.flowforwarding.warp.controller.api.fixed._
 import org.flowforwarding.warp.controller.bus.ControllerBus
@@ -36,14 +36,17 @@ class MessagesTestModule[DriverType <: OfpFeaturesExtractor[DynamicStructure] wi
 
   def testFunctions(data: MessageTestsSet[DriverType]#TestData) = data match {
     case tr: MessageTestsSet[DriverType]#TestResponse =>
+      val fail: PartialFunction[FixedOfpMessage, Boolean] = {
+        case _ => false
+      }
       val f1: OnResponse  = {
+        case ErrorSwitchResponse(msg) =>
+          val testError = (tr.test orElse fail)(msg)
+          (testError, if (testError) "Expected error received" else "Unexpected error received")
         case SingleMessageSwitchResponse(msg) =>
-          val fail: PartialFunction[FixedOfpMessage, Boolean] = {
-            case _ => false
-          }
-          ((tr.test orElse fail)(msg), "Test response of type " + msg.getClass.getName)
+          ((tr.test orElse fail)(msg), "Test single message response of type " + msg.getClass.getName)
         case MultipartMessageSwitchResponse(msgs) =>
-          (false, "Testing of multipart messages is not implemented yet")
+          (msgs forall (tr.test orElse fail), "Testing of multipart message responses: " + msgs)
       }
       val f2: OnFailure = {
         case t => (false, "Failure: " + t.getMessage + "\n" + t.getStackTrace.mkString("\n"))
@@ -52,9 +55,10 @@ class MessagesTestModule[DriverType <: OfpFeaturesExtractor[DynamicStructure] wi
 
     case tnr: MessageTestsSet[DriverType]#TestNoError =>
       val f1: OnResponse = {
+        case ErrorSwitchResponse(msg) =>
+          (false, "Error received: " + msg)
         case SingleMessageSwitchResponse(msg) =>
-          val error = scala.util.Try(tnr.errorClass cast msg).isSuccess
-          (false, (if (error) "Error received: " else "Unexpected message received: ") + msg)
+          (false, "Unexpected message received: " + msg)
         case MultipartMessageSwitchResponse(msgs) =>
           (false, "Unexpected multipart response received: " + msgs)
       }

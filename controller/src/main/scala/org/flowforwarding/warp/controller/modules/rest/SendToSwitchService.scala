@@ -93,7 +93,7 @@ class SendToSwitchService(val bus: ControllerBus, serverPrefix: String) extends 
   def send(req: SendToSwitchRequest): Future[HttpResponse] = {
     val SendToSwitchRequest(dpid, version, needReply, message) = req
     sendTextView[JsValue, JsValue](version, dpid, message, needReply) map {
-      case SendingSuccessfull =>
+      case SendingSuccessful =>
         HttpResponse(StatusCodes.OK, "Message published")
       case SingleMessageSwitchResponse(json) =>
         HttpResponse(StatusCodes.OK, HttpEntity(contentType = ContentType(`application/json`, `UTF-8`), string = json.toString))

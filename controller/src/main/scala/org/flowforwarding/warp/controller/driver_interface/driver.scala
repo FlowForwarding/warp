@@ -25,6 +25,7 @@ trait OfpHandshakeSupport extends OfpVersionSupport{
 
 trait MessageType
 case object Async extends MessageType
+case object Error extends MessageType
 case object Request extends MessageType
 case object Command extends MessageType
 case object SingleMessageResponse extends MessageType

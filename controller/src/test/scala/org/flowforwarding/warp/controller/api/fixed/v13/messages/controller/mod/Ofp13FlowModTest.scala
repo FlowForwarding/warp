@@ -53,7 +53,7 @@ trait Ofp13FlowModTest extends MessageTestsSet[Ofp13DriverApi]{
   )
 
   private def noErrorTestTemplate(description: String, instructions: Instruction*): (FlowModInput, TestData) =
-    inputTemplate(instructions: _*) -> TestNoError(classOf[msgError], description)
+    inputTemplate(instructions: _*) -> TestNoError(description)
 
   /* errorResponse* tests were broken after introduction of oxm_tlv test */
   private def errorResponseTestTemplate(description: String, eType: UShort, eCode: UShort, instructions: Instruction*): (FlowModInput, TestData) =
@@ -81,8 +81,8 @@ trait Ofp13FlowModTest extends MessageTestsSet[Ofp13DriverApi]{
 //  errorResponseTestTemplate("Flow mod: ActionPushMpls", eType = uh"2", eCode = uh"5", InstructionWriteActions(Array(Action.pushMpls(uh"1")))) +  /* BAD_ARGUMENT */
 //  errorResponseTestTemplate("Flow mod: ActionOutput",   eType = uh"2", eCode = uh"4", InstructionWriteActions(Array(Action.output(PortNumber(ui"100"), Max)))) + /* BAD_OUT_PORT */
     /* Tests for OxmTlv */
-    (oxmInputTemplate(in_port(ui"2"))                                                     -> TestNoError(classOf[msgError], "Flow mod: XML TLV in_port")) +
-    (oxmInputTemplate(in_port(ui"1"), eth_type(uh"2048"), vlan_vid(uh"4", Some(uh"255"))) -> TestNoError(classOf[msgError], "Flow mod: bunch of oxm tlvs")) +
+    (oxmInputTemplate(in_port(ui"2"))                                                     -> TestNoError("Flow mod: XML TLV in_port")) +
+    (oxmInputTemplate(in_port(ui"1"), eth_type(uh"2048"), vlan_vid(uh"4", Some(uh"255"))) -> TestNoError("Flow mod: bunch of oxm tlvs")) +
     noErrorTestTemplate("Flow mod: Array of actions",         InstructionWriteActions(Array(Action.setQueue(ui"1"), Action.setMplsTtl(ub"1"), Action.setNwTtl(ub"1")))) +
     noErrorTestTemplate("Flow mod: ActionGroup",              InstructionWriteActions(Array(Action.group(GroupId(ui"10"))))) +
     noErrorTestTemplate("Flow mod: ActionPushVlan",           InstructionWriteActions(Array(Action.pushVlan(uh"1")))) +

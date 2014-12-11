@@ -36,18 +36,22 @@ object SwitchConnector{
   trait SendingResult[+T]{
     def map[R](f: T => R): SendingResult[R]
   }
-  case object SendingSuccessfull extends SendingResult[Nothing] {
+  case object SendingSuccessful extends SendingResult[Nothing] {
     override def map[R](f: Nothing => R): SendingResult[R] = this
   }
   case class SendingFailed(cause: Throwable) extends SendingResult[Nothing] {
     override def map[R](f: Nothing => R): SendingResult[R] = this
   }
-  trait SwitchResponse[T] extends SendingResult[T]
+
+  sealed trait SwitchResponse[T] extends SendingResult[T]
   case class SingleMessageSwitchResponse[T](msg: T) extends SwitchResponse[T] {
     override def map[R](f: T => R): SendingResult[R] = SingleMessageSwitchResponse(f(msg))
   }
   case class MultipartMessageSwitchResponse[T](msgs: Seq[T]) extends SwitchResponse[T] {
     override def map[R](f: T => R): SendingResult[R] = MultipartMessageSwitchResponse(msgs map f)
+  }
+  case class ErrorSwitchResponse[T](errorMsg: T) extends SwitchResponse[T]{
+    override def map[R](f: T => R): SendingResult[R] = ErrorSwitchResponse(f(errorMsg))
   }
 
   case class NewDriverFactory(sender: ActorRef) extends MessageEnvelope
@@ -115,6 +119,7 @@ private class SwitchConnector[T <: OFMessage, DriverType <: MessageDriver[T]](va
     case Tcp.Received(data) =>
       driver.getDPID(data.toArray) match {
         case Success(dpid) =>
+          log.info("Handshaked switch " + dpid)
           val (messages, rest) = decodeMessages(driver, Nil, data.toArray)
           setReceive(handshakedState(tcpChannel, driver, dpid, rest))
           publishMessage(SwitchHandshake(dpid, driver))
@@ -143,6 +148,10 @@ private class SwitchConnector[T <: OFMessage, DriverType <: MessageDriver[T]](va
       messages foreach { msg =>
         val xid = driver.getXid(msg)
         driver.getIncomingMessageType(msg) match {
+          case Error =>
+            awaitingRequests.remove(xid) foreach {
+              _ complete Success(ErrorSwitchResponse(msg))
+            }
           case SingleMessageResponse =>
             awaitingRequests.remove(xid) foreach {
               _ complete Success(SingleMessageSwitchResponse(msg))
@@ -155,7 +164,7 @@ private class SwitchConnector[T <: OFMessage, DriverType <: MessageDriver[T]](va
                   p complete Success(MultipartMessageSwitchResponse(s))
                 }
               }
-          case _ => // Async/Command/Request
+          case m => log.error("Unmatchable incoming message: " + m)
         }
       }
       setReceive(handshakedState(tcpChannel, driver, dpid, rest))
@@ -171,7 +180,7 @@ private class SwitchConnector[T <: OFMessage, DriverType <: MessageDriver[T]](va
             p.future pipeTo sender()
           }
           else
-            sender() ! SendingSuccessfull
+            sender() ! SendingSuccessful
         case Failure(t) =>
           log.error(t, "Unable to encode message")
           sender() ! SendingFailed(t)

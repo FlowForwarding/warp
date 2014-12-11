@@ -14,6 +14,6 @@ import org.flowforwarding.warp.controller.api.fixed.v13.structures.actions.Actio
 trait Ofp13PacketOutTest extends MessageTestsSet[Ofp13DriverApi] {
   abstract override def tests = super.tests + {
     PacketOutInput(Max, ControllerPort, Array(Action.output(AllPorts)), Array(2, 2, 2, 2, 2)) ->
-      TestNoError(classOf[messages.async.Error], "PacketOut")
+      TestNoError("PacketOut")
   }
 }
