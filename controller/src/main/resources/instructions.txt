@@ -1,23 +1,23 @@
-set factory org.flowforwarding.warp.protocol.dynamic.ReflectiveMessageDriverFactory -p D:\src\git\warp_github\sdriver\src\main\scala\org\flowforwarding\warp\protocol\ofp13
+set factory org.flowforwarding.warp.sdriver.dynamic.ReflectiveMessageDriverFactory -p D:\src\git\warp_github\sdriver-ofp13\src\main\scala\org\flowforwarding\warp\sdriver\ofp13
 
 add module rest_api_server of type org.flowforwarding.warp.controller.modules.rest.RestApiServer -p /controller/nb/v2
 
-add module sm_nb of type org.flowforwarding.warp.controller.modules.rest.northbound.SwitchManagerNorthbound -p /controller/nb/v2
-add module inventory_manager of type org.flowforwarding.warp.controller.modules.managers.InventoryManager -p
-add module ofp_inventory of type org.flowforwarding.warp.controller.modules.managers.impl.openflow.v13.Ofp13InventoryService -p
+add module sm_nb of type org.flowforwarding.warp.controller.modules.opendaylight_rest.northbound.SwitchManagerNorthbound -p /controller/nb/v2
+add module inventory_manager of type org.flowforwarding.warp.controller.modules.opendaylight_rest.managers.InventoryManager -p
+add module ofp_inventory of type org.flowforwarding.warp.controller.modules.opendaylight_rest.impl.openflow.v13.Ofp13InventoryService -p
 
-add module cm_nb of type org.flowforwarding.warp.controller.modules.rest.northbound.ConnectionManagerNorthbound -p /controller/nb/v2
-add module connection_manager of type org.flowforwarding.warp.controller.modules.managers.ConnectionManager -p
-add module ofp_connection of type org.flowforwarding.warp.controller.modules.managers.impl.openflow.v13.Ofp13ConnectionService -p
+add module cm_nb of type org.flowforwarding.warp.controller.modules.opendaylight_rest.northbound.ConnectionManagerNorthbound -p /controller/nb/v2
+add module connection_manager of type org.flowforwarding.warp.controller.modules.opendaylight_rest.managers.ConnectionManager -p
+add module ofp_connection of type org.flowforwarding.warp.controller.modules.opendaylight_rest.impl.openflow.v13.Ofp13ConnectionService -p
 
-add module flows_nb of type org.flowforwarding.warp.controller.modules.rest.northbound.FlowProgrammerNorthbound -p /controller/nb/v2
-add module flows_manager of type org.flowforwarding.warp.controller.modules.managers.FlowsManager -p
-add module ofp_flows of type org.flowforwarding.warp.controller.modules.managers.impl.openflow.v13.Ofp13FlowsService -p
+add module flows_nb of type org.flowforwarding.warp.controller.modules.opendaylight_rest.northbound.FlowProgrammerNorthbound -p /controller/nb/v2
+add module flows_manager of type org.flowforwarding.warp.controller.modules.opendaylight_rest.managers.FlowsManager -p
+add module ofp_flows of type org.flowforwarding.warp.controller.modules.opendaylight_rest.impl.openflow.v13.Ofp13FlowsService -p
 
 start 0.0.0.0 6633
 
 #set factory org.flowforwarding.warp.protocol.ofp13.Ofp13Impl -p
 
-add module send_to_switch of type org.flowforwarding.warp.controller.modules.rest.SendToSwitchService -p /controller/nb/v2
+#add module send_to_switch of type org.flowforwarding.warp.controller.modules.rest.SendToSwitchService -p /controller/nb/v2
 
-add module messages_test of type org.flowforwarding.warp.controller.modules.test.MessagesTestModule -p org.flowforwarding.warp.controller.api.fixed.v13.Ofp13DriverApiTests 8796762208029 4
+#add module messages_test of type org.flowforwarding.warp.controller.modules.test.MessagesTestModule -p org.flowforwarding.warp.driver_api.fixed.openflow.v13.Ofp13DriverApiTests 8796758431676 4

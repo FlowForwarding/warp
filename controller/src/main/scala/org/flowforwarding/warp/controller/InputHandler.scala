@@ -20,7 +20,7 @@ import akka.actor._
 import akka.pattern.ask
 import akka.util.Timeout
 
-private class InputHandler(controller: ActorRef, instructionsPath: Option[String]) extends Actor{
+private class InputHandler(controller: ActorRef, instructionsPath: Option[String]) extends Actor with ActorLogging{
 
   def prompt() = { self ! StdIn.readLine("warp> ") }
   def readLine() = { self ! StdIn.readLine() }
@@ -89,22 +89,26 @@ private class InputHandler(controller: ActorRef, instructionsPath: Option[String
     case Success(SetFactoryResponse(None)) =>
       s"Factory was set successfully."
     case Success(SetFactoryResponse(Some(failure))) =>
+      log.error(failure, "Set factory error.")
       s"Unable to set factory."
 
     case Success(AddModuleResponse(moduleName, None)) =>
       s"Module $moduleName added"
     case Success(AddModuleResponse(moduleName, Some(failure))) =>
+      log.error(failure, "Add module error.")
       s"Unable to add module $moduleName"
 
     case Success(RemoveModuleResponse(moduleName, None)) =>
       s"Module $moduleName removed"
     case Success(RemoveModuleResponse(moduleName, Some(failure))) =>
+      log.error(failure, "Remove module error.")
       s"Unable to remove module $moduleName"
 
     case Success(response) =>
       s"Response: $response"
 
     case Failure(th) =>
+      log.error(th, "Command error.")
       s"Command request failed."
   }
 

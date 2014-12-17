@@ -20,10 +20,10 @@ import akka.pattern.{pipe, ask}
 
 import spire.math.{UByte, UInt, ULong}
 
+import org.flowforwarding.warp.driver_api._
 import org.flowforwarding.warp.controller.bus._
 import org.flowforwarding.warp.controller.ModuleManager._
 import org.flowforwarding.warp.controller.SwitchConnector._
-import org.flowforwarding.warp.controller.driver_interface._
 import org.flowforwarding.warp.controller.modules.Service
 
 object SwitchConnector{

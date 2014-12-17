@@ -18,7 +18,7 @@ class NonCachingClassLoader(classFilter: String => Boolean)(implicit parent: Cla
   private val classes = scala.collection.mutable.Map[String, Class[_]]()
 
   private def fileContent(path: String) = {
-    val fileURL = getResource(path)
+    val fileURL = parent.getResource(path)
     if(fileURL == null)
       throw new IOException("Unable to get resource " + path)
     val file = new File(fileURL.getFile)

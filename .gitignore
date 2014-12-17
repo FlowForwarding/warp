@@ -2,6 +2,8 @@
 .history
 build/classes
 build/lib
+driver-api/target
+driver-api-ofp13/target
 of_driver/src/main/java/org/flowforwarding/warp/controller/test/AvroMineTest.java
 of_driver/target
 controller/target
@@ -9,6 +11,9 @@ project/target
 project/project
 scalavro/util/target
 scalavro/core/target
+opendaylight-rest/target
+opendaylight-rest-impl-ofp13/target
 sdriver/target
+sdriver-ofp13/target
 .idea/
 target/

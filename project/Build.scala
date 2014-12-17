@@ -26,14 +26,37 @@ object Build extends Build{
     libraryDependencies ++= loggingLibs
   )
 
+
+  lazy val driver_api =  Project("driver-api", file("./driver-api"), settings = warpCommonSettings ++ baseAssemblySettings)
+    .settings(
+      libraryDependencies ++= compile(spire, config) ++ test(scalatest)
+    )
+
+
+  lazy val driver_api_ofp13 = Project("driver-api-ofp13", file("./driver-api-ofp13"), settings = warpCommonSettings ++ baseAssemblySettings)
+    .dependsOn(driver_api)
+    .settings(
+      libraryDependencies ++= compile(spire, config) ++ test(scalatest)
+    )
+
+
+  lazy val driver_api_ofp13_adapter = Project("driver-api-ofp13-adapter", file("./driver-api-ofp13-adapter"), settings = warpCommonSettings ++ baseAssemblySettings)
+    .dependsOn(controller, driver_api, driver_api_ofp13)
+    .settings(
+      libraryDependencies ++= compile(spire, config) ++ test(scalatest)
+    )
+
+
   lazy val of_driver_assemblySettings = sbtassembly.Plugin.assemblySettings ++ Seq(mainClass := Some("org.flowforwarding.warp.jcontroller.JController"))
 
   lazy val of_driver = Project("of_driver", file("./of_driver"), settings = warpCommonSettings ++ of_driver_assemblySettings)
+    .dependsOn(driver_api)
     .settings(
       libraryDependencies ++= compile(akka, netty, jackson_core_asl, jackson_mapper_asl)
     )
 
   lazy val controller = Project("controller", file("./controller"), settings = warpCommonSettings ++ baseAssemblySettings)
+    .dependsOn(driver_api)
     .settings(
       unmanagedJars in Compile  <++=
         baseDirectory map { base =>
@@ -56,15 +79,21 @@ object Build extends Build{
 
   lazy val sdriver = Project("sdriver", file("./sdriver"), settings = warpCommonSettings ++ assemblySettings)
     .settings(
+      libraryDependencies ++= compile(scala_reflect, scala_compiler, spire)
+    ).dependsOn(util, core, driver_api)
+
+
+  lazy val sdriver_ofp13 = Project("sdriver-ofp13", file("./sdriver-ofp13"), settings = warpCommonSettings ++ assemblySettings)
+    .settings(
       libraryDependencies ++= compile(scala_reflect, scala_compiler)
-    ).dependsOn(util, core, controller)
+    ).dependsOn(util, core, sdriver, driver_api_ofp13)
 
 
-//  lazy val demo = Project("demo", file("./demo"), settings = warpCommonSettings ++ assemblySettings)
-//    .settings(
-//      libraryDependencies ++= compile(spray_client, spray_json, spray_httpx)
-//    )  
-//    .dependsOn(controller, sdriver)
+  lazy val sdriver_ofp13_adapter = Project("sdriver-ofp13-adapter", file("./sdriver-ofp13-adapter"), settings = warpCommonSettings ++ assemblySettings)
+    .settings(
+      libraryDependencies ++= compile(scala_reflect, scala_compiler)
+    ).dependsOn(controller, sdriver, sdriver_ofp13)
+
 
 //  lazy val idriver = Project("idriver", file("./idriver"), settings = warpCommonSettings ++ assemblySettings)
 //  .settings(

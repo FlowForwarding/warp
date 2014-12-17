@@ -18,9 +18,9 @@ import MediaTypes._
 
 import spire.math.{UByte, ULong}
 
-import org.flowforwarding.warp.controller.api.fixed._
-import org.flowforwarding.warp.controller.api.fixed.text_view._
-import org.flowforwarding.warp.controller.bus.ControllerBus
+import org.flowforwarding.warp.driver_api.fixed._
+import org.flowforwarding.warp.driver_api.fixed.text_view._
+import org.flowforwarding.warp.controller.bus.{FixedStructuresSender, ControllerBus}
 import org.flowforwarding.warp.controller.SwitchConnector._
 
 case class SendToSwitchRequest(dpid: ULong, version: UByte, reply: Boolean, message: JsObject)

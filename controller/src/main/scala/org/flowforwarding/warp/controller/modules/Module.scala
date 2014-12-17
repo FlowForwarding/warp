@@ -14,7 +14,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import akka.pattern.pipe
 import akka.actor._
 
-import org.flowforwarding.warp.controller.driver_interface.{OFMessage, MessageDriverFactory}
+import org.flowforwarding.warp.driver_api._
 import org.flowforwarding.warp.controller.bus.{ServiceRequest, ServiceBusActor, MessageEnvelope, MessageBusActor}
 import org.flowforwarding.warp.controller.modules.Module._
 

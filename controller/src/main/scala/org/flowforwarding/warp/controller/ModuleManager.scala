@@ -23,7 +23,7 @@ import akka.pattern.{ask, pipe}
 
 import spire.math.UByte
 
-import org.flowforwarding.warp.controller.driver_interface._
+import org.flowforwarding.warp.driver_api._
 import org.flowforwarding.warp.controller.modules.Module.CheckCompatibility
 import org.flowforwarding.warp.controller.bus.{ControllerBusActor, ControllerBus, ServiceRequest}
 import org.flowforwarding.warp.controller.modules.Module

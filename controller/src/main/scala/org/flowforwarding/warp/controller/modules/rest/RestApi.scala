@@ -20,7 +20,7 @@ import spray.routing._
 import spray.can.Http
 import spray.http.{HttpEntity, StatusCodes, HttpResponse, HttpRequest}
 
-import org.flowforwarding.warp.controller.driver_interface.MessageDriverFactory
+import org.flowforwarding.warp.driver_api._
 import org.flowforwarding.warp.controller.bus.{ServiceBusActor, ServiceBus, ServiceRequest}
 import org.flowforwarding.warp.controller.modules.{Module, Service}
 
