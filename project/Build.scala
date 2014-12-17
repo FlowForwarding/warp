@@ -94,6 +94,11 @@ object Build extends Build{
       libraryDependencies ++= compile(scala_reflect, scala_compiler)
     ).dependsOn(controller, sdriver, sdriver_ofp13)
 
+  lazy val demo = Project("demo", file("./demo"), settings = warpCommonSettings ++ assemblySettings)
+    .settings(
+      libraryDependencies ++= compile(spray_client, spray_json, spray_httpx)
+    )
+    .dependsOn(controller, driver_api, driver_api_ofp13, driver_api_ofp13_adapter, sdriver_ofp13, sdriver_ofp13_adapter)
 
 //  lazy val idriver = Project("idriver", file("./idriver"), settings = warpCommonSettings ++ assemblySettings)
 //  .settings(
