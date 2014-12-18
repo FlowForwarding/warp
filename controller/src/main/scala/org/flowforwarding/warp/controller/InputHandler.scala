@@ -114,13 +114,13 @@ private class InputHandler(controller: ActorRef, instructionsPath: Option[String
 
   def helpString: String =
     """
-      |:help                                                                            print this summary
-      |:paste                                                                           enter the paste mode
-      |:file <path_to_file>                                                             read instructions from a file
-      |set factory <factory_class_name> -p [<param1>, <param2>, …]                     load factory (reloading is not implemented yet)
-      |add module <module_name> of type <module_class_name> -p [<param1>, <param2>, …] load a module
-      |rm module <module_name>                                                          remove a module
-      |start <ip> <port>                                                                start to accept incoming connections
+      |:help                                                                             print this summary
+      |:paste                                                                            enter the paste mode
+      |:file <path_to_file>                                                              read instructions from a file
+      |set factory <factory_class_name> -p [<param1>, <param2>, ...]                     load factory (reloading is not implemented yet)
+      |add module <module_name> of type <module_class_name> -p [<param1>, <param2>, ...] load a module
+      |rm module <module_name>                                                           remove a module
+      |start <ip> <port>                                                                 start to accept incoming connections
     """.stripMargin
 
   def execute(cmd: Any) = {

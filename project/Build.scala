@@ -58,17 +58,6 @@ object Build extends Build{
   lazy val controller = Project("controller", file("./controller"), settings = warpCommonSettings ++ baseAssemblySettings)
     .dependsOn(driver_api)
     .settings(
-      unmanagedJars in Compile  <++=
-        baseDirectory map { base =>
-          val format = (s: String) => base / ".." / s / "target" / s"scala-$SCALA_MAJOR_VERSION" / s"$s-assembly-$WARP_VERSION.jar"
-          val jars = Seq("sdriver", "jdriver", "idriver", "demo") map format
-          jars.foldLeft(PathFinder.empty) { _ +++ _ } classpath
-        },
-      mergeStrategy in assembly <<= (mergeStrategy in assembly) { old => {
-          case s if s contains "org\\flowforwarding\\warp\\controller" => MergeStrategy.first
-          case x => old(x)
-        }
-      },
       libraryDependencies ++= compile(akka, akka_slf4j, spray_json, spray_http, spray_can, spray_routing, spire) ++ test(scalatest)
     )
 
@@ -96,9 +85,31 @@ object Build extends Build{
 
   lazy val demo = Project("demo", file("./demo"), settings = warpCommonSettings ++ assemblySettings)
     .settings(
+     unmanagedJars in Compile  <++=
+       baseDirectory map { base =>
+         val format = (s: Project) => s.base / "target" / s"scala-$SCALA_MAJOR_VERSION" / s"${s.id}-assembly-$WARP_VERSION.jar"
+         val modules = Seq(
+           controller,
+           driver_api,
+           driver_api_ofp13,
+           driver_api_ofp13_adapter,
+           sdriver,
+           sdriver_ofp13,
+           sdriver_ofp13_adapter,
+           of_driver)
+         val jars = modules map format
+         jars.foldLeft(PathFinder.empty) { _ +++ _ } classpath
+       },
+      mergeStrategy in assembly <<= (mergeStrategy in assembly) { old => {
+        case s if (s contains "org\\flowforwarding\\warp\\controller") ||
+                  (s contains "org\\flowforwarding\\warp\\driver_api") ||
+                  (s contains "org\\flowforwarding\\warp\\sdriver") => MergeStrategy.first
+        case x => old(x)
+      }
+     },
       libraryDependencies ++= compile(spray_client, spray_json, spray_httpx)
     )
-    .dependsOn(controller, driver_api, driver_api_ofp13, driver_api_ofp13_adapter, sdriver_ofp13, sdriver_ofp13_adapter)
+    .dependsOn(controller, driver_api, driver_api_ofp13, driver_api_ofp13_adapter, sdriver, sdriver_ofp13, sdriver_ofp13_adapter)
 
 //  lazy val idriver = Project("idriver", file("./idriver"), settings = warpCommonSettings ++ assemblySettings)
 //  .settings(

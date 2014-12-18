@@ -4,6 +4,7 @@ build/classes
 build/lib
 driver-api/target
 driver-api-ofp13/target
+driver-api-ofp13-adapter/target
 of_driver/src/main/java/org/flowforwarding/warp/controller/test/AvroMineTest.java
 of_driver/target
 controller/target
@@ -15,5 +16,6 @@ opendaylight-rest/target
 opendaylight-rest-impl-ofp13/target
 sdriver/target
 sdriver-ofp13/target
+sdriver-ofp13-adapter/target
 .idea/
 target/
