@@ -6,7 +6,8 @@
  */
 package org.flowforwarding.warp.controller.util
 
-import java.io.{FileInputStream, File, DataInputStream, IOException}
+import java.io._
+import java.util.jar._
 
 class NonCachingClassLoader(classFilter: String => Boolean)(implicit parent: ClassLoader)  extends ClassLoader(parent){
 
@@ -21,12 +22,27 @@ class NonCachingClassLoader(classFilter: String => Boolean)(implicit parent: Cla
     val fileURL = parent.getResource(path)
     if(fileURL == null)
       throw new IOException("Unable to get resource " + path)
-    val file = new File(fileURL.getFile)
-    val data = Array.ofDim[Byte](file.length.toInt)
-    val dis = new DataInputStream(new FileInputStream(file))
-    dis.readFully(data)
-    dis.close()
-    data
+
+    val jarPrefix = "jar:"
+    val input = fileURL.toString.split("!/") match {
+      case Array(jarFile, jarEntry) if jarFile.startsWith(jarPrefix) =>
+        val uri = new java.net.URI(jarFile.stripPrefix(jarPrefix))
+        val jar = new JarFile(uri.getPath)
+        val entry = jar.getEntry(jarEntry)
+        jar.getInputStream(entry)
+      case Array(classFile) =>
+        val file = new File(classFile)
+        new DataInputStream(new FileInputStream(file))
+      case _ => throw new IOException(s"File $path is not a plain class file nor jar entry.")
+    }
+
+    val output = new ByteArrayOutputStream()
+    var nextValue = input.read()
+    while (nextValue != -1) {
+      output.write(nextValue)
+      nextValue = input.read()
+    }
+    output.toByteArray
   }
 
   override def loadClass(name: String, resolve: Boolean): Class[_] =
