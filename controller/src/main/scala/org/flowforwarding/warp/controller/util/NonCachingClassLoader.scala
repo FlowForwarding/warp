@@ -31,7 +31,8 @@ class NonCachingClassLoader(classFilter: String => Boolean)(implicit parent: Cla
         val entry = jar.getEntry(jarEntry)
         jar.getInputStream(entry)
       case Array(classFile) =>
-        val file = new File(classFile)
+        val uri = new java.net.URI(classFile)
+        val file = new File(uri.getPath)
         new DataInputStream(new FileInputStream(file))
       case _ => throw new IOException(s"File $path is not a plain class file nor jar entry.")
     }
