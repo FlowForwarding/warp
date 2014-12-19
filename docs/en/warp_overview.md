@@ -1,6 +1,5 @@
 # Overview of Warp Controller
-
-Warp is a component-based software defined networking framework built on top of Akka. It holds connections with OpenFlow switches, supports dynamic (re)loading of predefined or user-defined components and provides event-based way of communication between loaded components and connected switches.
+*(work in progress)*
 
 
 ## Running

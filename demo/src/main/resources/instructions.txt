@@ -1,4 +1,4 @@
-set factory org.flowforwarding.warp.sdriver.dynamic.ReflectiveMessageDriverFactory -p D:\src\git\warp_github\sdriver-ofp13\src\main\scala\org\flowforwarding\warp\sdriver\ofp13
+set factory org.flowforwarding.warp.sdriver.dynamic.ReflectiveMessageDriverFactory -p ./sdriver-ofp13/src/main/scala/org/flowforwarding/warp/sdriver/ofp13
 
 add module rest_api_server of type org.flowforwarding.warp.controller.modules.rest.RestApiServer -p /controller/nb/v2
 
