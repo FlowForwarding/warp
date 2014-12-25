@@ -89,9 +89,9 @@ Besides class-based representation, Fixed API supports textual representation of
 - each **Structure** is convertable to its text view using method ```def textView: BITextView```
 - Fixed API Driver is able to parse **BuilderInputs** using method ```def parseTextView(input: BITextView): Try[BuilderInput]```
 
-Textual representation was developed for interconnection with out-of-controller sources of messages, e. g. it is used in [Send-To-Switch Rest API]().
+Textual representation was developed for interconnection with out-of-controller sources of messages, e. g. it is used in [Send-To-Switch Rest API](send_to_switch_api.md).
 
-Information about definition of new versions of fixef API you can find in [corresponding guide](). 
+Information about definition of new versions of fixed API you can find in [corresponding guide](how_to_define_new_fixed_api.md).
 
 ###### Note
 The current implementation of Fixed API expects that underlying DynamicDriver is able to determine values of fields based on values of other fields or type of structure (like fields *length* and *type* of structure ofp_header).
@@ -225,7 +225,8 @@ def supportedVersions: Array[UByte]
 def handleMessage(api: ApiSupport, dpid: ULong, msg: T): Try[Array[T]]
 def handleDisconnected(api: ApiSupport, dpid: ULong): Unit
 def handleHandshake(api: ApiSupport, dpid: ULong): Unit
-```                                                                                                                                                                                                                                                                                                                                                                                                                                                         Those of them
+```
+
 Method ```supportedVersions``` declares versions of OpenFlow protocol this module is able to handle, methods ```handleHandshake``` and ```handleDisconnected``` define reaction on connection and disconnection of a switch, and ```handleMessage``` defines response (a sequence of outgoing messages) to an incoming message.
 
 Each message handler is an actor, it has local state and own messages queue, so it may become a bottleneck. This problem can be solved using programmatic loading of several different handlers of the same type (send service request ```ModuleManager.AddModule```) and distribution of messages between them (override method ```started``` and there subscribe to a messages filtered by id of switch, for example).
