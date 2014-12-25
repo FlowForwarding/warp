@@ -1,17 +1,12 @@
-# Overview of Warp Controller
-*(work in progress)*
-
+# Overview of Controller and Driver API
 
 ## Running
 
-
-Entry point of framework is object [ModuleManager]. Run it to start interactive console, which, in its turn, allows you manage components and start accepting of incoming connections (command ```start <ip> <port>```).
+Entry point of framework is object ```ModuleManager```. Run it to start [interactive console] [InteractiveConsole], which, in its turn, allows you manage components and start accepting of incoming connections (command ```start <ip> <port>```).
 
 ## Components
 
-Component is a Java class designed according to several rules.
-
-For now, there are two main types of components: [factory of message drivers] [MessageDriverFactory] and [module] [Module].
+Component is a Java class designed according to several rules. For now, there are two main types of components: [factory of message drivers] [MessageDriverFactory] and [module] [Module].
 
 The purpose of the first type is providing a set of message drivers, classes that decode incoming messages (messages from switches to controller) and encode outgoing messages (messages from controller to switches). The reason why there is a set of drivers is that controller is able to serve different protocol versions, each of which can be supported by a different driver.
 
@@ -46,7 +41,7 @@ The tree last traits are parametrized over type of messages they deal with. Driv
 ### Dynamic drivers and dynamic API
 One of the main goals of warp is to provide a way of definition of user-defined versions of OpenFlow protocolos which can be reloaded without restart of the entire controller and to develop end-user API to operate with such protocols.
 
-Package [org.flowforwarding.warp.controller.api.dynamic] [PackageDynamic] provides a set of classes to achieve the above goal.
+Package [org.flowforwarding.warp.driver_api.dynamic] [PackageDynamic] provides a set of classes to achieve the above goal.
 
 ```trait DynamicStructure``` represents messages, structure of which is not defined in compile-time but depends on the loaded driver definition. User is able to get fields of structures using names of that fields.
 
@@ -82,7 +77,7 @@ if(incomingMessage.isTypeOf("ofp_switch_features_reply")){
 ###### Note
 - Look through the definition of the used protocol to determine which fields are supported by DynamicStructures or DynamicBuilderInputs. It is impossible and actually unnecessary to have this information in runtime.
 - If you have changed and reloaded definition of protocol, modules which use Dynamic API could got broken because of changed names of fields. In this case all the modules which used changed fields shoul be fixed and reloaded too.
-- This API is quite verbose, so there are two wrappers (for both [Scala] [DynamicScalaApi] and [Java] [DynamicJavaApi]) providing more convenient and language-specific APIs for writing [MessageHandlers] [MessageHandlers].
+- This API is quite verbose, so controller provides two wrappers (for both [Scala] [DynamicScalaApi] and [Java] [DynamicJavaApi]) providing more convenient and language-specific APIs for writing [MessageHandlers] [MessageHandlers].
 
 
 ### Fixed API
@@ -94,15 +89,22 @@ Besides class-based representation, Fixed API supports textual representation of
 - each **Structure** is convertable to its text view using method ```def textView: BITextView```
 - Fixed API Driver is able to parse **BuilderInputs** using method ```def parseTextView(input: BITextView): Try[BuilderInput]```
 
-Textual representation was developed for interconnection with out-of-controller sources of messages, e. g. it is used in Rest API.
+Textual representation was developed for interconnection with out-of-controller sources of messages, e. g. it is used in [Send-To-Switch Rest API]().
+
+Information about definition of new versions of fixef API you can find in [corresponding guide](). 
 
 ###### Note
 The current implementation of Fixed API expects that underlying DynamicDriver is able to determine values of fields based on values of other fields or type of structure (like fields *length* and *type* of structure ofp_header).
 
-
 ### Factories of Message Drivers
 
-Each driver instance supports own version of protocol, but controller is able to serve switches which work with different protocol versions. That is the reason why ```trait MessageDriverFactory``` exists: when switch connects to controller, controller asks the loaded factory about the highest common version between versions of drivers it provides and versions supported by the switch. Then this version is used to get a driver which will serve this concrete switch. If a factory provides dynamic drivers, the method ```def get(versionCode: UByte): MessageDriver[T]``` of MessageDriverFactory is a good place to mix DynamicDriver with a fixed API trait, type of which depends on ```versionCode``` parameter.
+Each driver instance supports own version of protocol, but controller is able to serve switches which work with different protocol versions. That is the reason why ```trait MessageDriverFactory``` exists: when switch connects to controller, controller asks the loaded factory about the highest common version between versions of drivers it provides and versions supported by the switch. Then this version is used to get a driver which will serve this concrete switch. 
+
+Factories of Message Drivers are loadable components of warp framework. It should be the first component loaded into controller because some modules may have specific requirements to factories (support of a particular version of Fixed API or common message type, etc) and these requirements must be tested while module loading. 
+
+
+###### Note
+Although further goal of warp is protocol-independency, for now message drivers and factories are designed to support only OpenFlow protocols.
 
 ### Implemented message drivers
 For now there are three implementations of MessageDriver:
@@ -113,29 +115,13 @@ For now there are three implementations of MessageDriver:
 
 ## Event Buses
 
-Event bus in warp is implemented in terms of actors and messages between them. It is the main way of communication between modules and place where messages from switches emerge, therefore, every module [holds a reference] [ModuleDev] to a needed message bus.
+Event bus in warp is implemented in terms of actors and messages. It is the main way of communication between modules and place where messages from switches emerge, therefore, every module [holds a reference] [ModuleDev] to a needed message bus.
 
 There are two types of buses: MessageBus and ServiceBus.
 MessageBus provides a way of subscription and publishing messages (fire-and-forget model), whereas ServiceBus registers services and allows other modules turn to them for information (request-reply model).
 ControllerBus unites both ServiceBus and MessageBus; it is created once during initialization of framework and shared between all the modules, so that there is only one EventBus for now.
 
-To grant an actor access to an event bus, mixin trait [ServiceBusActor], [MessageBusActor] or [ControllerBusActor] to your actor class.
-
-
-### ServiceBusActor trait
-
-ServiceBusActor provides the following methods:
-
-```scala
-val bus: ServiceBus
-final def askService(request: ServiceRequest): Future[Any]
-final def registerService(acceptedRequests: PartialFunction[ServiceRequest, Boolean])
-final def unregisterService(): Unit
-```
-
-```askService``` publishes request on the bus and returns a Future which is sucessfull and holds response if a service was able to handle request and it is failed if service was not found or failed to handle request.
-
-Actors use ```registerService``` to declare self as a service and define which types of requests they are able to handle and ```unregisterService``` to remove self from the list of services.
+To grant an actor access to an event bus, mixin trait ```ServiceBusActor```, ```MessageBusActor``` or ```ControllerBusActor``` to your actor class.
 
 ### MessageBusActor trait
 
@@ -154,10 +140,27 @@ final def unsubscribe(): Unit
 
 Method ```subscribe``` defines which messages actor would receive. Note that there could be several subscriptions, each of which can be dymically removed using string-identifier of subscription and method ```unsubscribe(subscriptionName: String)``` or remove them all using ```unsubscribe()```.
 
+### ServiceBusActor trait
+
+ServiceBusActor provides the following methods:
+
+```scala
+val bus: ServiceBus
+final def askService(request: ServiceRequest): Future[Any]
+final def registerService(acceptedRequests: PartialFunction[ServiceRequest, Boolean])
+final def unregisterService(): Unit
+```
+
+```askService``` publishes request on the bus and returns a Future which is sucessfull and holds response if a service was able to handle request and it is failed if service was not found or failed to handle request.
+
+Actors use ```registerService``` to declare self as a service and define which types of requests they are able to handle and ```unregisterService``` to remove self from the list of services.
+
+```trait MessagesSender[M <: OFMessage]``` is successor of ServiceBusActor and provides methods for sending messages of type ```M``` to switches. It relies on service provided by SwitchConnector.
+```trait FixedStructuresSender``` simplifies send routines for FixedApi: it deals with ```BuilderInput```s and ```TextView```s and assumes that message driver supports Fixed API. 
 
 ###### Note
 
-- Method ```bus``` of both traits is abstract and is typically implemented as a parameter of successor's constructor.
+Method ```bus``` of BusActors is abstract and is typically implemented as a parameter of constructor of class implementing it (in Scala).
 
 ### Bus messages
 ```ServiceRequest``` and ```MessageEnvelope``` are the basic traits for each request and message, respectively. Their successors are usually defined in a companion object of actor which introduces this kind of message to the system.
@@ -167,13 +170,12 @@ Method ```subscribe``` defines which messages actor would receive. Note that the
  - actor fires such messages, or
  - actor reacts on this kind of message.
 
-Modules
----
+## Modules
 
-Module is the basic abstraction for component of warp controller framework. Since Warp built on top of Akka, it is naturally to represent each module as an Actor, so trait Module extends Actor and provides additional methods
+Module is the basic abstraction for component of warp controller framework. Since Warp is built on top of Akka, it is naturally to represent each module as an Actor, so trait Module extends Actor and provides additional methods
 ```scala
 protected def started(): Unit
-protected def shutdown(): Unit = { }
+protected def shutdown(): Unit
 protected def compatibleWith(factory: MessageDriverFactory[_]): Boolean
 ```
 
@@ -185,7 +187,7 @@ As mentioned above, components are represented by Java classes. In case of modul
 To develop a module loadable by module manager, user should:
 
 1. Inherite from class Module or its sucessors.
-2. Provide constructor which takes *Bus as the first parameter and strings as others (variable-size argument is allowed too).
+2. Provide constructor which takes ```XxxBus``` as the first parameter and strings as others (variable-size argument is allowed too).
 
 Note that although user can inherit from trait Module directly and mix it with MessageBusActor or ServiceBusActor traits to make the module be able to communicate with other modules (see predefined module [RestApiServer]), typically it is not necessary, because of two traits-successors of Module – [MessageConsumer] and [Service].
 
@@ -211,7 +213,7 @@ As an example of service implementation, consider
 
 ### Compatibility with message driver
 
-Sometimes modules require concrete implementation of driver (e.g. DynamicDriver), supported versions of protocol etc. Specify this contract in module's method ```compatibleWith```, which is called while module is loaded to make sure it will work correct. Note that this method takes ```MessageDriverFactory``` as a parameter, thus it is possible to check availability of drivers with required properties.
+Sometimes modules require concrete requerements to driver (e.g. it msut be a DynamicDriver), supported versions of protocol etc. Specify this contract in module's method ```compatibleWith```, which is called while controller loads module to make sure it will work correct. Note that this method takes ```MessageDriverFactory``` as a parameter, thus it is possible to check availability of drivers with required properties.
 
 ### Message handlers
 
@@ -221,16 +223,29 @@ Message handler is a module which reacts on messages from switches. Every messag
 ```
 def supportedVersions: Array[UByte]
 def handleMessage(api: ApiSupport, dpid: ULong, msg: T): Try[Array[T]]
-def handleDisconnected(api: ApiSupport, dpid: ULong): Unit = { }
-def handleHandshake(api: ApiSupport, dpid: ULong): Unit = { }
-```
+def handleDisconnected(api: ApiSupport, dpid: ULong): Unit
+def handleHandshake(api: ApiSupport, dpid: ULong): Unit
+```                                                                                                                                                                                                                                                                                                                                                                                                                                                         Those of them
 Method ```supportedVersions``` declares versions of OpenFlow protocol this module is able to handle, methods ```handleHandshake``` and ```handleDisconnected``` define reaction on connection and disconnection of a switch, and ```handleMessage``` defines response (a sequence of outgoing messages) to an incoming message.
 
 Each message handler is an actor, it has local state and own messages queue, so it may become a bottleneck. This problem can be solved using programmatic loading of several different handlers of the same type (send service request ```ModuleManager.AddModule```) and distribution of messages between them (override method ```started``` and there subscribe to a messages filtered by id of switch, for example).
 
 ###### Note
-There are several successors of ```class MessageHandlers```, providing more convenient usage of Dynamic API, Fixed APIs and driver-specific APIs.
+There are several successors of ```class MessageHandlers```, providing more convenient usage of Dynamic API, Fixed APIs and driver-specific APIs. Those of them which were designed for a specific implementation of API, locate in corresponding ```<specific-implementation-name>-adapter``` projects.
 
+## OpenDaylight-compatible Rest API
+
+Project [OpenDaylight](http://www.opendaylight.org/) provides set of [Rest APIs](https://wiki.opendaylight.org/view/OpenDaylight_Controller:REST_Reference_and_Authentication) for switch management and network state monitoring. Warp implements some of them as part of controller, so many applications which use these API could be used together with warp.
+
+The following APIs are implemented:
+- [Connection Manager](https://jenkins.opendaylight.org/controller/job/controlller-merge-hydrogen-stable/lastSuccessfulBuild/artifact/opendaylight/northbound/connectionmanager/target/site/wsdocs/index.html)
+- [Switch Manager](https://jenkins.opendaylight.org/controller/job/controlller-merge-hydrogen-stable/lastSuccessfulBuild/artifact/opendaylight/northbound/switchmanager/target/site/wsdocs/index.html)
+- [Flow Programmer](https://jenkins.opendaylight.org/controller/job/controlller-merge-hydrogen-stable/lastSuccessfulBuild/artifact/opendaylight/northbound/flowprogrammer/target/site/wsdocs/index.html)
+- [Topology](https://jenkins.opendaylight.org/controller/job/controlller-merge-hydrogen-stable/lastSuccessfulBuild/artifact/opendaylight/northbound/topology/target/site/wsdocs/index.html)
+
+Note that controller provides modules implementing protocol-independent [abstrations] [AbstractRestServices], which require modules which provide concrete underlying implementations. These modules should be loaded into controller together with basic modules. You could find them in corresponding ```<specific-implementation-name>-adapter``` projects. For now they exist (but Topology) only for [Fixed OpenFlow 1.3 API] [FixedOFP13RestServices], project ```driver-api-ofp13-adapter```.
+
+More information about development of modules supporting Rest API for your driver you can find [here] [RestServicesDev].
 
 [ScalaDriver]:_
 [JavaDriver]:_
@@ -241,21 +256,20 @@ There are several successors of ```class MessageHandlers```, providing more conv
 [DynamicJavaApi]:_
 [MessageHandlers]:#message-handlers
 
-[ServiceBusActor]:_
-[MessageBusActor]:_
-[ControllerBusActor]:_
-
-[ModuleManager]:_
-[InteractiveConsole]:_
-[MessageDriverFactory]:_
+[ModuleManager]:#module-manager
+[InteractiveConsole]:docs/en/warp_overview.md
+[MessageDriverFactory]:#factories-of-message-drivers
 [Compatibility]:#compatibility-with-message-driver
-[Module]:#module
+[Module]:#modules
 [ModuleDev]:#how-to-develop-a-module
-[MessageDriver]:_
-[MessageHandlers]:_
+[MessageHandlers]:#message-handlers
 
-[RestApiServer]: org.flowforwarding.warp.controller.modules.rest.RestApiServer
-[RestApiService]: org.flowforwarding.warp.controller.modules.rest.RestApiService
-[SendToSwitchService]: org.flowforwarding.warp.controller.modules.rest.SendToSwitchService
-[MessageConsumer]: _
-[Service]: _
+[RestApiServer]:#link-to-scaladoc
+[RestApiService]:#link-to-scaladoc
+[SendToSwitchService]:#link-to-scaladoc
+[MessageConsumer]:#link-to-scaladoc
+[Service]:#link-to-scaladoc
+
+[AbstractRestServices]:#link-to-scaladoc
+[FixedOFP13RestServices]:#link-to-scaladoc
+[RestServicesDev]:#how-to-provide-rest-services-support
