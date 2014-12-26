@@ -97,7 +97,7 @@ object NorthboundUtils extends StrictLogging{
 
   implicit def propertiesWriter = new JsonWriter[Set[Property[_]]] {
     def write(properties: Set[Property[_]]): JsValue =
-      JsObject(properties.toList map (p => p.name -> propertyWriter.write(p)) )
+      JsObject(properties.toSeq map (p => p.name -> propertyWriter.write(p)) toMap)
   }
 
   implicit def flowFormat = new JsonFormat[(Node[_], Flow)] {
@@ -116,7 +116,7 @@ object NorthboundUtils extends StrictLogging{
         hardTimeout.map(v => "hardTimeout" -> jsStr(v)).toList ++
         matchFields.map(v => v.`type` -> jsStr(v.stringValue))
 
-      JsObject(fields)
+      JsObject(fields.toMap)
     }
 
     override def read(json: JsValue): (Node[_], Flow) = json match {

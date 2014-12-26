@@ -16,7 +16,7 @@ sealed trait BITextViewItem
 case class Str(s: String) extends BITextViewItem
 case class Num(n: BigInt) extends BITextViewItem
 case class BITextView(structureName: String, data: Map[String, BITextViewItem]) extends BITextViewItem
-case class BITextViewItems[I <: BITextViewItem](is: List[I]) extends BITextViewItem
+case class BITextViewItems[I <: BITextViewItem](is: Seq[I]) extends BITextViewItem
 
 /* Grants a builder ability to build structures from text representations.
    Provides convenient way of text representation parsing via set of implicit conversions.
@@ -53,7 +53,7 @@ private[fixed] trait BITextViewSupport[Input <: BuilderInput] {
     def structure[T <: BuilderInput: ClassTag](field: String): Option[T] =
       data get field collect { case v: BITextView => buildFixed[T](v) }
 
-    def structures[T <: BuilderInput: ClassTag](field: String): Option[List[T]] =
+    def structures[T <: BuilderInput: ClassTag](field: String): Option[Seq[T]] =
       data get field collect { case BITextViewItems(is) => is map { case v: BITextView => buildFixed[T](v) } }
   }
 

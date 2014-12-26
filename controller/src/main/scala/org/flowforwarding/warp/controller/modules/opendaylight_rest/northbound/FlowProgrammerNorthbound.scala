@@ -68,7 +68,7 @@ class FlowProgrammerNorthbound(val bus: ControllerBus, serverPrefix: String) ext
     askFirst(GetContainerFlows()) map {
       case ContainerFlows(flows) =>
         val jsFlows = flows flatMap { case (n, fs) => fs map flowToJs(n) }
-        jsonOk(JsObject("flowConfig" -> JsArray(jsFlows.toList)))
+        jsonOk(JsObject("flowConfig" -> JsArray(jsFlows.toVector)))
       case NotFound => HttpResponse(404, "The containerName is not found")
     } withServiceErrorReport "One or more of Controller Services are unavailable"
 

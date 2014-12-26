@@ -83,7 +83,7 @@ class ConnectionManagerNorthbound(val bus: ControllerBus, serverPrefix: String) 
     askFirst(GetNodes(controllerAddress)) map {
       case Nodes(nodes) =>
         val jsNodes = nodes map { _.toJson }
-        jsonOk(JsObject("node" -> JsArray(jsNodes.toList)))
+        jsonOk(JsObject("node" -> JsArray(jsNodes.toVector)))
       case InvalidParams(msg) => HttpResponse(406, msg)
     } withServiceErrorReport "Connection Manager"
 }

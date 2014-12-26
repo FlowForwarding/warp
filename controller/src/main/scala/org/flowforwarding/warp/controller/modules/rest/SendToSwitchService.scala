@@ -65,7 +65,7 @@ class SendToSwitchService(val bus: ControllerBus, serverPrefix: String) extends 
         case Str(s) => JsString(s)
         case Num(n) => JsNumber(n)
         case v: BITextView => fromView(v)
-        case BITextViewItems(vs) => JsArray(vs map fromStructureTextItem)
+        case BITextViewItems(vs) => JsArray(vs map fromStructureTextItem toVector)
       }
       JsObject(view.structureName -> JsObject(view.data mapValues fromStructureTextItem))
     }

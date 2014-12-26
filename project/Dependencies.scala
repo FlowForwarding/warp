@@ -15,22 +15,22 @@ object Dependencies {
 
   object V {
     //val jackson       = "1.8.8" //not the latest version (required by patched avro)
-    val akka           = "2.3.7"
-    val spray          = "1.3.1" // nightly
-    val spray_json     = "1.2.6"
-    val reflections    = "0.9.9-RC1"
+    val akka           = "2.3.8"
+    val spray          = "1.3.2"
+    val spray_json     = "1.3.1"
+    val reflections    = "0.9.9"
     val logback        = "1.1.2"
     val slf4j          = "1.7.7"
-    val scala_version  = "2.11.0"
-    val scala_xml      = "1.0.1"
-    val scala_pc       = "1.0.1"
-    val netty          = "3.6.3.Final"
+    val scala_version  = "2.11.4"
+    val scala_xml      = "1.0.3"
+    val scala_pc       = "1.0.3"
+    val netty          = "3.10.0.Final"
     val jackson        = "1.9.13"
     val avro           = "1.7.6"
     val config         = "1.2.1"
-    val scalatest      = "2.1.6"
+    val scalatest      = "2.2.3"
     val scala_logging  = "3.1.0"
-    val spire          = "0.7.5"
+    val spire          = "0.9.0"
   }
 
   val akka               = "com.typesafe.akka"          %% "akka-actor"               % V.akka

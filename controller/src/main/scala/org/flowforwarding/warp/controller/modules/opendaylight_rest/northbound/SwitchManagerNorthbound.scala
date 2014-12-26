@@ -80,7 +80,7 @@ class SwitchManagerNorthbound(val bus: ControllerBus, serverPrefix: String) exte
     askFirst(GetNodes()) map {
       case Nodes(nodes) =>
         val allProps = nodes map { case (n, props) => JsObject("node" -> n.toJson, "properties" -> props.toJson)}
-        jsonOk(JsObject("nodeProperties" -> JsArray(allProps.toList)))
+        jsonOk(JsObject("nodeProperties" -> JsArray(allProps.toVector)))
       case InvalidParams(msg) =>
         HttpResponse(406, msg)
     } withServiceErrorReport "Inventory Manager"
@@ -92,7 +92,7 @@ class SwitchManagerNorthbound(val bus: ControllerBus, serverPrefix: String) exte
         case Connectors(connectors) =>
           val allProps = connectors map { case (c, props) =>
             JsObject("nodeconnector" -> c.toJson, "properties" -> props.toJson) }
-          jsonOk(JsObject("nodeConnectorProperties" -> JsArray(allProps.toList)))
+          jsonOk(JsObject("nodeConnectorProperties" -> JsArray(allProps.toVector)))
         case NotFound => HttpResponse(404, "Could not find a connection with the specified Node identifier")
       } withServiceErrorReport "Inventory Manager"
     }

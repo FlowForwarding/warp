@@ -15,4 +15,4 @@ case class Flow(cookie: Option[Long],
                 idleTimeout: Option[UInt],
                 hardTimeout: Option[UInt],
                 matchFields: Set[MatchField],
-                actions: List[Action])
+                actions: Seq[Action])

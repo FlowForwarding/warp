@@ -8,7 +8,6 @@ import com.gensler.scalavro.types._
 import com.gensler.scalavro.types.primitive._
 import com.gensler.scalavro.types.complex._
 import com.gensler.scalavro.types.supply.RawSeq
-import com.sun.javaws.exceptions.InvalidArgumentException
 
 // for testing
 case class RawRecordWithoutCompanion(len1: Int, seq1: RawSeq[Int])
