@@ -2,7 +2,7 @@
 
 ## Running
 
-Entry point of framework is object ```ModuleManager```. Run it to start [interactive console] [InteractiveConsole], which, in its turn, allows you manage components and start accepting of incoming connections (command ```start <ip> <port>```).
+Entry point of framework is object ```ModuleManager```. Run it to start [interactive console](interactive_console.md), which, in its turn, allows you manage components and start accepting of incoming connections (command ```start <ip> <port>```).
 
 ## Components
 
@@ -76,7 +76,7 @@ if(incomingMessage.isTypeOf("ofp_switch_features_reply")){
 
 ###### Note
 - Look through the definition of the used protocol to determine which fields are supported by DynamicStructures or DynamicBuilderInputs. It is impossible and actually unnecessary to have this information in runtime.
-- If you have changed and reloaded definition of protocol, modules which use Dynamic API could got broken because of changed names of fields. In this case all the modules which used changed fields shoul be fixed and reloaded too.
+- If you have changed and reloaded definition of protocol, modules which use Dynamic API could got broken because of changed names of fields. In this case all the modules which used changed fields should be fixed and reloaded too.
 - This API is quite verbose, so controller provides two wrappers (for both [Scala] [DynamicScalaApi] and [Java] [DynamicJavaApi]) providing more convenient and language-specific APIs for writing [MessageHandlers] [MessageHandlers].
 
 
@@ -104,13 +104,13 @@ Factories of Message Drivers are loadable components of warp framework. It shoul
 
 
 ###### Note
-Although further goal of warp is protocol-independency, for now message drivers and factories are designed to support only OpenFlow protocols.
+Although further goal of warp is protocol-independence, for now message drivers and factories are designed to support only OpenFlow protocols.
 
 ### Implemented message drivers
 For now there are three implementations of MessageDriver:
-- [Scala driver] [ScalaDriver]
-- [Java driver] [JavaDriver]
-- [DSL driver] [DSLDriver]
+- [Scala driver](scala_driver.md)
+- [Java driver](java_driver.md)
+- [DSL driver](dsl_driver.md)
 
 
 ## Event Buses
@@ -244,13 +244,22 @@ The following APIs are implemented:
 - [Flow Programmer](https://jenkins.opendaylight.org/controller/job/controlller-merge-hydrogen-stable/lastSuccessfulBuild/artifact/opendaylight/northbound/flowprogrammer/target/site/wsdocs/index.html)
 - [Topology](https://jenkins.opendaylight.org/controller/job/controlller-merge-hydrogen-stable/lastSuccessfulBuild/artifact/opendaylight/northbound/topology/target/site/wsdocs/index.html)
 
-Note that controller provides modules implementing protocol-independent [abstrations] [AbstractRestServices], which require modules which provide concrete underlying implementations. These modules should be loaded into controller together with basic modules. You could find them in corresponding ```<specific-implementation-name>-adapter``` projects. For now they exist (but Topology) only for [Fixed OpenFlow 1.3 API] [FixedOFP13RestServices], project ```driver-api-ofp13-adapter```.
+Controller provides modules implementing protocol-independent [abstractions] [AbstractRestServices], which require modules which provide concrete underlying implementations. These modules should be loaded into controller together with basic modules and [RestApiServer] [RestApiServer]. You could find them in corresponding ```<specific-implementation-name>-adapter``` projects. For now they exist (but Topology) only for [Fixed OpenFlow 1.3 API] [FixedOFP13RestServices], project ```driver-api-ofp13-adapter```.
+For example, if you want to add SwitchManager Rest API and its OpenFlow implementation, paste this code into interactive console:
+
+ ```
+ add module rest_api_server of type org.flowforwarding.warp.controller.modules.rest.RestApiServer -p /controller/nb/v2
+
+ add module sm_nb of type org.flowforwarding.warp.controller.modules.opendaylight_rest.northbound.SwitchManagerNorthbound -p /controller/nb/v2
+ add module inventory_manager of type org.flowforwarding.warp.controller.modules.opendaylight_rest.managers.InventoryManager -p
+ add module ofp_inventory of type org.flowforwarding.warp.controller.modules.opendaylight_rest.impl.openflow.v13.Ofp13InventoryService -p
+ ```
 
 More information about development of modules supporting Rest API for your driver you can find [here] [RestServicesDev].
 
-[ScalaDriver]:_
-[JavaDriver]:_
-[DSLDriver]:_
+###### Note
+- For now such features of OpenDaylight Rest API as Authorization and Containers are not implemented and only json-based messages are supported.
+- Be aware that Rest API modules may depend on each other. 
 
 [PackageDynamic]:_
 [DynamicScalaApi]:_
@@ -258,7 +267,6 @@ More information about development of modules supporting Rest API for your drive
 [MessageHandlers]:#message-handlers
 
 [ModuleManager]:#module-manager
-[InteractiveConsole]:interactive_console.md
 [MessageDriverFactory]:#factories-of-message-drivers
 [Compatibility]:#compatibility-with-message-driver
 [Module]:#modules
