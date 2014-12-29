@@ -39,7 +39,7 @@ Message driver is a class which implements MessageDriver interface. These classe
 The tree last traits are parametrized over type of messages they deal with. Driver developers define it and it must be a subclass of ```OFMessage```.
 
 ### Dynamic drivers and dynamic API
-One of the main goals of warp is to provide a way of definition of user-defined versions of OpenFlow protocolos which can be reloaded without restart of the entire controller and to develop end-user API to operate with such protocols.
+One of the main goals of warp is to provide a way of definition of user-defined versions of OpenFlow protocols which can be reloaded without restart of the entire controller and to develop end-user API to operate with such protocols.
 
 Package [org.flowforwarding.warp.driver_api.dynamic] [PackageDynamic] provides a set of classes to achieve the above goal.
 
@@ -81,12 +81,12 @@ if(incomingMessage.isTypeOf("ofp_switch_features_reply")){
 
 
 ### Fixed API
-Warp controller provides class-based APIs for opennetworking-specified versions of OpenFlow procotol (for now for *1.3* only). The advantage of these APIs is type-safety: user operates with compile-time defined structures and handlers, so there is no need to check types of messages and no risk to get a runtime exception because of absence of a required field. Fixed APi is built on top of Dynamic API.
+Warp controller provides class-based APIs for opennetworking-specified versions of OpenFlow protocol (for now for *1.3* only). The advantage of these APIs is type-safety: user operates with compile-time defined structures and handlers, so there is no need to check types of messages and no risk to get a runtime exception because of absence of a required field. Fixed APi is built on top of Dynamic API.
 
 To declare support of Fixed API for version *V*, dynamic driver should be mixed with a trait corresponding to version *V*, e. g. to support version *1.3*, it should be mixed with *Ofp13DriverApi*. Such traits require definition of field ```val namesConfig: Config``` that shows how fields required by this version of Fixed API are named in the underlying driver.
 
 Besides class-based representation, Fixed API supports textual representation of OFP structures:
-- each **Structure** is convertable to its text view using method ```def textView: BITextView```
+- each **Structure** is convertible to its text view using method ```def textView: BITextView```
 - Fixed API Driver is able to parse **BuilderInputs** using method ```def parseTextView(input: BITextView): Try[BuilderInput]```
 
 Textual representation was developed for interconnection with out-of-controller sources of messages, e. g. it is used in [Send-To-Switch Rest API](send_to_switch_api.md).
@@ -138,7 +138,7 @@ final def unsubscribe(): Unit
 
 ```publishMessage``` publishes a message on the message bus.
 
-Method ```subscribe``` defines which messages actor would receive. Note that there could be several subscriptions, each of which can be dymically removed using string-identifier of subscription and method ```unsubscribe(subscriptionName: String)``` or remove them all using ```unsubscribe()```.
+Method ```subscribe``` defines which messages actor would receive. Note that there could be several subscriptions, each of which can be dynamically removed using string-identifier of subscription and method ```unsubscribe(subscriptionName: String)``` or remove them all using ```unsubscribe()```.
 
 ### ServiceBusActor trait
 
@@ -151,7 +151,7 @@ final def registerService(acceptedRequests: PartialFunction[ServiceRequest, Bool
 final def unregisterService(): Unit
 ```
 
-```askService``` publishes request on the bus and returns a Future which is sucessfull and holds response if a service was able to handle request and it is failed if service was not found or failed to handle request.
+```askService``` publishes request on the bus and returns a Future which is successful and holds response if a service was able to handle request and it is failed if service was not found or failed to handle request.
 
 Actors use ```registerService``` to declare self as a service and define which types of requests they are able to handle and ```unregisterService``` to remove self from the list of services.
 
@@ -186,7 +186,7 @@ As mentioned above, components are represented by Java classes. In case of modul
 
 To develop a module loadable by module manager, user should:
 
-1. Inherite from class Module or its sucessors.
+1. Inherit from class Module or its successor.
 2. Provide constructor which takes ```XxxBus``` as the first parameter and strings as others (variable-size argument is allowed too).
 
 Note that although user can inherit from trait Module directly and mix it with MessageBusActor or ServiceBusActor traits to make the module be able to communicate with other modules (see predefined module [RestApiServer]), typically it is not necessary, because of two traits-successors of Module – [MessageConsumer] and [Service].
@@ -197,7 +197,7 @@ MessageConsumer is the basic trait for all modules which handle events (like Mes
 ```scala
 protected def handleEvent(e: MessageEnvelope): Unit
 ```
-which should be overriden in successors in order to handle messages on which this Module is subscribed. It is supposed that MessageConsumer subscribes for messages overriding method ```started``` and\or as reaction on an event.
+which should be overridden in successors in order to handle messages on which this Module is subscribed. It is supposed that MessageConsumer subscribes for messages overriding method ```started``` and\or as reaction on an event.
 
 ### Service trait
 
@@ -205,7 +205,7 @@ Service is the basic trait for all modules providing services. It mixes Module w
 ```scala
 protected def handleRequest(e: ServiceRequest): Future[Any]
 ```
-which should be overriden in successors in order to handle requests to a service which this Module provides. It is supposed that Servise declares service it provides in overriden method ```started```.
+which should be overridden in successors in order to handle requests to a service which this Module provides. It is supposed that Service declares service it provides in overridden method ```started```.
 
 As an example of service implementation, consider
 - [RestApiService], a template for all Rest-Api services
@@ -213,14 +213,14 @@ As an example of service implementation, consider
 
 ### Compatibility with message driver
 
-Sometimes modules require concrete requerements to driver (e.g. it msut be a DynamicDriver), supported versions of protocol etc. Specify this contract in module's method ```compatibleWith```, which is called while controller loads module to make sure it will work correct. Note that this method takes ```MessageDriverFactory``` as a parameter, thus it is possible to check availability of drivers with required properties.
+Sometimes modules require concrete requirements to driver (e.g. it must be a DynamicDriver), supported versions of protocol etc. Specify this contract in module's method ```compatibleWith```, which is called while controller loads module to make sure it will work correct. Note that this method takes ```MessageDriverFactory``` as a parameter, thus it is possible to check availability of drivers with required properties.
 
 ### Message handlers
 
 Message handler is a module which reacts on messages from switches. Every message handler is a subtype of
 ```abstract class MessageHandlers[T <: OFMessage, ApiSupport <: OfpVersionSupport]```. This class is parametrized over subtype of OFPMessage which it is able to handle (type ```T```) and API, typically used to create response or extract information from incoming message (type ```ApiSupport```). ```MessageHandlers``` mixes ```trait MessageConsumer``` and ```trait ServiceBusActor``` and provides additional methods
 
-```
+```scala
 def supportedVersions: Array[UByte]
 def handleMessage(api: ApiSupport, dpid: ULong, msg: T): Try[Array[T]]
 def handleDisconnected(api: ApiSupport, dpid: ULong): Unit
@@ -258,7 +258,7 @@ More information about development of modules supporting Rest API for your drive
 [MessageHandlers]:#message-handlers
 
 [ModuleManager]:#module-manager
-[InteractiveConsole]:docs/en/warp_overview.md
+[InteractiveConsole]:interactive_console.md
 [MessageDriverFactory]:#factories-of-message-drivers
 [Compatibility]:#compatibility-with-message-driver
 [Module]:#modules
