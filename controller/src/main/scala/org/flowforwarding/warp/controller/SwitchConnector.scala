@@ -56,8 +56,8 @@ object SwitchConnector{
 
   case class NewDriverFactory(sender: ActorRef) extends MessageEnvelope
 
-  case class SwitchDisconnected(dpid: ULong, driver: MessageDriver[_ <: OFMessage]) extends MessageEnvelope
-  case class SwitchHandshake(dpid: ULong, driver: MessageDriver[_ <: OFMessage]) extends MessageEnvelope
+  case class SwitchDisconnected[T <: OFMessage](dpid: ULong, driver: MessageDriver[T]) extends MessageEnvelope
+  case class SwitchHandshake[T <: OFMessage](dpid: ULong, driver: MessageDriver[T]) extends MessageEnvelope
 
   case class ForceDisconnect(dpid: ULong) extends ServiceRequest
   private case object ForceDisconnectInternal extends MessageEnvelope

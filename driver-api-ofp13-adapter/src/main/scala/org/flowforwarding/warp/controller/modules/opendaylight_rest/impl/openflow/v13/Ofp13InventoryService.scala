@@ -53,7 +53,7 @@ class Ofp13InventoryService(controllerBus: ControllerBus) extends Ofp13MessageHa
           }
         }
       }
-      testIncomingMessage { filter } orElse { case _: SwitchConnector.SwitchDisconnected => true }
+      testIncomingMessage { filter } orElse { case _: SwitchConnector.SwitchDisconnected[_] => true }
     }
   }
 

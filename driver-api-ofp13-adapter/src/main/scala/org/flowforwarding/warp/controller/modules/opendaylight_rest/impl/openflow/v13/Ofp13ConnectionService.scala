@@ -27,7 +27,7 @@ class Ofp13ConnectionService(controllerBus: ControllerBus) extends Ofp13MessageH
   override def started() = {
     super.started()
     subscribe("connections") {
-      case _: SwitchConnector.SwitchHandshake | _: SwitchConnector.SwitchDisconnected => true
+      case _: SwitchConnector.SwitchHandshake[_] | _: SwitchConnector.SwitchDisconnected[_] => true
     }
   }
 

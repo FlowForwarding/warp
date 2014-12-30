@@ -14,7 +14,7 @@ curl -d <body> -X POST http://0.0.0.0:8080/controller/nb/v2/send
 ```
 
 where body is
-```json
+```javascript
 {
     "dpid": 8796758431676,         // Switch id
     "version": 4,                  // OFP v1.3
@@ -26,7 +26,7 @@ where body is
 ```
 
 If connection with specified switch is still alive, you will get the following reply:
-```json
+```javascript
 {
     "EchoReply":{
         "elements":[5,5,5,5],
@@ -38,7 +38,7 @@ If connection with specified switch is still alive, you will get the following r
 Note that although you have not specify header in requests, it is present in reply. It may be used to identify transaction id, but usually should be ignored.
 
 Another example - sending multipart messages (e.g. SwitchDescription). They slightly differ form other messages: their type is always ```MultipartRequest``` and actual type of message is identified by type of ```message.body``` structure:
-```json
+```javascript
 {
     "dpid": 8796758431676,
     "version": 4,
@@ -52,7 +52,7 @@ Another example - sending multipart messages (e.g. SwitchDescription). They slig
 
 Response has the following structure:
 
-```json
+```javascript
 [
     { "MultipartReply": {
         "flags": "false",
@@ -66,6 +66,6 @@ Response has the following structure:
             }
         }}},
         "header":{"Header":{"xid":5}}}
-    }}
+    } }
 ]
 ```

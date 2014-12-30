@@ -31,8 +31,6 @@ abstract class MessageHandlers[T <: OFMessage, ApiSupport <: OfpVersionSupport](
   override def compatibleWith(factory: MessageDriverFactory[_]) =
     this.supportedVersions.forall( { factory.get _ } andThen castDriver andThen { _.isSuccess })
 
-  //castDriver((this.supportedVersions.head)).isSuccess
-
   final override def handleEvent(event: MessageEnvelope): Unit = event match {
     case SwitchHandshake(dpid, driver: MessageDriver[_]) =>
       castDriver(driver) foreach { d => handleHandshake(d, dpid) }

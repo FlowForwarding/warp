@@ -155,7 +155,7 @@ final def unregisterService(): Unit
 
 Actors use ```registerService``` to declare self as a service and define which types of requests they are able to handle and ```unregisterService``` to remove self from the list of services.
 
-```trait MessagesSender[M <: OFMessage]``` is successor of ServiceBusActor and provides methods for sending messages of type ```M``` to switches. It relies on service provided by SwitchConnector.
+```trait MessagesSender[M <: OFMessage]``` is successor of ServiceBusActor and provides methods for sending messages of type ```M``` to switches. It depends on service provided by special internal modules - [SwitchConnectors] [SwitchConnectors].
 ```trait FixedStructuresSender``` simplifies send routines for FixedApi: it deals with ```BuilderInput```s and ```TextView```s and assumes that message driver supports Fixed API. 
 
 ###### Note
@@ -210,6 +210,20 @@ which should be overridden in successors in order to handle requests to a servic
 As an example of service implementation, consider
 - [RestApiService], a template for all Rest-Api services
 - and its successor, a predefined service [SendToSwitchService]
+
+### Switch connectors
+Switch connectors are special kind of modules. They are not supposed to be loaded by user: ModuleManager creates a SwitchConnector when accepts new connection with SDN switch. Once SwitchConnector is created, it handles networking aspect of controller-switch interaction: performs handshake procedure, sends incoming/outgoing messages, etc. It acknowledges other modules about occurring events via publishing messages listened below:
+
+- ```SwitchHandshake[T <: OFMessage](dpid: ULong, driver: MessageDriver[T])``` - notifies about connection establishment
+- ```SwitchDisconnected[T <: OFMessage](dpid: ULong, driver: MessageDriver[T])``` - notifies about connection closing 
+- ```SwitchIncomingMessage[T <: OFMessage](id: ULong, driver: MessageDriver[T], msg: T)``` - notifies about incoming message from switch (both asynchronous and reply to a request)
+
+On the other hand, any SwitchConnector is a service. It serves two types of requests:
+- ```SendToSwitch[T <: OFMessage](id: ULong, msg: T, needReply: Boolean)``` - if ID of serviced switch equals *id*, sends message *msg* to this switch and replies with [SendingResult] [SendingResult] to request sender if *needReply* = true.
+- ```ForceDisconnect(dpid: ULong)``` - closes connection if ID of serviced switch equals *dpid*.
+
+###### Note
+For now SwitchConenctors support only OpenFlow switches. It is planned to make SwitchConnectors protocol-independent. 
 
 ### Compatibility with message driver
 
@@ -272,6 +286,8 @@ More information about development of modules supporting Rest API for your drive
 [Module]:#modules
 [ModuleDev]:#how-to-develop-a-module
 [MessageHandlers]:#message-handlers
+[SwitchConnectors]:#switch-connectors
+[SendingResult]:#link-to-scaladoc
 
 [RestApiServer]:#link-to-scaladoc
 [RestApiService]:#link-to-scaladoc
