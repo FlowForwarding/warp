@@ -102,7 +102,7 @@ private[fixed] object StructureTextView{
     val name = structureTrait.getSimpleName
 
     val members: Map[String, BITextViewItem] =
-      structureTrait.getDeclaredMethods.collect {
+      structureTrait.getMethods.collect {
         case m if m.getParameterTypes.length == 0 =>
 
           val getString: PartialFunction[Any, String]  = {

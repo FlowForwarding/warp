@@ -16,19 +16,27 @@ curl -d <body> -X POST http://0.0.0.0:8080/controller/nb/v2/send
 where body is
 ```json
 {
-    "dpid": 8796758431676,         /* Switch id */ 
-    "version": 4,                  /* OFP v1.3 */
-    "reply": true,                 /* Controller should deliever switch response */
-    "message": { "EchoRequest": {  /* Type of message */
-        "elements": [5, 5, 5, 5]   /* Fields of message */
+    "dpid": 8796758431676,         // Switch id
+    "version": 4,                  // OFP v1.3
+    "reply": true,                 // Controller should deliever switch response
+    "message": { "EchoRequest": {  // Type of message
+        "elements": [5, 5, 5, 5]   // Fields of message
     } }
 }
 ```
 
 If connection with specified switch is still alive, you will get the following reply:
 ```json
-{"EchoReply":{"elements":[5,5,5,5]}}
+{
+    "EchoReply":{
+        "elements":[5,5,5,5],
+        "header":{"Header":{"xid":4}}
+    }
+}
 ```
+
+Note that although you have not specify header in requests, it is present in reply. It may be used to identify transaction id, but usually should be ignored.
+
 Another example - sending multipart messages (e.g. SwitchDescription). They slightly differ form other messages: their type is always ```MultipartRequest``` and actual type of message is identified by type of ```message.body``` structure:
 ```json
 {
@@ -44,10 +52,10 @@ Another example - sending multipart messages (e.g. SwitchDescription). They slig
 
 Response has the following structure:
 
-```
+```json
 [
     { "MultipartReply": {
-        "reqMore": "false",
+        "flags": "false",
         "body": { "SwitchDescriptionReplyBody": { "value": {
             "SwitchDescription": {
                 "serialNumber":"Unknown",
@@ -56,7 +64,8 @@ Response has the following structure:
                 "software":"LINC OpenFlow Software Switch 1.1",
                 "manufacturer":"FlowForwarding.org"
             }
-        }}}
+        }}},
+        "header":{"Header":{"xid":5}}}
     }}
 ]
 ```

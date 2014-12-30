@@ -28,7 +28,7 @@ case class MultipartRequestInput(body: MultipartRequestBodyInput[_ <: BuilderInp
 trait MultipartReplyBody[T]{ def value: T }
 
 trait MultipartReply extends Ofp13Message{
-  def reqMore: Boolean
+  def flags: Boolean
   def body: MultipartReplyBody[_]
 }
 
@@ -179,7 +179,7 @@ private[fixed] trait Ofp13MultipartDescription extends Ofp13MessageDescription {
   }
 
   class Ofp13MultipartReplyStructure(s: DynamicStructure) extends OfpMessage[MultipartReply](s) with MultipartReply {
-    val reqMore: Boolean = primitiveField[ULong]("flags") == ULong(1)
+    val flags: Boolean = primitiveField[ULong]("flags") == ULong(1)
     val body: MultipartReplyBody[_] = structureField[MultipartReplyBody[_]]("body")
   }
 
