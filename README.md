@@ -14,7 +14,7 @@ Warp build and test process is managed with [sbt](http://www.scala-sbt.org/), Si
 
 It's very simple. Go to
 ```bash
- $ git clone https://github.com/Vitaliy-Savkin/warp
+ $ git clone https://github.com/FlowForwarding/warp
  $ cd warp
  $ sbt assembly
 ```
