@@ -11,6 +11,7 @@ import java.util.concurrent.TimeUnit
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits._
 
+import akka.actor.ActorRef
 import akka.io.IO
 import akka.util.Timeout
 import akka.pattern.{ask, pipe}
@@ -19,9 +20,11 @@ import spray.routing._
 import spray.can.Http
 import spray.http.{HttpEntity, StatusCodes, HttpResponse, HttpRequest}
 
-import org.flowforwarding.warp.controller.driver_interface.MessageDriverFactory
+import org.flowforwarding.warp.driver_api._
 import org.flowforwarding.warp.controller.bus.{ServiceBusActor, ServiceBus, ServiceRequest}
 import org.flowforwarding.warp.controller.modules.{Module, Service}
+
+import scala.concurrent.duration.Duration
 
 case class RestApiRequest(appName: String, request: HttpRequest) extends ServiceRequest
 
@@ -29,29 +32,38 @@ class RestApiServer(val bus: ServiceBus, serverPrefixes: Array[String]) extends 
   // TODO: fix creation of modules in module manager (allow passing arrays of String to a constructor)
   def this(bus: ServiceBus, serverPrefix: String) = this(bus, Array(serverPrefix))
 
+  var dispatcher: Option[ActorRef] = None
+
   override def started(): Unit = {
     IO(Http)(context.system) ! Http.Bind(self, interface = "localhost", port = 8080)
   }
 
-  override def shutdown(): Unit = { }
+  override def shutdown(): Unit = {
+    dispatcher foreach  { _ ! Http.Unbind(Duration(0, TimeUnit.SECONDS)) }
+    super.shutdown()
+  }
 
   override def compatibleWith(factory: MessageDriverFactory[_]): Boolean = true
 
-  override def moduleReceive = super.moduleReceive orElse {
+  override def auxReceive = super.auxReceive orElse {
     case r @ HttpRequest(method, uri, headers, entity, protocol) =>
       val path = uri.path.toString
       serverPrefixes.find(path.startsWith) foreach { serverPrefix =>
         val serviceUri = path.stripPrefix(serverPrefix)
-        println("Server prefix: " + serverPrefix)
-        println("Service uri: " + serviceUri)
+        log.debug("Server prefix: " + serverPrefix)
+        log.debug("Service uri: " + serviceUri)
         askFirst(RestApiRequest(serviceUri, r)) pipeTo sender()
       }
+    case Http.Bound(_) =>
+      dispatcher = Some(sender())
+    case Http.CommandFailed(cmd)  =>
+      log.debug("Command failed: " + cmd.failureMessage)
     case c: Http.Connected => // TODO: handle other Http messages
       sender() ! Http.Register(self)
   }
 }
 
-abstract class RestApiService(serverPrefix: String) extends Module with Service with HttpServiceBase{
+abstract class RestApiService(serverPrefix: String) extends Service with HttpServiceBase{
 
   // must starts with slash
   val servicePrefix: String
@@ -73,8 +85,8 @@ abstract class RestApiService(serverPrefix: String) extends Module with Service 
       }
   }
 
-  override def moduleReceive = {
+  override def auxReceive = {
     val pathPrefixMatcher = PathMatchers.separateOnSlashes(serverPrefix.drop(1) + servicePrefix)
-    super.moduleReceive orElse runRoute(pathPrefix(pathPrefixMatcher) { route })
+    super.auxReceive orElse runRoute(pathPrefix(pathPrefixMatcher) { route })
   }
 }

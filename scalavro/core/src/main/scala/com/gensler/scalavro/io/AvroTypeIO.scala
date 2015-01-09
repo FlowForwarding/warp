@@ -1,8 +1,10 @@
 package com.gensler.scalavro.io
 
+import com.typesafe.scalalogging.StrictLogging
+
 import com.gensler.scalavro.error._
 import com.gensler.scalavro.types.{ AvroType, AvroPrimitiveType }
-import com.gensler.scalavro.util.{ReflectionHelpers, Logging}
+import com.gensler.scalavro.util.ReflectionHelpers
 
 import org.apache.avro.io.{
   EncoderFactory,
@@ -23,7 +25,7 @@ import com.gensler.scalavro.types.supply.{EnumWithUnsignedValues, RawSeq}
 /* Mark a class with this trait to allow reference tracking during (de)serialization of class instances */
 trait UseReferences
 
-abstract class AvroTypeIO[T: TypeTag] extends Logging {
+abstract class AvroTypeIO[T: TypeTag] extends StrictLogging {
 
   /**
     * Returns the corresponding AvroType to this AvroTypeIO wrapper.

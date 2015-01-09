@@ -8,53 +8,78 @@ package org.flowforwarding.warp.controller
 
 import java.util.concurrent.TimeUnit
 
+import scala.util._
 import scala.annotation.tailrec
-import scala.util.{Failure, Success}
+import scala.concurrent.{Promise, Future}
 import scala.concurrent.ExecutionContext.Implicits.global
 
 import akka.actor.{Actor, ActorRef}
 import akka.io.{Tcp, TcpMessage}
 import akka.util.{Timeout, ByteString}
+import akka.pattern.{pipe, ask}
 
-import org.flowforwarding.warp.controller.driver_interface.{MessageDriver, OFMessage}
 import spire.math.{UByte, UInt, ULong}
-import org.flowforwarding.warp.controller.bus.{MessageEnvelope, ControllerBus, ControllerBusActor}
-import org.flowforwarding.warp.controller.ModuleManager.{DriverByVersion, DriverNotFoundResponse, DriverFoundResponse, DriverByHello}
+
+import org.flowforwarding.warp.driver_api._
+import org.flowforwarding.warp.controller.bus._
+import org.flowforwarding.warp.controller.ModuleManager._
 import org.flowforwarding.warp.controller.SwitchConnector._
-import org.flowforwarding.warp.controller.SwitchConnector.SwitchOutgoingMessage
-import org.flowforwarding.warp.controller.ModuleManager.DriverFoundResponse
-import org.flowforwarding.warp.controller.ModuleManager.DriverByVersion
-import org.flowforwarding.warp.controller.SwitchConnector.SwitchIncomingMessage
-import scala.util.Failure
-import scala.Some
-import org.flowforwarding.warp.controller.SwitchConnector.SwitchHandshake
-import org.flowforwarding.warp.controller.ModuleManager.DriverByHello
-import org.flowforwarding.warp.controller.ModuleManager.DriverNotFoundResponse
-import scala.util.Success
-import org.flowforwarding.warp.controller.SwitchConnector.NewDriverFactory
+import org.flowforwarding.warp.controller.modules.Service
 
 object SwitchConnector{
   // switch -> controller
   case class SwitchIncomingMessage[T <: OFMessage](id: ULong, driver: MessageDriver[T], msg: T) extends MessageEnvelope
   // controller -> switch
-  case class SwitchOutgoingMessage[T <: OFMessage](id: ULong, msg: T) extends MessageEnvelope
-  case class MessageSendingResult(dpid: ULong, xid: UInt, failure: Option[Throwable]) extends MessageEnvelope
+  case class SendToSwitch[T <: OFMessage](id: ULong, msg: T, needReply: Boolean) extends ServiceRequest
+  private case class SendToSwitchInternal[T <: OFMessage](msg: T, needReply: Boolean) extends MessageEnvelope
+
+  trait SendingResult[+T]{
+    def map[R](f: T => R): SendingResult[R]
+  }
+  case object SendingSuccessful extends SendingResult[Nothing] {
+    override def map[R](f: Nothing => R): SendingResult[R] = this
+  }
+  case class SendingFailed(cause: Throwable) extends SendingResult[Nothing] {
+    override def map[R](f: Nothing => R): SendingResult[R] = this
+  }
+
+  sealed trait SwitchResponse[T] extends SendingResult[T]
+  case class SingleMessageSwitchResponse[T](msg: T) extends SwitchResponse[T] {
+    override def map[R](f: T => R): SendingResult[R] = SingleMessageSwitchResponse(f(msg))
+  }
+  case class MultipartMessageSwitchResponse[T](msgs: Seq[T]) extends SwitchResponse[T] {
+    override def map[R](f: T => R): SendingResult[R] = MultipartMessageSwitchResponse(msgs map f)
+  }
+  case class ErrorSwitchResponse[T](errorMsg: T) extends SwitchResponse[T]{
+    override def map[R](f: T => R): SendingResult[R] = ErrorSwitchResponse(f(errorMsg))
+  }
 
   case class NewDriverFactory(sender: ActorRef) extends MessageEnvelope
 
-  case class SwitchDisconnected(dpid: ULong, driver: MessageDriver[_ <: OFMessage]) extends MessageEnvelope
-  case class SwitchHandshake(dpid: ULong, driver: MessageDriver[_ <: OFMessage]) extends MessageEnvelope
+  case class SwitchDisconnected[T <: OFMessage](dpid: ULong, driver: MessageDriver[T]) extends MessageEnvelope
+  case class SwitchHandshake[T <: OFMessage](dpid: ULong, driver: MessageDriver[T]) extends MessageEnvelope
 
-  case class ForceDisconnect(dpid: ULong) extends MessageEnvelope
+  case class ForceDisconnect(dpid: ULong) extends ServiceRequest
+  private case object ForceDisconnectInternal extends MessageEnvelope
 }
 
-private class SwitchConnector[T <: OFMessage, DriverType <: MessageDriver[T]](val bus: ControllerBus, controller: ActorRef) extends ControllerBusActor{
+private class SwitchConnector[T <: OFMessage, DriverType <: MessageDriver[T]](val bus: ControllerBus, controller: ActorRef) extends Service with MessageBusActor {
+
+  override protected def handleRequest(e: ServiceRequest): Future[Any] = e match {
+    case SendToSwitch(_, msg: T, needReply) =>
+      self ? SendToSwitchInternal(msg, needReply)
+    case ForceDisconnect(_) =>
+      self ? ForceDisconnectInternal
+  }
+
+  override protected def started(): Unit = {
+    subscribe("driverFactoryChange") { case NewDriverFactory(`controller`) => true}
+    setReceive(startingState orElse handleClosed)
+  }
+
+  override protected def compatibleWith(factory: MessageDriverFactory[_]): Boolean = true // TODO: abstract over protocol
 
   implicit val timeout = Timeout(20, TimeUnit.SECONDS)
-
-  subscribe("driverFactoryChange") { case NewDriverFactory(`controller`) => true }
-
-  def receive = startingState orElse handleClosed
 
   def startingState: Actor.Receive = {
     case Tcp.Received(data) =>
@@ -63,44 +88,47 @@ private class SwitchConnector[T <: OFMessage, DriverType <: MessageDriver[T]](va
         case DriverFoundResponse(driver: DriverType, supportedVersions) =>
           val handshake = driver.getHelloMessage(supportedVersions) ++ driver.getFeaturesRequest
           tcpChannel ! TcpMessage.write(ByteString.fromArray(handshake))
-          context become (waitingForPDID(tcpChannel, driver) orElse handleClosed)
+          setReceive(waitingForPDID(tcpChannel, driver) orElse handleClosed)
         case nf: DriverNotFoundResponse =>
-          context become handleClosed
+          setReceive(handleClosed)
       }
   }
 
   @tailrec
   private def decodeMessages(driver: DriverType, messages: List[T], data: Array[Byte]): (List[T], Array[Byte]) = {
     driver decodeMessage data match {
-      case (Success(msg), rest) if rest.length > 0  || rest.length == data.length => decodeMessages(driver, msg :: messages, rest)
-      case (Success(msg), rest) if rest.length == 0                               => (msg :: messages, rest)
-      case (Failure(t),   rest) if rest.length == data.length                     => (messages, rest)
-      case (Failure(t),   rest)                                                   => t.printStackTrace(); (messages, rest)
+      case (Success(msg), rest) if rest.length > 0 || rest.length == data.length => decodeMessages(driver, msg :: messages, rest)
+      case (Success(msg), rest) if rest.length == 0 => (msg :: messages, rest)
+      case (Failure(t), rest) if rest.length == data.length => (messages, rest)
+      case (Failure(t), rest) =>
+        log.error("Unable to decode message", t)
+        (messages, rest)
     }
   }
 
   private def publishMessages(driver: DriverType, messages: Seq[T], dpid: ULong) = {
-    messages foreach { m => publishMessage(SwitchIncomingMessage(dpid, driver, m)) }
+    messages foreach { m => publishMessage(SwitchIncomingMessage(dpid, driver, m))}
   }
 
   def newDriverFactory(askVersion: UByte, newState: DriverType => Receive) =
     askFirst(DriverByVersion(askVersion)) onSuccess {
-      case DriverFoundResponse(driver: DriverType, _) => context become newState(driver)
+      case DriverFoundResponse(driver: DriverType, _) => setReceive(newState(driver))
     }
 
   def waitingForPDID(tcpChannel: ActorRef, driver: DriverType): Actor.Receive = {
     case Tcp.Received(data) =>
       driver.getDPID(data.toArray) match {
         case Success(dpid) =>
+          log.info("Handshaked switch " + dpid)
           val (messages, rest) = decodeMessages(driver, Nil, data.toArray)
-          context become handshakedState(tcpChannel, driver, dpid, rest)
+          setReceive(handshakedState(tcpChannel, driver, dpid, rest))
           publishMessage(SwitchHandshake(dpid, driver))
-          subscribe("afterHandshakeMessages") {
-            case SwitchOutgoingMessage(`dpid`, _: T) | ForceDisconnect(_) => true
+          registerService {
+            case SendToSwitch(`dpid`, _: T, _) | ForceDisconnect(`dpid`) => true
           }
           publishMessages(driver, messages, dpid)
         case Failure(t) =>
-          println("Unable to get DPID: " + t)
+          log.error(t, "Unable to get DPID")
           context stop self
       }
 
@@ -108,25 +136,59 @@ private class SwitchConnector[T <: OFMessage, DriverType <: MessageDriver[T]](va
       newDriverFactory(driver.versionCode, d => waitingForPDID(tcpChannel, d) orElse handleClosed)
   }
 
+  // dpid x xid => promise of response
+  val awaitingRequests = scala.collection.mutable.Map[UInt, Promise[SwitchResponse[T]]]()
+  // think about sequence of futures
+  val receivedMultipartResponses  = scala.collection.mutable.Map[UInt, Seq[T]]().withDefaultValue(Seq.empty)
+
   def handshakedState(tcpChannel: ActorRef, driver: DriverType, dpid: ULong, prevBytes: Array[Byte]): Actor.Receive = {
     case Tcp.Received(data) =>
       val (messages, rest) = decodeMessages(driver, Nil, prevBytes ++: data.toArray)
       publishMessages(driver, messages, dpid)
-      context become handshakedState(tcpChannel, driver, dpid, rest)
+      messages foreach { msg =>
+        val xid = driver.getXid(msg)
+        driver.getIncomingMessageType(msg) match {
+          case Error =>
+            awaitingRequests.remove(xid) foreach {
+              _ complete Success(ErrorSwitchResponse(msg))
+            }
+          case SingleMessageResponse =>
+            awaitingRequests.remove(xid) foreach {
+              _ complete Success(SingleMessageSwitchResponse(msg))
+            }
+          case MultipartResponse(reqMore) =>
+            receivedMultipartResponses(xid) = receivedMultipartResponses(xid) :+ msg
+            if(!reqMore)
+              awaitingRequests.remove(xid) foreach { p =>
+                receivedMultipartResponses.remove(xid) foreach { s =>
+                  p complete Success(MultipartMessageSwitchResponse(s))
+                }
+              }
+          case m => log.error("Unmatchable incoming message: " + m)
+        }
+      }
+      setReceive(handshakedState(tcpChannel, driver, dpid, rest))
 
-    case SwitchOutgoingMessage(`dpid`, msg: T) =>
+    case SendToSwitchInternal(msg: T, needReply) =>
       driver encodeMessage msg match {
         case Success(bytes) =>
-          println("[DEBUG]: " + bytes.toVector)
+          log.debug("Send bytes to switch " + bytes.mkString("[", ",", "]"))
           tcpChannel ! TcpMessage.write(ByteString.fromArray(bytes))
-          publishMessage(MessageSendingResult(dpid, driver.getXid(msg), None))
+          if(needReply) {
+            val p = Promise[SwitchResponse[T]]()
+            awaitingRequests(driver.getXid(msg)) = p
+            p.future pipeTo sender()
+          }
+          else
+            sender() ! SendingSuccessful
         case Failure(t) =>
-          t.printStackTrace()
-          publishMessage(MessageSendingResult(dpid, driver.getXid(msg), Some(t)))
+          log.error(t, "Unable to encode message")
+          sender() ! SendingFailed(t)
       }
 
-    case ForceDisconnect(`dpid`) =>
+    case ForceDisconnectInternal =>
       tcpChannel ! TcpMessage.close
+      sender ! (()) // TODO: reasonable value??
 
     case NewDriverFactory(`controller`) =>
       newDriverFactory(driver.versionCode, d => handshakedState(tcpChannel, d, dpid, prevBytes))

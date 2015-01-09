@@ -39,7 +39,7 @@ class AvroFixedSizeEnum[Elem,
       "list" -> new JsArray(
         enum.values
           .map { case (n, elem) => new JsObject(ListMap("name" -> n.toJson, "default" -> elem.data.toString.toJson)) }
-          .toList)
+          .toVector)
     )
 
     val optionalParams = ListMap(

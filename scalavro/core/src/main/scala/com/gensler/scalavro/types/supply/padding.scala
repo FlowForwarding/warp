@@ -33,6 +33,11 @@ package supply{
     private[scalavro] def this(bytes: Bytes) = this()
   }
 
+  @FixedData.Length(5)
+  case class Pad5() extends FixedData(List[Byte](0, 0, 0, 0, 0)){
+    private[scalavro] def this(bytes: Bytes) = this()
+  }
+
   @FixedData.Length(6)
   case class Pad6() extends FixedData(List[Byte](0, 0, 0, 0, 0, 0)){
     private[scalavro] def this(bytes: Bytes) = this()

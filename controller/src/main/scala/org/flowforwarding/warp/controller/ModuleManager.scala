@@ -9,6 +9,8 @@ package org.flowforwarding.warp.controller
 import java.util.concurrent.TimeUnit
 import java.net.InetSocketAddress
 
+import com.typesafe.config.ConfigFactory
+
 import scala.reflect.ClassTag
 import scala.util.{Failure, Success, Try}
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -21,11 +23,12 @@ import akka.pattern.{ask, pipe}
 
 import spire.math.UByte
 
-import org.flowforwarding.warp.controller.driver_interface._
+import org.flowforwarding.warp.driver_api._
 import org.flowforwarding.warp.controller.modules.Module.CheckCompatibility
 import org.flowforwarding.warp.controller.bus.{ControllerBusActor, ControllerBus, ServiceRequest}
 import org.flowforwarding.warp.controller.modules.Module
 import org.flowforwarding.warp.controller.SwitchConnector.NewDriverFactory
+import org.flowforwarding.warp.controller.util.NonCachingClassLoader
 
 object ModuleManager {
   case class Start(address: InetSocketAddress)
@@ -50,12 +53,11 @@ object ModuleManager {
     val manager = Tcp.get(actorSystem).manager
     val controllerBus = new ControllerBus { }
     val controller = actorSystem.actorOf(Props.create(classOf[ModuleManager], controllerBus, manager), "Controller-Dispatcher")
-    actorSystem.actorOf(Props.create(classOf[InputHandler], controller), "Input-Handler")
+    actorSystem.actorOf(Props.create(classOf[InputHandler], controller, args.lift(0)), "Input-Handler")
   }
 }
 
-
-private class ModuleManager(val bus: ControllerBus, manager: ActorRef) extends ControllerBusActor {
+private class ModuleManager(val bus: ControllerBus, manager: ActorRef) extends ControllerBusActor with ActorLogging {
   import org.flowforwarding.warp.controller.ModuleManager._
 
   type T <: OFMessage
@@ -95,9 +97,16 @@ private class ModuleManager(val bus: ControllerBus, manager: ActorRef) extends C
 
     case c: Tcp.Connected =>
       manager ! c
-      println("[INFO] Getting Switch connection \n")
+      val s = sender()
       val connectionHandler = context.actorOf(Props.create(classOf[SwitchConnector[T, DriverType]], bus, self))
-      sender ! TcpMessage.register(connectionHandler)
+      connectionHandler ? CheckCompatibility(driverFactory) onComplete {
+        case Success(true) =>
+          log.info("Created SwitchConnector")
+          s ! TcpMessage.register(connectionHandler)
+        case Failure(t) =>
+          log.error(t, "Unable to establish connection")
+          context stop connectionHandler
+      }
 
     case Start(address) =>
       manager ? TcpMessage.bind(self, address, 100) map {
@@ -136,9 +145,13 @@ private class ModuleManager(val bus: ControllerBus, manager: ActorRef) extends C
 
     case AddModule(moduleName, moduleClass, args) =>
       val req = sender()
-      Try { context.actorOf(Props.create(Class.forName(moduleClass), bus +: args: _*), "Module-" + moduleName) } match {
+      Try {
+        implicit val parentCl = this.getClass.getClassLoader
+        val moduleLoader = new NonCachingClassLoader(_.startsWith(moduleClass))
+        context.actorOf(Props.create(moduleLoader loadClass moduleClass, bus +: args: _*), "Module-" + moduleName)
+      } match {
         case Success(module) if driverFactory == null =>
-          context stop module
+          module ! Module.Shutdown
           req ! AddModuleResponse(moduleName, Some(new Exception("Driver factory must be set before adding of any module")))
         case Success(module) =>
           module ? CheckCompatibility(driverFactory) onComplete {
@@ -147,10 +160,13 @@ private class ModuleManager(val bus: ControllerBus, manager: ActorRef) extends C
               modules(moduleName) = module
             case Success(false) =>
               req ! AddModuleResponse(moduleName, Some(new Exception("Module is not compatible with drivers factory")))
+              module ! Module.Shutdown
             case Success(_) =>
               req ! AddModuleResponse(moduleName, Some(new Exception("Wrong compatibility response")))
+              module ! Module.Shutdown
             case Failure(t) =>
               req ! AddModuleResponse(moduleName, Some(t))
+              context stop module
           }
         case Failure(t) =>
           req ! AddModuleResponse(moduleName, Some(t))

@@ -1,10 +1,9 @@
 resolvers += "Sonatype snapshots" at "https://oss.sonatype.org/content/repositories/snapshots/"
 
-addSbtPlugin("com.github.mpeltonen" % "sbt-idea" % "1.7.0-SNAPSHOT")
+resolvers += "jgit-repo" at "http://download.eclipse.org/jgit/maven"
 
-addSbtPlugin("com.eed3si9n" % "sbt-assembly" % "0.11.2")
+addSbtPlugin("com.typesafe.sbt" % "sbt-ghpages" % "0.5.3")
 
-addSbtPlugin("com.earldouglas" % "xsbt-web-plugin" % "0.4.2")
+addSbtPlugin("com.eed3si9n" % "sbt-unidoc" % "0.3.1")
 
-addSbtPlugin("org.scala-sbt.plugins" % "sbt-onejar" % "0.8")
-
+addSbtPlugin("com.eed3si9n" % "sbt-assembly" % "0.12.0")

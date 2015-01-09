@@ -4,10 +4,12 @@ package com.gensler.scalavro.types.supply
    Otherwise it couldn't be used as AvroType.
  */
 trait RawSeqFieldsInfo{
-  /* Returns length in bytes of raw sequence field by its number and already deserialized fields */
-  type LengthCalculator = PartialFunction[Int, Seq[Any] => Int]
+  /* Returns some length in bytes of raw sequence field,
+   * if it is possible to calculate it by number sequence if arguments list and already deserialized fields.
+   * If it is not possible, deserializers will assume that stream should be read to the end. */
+  type LengthCalculator = PartialFunction[Int, Option[Seq[Any] => Int]]
   val rawFieldsLengthCalculator: LengthCalculator
-  protected def lenByIndex(index: Int) = (s: Seq[Any]) => s(index).asInstanceOf[Int]
+  protected def lenByIndex(index: Int) = Some((s: Seq[Any]) => s(index).asInstanceOf[Int])
 }
 
 trait RawData
